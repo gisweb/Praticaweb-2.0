@@ -1,0 +1,43 @@
+TABLE.stiletabella {
+	BORDER-RIGHT: white 2px solid;
+	BORDER-TOP: white 2px solid;
+	MARGIN: 0px;
+	BORDER-LEFT: white 2px solid;
+	BORDER-BOTTOM: white 2px solid;
+	BACKGROUND-COLOR: white;
+}
+.stiletabella {
+	BORDER-RIGHT: 0pt;
+	BORDER-TOP: 0pt;
+	COLOR: #415578;
+	PADDING-LEFT: 0em;
+	FLOAT: none;
+	MARGIN: 0em 0em 0.5em;
+	WORD-SPACING: 0em;
+	FONT: 11px/1.3em Verdana, Geneva, Arial, sans-serif;
+	VERTICAL-ALIGN: baseline;
+	TEXT-TRANSFORM: none;
+	BORDER-LEFT: 0pt;
+	TEXT-INDENT: 0em;
+	BORDER-BOTTOM: 0pt;
+	LETTER-SPACING: 0em;
+	TEXT-DECORATION: none;
+	paddding-bottom: 0em;
+	paddding-right: 0em;
+	paddding-top: 0em
+}
+table.stiletabella td.label{
+    background-color:#728bb8;
+    color:#ffffff;
+    font-weight:bold;
+}
+table.stiletabella td.titolo{
+    width:90%;
+    background-color:#728bb8;
+    color:#ffffff;
+    font:13px/1.3em Verdana, Geneva, Arial, sans-serif;
+    font-weight:bold;
+}
+table.stiletabella td.intestazione{
+    
+}

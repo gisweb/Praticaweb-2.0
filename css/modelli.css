@@ -1,0 +1,76 @@
+.obbligatori{
+	background-color:rgb(200,50,0);
+	font-family:Verdana, Geneva, Arial, sans-serif;
+	font-weight:bold;
+	font-size:11px;
+}
+.valore{
+	background-color:rgb(0,230,0);
+	font-family:Verdana, Geneva, Arial, sans-serif;
+	font-weight:bold;
+	font-size:11px;
+}
+.se{
+	background-color:rgb(230,40,0);
+	font-family:Verdana, Geneva, Arial, sans-serif;
+	font-weight:bold;
+	font-size:11px;
+}
+.iniziose{
+	background-color:rgb(230,40,0);
+	font-family:Verdana, Geneva, Arial, sans-serif;
+	font-weight:bold;
+	font-size:11px;
+}
+.finese{
+	background-color:rgb(230,40,0);
+	font-family:Verdana, Geneva, Arial, sans-serif;
+	font-weight:bold;
+	font-size:11px;
+}
+.cicli{
+	background-color:yellow;
+	font-family:Verdana, Geneva, Arial, sans-serif;
+	font-size:11px;
+}
+.iniziocicli{
+	background-color:yellow;
+	font-family:Verdana, Geneva, Arial, sans-serif;
+	font-size:11px;
+}
+.finecicli{
+	background-color:yellow;
+	font-family:Verdana, Geneva, Arial, sans-serif;
+	font-size:11px;
+}
+.modelli{
+	font-family:Verdana, Geneva, Arial, sans-serif;
+	color:navy;
+}
+TABLE.modelli{
+	border:1px solid navy;
+}
+TD.modelli{
+	font-family:Verdana, Geneva, Arial, sans-serif;
+	font-size:14px;
+	
+	border:1px solid navy;
+	
+}
+TD.intestazione{
+	font-family:Sans-serif,Verdana, Geneva, Arial;
+	font-size:11px;
+	font-weight:bold;
+	border:0px solid black;
+	
+}
+img.bottone{
+	border:1px solid F0F0EE;
+}
+div.descrizione{
+	background-color:rgb(240,240,238);
+	color:red;
+	font-family:Sans-serif,Verdana, Geneva, Arial;
+	font-size:10px;
+	padding:10px 0px 0px 0px;
+}

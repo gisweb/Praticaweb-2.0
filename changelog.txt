@@ -1,0 +1,9 @@
+31-05-06 roby aggiunto il tipo noyes uguale a yesno ma con default NO
+31-05-06 roby modificato db.oneri.onericalcolati.php per inserire la gestione del campo degradato(ceriale)
+31-05-06 roby modifiche db per oneri ceriale: campo degradato in oneri.calcolati
+31-05-06 roby modifiche db per oneri ceriale: campo degradato in oneri.vista_calcoli
+31-05-06 roby modifiche db per oneri ceriale: campo ordine in oneri.e_interventi
+31-05-06 roby modifiche db per oneri ceriale: ORDER BY ordine nella vista oneri.elenco_interventi
+01-06-06 marco aggiunto tipo selectRPC che gestisce le chiamate HTTP_REQUEST per il riempimento automatico dei dati del form
+01-06-06 marco aggiunto file Javascript http_request.js (che gestisce le chiamate rpc in generale),rpc.oneri_calcolati.js (che gestisce le chiamate rpc del form oneri.calcolati) e rpc.scheda_soggetto.js(che gestisce le chiamate rpc del form pe.scheda_soggetto)
+01-06-06 marco modificato oneri.calcolati e pe.scheda_soggetto : inclusi i file js relativi a rpc

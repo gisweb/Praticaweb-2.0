@@ -1,0 +1,803 @@
+/*---- Text styles ----*/
+/*
+	NS4 doesn't do well with added colors because of the extra padding added inside each
+	block element. So colors are imported. This theme file will, thus, contain mostly
+	font stuff.
+ */
+@import url(colors.css);
+@import url(online.css);
+
+a:link, a:visited, a:active {
+	color: #2461A3;
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: none;
+	color: #006;
+}
+body
+{
+	font-family: Arial, Helvetica, sans-serif;
+    height:100%;
+}
+/*** Left Menu ***/
+#innerLeftColumn p
+{
+	font-size: 11px;
+	letter-spacing: 1px;
+	/*/*/ /*/line-height: normal;/* NS4 Adds too much space, so reset the line-height */
+}
+#innerLeftColumn h3
+{
+	color:#006;
+	margin:0px;
+}
+
+/*** Content ***/
+#innerContentColumn
+{
+	font-size: 11px;
+	letter-spacing: 1px;
+    text-align: justify;   
+}
+#innerContentColumn li
+{
+	padding: 1px 0px 1px 0px;
+}
+
+#innerContentColumn p
+{
+	margin-left: 5px;
+}
+#innerContentColumn table
+{
+	margin-left:0px;
+    border-collapse:collapse;    
+}
+#innerContentColumn h2
+{
+    font-size: 11px;
+    line-height: 17px;
+	margin-left: 5px;
+    font-weight: bold;
+}
+#innerContentColumn h3
+{
+	font-size: 12px;
+	color: #006;
+	letter-spacing: 2px;
+	padding: 5px 0px 15px 3px;
+}
+#innerContentColumn h4, #trafficlist h4
+{
+	font-size: 14px;
+	color: #CAECFF;
+	line-height: 17px;
+	padding-left: 3px;
+	letter-spacing: 2px;
+	background-color: #204D78;
+	border-width: 1px 0px 1px 0px;
+	border-style: solid;
+	border-color: #DDDDDD;
+	margin: 0px;
+}
+#innerContentColumn img
+{
+	padding: 10px 10px 10px 0px;
+}
+
+/*** Content styles ***/
+.content {
+	color: #000;
+	letter-spacing: 1px;
+}
+.content img {
+	padding: 10px;
+}
+.content-list {
+	color: #000;
+	letter-spacing: 1px;
+	padding-bottom: 8px;
+	border-bottom-style: dashed;
+	border-bottom-width: 1px;
+	border-bottom-color: #CCC;
+}
+.table td
+{
+    padding:2px;
+    border-spacing:2px;
+}
+.file-list {
+	color: #000;
+	letter-spacing: 1px;
+    padding-top: 3px;
+	border-top-style: solid;
+	border-top-width: 1px;
+	border-top-color: #CCC;    
+    
+    padding-bottom: 3px;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-bottom-color: #CCC;
+    
+    padding-left: 5px;
+	border-left-style: solid;
+	border-left-width: 1px;
+	border-left-color: #CCC;
+    
+    padding-right: 5px;
+	border-right-style: solid;
+	border-right-width: 1px;
+	border-right-color: #CCC;
+   
+}
+
+td.file-list-hover, tr.file-list-hover {
+    border-collapse:collapse;
+	background-color: #EEEEEE;
+
+    padding-top: 3px;
+    padding-bottom: 3px;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-bottom-color: #CCC;
+    
+    padding-left: 5px;
+	border-left-style: solid;
+	border-left-width: 1px;
+	border-left-color: #CCC;
+    
+    padding-right: 5px;
+	border-right-style: solid;
+	border-right-width: 1px;
+	border-right-color: #CCC;
+    cursor: pointer;
+}
+
+
+.note {
+	color: #600;
+}
+.grey {
+	color: #999;
+}
+.orange {
+	color: #F60;
+}
+.blue {
+	color: #03F;
+}
+.red {
+	color: #F00;
+}
+.yellow {
+	color: #FF0;
+}
+.green {
+	color: #060;
+}
+.purple {
+	color: #609;
+}
+.example {
+	color: #063;
+	padding-left: 5px;
+}
+.small,a.small{
+	font-size: 9px;
+}
+
+td.menu-flat ,td.menu-upright ,tr.menu-flat ,tr.menu-upright{
+	font-size: 11px;
+	letter-spacing: 1px;
+	color: #2461A3;
+	background-color: #9efa9e;
+	padding: 2px;
+}
+	
+td.menu-flat-hover ,td.menu-upright-hover, tr.menu-flat-hover ,tr.menu-upright-hover{
+	font-size: 11px;
+	letter-spacing: 1px;
+	color: #006;
+	background-color: #9efa9e;
+	padding: 2px;
+	cursor: pointer;
+}	
+a.menu-flat:link, a.menu-upright:link {
+	color: #2461A3;
+	text-decoration: none;
+}
+a.menu-flat:hover, a.menu-upright:hover {
+	color: #006;
+	text-decoration: none;
+}
+td.menu-upright, td.menu-upright-hover, tr.menu-upright, tr.menu-upright-hover{
+	margin: 1px 5px 1px 0px;
+	padding: 3px;
+	text-align: left;
+}
+td.menu-flat, td.menu-flat-hover, tr.menu-flat, tr.menu-flat-hover{
+	text-align: center;
+}
+div.badge:img{
+	padding: 0px;
+	margin: 0px;
+}
+
+/*** Page path ***/
+#path h1
+{
+	font-weight:normal;
+	font-size:11px;
+	font-style:italic;
+/*    line-height:17px;*/
+	letter-spacing:1px;
+	padding: 0px 0px 0px 5px;
+}
+#path p
+{
+	font-size: 11px;
+	letter-spacing: 1px;
+}
+#path a
+{
+	text-decoration: none;
+}
+#path a:hover
+{
+	color: #006;
+	text-decoration: none;
+}
+#top, #top img
+{
+	margin: 0;
+	padding: 0;
+}
+/*** Footer ***/
+#innerFooter
+{
+	font-size: 9px;
+	text-align: center;
+	letter-spacing: 1px;
+}
+
+/*** Vertical Navigation Area ***/
+#innerLeftColumn h4
+{
+	font-size: 13px;
+	color: #CAECFF;
+	line-height: 17px;
+	padding-left: 3px;
+	letter-spacing: 2px;
+	background-color: #204D78;
+	border-width: 1px 0px 1px 1px;
+	border-style: solid;
+	border-color: #DDDDDD;
+	margin: 0;
+}
+.menu
+{
+	font-size: 11px;
+	line-height: 17px;
+	letter-spacing: 1px;
+	
+	/*/*/ /*/line-height: 120%;/* NS4 Adds too much space, so lower it */
+}
+
+
+.testost{
+	border-width: 1px 1px 1px 1px;
+	border-style: solid;
+	border-color: #DDDDDD;
+	margin: 0;
+	color: #CAECFF;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 11px;
+	text-transform : none;
+	padding : 2px 2px 2px 2px;
+	font-weight : bold;
+	background-color: #204D76;
+	}
+
+.testost_b{
+	border-width: 1px 1px 1px 1px;
+	border-style: solid;
+	border-color: #DDDDDD;
+	margin: 0;
+	color: #CAECFF;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 8px;
+	text-transform : none;
+	padding : 1px 1px 1px 1px;
+	font-weight : ;
+	background-color: #204D76;
+	}	
+
+.testost_odd_b{
+	border-width: 1px 1px 1px 1px;
+	border-style: solid;
+	border-color: #DDDDDD;
+	margin: 0;
+	color: #CAECFF;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 8px;
+	text-transform : none;
+	padding : 1px 1px 1px 1px;
+	font-weight : ;
+	background-color: #5B9AC4;
+	}
+.testost_even_b{
+	border-width: 1px 1px 1px 1px;
+	border-style: solid;
+	border-color: #DDDDDD;
+	margin: 0;
+	color: #CAECFF;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 8px;
+	text-transform : none;
+	padding : 1px 1px 1px 1px;
+	font-weight : ;
+	background-color: #95BDDA;
+	}	
+	
+	
+.testost_odd{
+	border-width: 1px 1px 1px 1px;
+	border-style: solid;
+	border-color: #DDDDDD;
+	margin: 0;
+	color: #CAECFF;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 11px;
+	text-transform : none;
+	padding : 2px 2px 2px 2px;
+	font-weight : bold;
+	background-color: #5B9AC4;
+	}
+.testimp_odd{
+	border-width: 0px 0px 0px 0px;
+	border-style: solid;
+	border-color: #DDDDDD;
+	margin: 0;
+	color: #CAECFF;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 11px;
+	text-transform : none;
+	padding : 2px 2px 2px 2px;
+	font-weight : bold;
+	background-color: #5B9AC4;
+	text-align:center;
+	}
+.testost_even{
+	border-width: 1px 1px 1px 1px;
+	border-style: solid;
+	border-color: #DDDDDD;
+	margin: 0;
+	color: #CAECFF;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 11px;
+	text-transform : none;
+	padding : 2px 2px 2px 2px;
+	font-weight : bold;
+	background-color: #95BDDA;
+	}
+.testimp_even{
+	border-width: 0px 0px 0px 0px;
+	border-style: solid;
+	border-color: #DDDDDD;
+	margin: 0;
+	color: #CAECFF;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 11px;
+	text-transform : none;
+	padding : 2px 2px 2px 2px;
+	font-weight : bold;
+	background-color: #95BDDA;
+	text-align:center;
+	}
+	
+.testimp_odd_calc{
+	border-width: 0px 0px 0px 0px;
+	border-style: solid;
+	border-color: #DDDDDD;
+	margin: 0;
+	color: blue;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 11px;
+	text-transform : none;
+	padding : 0px 0px 0px 0px;
+	font-weight : bold;
+	background-color: #00FF99;
+	text-align:center;
+	}
+.testimp_even_calc{
+	border-width: 0px 0px 0px 0px;
+	border-style: solid;
+	border-color: #DDDDDD;
+	margin: 0;
+	color: blue;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 11px;
+	text-transform : none;
+	padding : 0px 0px 0px 0px;
+	font-weight : bold;
+	background-color: #CCFFCC;
+	text-align:center;
+	}
+	
+.testost_even_calc{
+	border-width: 1px 1px 1px 1px;
+	border-style: solid;
+	border-color: #DDDDDD;
+	margin: 0;
+	color: blue;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 11px;
+	text-transform : none;
+	padding : 0px 0px 0px 0px;
+	font-weight : bold;
+	background-color: #CCFFCC;
+	}
+.testost_odd_calc{
+	border-width: 1px 1px 1px 1px;
+	border-style: solid;
+	border-color: #DDDDDD;
+	margin: 0;
+	color: blue;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 11px;
+	text-transform : none;
+	padding : 0px 0px 0px 0px;
+	font-weight : bold;
+	background-color: #00FF99;
+	}	
+	
+
+
+
+	
+.testost2{
+	border-width: 0px 0px 0px 0px;
+	border-style: solid;
+	border-color: #e10052;
+	margin: 0;
+	color: red;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 11px;
+	text-transform : UPPERCASE;
+	padding : 0px 0px 0px 0px;
+	font-weight : bold;
+	background-color: #ffffff;
+	}
+
+
+	
+.testost3{
+	border-width: 1px 1px 1px 1px;
+	border-style: solid;
+	border-color: #DDDDDD;
+	margin: 0;
+	color: #204D78;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 14px;
+	text-transform : none;
+	padding : 4px 4px 4px 4px;
+	font-weight : bold;
+	background-color: #ffffff;
+	}
+
+	
+	
+	
+	
+	
+	.paging{
+	border-width: 1px 1px 1px 1px;
+	border-style: solid;
+	border-color: #e10052;
+	margin: 0;
+	color: blue;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 11px;
+	text-transform : none;
+	padding : 2px 2px 2px 2px;
+	font-weight : bold;
+}
+.esclamativo{
+	border-width: 0px 0px 0px 0px;
+	border-style: solid;
+	border-color: #e10052;
+	margin: 0;
+	color: blue;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 16px;
+	text-transform : none;
+	padding : 2px 2px 2px 2px;
+	font-weight : bold;
+}
+.paging1{
+	border-width: 1px 1px 1px 1px;
+	border-style: solid;
+	border-color: #e10052;
+	margin: 0;
+	color: blue;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 11px;
+	text-transform : none;
+	padding : 5px 5px 5px 5px;
+	font-weight : bold;
+}
+
+.paging2{
+	border-width: 0px 0px 0px 0px;
+	border-style: solid;
+	border-color: #e10052;
+	margin: 0;
+	color: blue;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 11px;
+	text-transform : none;
+	padding : 2px 2px 2px 2px;
+	font-weight : bold;
+}
+
+.odd{
+	border-width: 1px;
+	border-style: solid;
+	border-color: #e10052;
+	margin: 0;
+	color: #ffffff;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 9px;
+	text-transform : none;
+	padding : 2px 2px 2px 2px;
+	font-weight : bold;
+    background-color: #e71f74;
+	}
+.even{
+	border-width: 1px;
+	border-style: solid;
+	border-color: #e10052;
+	margin: ;
+	color: #ffffff;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 9px;
+	text-transform : none;
+	padding : 2px 2px 2px 2px;
+	font-weight : bold;
+    background-color: #f99cb3;
+	}
+.odd1{
+	border-width: 1px;
+	border-style: solid;
+	border-color: #e10052;
+	margin: 0;
+	color: #ffffff;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 10px;
+	text-transform : none;
+	padding : 2px 2px 2px 2px;
+	font-weight : bold;
+    background-color: #e71f74;
+	}
+.even1{
+	border-width: 1px;
+	border-style: solid;
+	border-color: #e10052;
+	margin: ;
+	color: #ffffff;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 10px;
+	text-transform : none;
+	padding : 2px 2px 2px 2px;
+	font-weight : bold;
+    background-color: #f99cb3;
+	}
+.paging3{
+	border-width: 1px 1px 1px 1px;
+	border-style: solid;
+	border-color: #e10052;
+	margin: 0;
+	color: blue;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 11px;
+	text-transform : uppercase;
+	padding : 2px 2px 2px 2px;
+	font-weight : bold;
+}	
+.statistic{
+	border-width: 0px 0px 0px 0px;
+	border-style: solid;
+	border-color: #95BDDA;
+	margin: 0;
+	color: #204D78;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 10px;
+	text-transform : uppercase;
+	padding : 2px 2px 2px 2px;
+	font-weight : bold;
+	background-color: #95BDDA;
+}
+.statistic1{
+	border-width: 0px 0px 0px 0px;
+	border-style: solid;
+	border-color: #95BDDA;
+	margin: 0;
+	color: #204D78;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 10px;
+	text-transform : uppercase;
+	padding : 2px 2px 2px 2px;
+	font-weight : bold;
+	background-color: #95BDDA;
+}	
+.statistic2{
+	border-width: 0px 0px 0px 0px;
+	border-style: solid;
+	border-color: #95BDDA;
+	margin: 0;
+	color: #CAECFF;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 10px;
+	text-transform : uppercase;
+	padding : 2px 2px 2px 2px;
+	font-weight : bold;
+	background-color: #95BDDA;
+}		
+.statistic3{
+	border-width: 0px 0px 0px 0px;
+	border-style: solid;
+	border-color: #95BDDA;
+	margin: 0;
+	color: #2935D9;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 10px;
+	text-transform : uppercase;
+	padding : 2px 2px 2px 2px;
+	font-weight : bold;
+	background-color: #95BDDA;
+}		
+
+.board1{
+	border-width: 0px 0px 0px 0px;
+	border-style: none;
+	border-color: #e10052;
+	margin: 0;
+	color: blue;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 12px;
+	text-transform : none;
+	padding : 5px 5px 5px 5px;
+	font-weight : bold;
+}
+.board2{
+	border-width: 0px 0px 0px 0px;
+	border-style: none;
+	border-color: #e10052;
+	margin: 0;
+	color: #ff00ff;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 12px;
+	text-transform : none;
+	padding : 5px 5px 5px 5px;
+	
+}
+.board_header{
+	border-width: 0px 0px 0px 0px;
+	border-style: none;
+	border-color: #e10052;
+	margin: 0;
+	color: red;
+	background-color: #00ff00;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 12px;
+	font-weight : bold;
+	text-transform : uppercase;
+	padding : 1px 1px 1px 2px;
+}
+.board4{
+	border-width: 0px 0px 0px 0px;
+	border-style: none;
+	border-color: #e10052;
+	margin: 0;
+	color: blue;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 12px;
+	text-transform : none;
+	padding : 5px 5px 5px 5px;
+}	
+.board5{
+	border-width: 0px 0px 0px 0px;
+	border-style: none;
+	border-color: #e10052;
+	margin: 0;
+	color: red;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 10px;
+	text-transform : none;
+	padding : 5px 5px 5px 5px;
+	font-weight : bold;
+}
+.t_board{
+	border-width: 3px;
+	border-style: solid;
+	border-color: pink;
+	margin: 0;
+	color: ;
+	font-family : Arial, Verdana, Clean, Helvetica, sans-serif;
+	font-size : 10px;
+	text-transform : none;
+	padding : 2px 2px 2px 2px;
+	font-weight : bold;
+    background-color: ;
+	}
+/*////////////////////////////////////////////
+BUTTONS
+///////////////////////////////////////////*/	
+.blueButton,
+.greenButton{
+	background:url('../images/buttons/buttons.png') no-repeat;
+	text-shadow:1px 1px 1px #277c9b;
+	color:#fff !important;
+	width:99px;
+	height:38px;
+	border:none;
+	text-decoration:none;
+	display:inline-block;
+	font-size: 12px;
+	line-height: 38px;
+	text-align: center;
+	margin: 0 4px;
+}
+
+.greenButton{
+	background:url('../images/buttons/buttons.png') no-repeat right top;
+	text-shadow:1px 1px 1px #498917;
+}
+
+.blueButton:hover,
+.greenButton:hover{
+	background-position:left bottom;
+	text-decoration:none !important;
+}
+
+.greenButton:hover{
+	background-position:right bottom;
+}
+
+.blueButton:active,
+.greenButton:active{
+	position:relative;
+	bottom:-1px;
+}
+	
+	
+	
+	
+	/* Sample PopBox CSS Classes */
+/* PopBox.js, Copyright (c) 2007, C6 Software, Inc. (http://www.c6software.com/)*/
+
+.PopBoxImageSmall
+{
+	border: none 0px #ffffff;
+	cursor: url("/img_java/magplus.cur"), pointer;
+}
+.PopBoxImageLarge
+{
+	border: solid 0px #999999;
+	cursor: url("/img_java/magminus.cur"), pointer;
+}
+.PopBoxImageShrink
+{
+	cursor: url("/img_java/magminus.cur"), pointer;
+}
+.PopBoxImageLink
+{
+	cursor: pointer;
+}
+.PopBoxImageMove
+{
+	border: none 0px #ffffff;
+	cursor: pointer;
+}
+ 

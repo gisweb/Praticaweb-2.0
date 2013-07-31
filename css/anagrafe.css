@@ -1,0 +1,31 @@
+.dato{
+	background-color:rgb(198,254,253);
+	font-size:9px;
+}
+.intestazione{
+	background-color:rgb(112,174,175);
+	font-size:11px;
+}
+.errore-anagrafe{
+	background-color:rgb(255,128,64);
+	font-size:9px;
+	cursor:pointer;
+	cursor:hand;
+}
+.titolo{
+	background-color:rgb(162,174,195);
+	font-size:14px;
+}
+.record{
+	border:1px solid black;
+	width:100%;
+}
+.pratica{
+	background-color:rgb(53,77,96);
+	color:white;
+	padding-top:10px;
+	font-size:14px;
+}
+.link_pagina{
+	font-size:10px;
+}

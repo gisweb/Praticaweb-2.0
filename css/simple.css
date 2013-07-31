@@ -1,0 +1,138 @@
+	/*---- Layout & Page structure ----*/
+div
+{
+	/* this is for netscape 4's sake */
+	padding: 0;
+	margin: 0;
+}
+body
+{
+	padding: 0px;
+	margin: 0;
+}
+#path h1
+{
+	display: inline;
+}
+#photoholder {
+	height:203px;
+	overflow:hidden;
+	width:792px;
+	position:absolute;
+	top:79px;
+    /* center image for IE7 */
+    +margin-left:-150px;
+}
+#leftcolumn
+{
+	margin-right: -150px;	/* IE 4 fix */
+}
+#leftColumn
+{
+	float: left;
+	width: 150px;
+	/*/*/ /*/margin: 0 0 0 2px; /* Silly Netscape hack to get the borders to line up */
+}
+#rightColumn{
+	float: right;
+	width: 150px;
+	/*/*/ /*/margin: 0 2 0 0px; /* Silly Netscape hack to get the borders to line up */
+}
+#contentColumn
+{
+	width: auto;
+	margin-left: 149px;
+}
+#innerContentColumn
+{
+	padding: 0px 0px 10px 8px;
+	min-height: 500px;
+}
+#innerFooter
+{
+	padding: 5px 0px 10px 0px;
+}
+#innerLeftColumn
+{
+	padding-right: 5px;
+}
+#innerRightColumn
+{
+	padding-left: 5px;
+}
+#footer
+{
+	clear: left;
+	margin: 0px 0px 0px 150px;
+}
+
+#innerFooter
+{
+	text-align: center;
+}
+#innerContentColumn
+{
+	overflow: visible;
+	height: 100%;	/* fix the Win32 IE float bug */
+}
+#contentColumn>#innerContentColumn
+{
+	height: auto;	/* fix Opera 5 which breaks with the above IE fix */
+}
+#innercontentcolumn
+{
+	height: 100%;	/* fix IE 5.0 which parse the Opera fix, note the selector is all lower case */
+}
+#path, #footer
+{
+	z-index: 10;
+}
+
+/*---- Borders ----*/
+
+#footer, #path, #innerLeftColumn, #innerRightColumn, #contentColumn, #top, #top img .menu
+{
+	border: solid 0px #FFF;
+}
+#path
+{
+    border-bottom-width: 6px;
+}
+#top
+{
+	border-bottom-width: 207px;
+}
+#contentColumn
+{
+	border-left-width: 1px;
+}
+#innerLeftColumn
+{
+	border-bottom-width: 15px;
+}
+#innerRightColumn
+{
+	border-bottom-width: 15px;
+}
+/*---- Visual Elements ----*/
+body
+{
+	background-color: #FFF; /* default was: #FFF */
+	color: #000	;
+}
+#pageFrame
+{
+	background-color: #FFF;
+	color: #000;
+	width: 792px;
+	min-height: 850px;
+	margin-left:auto;	
+    margin-right:auto;
+}
+
+/* for Internet Explorer */
+/*\*/
+* html .container {
+height: 850px;
+}
+/**/
