@@ -7,7 +7,7 @@ $titolo=$_SESSION["TITOLO_$idpratica"];
 ?>
 <html>
 <head>
-<title>Pareri - <?=$titolo?></title>
+<title>Pareri - <?=$_SESSION[$idpratica]["TITOLO"]?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
@@ -49,7 +49,7 @@ if (($modo=="edit") or ($modo=="new")){
 		<FORM height=0 method="post" action="praticaweb.php">
 				<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">		
 						<TR> <!-- intestazione-->
-								<TD><H2 class="blueBanner"><?=$titolo?></H2></TD>
+								<TD><H2 class="blueBanner"><?=$_SESSION[$idpratica]["TITOLO"]?></H2></TD>
 						</TR> 
 						<TR>
 								<td>

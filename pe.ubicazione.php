@@ -32,7 +32,7 @@ if ($azione){
 ?>
 <html>
 <head>
-<title>Ubicazione - <?=$titolo?></title>
+<title>Ubicazione - <?=$_SESSION[$idpratica]["TITOLO"]?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
@@ -71,7 +71,7 @@ if (($modo=="edit") or ($modo=="new")){
 		<tr> 
 			<td> 
 			<!-- intestazione-->
-				<H2 class="blueBanner"><?=$titolo?></H2>
+				<H2 class="blueBanner"><?=$_SESSION[$idpratica]["TITOLO"]?></H2>
 			<!-- fine intestazione-->
 			</td>
 		  </tr>

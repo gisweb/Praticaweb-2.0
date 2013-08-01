@@ -11,6 +11,7 @@ require_once APPS_DIR.'plugins/Doctrine/Common/ClassLoader.php';
 class generalPratica {
     var $pratica;
 	var $tipopratica=null;
+	var $titolo="";
     var $info=Array();
     var $allegati;
     var $url_allegati;
@@ -47,9 +48,10 @@ class generalPratica {
 		$db=$this->db1;
 		if ($this->pratica && is_numeric($this->pratica)){
 			//INFORMAZIONI SULLA PRATICA
-			$sql="SELECT numero,tipo,resp_proc,resp_it,resp_ia,date_part('year',data_presentazione) as anno,data_presentazione,data_prot FROM pe.avvioproc  WHERE pratica=?";
+			$sql="SELECT numero,tipo,resp_proc,resp_it,resp_ia,date_part('year',data_presentazione) as anno,data_presentazione,data_prot,B.nome as tipo_pratica FROM pe.avvioproc A LEFT JOIN pe.e_tipopratica B ON(A.tipo=B.id)  WHERE A.pratica=?";
 			$r=$db->fetchAssoc($sql, Array($this->pratica));
 			$this->info=$r;
+			$this->titolo=sprintf("%s n° %s del %s",$r["tipo_pratica"],$r["numero"],$r["data_presentazione"]);
 			if($this->info['tipo'] < 10000 || in_array($this->info['tipo'],Array(14000,15000))){
 				$this->tipopratica='pratica';
 			}

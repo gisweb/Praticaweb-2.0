@@ -5,7 +5,6 @@ $tabpath="pe";
 //print_array($_REQUEST);
 $idpratica=$_REQUEST["pratica"];
 $modo=(isset($_REQUEST["mode"]) && $_REQUEST["mode"])?($_REQUEST["mode"]):('view');
-$titolo=$_SESSION["TITOLO_$idpratica"];
 $today=date('j-m-y'); 
 
 if (isset($_POST["azione"]) && $_POST["azione"]){
@@ -27,7 +26,7 @@ if (isset($_POST["azione"]) && $_POST["azione"]){
 
 <html>
 <head>
-<title>Iter - <?=$titolo?></title>
+<title>Iter - <?=$_SESSION["TITOLO_".$idpratica]?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 

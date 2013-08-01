@@ -27,7 +27,7 @@ switch ($modo) {
 ?>
 <html>
 <head>
-    <title>Elenco Documenti</title>
+    <title>Elenco Documenti - <?=$titolo?></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
     <SCRIPT language="javascript" type="text/javascript">

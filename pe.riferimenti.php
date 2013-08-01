@@ -13,7 +13,7 @@ if ($_POST["mode"]=="edit") {
 	?>
 	<html>
 	<head>
-	<title>Riferimenti</title>
+	<title>Riferimenti - <?=$_SESSION["TITOLO_".$idpratica]?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<LINK media="screen" href="src/styles.css" type="text/css" rel="stylesheet">
