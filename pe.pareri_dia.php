@@ -112,7 +112,7 @@ if (($modo=="edit") or ($modo=="new")){
 				<?$tabella->set_titolo("Aggiungi un nuovo Parere","nuovo");?>
 				<?$tabella->get_titolo();?><BR>
 				
-				<?print($tabella->elenco_stampe("pe.pareri_dia"));?>
+				<?print($tabella->elenco_stampe());?>
 			<!-- fine tabella nuovo inserimento-->
 			</TD>
 		  </TR>			  

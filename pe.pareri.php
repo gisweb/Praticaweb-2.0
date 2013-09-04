@@ -102,7 +102,7 @@ if (($modo=="edit") or ($modo=="new")){
                 $tabella->set_titolo("Aggiungi un nuovo Parere","nuovo");
                 $tabella->get_titolo();
                 print "<BR>";
-				if ($tabella->editable) print($tabella->elenco_stampe("pe.pareri"));
+				if ($tabella->editable) print($tabella->elenco_stampe());
                 ?>
 			<!-- fine tabella nuovo inserimento-->
 			</TD>

@@ -1,4 +1,4 @@
-var libs = ['jquery-1.9.1','jquery-ui-1.10.2.min','jquery.ui.datepicker-it','jquery.dataTables.min','dataTables.date.order','window','praticaweb','tinymce/jquery.tinymce','page.controller'];
+var libs = ['jquery-1.9.1','jquery-ui-1.10.2.min','jquery.ui.datepicker-it','jquery.dataTables.min','dataTables.date.order','window','praticaweb','page.controller'];
 var libsSrc = ['window','iframe','x_core','http_request'];
 var libcss = ['praticaweb/jquery-ui-1.9.1.custom','styles','TableTools','TableTools_JUI','demo_page','demo_table_jui','tabella_v','menu'];
 var libcssprt = ['styles_print']

@@ -36,7 +36,7 @@
             $data_presentazione=$_POST["data_presentazione"];
             $tipo_pratica=$_POST["tipo"];
             $resp_proc=$_POST['resp_proc'];
-		
+            //$pr->addScadenze($tipo_pratica);
         //$numero=preg_replace("|([^A-z0-9\-]+)|",'',str_replace('/','-',str_replace('\\','-',$numero)));
 		//Aggiungo il menù della nuova pratica alla tabella menu	
 		$menu->list_menu($idpratica,$_POST["tipo"]);
@@ -135,13 +135,13 @@
             if($pratPrec['resp_ia']!=$_REQUEST['resp_ia']) 
                     $pr->addTransition(Array('codice'=>'raiamm',"utente_fi"=>$pr->info["resp_ia"],"data"=>$d_respIA));	
 	}
-	  
+	$db->sql_close();
+	$active_form.="?pratica=$idpratica";  
 	//IN TUTTI I db.mioform.php risetto i parametri per active_form da passare all'iframe
 	//$active_form.="?pratica=$idpratica&id=$id&ruolo=$ruolo";
 	
 	if (file_exists(DATA_DIR."praticaweb/db/db.pe.avvioproc.php")){
             require_once DATA_DIR."praticaweb/db/db.pe.avvioproc.php";
        }
-	$db->sql_close();
-	$active_form.="?pratica=$idpratica";
+	
 ?>

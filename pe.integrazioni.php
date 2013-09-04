@@ -118,7 +118,7 @@ if (!$flag) echo "<p><b>Nessun documento da integrare</b></p>";?>
  </tr>
 </TABLE>
 <?
-print $tabella_integrazione->elenco_stampe("pe.allegati");
+print $tabella_integrazione->elenco_stampe();
 }//end if?>
 </body>
 </html>

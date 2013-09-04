@@ -109,8 +109,11 @@ if (($modo=="edit") or ($modo=="new")){
 			<TD> 
 			<!-- tabella nuovo inserimento-->
 				<?$tabella->set_titolo("Aggiungi un nuovo Parere","nuovo");?>
-				<?$tabella->get_titolo();?><BR>
-				
+				<?$tabella->get_titolo();
+				print "<BR>";
+				if ($tabella->editable) print($tabella->elenco_stampe());
+
+				?>
 			<!-- fine tabella nuovo inserimento-->
 			</TD>
 		  </TR>			  

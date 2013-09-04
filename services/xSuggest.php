@@ -149,6 +149,14 @@ switch($field) {
             }
             $exec=1;
         }
+		else
+        $result[]=Array(
+            "id"=>'',
+            "value"=>'',
+            "label"=>"Si è verificato un errore nell' esecuzione dell'interrogazione;",
+			"query"=>$sql,
+			"field"=>$field
+        );
         break;
     case 'mappale':
         $fg=(isset($_REQUEST['foglio']))?(addslashes($_REQUEST['foglio'])):('%');
@@ -286,8 +294,9 @@ if (!$result){
         $result[]=Array(
             "id"=>'',
             "value"=>'',
-            "label"=>"Si è verificato un errore nell' esecuzione dell'interrogazione"
-            
+            "label"=>"Si è verificato un errore nell' esecuzione dell'interrogazione;",
+			"query"=>$sql,
+			"field"=>$field
         );
 }
 
