@@ -176,10 +176,10 @@ class generalPratica {
 		if(in_array($this->tipopratica,Array("ambientale","dia","pratica"))){
 			$this->setAllegati();
 			//Array('codice'=>null,'utente_in'=>$this->userid,'utente_fi'=>null,'data'=>"now",'stato_in'=>null,'stato_fi'=>null,'note'=>null,'tmsins'=>time(),'uidins'=>$this->userid);
-			$this->addTransition(Array('codice'=>'ardp',"utente_fi"=>$this->info["resp_proc"],"data"=>$arrInfo["data_resp"]));
-			$this->addTransition(Array('codice'=>'aipre',"utente_fi"=>$this->userid));
-			if ($this->info["resp_it"]) $this->addTransition(Array('codice'=>'aitec',"utente_fi"=>$this->info["resp_it"],"data"=>$arrInfo["data_resp_it"]));
-			if ($this->info["resp_ia"]) $this->addTransition(Array('codice'=>'aiamm',"utente_fi"=>$this->info["resp_ia"],"data"=>$arrInfo["data_resp_ia"]));
+			//$this->addTransition(Array('codice'=>'ardp',"utente_fi"=>$this->info["resp_proc"],"data"=>$arrInfo["data_resp"]));
+			//$this->addTransition(Array('codice'=>'aipre',"utente_fi"=>$this->userid));
+			//if ($this->info["resp_it"]) $this->addTransition(Array('codice'=>'aitec',"utente_fi"=>$this->info["resp_it"],"data"=>$arrInfo["data_resp_it"]));
+			//if ($this->info["resp_ia"]) $this->addTransition(Array('codice'=>'aiamm',"utente_fi"=>$this->info["resp_ia"],"data"=>$arrInfo["data_resp_ia"]));
 		}
 		
 	}
