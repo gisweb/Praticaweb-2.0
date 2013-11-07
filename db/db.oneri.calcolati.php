@@ -69,46 +69,47 @@ if ($_POST["azione"]!="Elimina"){
 		
 		switch ($intervento) {
 			case 901:
-                            if($n>0 || $n1>0)
-                                $perc=9+$n+5*$nn;
-                            else $perc=10;
+				if($n>0 || $n1>0)
+					$perc=9+$n+5*$nn;
+				else $perc=10;
 				break;
 			case 902:
-                            if($n>0 || $n1>0)
+                if($n>0 || $n1>0)
 				    $perc=13+2*$n+7.5*$nn;
-                            else $perc=15;
+				else $perc=15;
 				break;
 			case 903:
-                            if($n>0 || $n1>0)
-				    $perc=26+4*$n+7.5*$nn;
-                            else $perc=30;
+				if($n>0 || $n1>0)
+					$perc=26+4*$n+7.5*$nn;
+				else 
+					$perc=30;
 				break;
 			case 904:
-                            if($n>0 || $n1>0)
+				if($n>0 || $n1>0)
 				    $perc=19+$n+10*$nn;
 				break;
 			case 905:
-                            if($n>0 || $n1>0)
+				if($n>0 || $n1>0)
 				    $perc=30+5*$n+10*$nn;
 				break;
 			case 906:
-                            if($n>0 || $n1>0)
+				if($n>0 || $n1>0)
 				    $perc=10+10*$nn;
 				break;
 			case 907:
-                            if($n>0 || $n1>0)
+				if($n>0 || $n1>0)
 				    $perc=0.125*$n+75*(-1)*$nn;
 				break;
 			case 908:
-                            if($n>0 || $n1>0)
-				    $perc=5+2.5*$n1+75*(-1)*$nn;
+				if($n>0 || $n1>0)
+					$perc=5+2.5*$n1+75*(-1)*$nn;
 				break;
 		}
 		$perc=(($perc>60)?(60):(($perc<10)?(10):($perc)));
 		$intervento=$perc;
 	}
 		
-	if ($intervento > 100){ //INTERVENTO DI SISTEMAZIONE CALCOLO SISTEMAZIONE SOLO SU B1
+	if ($intervento > 100 and $intervento < 200){ //INTERVENTO DI SISTEMAZIONE CALCOLO SISTEMAZIONE SOLO SU B1
 		if($perc==0)
 			$perc=$intervento-100;
 		$CC = 0;
@@ -117,6 +118,11 @@ if ($_POST["azione"]!="Elimina"){
 		$E1 = 0;
 		$E2 = 0;
 	}
+	elseif($intervento >= 200 and $intervento < 300){	// Articolo 39 comma 3 Legge Regionale 16/2008  (Aggiunto per Sanremo)
+		$CC = 0;
+		$B1 = $K * $perc * ((100 - ($C2 + $C3 + $C4) + $D2) * $B1) / 1000000;
+		$B2 = $K * $perc * ((100 - ($C1 + $C2 + $C3 + $C4) + $D2) * $B2) / 1000000;
+	}	
 	else{
 		if($perc==0)
 			$perc=$intervento;
