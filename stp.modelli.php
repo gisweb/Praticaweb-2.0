@@ -22,6 +22,36 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+	<script>
+		/*$.widget( "custom.catcomplete", $.ui.autocomplete, {
+        _renderMenu: function( ul, items ) {
+            var that = this,
+                currentCategory = "";
+            $.each( items, function( index, item ) {
+                if ( item.category != currentCategory ) {
+                    ul.append( "<li class='ui-autocomplete-category'>" + item.category + "</li>" );
+                    currentCategory = item.category;
+                }
+                that._renderItemData( ul, item );
+            });
+        }
+    });*/
+		$(document).ready(function(){
+			
+			$('#btn-print-fields').button({
+				icons:{primary:'ui-icon-info'},
+				label:'Visualizza campi'
+			}).bind('click',function(event){
+				event.preventDefault();
+				$.ajax({
+					url:'./services/xServer.php',
+					dataType:'json',
+					type:'POST',
+					data:{action:'printFieldsList'},
+				});
+			});
+		});
+	</script>
 </head>
 <body>
 <?php
@@ -82,10 +112,12 @@ elseif($modo=="view"){
             $tabella->get_titolo();
             $tabella->tabella();
             ?>
+			<span id="btn-print-fields"/>
         <!-- fine contenuto-->
          </TD>
       </TR>
     </TABLE>
+	
     <style>
     .ui-autocomplete-category {
         font-weight: bold;
@@ -102,10 +134,12 @@ elseif($modo=="view"){
             <input type="hidden" id="modello" value="<?php echo $id;?>">
         </fieldset>
         <hr>
-        <div id="btn-preview"/>
+        
+		<div id="btn-preview"/>
     </div>
+	
     <script>
-         $( "#numero" ).catcomplete({
+        $( "#numero" ).catcomplete({
             minLength: 1,
             source:function( request, response ) {
                 jQuery.ajax({
@@ -122,6 +156,7 @@ elseif($modo=="view"){
             }
         });
         
+		
         $('#btn-preview').button({
             icons:{primary:'ui-icon-print'},
             label:'Apri documento'

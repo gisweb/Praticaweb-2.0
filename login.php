@@ -1,6 +1,6 @@
 <?php
 	error_reporting(E_ERROR);
-    error_reporting(E_ALL);
+    //error_reporting(E_ALL);
 	if (!session_id())
 		session_start();
 	$hostname=$_SERVER["HTTP_HOST"];
@@ -18,6 +18,10 @@
 		elseif(in_array('becrux',$tmp)){
 			define('DATA_DIR',implode(DIRECTORY_SEPARATOR,Array("D:","ms4w",'data',$user_data,"pe")).DIRECTORY_SEPARATOR);
 			define('APPS_DIR',implode(DIRECTORY_SEPARATOR,Array("D:","ms4w","praticaweb-2.0")).DIRECTORY_SEPARATOR);
+		}
+		elseif(in_array('deneb',$tmp)){
+			define('DATA_DIR',implode(DIRECTORY_SEPARATOR,Array("D:","Applicazioni",'data',$user_data,"pe")).DIRECTORY_SEPARATOR);
+			define('APPS_DIR',implode(DIRECTORY_SEPARATOR,Array("D:","Applicazioni","apps","praticaweb-2.0")).DIRECTORY_SEPARATOR);
 		}
 		else{
 			//TODO

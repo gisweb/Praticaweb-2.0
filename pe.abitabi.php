@@ -82,7 +82,7 @@ else
 				$tabella->set_titolo("Aggiungi un nuovo certificato","nuovo");
 				$tabella->get_titolo();
 				print("<br>");
-				if ($tabella->editable) print($tabella->elenco_stampe("pe.abitabi"));
+				if ($tabella->editable) print($tabella->elenco_stampe());
 				?>
 			<!-- fine tabella nuovo inserimento-->
 			</TD>

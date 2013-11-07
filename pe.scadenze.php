@@ -5,13 +5,12 @@ $tabpath="pe";
 
 $idpratica=$_REQUEST["pratica"];
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
-$titolo=$_SESSION["TITOLO_$idpratica"];
 $today=date('j-m-y'); 
 ?>
 
 <html>
 <head>
-<title>Scadenze - <?=$titolo?></title>
+<title>Scadenze - <?=$_SESSION["TITOLO_".$idpratica]?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>

@@ -16,19 +16,19 @@ $tabpath="oneri";
 
 
 if($tab=='oneri'|| !$tab){
-				$titolo="Costo di Costruzione e Oneri di Urbanizzazione";
-				$file_conf="$tabpath/totali";
+	$titolo="Costo di Costruzione e Oneri di Urbanizzazione";
+	$file_conf="$tabpath/totali";
 }
 elseif ($tab=="monetizzazione"){	
-				$titolo="Monetizzazione aree verdi e parcheggi";
-				$file_conf="$tabpath/monetizzazione.tab";
+	$titolo="Monetizzazione aree verdi e parcheggi";
+	$file_conf="$tabpath/monetizzazione.tab";
 }
 	
 //	print_array($_REQUEST);
 ?>
 <html>
 <head>
-<title><?=$titolo." - ".$titpag?></title>
+<title>Oneri - <?=$titolo." - ".$titpag?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
@@ -176,7 +176,8 @@ function link(id){
 		<tr>
 			<td>
 				<?php
-					if ($tabella_oneri->editable) print($tabella_oneri->elenco_stampe("oneri.importi"));
+					$tabella_oneri=new Tabella_v('oneri/importi','view');
+					if ($tabella_oneri->editable) print($tabella_oneri->elenco_stampe());
 				?>
 			</td>
 		</tr>

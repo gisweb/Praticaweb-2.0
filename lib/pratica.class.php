@@ -11,6 +11,7 @@ require_once APPS_DIR.'plugins/Doctrine/Common/ClassLoader.php';
 class generalPratica {
     var $pratica;
 	var $tipopratica=null;
+	var $titolo="";
     var $info=Array();
     var $allegati;
     var $url_allegati;
@@ -46,49 +47,50 @@ class generalPratica {
 	private function initPratica(){
 		$db=$this->db1;
 		if ($this->pratica && is_numeric($this->pratica)){
-			//INFORMAZIONI SULLA PRATICA
-			$sql="SELECT numero,tipo,resp_proc,resp_it,resp_ia,date_part('year',data_presentazione) as anno,data_presentazione,data_prot FROM pe.avvioproc  WHERE pratica=?";
-			$r=$db->fetchAssoc($sql, Array($this->pratica));
-			$this->info=$r;
-			if($this->info['tipo'] < 10000 || in_array($this->info['tipo'],Array(14000,15000))){
-				$this->tipopratica='pratica';
-			}
-			elseif($this->info['tipo'] < 13000){
-				$this->tipopratica='dia';
-			}
-			else{
-				$this->tipopratica='ambientale';
-			}
+                    //INFORMAZIONI SULLA PRATICA
+                    $sql="SELECT numero,tipo,resp_proc,resp_it,resp_ia,date_part('year',data_presentazione) as anno,data_presentazione,data_prot,B.nome as tipo_pratica FROM pe.avvioproc A LEFT JOIN pe.e_tipopratica B ON(A.tipo=B.id)  WHERE A.pratica=?";
+                    $r=$db->fetchAssoc($sql, Array($this->pratica));
+                    $this->info=$r;
+                    $this->titolo=sprintf("%s n° %s del %s",$r["tipo_pratica"],$r["numero"],$r["data_presentazione"]);
+                    if($this->info['tipo'] < 10000 || in_array($this->info['tipo'],Array(14000,15000))){
+                            $this->tipopratica='pratica';
+                    }
+                    elseif($this->info['tipo'] < 13000){
+                            $this->tipopratica='dia';
+                    }
+                    else{
+                            $this->tipopratica='ambientale';
+                    }
 
-			$numero=appUtils::normalizeNumero($this->info['numero']);
-			$tmp=explode('-',$numero);
-			if (count($tmp)==2 && preg_match("|([A-z0-9]+)|",$tmp[0])){
-				$tmp[0]=(preg_match("|^[89]|",$tmp[0]))?("19".$tmp[0]):($tmp[0]);
-				$numero=implode('-',$tmp);
-			}
-			$anno=($r['anno'])?($r['anno']):($tmp[0]);
+                    $numero=appUtils::normalizeNumero($this->info['numero']);
+                    $tmp=explode('-',$numero);
+                    if (count($tmp)==2 && preg_match("|([A-z0-9]+)|",$tmp[0])){
+                            $tmp[0]=(preg_match("|^[89]|",$tmp[0]))?("19".$tmp[0]):($tmp[0]);
+                            $numero=implode('-',$tmp);
+                    }
+                    $anno=($r['anno'])?($r['anno']):($tmp[0]);
 
-			//Struttura delle directory
-			$arrDir=Array(DOCUMENTI,'pe',$anno);
-            
-			$this->annodir=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
-			$arrDir[]=$numero;
-			$this->documenti=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
-			$arrDir[]="allegati";
-			$this->allegati=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
-			$arrDir[]="tmb";
-			$this->allegati_tmb=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
+                    //Struttura delle directory
+                    $arrDir=Array(DOCUMENTI,'pe',$anno);
 
-			$this->url_documenti="/documenti/pe/$anno/$numero/";
-			$this->url_allegati="/documenti/pe/$anno/$numero/allegati/";
-			$this->smb_documenti=SMB_PATH."$anno/$numero/";
-            
-			
-			//INFO PRATICA PREC E SUCC
-			$sql="SELECT max(pratica) as pratica FROM pe.avvioproc WHERE pratica < ?";
-			$this->prev=$db->fetchColumn($sql,Array($this->pratica));
-			$sql="SELECT min(pratica) as pratica FROM pe.avvioproc WHERE pratica > ?";
-			$this->next=$db->fetchColumn($sql,Array($this->pratica));
+                    $this->annodir=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
+                    $arrDir[]=$numero;
+                    $this->documenti=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
+                    $arrDir[]="allegati";
+                    $this->allegati=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
+                    $arrDir[]="tmb";
+                    $this->allegati_tmb=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
+
+                    $this->url_documenti="/documenti/pe/$anno/$numero/";
+                    $this->url_allegati="/documenti/pe/$anno/$numero/allegati/";
+                    $this->smb_documenti=SMB_PATH."$anno/$numero/";
+
+
+                    //INFO PRATICA PREC E SUCC
+                    $sql="SELECT max(pratica) as pratica FROM pe.avvioproc WHERE pratica < ?";
+                    $this->prev=$db->fetchColumn($sql,Array($this->pratica));
+                    $sql="SELECT min(pratica) as pratica FROM pe.avvioproc WHERE pratica > ?";
+                    $this->next=$db->fetchColumn($sql,Array($this->pratica));
 		}
 
 		//ESTRAGGO INFORMAZIONI SUL DIRIGENTE
@@ -174,35 +176,35 @@ class generalPratica {
 		if(in_array($this->tipopratica,Array("ambientale","dia","pratica"))){
 			$this->setAllegati();
 			//Array('codice'=>null,'utente_in'=>$this->userid,'utente_fi'=>null,'data'=>"now",'stato_in'=>null,'stato_fi'=>null,'note'=>null,'tmsins'=>time(),'uidins'=>$this->userid);
-			$this->addTransition(Array('codice'=>'ardp',"utente_fi"=>$this->info["resp_proc"],"data"=>$arrInfo["data_resp"]));
-			$this->addTransition(Array('codice'=>'aipre',"utente_fi"=>$this->userid));
-			if ($this->info["resp_it"]) $this->addTransition(Array('codice'=>'aitec',"utente_fi"=>$this->info["resp_it"],"data"=>$arrInfo["data_resp_it"]));
-			if ($this->info["resp_ia"]) $this->addTransition(Array('codice'=>'aiamm',"utente_fi"=>$this->info["resp_ia"],"data"=>$arrInfo["data_resp_ia"]));
+			//$this->addTransition(Array('codice'=>'ardp',"utente_fi"=>$this->info["resp_proc"],"data"=>$arrInfo["data_resp"]));
+			//$this->addTransition(Array('codice'=>'aipre',"utente_fi"=>$this->userid));
+			//if ($this->info["resp_it"]) $this->addTransition(Array('codice'=>'aitec',"utente_fi"=>$this->info["resp_it"],"data"=>$arrInfo["data_resp_it"]));
+			//if ($this->info["resp_ia"]) $this->addTransition(Array('codice'=>'aiamm',"utente_fi"=>$this->info["resp_ia"],"data"=>$arrInfo["data_resp_ia"]));
 		}
 		
 	}
 	private function setAllegati($list=Array()){
-		if(!$list){
-			$db=$this->db1;
-			$ris=$db->fetchAll("select $this->pratica as pratica,id as documento,1 as allegato,$this->userid as uidins,".time()." as tmsins from pe.e_documenti where default_ins=1");
-			for ($i=0;$i<count($ris);$i++) $db->insert("pe.allegati",$ris[$i]);
-		}
+            if(!$list){
+                    $db=$this->db1;
+                    $ris=$db->fetchAll("select $this->pratica as pratica,id as documento,1 as allegato,$this->userid as uidins,".time()." as tmsins from pe.e_documenti where default_ins=1");
+                    for ($i=0;$i<count($ris);$i++) $db->insert("pe.allegati",$ris[$i]);
+            }
 	}
 	function addRecenti(){
-		if (!is_numeric($this->pratica)) return;
-		$db=$this->db1;
-		$pr=$db->fetchColumn("select coalesce(pratica,0) from pe.recenti where utente=? and pratica=?",Array($this->userid,$this->pratica));
-		if($pr){
-			$db->update("pe.recenti",Array("data"=>time()),Array("utente"=>$this->userid,"pratica"=>$this->pratica));
-		}
-		else{
-			$tot=$db->fetchColumn("select count(*) from pe.recenti where utente=?",Array($this->userid));
-			if((int)$tot > 10){
-				$d=$db->fetchColumn("SELECT min(data) FROM pe.recenti WHERE utente=?",Array($this->userid));
-				$db->delete("pe.recenti",Array("utente"=>$this->userid,"data"=>$d));
-			}
-			$db->insert("pe.recenti",Array("pratica"=>$this->pratica,"data"=>time(),"utente"=>$this->userid));
-		}
+            if (!is_numeric($this->pratica)) return;
+            $db=$this->db1;
+            $pr=$db->fetchColumn("select coalesce(pratica,0) from pe.recenti where utente=? and pratica=?",Array($this->userid,$this->pratica));
+            if($pr){
+                $db->update("pe.recenti",Array("data"=>time()),Array("utente"=>$this->userid,"pratica"=>$this->pratica));
+            }
+            else{
+                $tot=$db->fetchColumn("select count(*) from pe.recenti where utente=?",Array($this->userid));
+                if((int)$tot > 10){
+                        $d=$db->fetchColumn("SELECT min(data) FROM pe.recenti WHERE utente=?",Array($this->userid));
+                        $db->delete("pe.recenti",Array("utente"=>$this->userid,"data"=>$d));
+                }
+                $db->insert("pe.recenti",Array("pratica"=>$this->pratica,"data"=>time(),"utente"=>$this->userid));
+            }
 	}
 	
 	//Aggiunge Un record all'iter
@@ -211,54 +213,55 @@ class generalPratica {
         $usr=$_SESSION['USER_NAME'];
         
         $today=date('j-m-y'); 
-		$sql="INSERT INTO pe.iter(pratica,data,utente,nota,nota_edit,uidins,tmsins,stampe,immagine) VALUES($this->pratica,'$today','$usr','$testoview','$testoedit',$this->userid,".time().",null,'laserjet.gif');";
-		$db->sql_query($sql);
+        $sql="INSERT INTO pe.iter(pratica,data,utente,nota,nota_edit,uidins,tmsins,stampe,immagine) VALUES($this->pratica,'$today','$usr','$testoview','$testoedit',$this->userid,".time().",null,'laserjet.gif');";
+        $db->sql_query($sql);
     }
 	
 	function setDateLavori($data){
-		$db=$this->db;	
-		$sql="select id from pe.lavori where pratica=$this->pratica";
-		$db->sql_query($sql);
-		$res=$db->sql_fetchrow();
-		// se ho giÃƒÂ  il record esco
+            $db=$this->db;	
+            $sql="select id from pe.lavori where pratica=$this->pratica";
+            $db->sql_query($sql);
+            $res=$db->sql_fetchrow();
+            // se ho giÃƒÂ  il record esco
 		
-		if(!$res){
-			$sql="SELECT tipo FROM pe.avvioproc WHERE pratica=$this->pratica;";
-			$db->sql_query($sql);
-			$tipo=$db->sql_fetchfield('tipo');
-			switch($tipo){
-				case "2000":
-				case "2050":
-                case "2070":
-				case "2100":
-				case "2150":
-				case "2170":
-                case "2180":
-                case "2190":
-					$sql="insert into pe.lavori (pratica,scade_il,scade_fl,uidins,tmsins) values ($this->pratica,'$data'::date + INTERVAL '1 year', '$data'::date + INTERVAL '3 year',".$_SESSION["USER_ID"].",".time().");";
-		
-					$db->sql_query($sql);
-					//INSERIMENTO SCADENZE RATE ONERI URBANIZZAZIONE E CORRISPETTIVO MONETARIO
-					//$db->sql_query($sql);
-					break;
-				case "10000":
-				case "10100":
-					$sql="insert into pe.lavori (pratica,scade_il,scade_fl,uidins,tmsins) values ($this->pratica,('$data'::date + INTERVAL '1 year 30 day')::date, ('$data'::date + INTERVAL '3 year 30 day')::date,".$_SESSION["USER_ID"].",".time().");";
-					$db->sql_query($sql);
-					//INSERIMENTO SCADENZE RATE ONERI URBANIZZAZIONE E CORRISPETTIVO MONETARIO
-					//$this->setDateRateCM($data);
-					//$this->setDateRateOC($data);
-					break;
-				default:
-					break;
-			}
-			//INSERIMENTO SCADENZE DATE INIZIO E FINE LAVORI
-			
-			
-			
-		}
+            if(!$res){
+                $sql="SELECT tipo FROM pe.avvioproc WHERE pratica=$this->pratica;";
+                $db->sql_query($sql);
+                $tipo=$db->sql_fetchfield('tipo');
+                switch($tipo){
+                    case "2000":
+                    case "2050":
+                    case "2070":
+                    case "2100":
+                    case "2150":
+                    case "2170":
+                    case "2180":
+                    case "2190":
+                        $sql="insert into pe.lavori (pratica,scade_il,scade_fl,uidins,tmsins) values ($this->pratica,'$data'::date + INTERVAL '1 year', '$data'::date + INTERVAL '3 year',".$_SESSION["USER_ID"].",".time().");";
+
+                        $db->sql_query($sql);
+                        //INSERIMENTO SCADENZE RATE ONERI URBANIZZAZIONE E CORRISPETTIVO MONETARIO
+                        //$db->sql_query($sql);
+                        break;
+                    case "10000":
+                    case "10100":
+                        $sql="insert into pe.lavori (pratica,scade_il,scade_fl,uidins,tmsins) values ($this->pratica,('$data'::date + INTERVAL '1 year 30 day')::date, ('$data'::date + INTERVAL '3 year 30 day')::date,".$_SESSION["USER_ID"].",".time().");";
+                        $db->sql_query($sql);
+                        //INSERIMENTO SCADENZE RATE ONERI URBANIZZAZIONE E CORRISPETTIVO MONETARIO
+                        //$this->setDateRateCM($data);
+                        //$this->setDateRateOC($data);
+                        break;
+                    default:
+                        break;
+                }
+                    //INSERIMENTO SCADENZE DATE INIZIO E FINE LAVORI
+            }
 	}
-	
+        function addScadenze($form,$tipo=null){
+            $tipo=($tipo)?($tipo):($this->info['tipo']);
+            $db=$this->db1;
+            $ris=$db->fetchAll("SELECT DISTINCT scadenza,testo FROM pe.tipopratica_scadenze WHERE tipo=? AND form=?",Array($tipo,$form));
+        }
 /*********************************************************************************************************/	
 /*------------------------------------     TITOLO         -----------------------------------------------*/
 /*********************************************************************************************************/

@@ -58,6 +58,8 @@ class Tabella{
         else
             $lay=$cfg[$mode];
             $this->table_list=(isset($cfg['general']['table_list']) && $cfg['general']['table_list'])?(1):(0);
+			$this->printForm = (isset($cfg['general']['print_form']) && $cfg['general']['print_form'])?($cfg['general']['print_form']):(null);
+
             $ncol=count($lay['data']);
             $this->mode=$mode;
             $this->debug=null;
@@ -120,7 +122,7 @@ class Tabella{
          $button['icon']='ui-icon-circle-triangle-w';
          $button['value']='Chiudi';
          break;
-		case "cerca":
+	case "cerca":
          $button['icon']='ui-icon-search';
          $button['value']='Cerca';
          break;
@@ -425,6 +427,9 @@ EOT;
 EOT;
                     break;
                 default:
+                    $buttons.=<<<EOT
+        <button id="$idbtn"></button>
+EOT;
                     break;
                     
                 }
@@ -556,6 +561,47 @@ EOT;
         
         return Array("size"=>$size,"form"=>$form,"params"=>$params);
     }
+	
+function elenco_stampe ($form){
+//elenco degli elaborati in modo vista: solo i pdf
+	if ($_SESSION["PERMESSI"]>3) return;
+	$icona_pdf="images/acrobat.gif";
+	$icona_rtf="images/word.gif";
+	$procedimento=$this->array_dati[$this->curr_record]["id"];		
+	$sql="select id,file_doc,file_pdf,utente_pdf from stp.stampe where (pratica=$this->idpratica) and (form='$form') and ((char_length(file_doc)>0 or (char_length(file_pdf)>0)));";
+	if ($this->debug) echo ("<p>$sql</p>");
+	$this->db->sql_query($sql);
+	$elenco = $this->db->sql_fetchrowset();
+	$nrighe=$this->db->sql_numrows();
+	//$hostname=$_SERVER["HTTP_HOST"];
+       $sql="select e_tipopratica.nome as tipo from pe.avvioproc left join pe.e_tipopratica on (avvioproc.tipo=e_tipopratica.id) where pratica=$this->idpratica";
+       $this->db->sql_query($sql);
+       $tipo_pratica=$this->db->sql_fetchfield("tipo");
+	$form=($form)?($form):($this->printForm);
+	list($schema,$f)=explode(".",$form);
+		$tabella="
+			<hr>
+			<form method=\"post\" target=\"_parent\" action=\"stp.stampe.php\">
+				<input type=\"hidden\" name=\"form\" value=\"$form\">
+				<input type=\"hidden\" name=\"procedimento\" value=\"$procedimento\">
+				<input type=\"hidden\" name=\"pratica\" value=\"$this->idpratica\">
+                            <input type=\"hidden\" name=\"tipo_pratica\" value=\"$tipo_pratica\">
+                           
+
+				<table class=\"stiletabella\" width=\"90%\" border=0>
+					<tr>
+						<td align=\"right\" valign=\"bottom\">
+							<input type=\"image\" src=\"images/printer_edit.png\" alt=\"Modifica elaborati\">
+						</td>
+					</tr>
+				</table>
+			</form>";  
+
+		return $tabella;
+	}
+
+	
+	
 }//end class
 
 ?>	

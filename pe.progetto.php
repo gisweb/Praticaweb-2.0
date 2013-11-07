@@ -7,7 +7,6 @@ $tabpath="pe";
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 
 $idpratica=$_REQUEST["pratica"];
-$titolo=$_SESSION["TITOLO_$idpratica"];
 
 if ($_POST["azione"]){
 	$idrow=$_POST["idriga"];
@@ -30,7 +29,7 @@ unset($_SESSION["ADD_NEW"]);*/
 ?>
 <html>
 <head>
-<title>Parametri progetto - <?=$titolo?></title>
+<title>Parametri progetto - <?=$_SESSION["TITOLO_".$idpratica]?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>

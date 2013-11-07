@@ -84,11 +84,11 @@ else{
 	}
 }
 $pr=new pratica($idpratica,$is_cdu);
-
+$_SESSION["TITOLO_".$idpratica]=$pr->titolo;
 ?>
 <HTML>
 	<HEAD>
-		<TITLE><?=$titolo?></TITLE>
+		<TITLE><?=$_SESSION["TITOLO_".$idpratica]?></TITLE>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>

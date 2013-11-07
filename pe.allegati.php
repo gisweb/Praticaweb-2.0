@@ -129,31 +129,11 @@ $elenco_iter = $db->sql_fetchrowset();
 <?	}
 	
 // end for
-if ($tabella_allegati->editable){
+if ($tabella_allegati->editable) print $tabella_allegati->elenco_stampe();
 ?>
-	<tr>
-		<td>
-		<hr>
-			<form method="post" target="_parent" action="stp.stampe.php">
-				<input type="hidden" name="form" value="pe.allegati">
-				<input type="hidden" name="procedimento" value="">
-				<input type="hidden" name="pratica" value="<?php echo $idpratica?>">
-				<table class="stiletabella" width="90%" border=0>
-					<tr>
-						<td align="right" valign="bottom">
-							<input type="image" src="images/printer_edit.png" alt="Modifica elaborati">
-						</td>
-					</tr>
-				</table>
-			</form></td>
-	</tr>
 </TABLE>
-
-
-
-<?
+<?php
 }
-}//end if?>
-
+?>
 </body>
 </html>

@@ -3,7 +3,6 @@ include_once("login.php");
 include "./lib/tabella_v.class.php";
 $tabpath="pe";
 $idpratica=$_REQUEST["pratica"];
-$titolo=$_SESSION["TITOLO_$idpratica"];
 $user=$_SESSION["USER_ID"];
 $data=date("d/m/Y");
 
@@ -21,7 +20,7 @@ $filetab="$tabpath/istruttoria";
 ?>
 <html>
 <head>
-<title>Pareri - <?=$titolo?></title>
+<title>Pareri - <?=$_SESSION["TITOLO_".$idpratica]?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>

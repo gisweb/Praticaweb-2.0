@@ -1,6 +1,6 @@
 <?
 include_once "./login.php";
-
+//error_reporting(E_ALL);
 $usr=$_SESSION['USER_NAME'];
 $idpratica=$_REQUEST["pratica"];
 $form=$_POST["form"];

@@ -6,12 +6,12 @@ $self=$_SERVER["PHP_SELF"];
 $idpratica=$_REQUEST["pratica"];
 $idallegato=$_REQUEST["id"];
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
-$titolo=$_SESSION["TITOLO_$idpratica"];
+
 $form=$_POST["form"];
 ?>
 <html>
 <head>
-<title>Scheda - <?=$titolo?></title>
+<title>Scheda - <?=$_SESSION["TITOLO_".$idpratica]?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>

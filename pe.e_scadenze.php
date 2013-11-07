@@ -1,41 +1,38 @@
 <?php
 include_once("login.php");
 
-$errors=null;
+$Errors=null;
 include "./lib/tabella_v.class.php";
 include "./lib/tabella_h.class.php";
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $id=(isset($_REQUEST["id"]))?($_REQUEST["id"]):('');
 $tabpath="pe";
-$formaction="pe.documenti.php";
-include "db/db.pe.documenti.php";
-$file_config="documenti.tab";
+$formaction="pe.e_scadenze.php";
+include "db/db.pe.e_scadenze.php";
+$file_config="e_scadenze.tab";
 switch ($modo) {
 	case "new" :
-		$tit="Inserimento Nuovo tipo documento";
+		$tit="Inserimento nuova Scadenza";
 		break;
 	case "edit" :
-		$tit="Modifica Dati del documento";
+		$tit="Modifica dati scadenza";
 		break;
 	case "view" :
-		$tit="Dettagli sul documento";
+		$tit="Dettagli sulla scadenza";
 		break;
 	default :
-		$tit="Documentazione Pratica Edilizia";
+		$tit="Elenco scadenze";
 		break;
 }
 ?>
 <html>
 <head>
-    <title>Elenco Documenti - <?=$titolo?></title>
+    <title>Elenco Scadenze</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
     <SCRIPT language="javascript" type="text/javascript">
-        function link(id){
-            window.location="pe.documenti.php?id="+id+"&mode=view";
-        }
         function confirmSubmit(){
-            return confirm('Sei sicuro di voler eliminare questo tipo di documento?');
+            return confirm('Sei sicuro di voler eliminare questo stato?');
         }
     </SCRIPT>
 
@@ -50,7 +47,7 @@ include "./inc/inc.page_header.php";
 		$tabella=new tabella_v("$tabpath/$file_config",$modo);
 		unset($_SESSION["ADD_NEW"]);
 		?>	
-		<FORM id="documenti" name="utenti" method="post" action="<?php echo $formaction; ?>">
+		<FORM id="stati" name="utenti" method="post" action="<?php echo $formaction; ?>">
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN EDITING  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="75%">		
 				  
@@ -58,7 +55,9 @@ include "./inc/inc.page_header.php";
 			<td> 
 				<!-- contenuto-->
 				<?php
+                  
 				  if ($id)	{
+                     //print_array($Errors);
 					 if ($Errors)
 						$tabella->set_errors($Errors);
 					 if (!count($Errors)) $tabella->set_dati("id=$id");
@@ -70,7 +69,7 @@ include "./inc/inc.page_header.php";
 			</td>
 		  </tr> 
 		</TABLE>
-		<input name="active_form" type="hidden" value="pe.documenti.php">
+		<input name="active_form" type="hidden" value="pe.e_enti.php">
         <input name="mode" type="hidden" value="<?=$_POST["mode"]?>">
         <input name="id" type="hidden" value="<?=$id?>">
 		</FORM>		
@@ -78,38 +77,54 @@ include "./inc/inc.page_header.php";
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 <?
 }elseif($modo=="view") {
-		$tabella=new Tabella_v("$tabpath/$file_config");?>
+		$tabella=new Tabella_v("$tabpath/$file_config",$modo);
+		
+		?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
+		<script language="javascript">
+			$(document).ready(function(){
+				$('#btn_vai').button({
+					label:'Modifica le Scadenze',
+					icons:{}
+				}).bind('click',function(event){
+					event.preventDefault();
+					linkToView('pe.e_tipopratica_scadenze.php',{codice:$('#codice').val()});
+				});
+			});
+		</script>
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
 			<TR> 
 				<TD> 
 				<!-- contenuto-->
-			  <?$tabella->set_titolo("Elenco dei documenti da produrre","modifica",Array("id"=>$id));
+			  <?$tabella->set_titolo("Scadenza","modifica",Array("id"=>$id));
 				$tabella->set_dati("id=".$id);
 				$tabella->get_titolo();				
-				$tabella->edita();
+				$tabella->tabella();
 			  ?>			
 				</TD>
 			</TR>
 		</TABLE>
-<?}
+		
+<?
+print "<input id='codice' type='hidden' value='".$tabella->array_dati[0]["codice"]."'/>";
+}
 else {
 	$tabella=new Tabella_h("$tabpath/$file_config",'list');
-	$tabella->set_titolo("Elenco dei documenti","nuovo");
+	$tabella->set_titolo("Elenco degle Scadenze","nuovo");
 	$tabella->set_dati();
-	//print_array($tabella);
+	
 	?>
 	<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
 		<TR> 
 			<TD> 
 				
-				<?php 
+				<?php
                 $tabella->get_titolo();
 				$tabella->elenco();?>
 			</TD>
 		</TR>
 	</TABLE>
-            <button id="btn_close" />
+   <button id="btn_close" />
    <script>
 	  $('#btn_close').button({
 		 icons:{

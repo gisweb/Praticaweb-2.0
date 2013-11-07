@@ -2,7 +2,6 @@
 include_once("login.php");
 include_once "./lib/tabella_h.class.php";
 $tabpath="stp";
-$titolo=$_SESSION["TITOLO_$idpratica"];
 $usr=$_SESSION['USER_NAME'];
 $idpratica=$_REQUEST["pratica"];
 $tipopratica=$_POST["tipo_pratica"];
@@ -25,7 +24,7 @@ if($_POST["azione"])
 ?>
 <html>
 <head>
-<title>Gestione modelli e stampe - <?=$titolo?></title>
+<title>Gestione modelli e stampe - <?=$_SESSION["TITOLO_$idpratica"]?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
