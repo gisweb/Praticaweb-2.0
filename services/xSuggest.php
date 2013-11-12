@@ -299,7 +299,7 @@ if (!$result){
 			"field"=>$field
         );
 }
-
+header('Content-Type: application/json');
 print json_encode($result);
 return;
 ?>

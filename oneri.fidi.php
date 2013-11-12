@@ -28,13 +28,14 @@ else
 
 </head>
 <body  background="">
-<?	
+<?php	
 if (($modo=="edit") or ($modo=="new")){
-		$tabella=new tabella_v("$tabpath/fidi",$modo);
-		include "./inc/inc.page_header.php";
-		unset($_SESSION["ADD_NEW"]);
-		$istituto=$_POST["istituto"];
-		$id=$_POST["id"];?>	
+    $tabella=new tabella_v("$tabpath/fidi",$modo);
+    include "./inc/inc.page_header.php";
+    unset($_SESSION["ADD_NEW"]);
+    $istituto=$_POST["istituto"];
+    $id=$_POST["id"];
+?>	
 		
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN EDITING  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
     <FORM id="fidi" name="fidi" method="post" action="praticaweb.php">
@@ -50,14 +51,16 @@ if (($modo=="edit") or ($modo=="new")){
 		  <tr> 
 			<td> 
 				<!-- contenuto-->
-			<?if($Errors){
-					$tabella->set_errors($Errors);
-					$tabella->set_dati($_POST);
-				}
-				elseif ($modo=="edit"){	
-					$tabella->set_dati("id=$id");
-				}
-				$tabella->edita();?>				
+<?php
+    if($Errors){
+            $tabella->set_errors($Errors);
+            $tabella->set_dati($_POST);
+    }
+    elseif ($modo=="edit"){	
+            $tabella->set_dati("id=$id");
+    }
+    $tabella->edita();
+?>				
 				<!-- fine contenuto-->
 			</td>
 		  </tr>
@@ -98,7 +101,7 @@ if (($modo=="edit") or ($modo=="new")){
 			</TD>
 		  </TR>				  
 		</TABLE>
-<?}?>
+<?php }?>
 
 </body>
 </html>

@@ -1,5 +1,5 @@
 {
-	"sProcessing":   "Caricamento...",
+    "sProcessing":   "Caricamento...",
 	"sLengthMenu":   "Visualizza _MENU_ elementi",
 	"sZeroRecords":  "La ricerca non ha portato alcun risultato.",
 	"sInfo":         "Vista da _START_ a _END_ di _TOTAL_ elementi",

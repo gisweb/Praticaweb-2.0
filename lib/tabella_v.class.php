@@ -1,4 +1,4 @@
-<?
+<?php
 include_once "./lib/tabella.class.php";
 
 class Tabella_v extends Tabella{

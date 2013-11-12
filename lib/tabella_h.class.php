@@ -1,4 +1,4 @@
-<?
+<?php
 include_once "./lib/tabella.class.php";
 
 class Tabella_h extends Tabella{
@@ -163,17 +163,24 @@ function get_cella($row,$col){
             if ($this->editable) $retval.="<a href='javascript:linkToEdit(\"".$prms['form'].".php\",$obj)'><img title=\"Modifica\" src=\"images/edit.png\" border=\"0\"></a>";
             $retval.="</td>\n";
             break;
-		case "info":
+        case "btn_modelli":
+            $prms=$this->getParams($row,$w);
+            $obj=json_encode($prms['params']);
+            $retval="<td align=\"center\" valign=\"middle\"  class=\"printhide\">";
+            $retval.="<a target='modelli' href='/modelli/".$valore."'><span class='ui-icon ui-icon-document' title='Visualizza il modello di stampa'/></a>";
             
-			if(isset($this->tag) && $this->tag){
-				$args=$this->tag;
-				$jslink="link('$valore','$args')";
-			}
-			else
-				$jslink="link('$valore')";
-			
-			$retval="<td align=\"center\" valign=\"middle\"  class=\"printhide\"><a href=\"javascript:$jslink\"><img src=\"images/view.png\" border=\"0\"></a></td>\n";
-			break;
+            $retval.="</td>\n";
+            break;
+        case "info":
+            if(isset($this->tag) && $this->tag){
+                    $args=$this->tag;
+                    $jslink="link('$valore','$args')";
+            }
+            else
+                    $jslink="link('$valore')";
+
+            $retval="<td align=\"center\" valign=\"middle\"  class=\"printhide\"><a href=\"javascript:$jslink\"><img src=\"images/view.png\" border=\"0\"></a></td>\n";
+            break;
 			
 		case "info0":
 			$pratica=$this->idpratica;

@@ -54,7 +54,7 @@ switch($action) {
 	default:
 		break;
 }
-
+header('Content-Type: application/json');
 print json_encode($result);
 return;
 ?>

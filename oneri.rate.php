@@ -25,7 +25,7 @@ else
 </script>
 </head>
 <body  background="">
-<?
+<?php
 if ($modo=="edit"){
 		include "./inc/inc.page_header.php";
 		$id=$_POST["id"];
@@ -45,7 +45,8 @@ if ($modo=="edit"){
 		  <tr> 
 			<td> 
 				<!-- contenuto-->
-			<?if($Errors){
+<?php
+                        if($Errors){
 					$tabella->set_errors($Errors);
 					$tabella->set_dati($_POST);
 				}
@@ -63,7 +64,7 @@ if ($modo=="edit"){
 				
 		</FORM>			
 
-<?}
+<?php }
 else{
 		//-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 ?>
@@ -72,7 +73,8 @@ else{
 		  <TR> 
 			<TD> 
 			<!-- contenuto-->
-				<?$tabella=new tabella_v("$tabpath/rate");
+<?php
+                                $tabella=new tabella_v("$tabpath/rate");
 				$nrec=$tabella->set_dati("pratica=$idpratica");
 				if($nrec){
 					$tabella->set_titolo("Rate Oneri","modifica",array("titolo"=>"","id"=>""));
@@ -96,7 +98,7 @@ else{
 			</TD>
 		  </TR>	
 		</TABLE>
-<?}?>
+<?php }?>
 
 </body>
 </html>

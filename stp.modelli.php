@@ -1,4 +1,4 @@
-<?
+<?php
 //print_r($_REQUEST);
 include_once("login.php");
 include "./lib/tabella_h.class.php";
@@ -23,19 +23,20 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
 	<script>
-		/*$.widget( "custom.catcomplete", $.ui.autocomplete, {
+    $.widget( "custom.catcomplete", $.ui.autocomplete, {
         _renderMenu: function( ul, items ) {
-            var that = this,
-                currentCategory = "";
-            $.each( items, function( index, item ) {
-                if ( item.category != currentCategory ) {
-                    ul.append( "<li class='ui-autocomplete-category'>" + item.category + "</li>" );
-                    currentCategory = item.category;
-                }
-                that._renderItemData( ul, item );
-            });
+          var that = this,
+            currentCategory = "";
+          
+          $.each( items, function( index, item ) {
+            if ( item.category != currentCategory ) {
+              ul.append( "<li class='ui-autocomplete-category'>" + item.category + "</li>" );
+              currentCategory = item.category;
+            }
+            that._renderItemData( ul, item );
+          });
         }
-    });*/
+      });
 		$(document).ready(function(){
 			
 			$('#btn-print-fields').button({
@@ -45,7 +46,7 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
 				event.preventDefault();
 				$.ajax({
 					url:'./services/xServer.php',
-					dataType:'json',
+					dataType:'JSON',
 					type:'POST',
 					data:{action:'printFieldsList'},
 				});
@@ -104,14 +105,14 @@ elseif($modo=="view"){
       <TR> 
         <TD> 
         <!-- contenuto-->
-            <?
-            $pr=new pratica($idpratica);
-            $tabella=new tabella_v($file_config,"view");
-            $nrec=$tabella->set_dati("id=$id");
-            $tabella->set_titolo("Modello ".$tabella->array_dati[0]["nome"],"modifica",Array("id"=>""));
-            $tabella->get_titolo();
-            $tabella->tabella();
-            ?>
+<?php
+        $pr=new pratica($idpratica);
+        $tabella=new tabella_v($file_config,"view");
+        $nrec=$tabella->set_dati("id=$id");
+        $tabella->set_titolo("Modello ".$tabella->array_dati[0]["nome"],"modifica",Array("id"=>""));
+        $tabella->get_titolo();
+        $tabella->tabella();
+?>
 			<span id="btn-print-fields"/>
         <!-- fine contenuto-->
          </TD>
@@ -139,17 +140,27 @@ elseif($modo=="view"){
     </div>
 	
     <script>
+        
         $( "#numero" ).catcomplete({
             minLength: 1,
+            //source : data,
             source:function( request, response ) {
-                jQuery.ajax({
+                $.ajax({
                     url:'./services/xSuggest.php',
-                    dataType:'json',
+                    dataType:'JSON',
                     type:'POST',
                     data:{field:'numero-pratica',term:request.term},
-                    success:response
-                });
-			},
+                    success:function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.label,
+                                value: item.value,
+                                category: item.category // <-----
+                            };
+                        }))
+                    }
+                })
+            },
             select:function(event,ui){
                 $('#numero').val(ui.item.value);
                 $('#n-pratica').val(ui.item.id);

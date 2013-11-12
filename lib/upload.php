@@ -1,7 +1,7 @@
-<?
+<?php
 //Gestisce l'upload dei file se si tratta di immagini crea la miniatura
 	//print_r($_FILES);
-	include_once "../login.php";
+    include_once "../login.php";
     require_once APPS_DIR."lib/pratica.class.php";
 //print_array($_FILES);
 //print_array($_REQUEST);

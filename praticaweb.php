@@ -1,4 +1,4 @@
-<?
+<?php
 include_once ("login.php");
 //include ("./lib/menu.class.php");
 //include ("./lib/stati.class.php");
@@ -13,17 +13,6 @@ unset($is_cdu);
 //$is_commissione_paesaggio=isset($_REQUEST["comm_paesaggio"])?($_REQUEST["comm_paesaggio"]):(0);
 $is_cdu=isset($_REQUEST["cdu"])?($_REQUEST["cdu"]):(0);
 
-/*
-if($is_commissione==1){
-	$tipomenu="commissione";
-	$path="ce";
-}
-elseif($is_commissione_paesaggio==1){
-	$tipomenu="commissione_paesaggio";
-	$path="clp";
-}
-
-else*/
 if($is_cdu==1){
  	$tipomenu="cdu";
 	$path="cdu";

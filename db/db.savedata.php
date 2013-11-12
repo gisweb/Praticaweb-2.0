@@ -1,4 +1,5 @@
-<?// Modulo per la validazione del dato se fila tutto liscio salva e  restituisce is_save_ok=1
+<?PHP
+// Modulo per la validazione del dato se fila tutto liscio salva e  restituisce is_save_ok=1
 //altrimenti crea l'array degli errori
 require_once './lib/tabella.class.php';
 error_reporting(E_ERROR);
@@ -292,7 +293,8 @@ function valida_campi($arr){
 			$sqlupdate=substr($sqlupdate,0,strlen($sqlupdate)-1);
 			$sqlupdate="update $tabelladb set $sqlupdate where id=$idrow";
 			$sql=$sqlupdate;
-		}
+                }
+                
 		
 		elseif ($_POST["mode"]=="new") {
 		
