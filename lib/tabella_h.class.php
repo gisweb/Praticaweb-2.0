@@ -477,7 +477,7 @@ $msgerr="Oggetto non presente in cartografia";
                
                    			
                     if ($map){ 
-				$func=(GC_VERSION==2)?("ApriMappa('".MAPSETID."','".TEMPLATE."','qt_id=".QTID_PARTICELLE."&objid=$map[gid]')"):("openMap(".MAPSETID.",'gisclient','&extent=$map[xmin],$map[ymin],$map[xmax],$map[ymax]')");
+				$func=(GC_VERSION==2)?("ApriMappa('".MAPSETID."','".TEMPLATE."','qt=".QTID_PARTICELLE."&objid=$map[gid]')"):("openMap(".MAPSETID.",'gisclient','&extent=$map[xmin],$map[ymin],$map[xmax],$map[ymax]')");
 			}else{
 				$func= "alert('$msgerr')";
 			}
@@ -499,7 +499,7 @@ $msgerr="Oggetto non presente in cartografia";
 				$result = $this->db->sql_query($sql);
 				$map=$this->db->sql_fetchrow();
 				if ($map){	
-					$func="ApriMappa('".MAPSETID."','".TEMPLATE."','qt_id=".QTID_CIVICI."&objid=$map[gid]')";
+					$func="ApriMappa('".MAPSETID."','".TEMPLATE."','qt=".QTID_CIVICI."&objid=$map[gid]')";
 				}else{
 					$func= "alert('$msgerr')";
 				}

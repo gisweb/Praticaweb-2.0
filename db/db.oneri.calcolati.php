@@ -1,4 +1,5 @@
-<?/*
+<?php
+/*
 GESTIONE calcolo oneri:
 dopo aver inserito il record in oneri_calcolati con la libreria savedata faccio qui il calcolo con i parametri passati e aggiorno la tabella con i valori calcolati
 
@@ -119,7 +120,9 @@ if ($_POST["azione"]!="Elimina"){
 		$E2 = 0;
 	}
 	elseif($intervento >= 200 and $intervento < 300){	// Articolo 39 comma 3 Legge Regionale 16/2008  (Aggiunto per Sanremo)
-		$CC = 0;
+		if($perc==0)
+			$perc=100;
+                $CC = 0;
 		$B1 = $K * $perc * ((100 - ($C2 + $C3 + $C4) + $D2) * $B1) / 1000000;
 		$B2 = $K * $perc * ((100 - ($C1 + $C2 + $C3 + $C4) + $D2) * $B2) / 1000000;
 	}	
