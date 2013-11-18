@@ -30,7 +30,7 @@ $data=$doc->viewFieldList();
             $("#tree").dynatree({
                 //title : 'Elenco dei campi unione',
                 children: jsonDataArr,
-                imagePath: "/images/"
+                imagePath: "../images/"
             });
           });
     </script>
