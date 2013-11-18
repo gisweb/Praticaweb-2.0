@@ -1,4 +1,4 @@
-<?
+<?php
 include_once "./login.php";
 //error_reporting(E_ALL);
 $usr=$_SESSION['USER_NAME'];

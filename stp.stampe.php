@@ -1,4 +1,5 @@
-<?//Nota conservo il tipo per poter verificere se Ãš cambiato
+<?php
+//Nota conservo il tipo per poter verificere se Ãš cambiato
 include_once("login.php");
 include_once "./lib/tabella_h.class.php";
 $tabpath="stp";

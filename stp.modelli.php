@@ -44,12 +44,13 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
 				label:'Visualizza campi'
 			}).bind('click',function(event){
 				event.preventDefault();
-				$.ajax({
+				/*$.ajax({
 					url:'./services/xServer.php',
 					dataType:'JSON',
 					type:'POST',
 					data:{action:'printFieldsList'},
-				});
+				});*/
+                                window.open('/admin.fieldsList.php');
 			});
 		});
 	</script>

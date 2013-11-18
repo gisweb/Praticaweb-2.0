@@ -26,6 +26,7 @@ class wordDoc {
 	var $data;
 	var $schema='stp';
 	var $modelliDir;
+        var $fields;
 	
 	function __construct($modello,$pratica){
 		$this->db=appUtils::getDb();
@@ -70,6 +71,7 @@ class wordDoc {
 			}
 		}
 		$customData=$this->data;
+                
 		switch($this->type){
 			case 1:
 				if(file_exists(LOCAL_INCLUDE."cdu.php")){
@@ -84,6 +86,40 @@ class wordDoc {
 				break;
 		}
 		$this->data=$customData;
+	}
+        private function getFields(){
+		$db=$this->db;
+		for($i=0;$i<count($this->viste);$i++){
+                    $vista=$this->viste[$i];
+                    if ($vista){
+                        $sql="SELECT * FROM ".$this->schema.".$vista LIMIT 0";
+
+                        $ris=$db->fetchAll($sql,Array($this->pratica));
+                        array_walk_recursive($ris, 'decode');
+                        $this->data[$vista]=$ris;
+
+
+                    }
+		}
+		for($i=0;$i<count($this->funzioni);$i++){
+                    $funzione=$this->funzioni[$i];
+                    if ($funzione){
+                        $sql="SELECT * FROM ".$this->schema.".$funzione(?) LIMIT 0;";
+                        $ris=$db->fetchAll($sql,Array($this->pratica));
+                        array_walk_recursive($ris, 'decode');
+                        $this->data[$funzione]=$ris;
+                    }
+		}
+		$customFields=Array();
+                define('FIELDS_LIST',1);
+                if(file_exists(LOCAL_INCLUDE."cdu.php")){
+                        include_once LOCAL_INCLUDE."cdu.php";
+                }
+
+                if(file_exists(LOCAL_INCLUDE."stampe.php")){
+                        include_once LOCAL_INCLUDE."stampe.php";
+                }
+		$this->fields=$customFields;
 	}
 	function createDoc($test=0){
 		$TBS = new clsTinyButStrong; // new instance of TBS
@@ -111,5 +147,27 @@ class wordDoc {
 		}
 		//print_array($this->data);
 	} 
+        function viewFieldList(){
+            
+            $this->getFields();
+            $data=$this->fields;
+            asort($data);
+            $data=array_values($data);
+            return json_encode($data);
+        }
 }
+
+function array_values_recursive( $array ) {
+    $array = array_values( $array );
+    for ( $i = 0, $n = count( $array ); $i < $n; $i++ ) {
+        $element = $array[$i];
+        if ( $element["children"] ) {
+            $array[$i] = array_values_recursive( $element );
+        }
+        else{
+            $array[$i]=$element;
+        }
+    }
+    return $array;
+}  
 ?>
