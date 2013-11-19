@@ -19,6 +19,7 @@ function decode(&$item, &$key){
 }
 
 
+
 function parse_query($sql,$title=""){
     $parser = new PHPSQLParser($sql, true);
     foreach ($parser->parsed["SELECT"] as $v){
@@ -40,7 +41,7 @@ class wordDoc {
 	var $schema='stp';
 	var $modelliDir;
         var $fields;
-	
+	var $query;
 	function __construct($modello,$pratica){
 		$this->db=appUtils::getDb();
 		$db=$this->db;
@@ -58,6 +59,7 @@ class wordDoc {
 		$this->extension=$info["extension"];
 		$this->docName=$this->pratica."-".$this->modello;
 		$this->actions=$ris["action"];
+                $this->query=$this->setQuery();
 	}
 	private function getData(){
 		$db=$this->db;
@@ -83,11 +85,14 @@ class wordDoc {
 				$this->data[$funzione]=$ris;
 			}
 		}
-                foreach($query["single"] as $sql){
-                    $ris=$db-> fetchAssoc($sql,Array($this->pratica));
+                foreach($this->query["single"] as $sql){
+                    $ris=$db->fetchAssoc($sql,Array($this->pratica));
                     array_merge($ris,$this->data);
                 }
-                
+                foreach($this->query["multiple"] as $key=>$sql){
+                    $ris=$db->fetchAll($sql,Array($this->pratica));
+                    $this->data[$key]=$ris;
+                }
 		$customData=$this->data;
                 
 		switch($this->type){
@@ -107,36 +112,23 @@ class wordDoc {
 	}
         private function getFields(){
 		$db=$this->db;
-		for($i=0;$i<count($this->viste);$i++){
-                    $vista=$this->viste[$i];
-                    if ($vista){
-                        $sql="SELECT * FROM ".$this->schema.".$vista LIMIT 0";
-
-                        $ris=$db->fetchAll($sql,Array($this->pratica));
-                        array_walk_recursive($ris, 'decode');
-                        $this->data[$vista]=$ris;
-
-
-                    }
-		}
-		for($i=0;$i<count($this->funzioni);$i++){
-                    $funzione=$this->funzioni[$i];
-                    if ($funzione){
-                        $sql="SELECT * FROM ".$this->schema.".$funzione(?) LIMIT 0;";
-                        $ris=$db->fetchAll($sql,Array($this->pratica));
-                        array_walk_recursive($ris, 'decode');
-                        $this->data[$funzione]=$ris;
-                    }
-		}
-		$customFields=Array();
-                define('FIELDS_LIST',1);
-                if(file_exists(LOCAL_INCLUDE."cdu.php")){
+                $result=Array();
+		foreach($this->query['single'] as $key=>$sql){
+                    $res=parse_query($sql);
+                    $result=array_merge($res,$result);
+                }
+                foreach($this->query['multiple'] as $key=>$sql){
+                        $result[$key]=parse_query($sql,$key);
+                }
+		$customFields=$result;
+                
+                /*if(file_exists(LOCAL_INCLUDE."cdu.php")){
                         include_once LOCAL_INCLUDE."cdu.php";
                 }
 
                 if(file_exists(LOCAL_INCLUDE."stampe.php")){
                         include_once LOCAL_INCLUDE."stampe.php";
-                }
+                }*/
 		$this->fields=$customFields;
 	}
 	function createDoc($test=0){
@@ -166,16 +158,15 @@ class wordDoc {
 		//print_array($this->data);
 	} 
         function viewFieldList(){
-            
+            //return $query;exit;
             $this->getFields();
             $data=$this->fields;
             asort($data);
             $data=array_values($data);
             return json_encode($data);
         }
-}
-
-$query=Array(
+        function setQuery(){
+            return Array(
         "single"=>Array(
             "pratica"=>         "SELECT  numero, B.nome as tipo, C.descrizione as intervento, anno, 
                                     data_presentazione, protocollo, data_prot as data_protocollo, protocollo_int, data_prot_int,  
@@ -191,20 +182,16 @@ $query=Array(
                                 WHERE 
                                     pratica=?",
             "elenco_ct"=>       "SELECT 
-                                    trim(coalesce('Sezione: '||sezione,'')||coalesce(' Foglio: '||foglio,'')||coalesce(' Mappali: '||mappali,'')) as testo
+                                    trim(coalesce('Sezione: '||sezione,'')||coalesce(' Foglio: '||foglio,'')||coalesce(' Mappali: '||mappali,'')) as elenco_ct
                                 FROM 
                                     (select B.nome as sezione,coalesce(foglio,'')as foglio,array_to_string(array_agg(coalesce(mappale,'')),',') as mappali from pe.cterreni A left join nct.sezioni B using(sezione) WHERE pratica = ? GROUP BY 1,2) AS FOO",
             "elenco_cu"=>      "SELECT 
-                                    trim(coalesce('Sezione: '||sezione,'')||coalesce(' Foglio: '||foglio,'')||coalesce(' Mappali: '||mappali,'')) as testo
+                                    trim(coalesce('Sezione: '||sezione,'')||coalesce(' Foglio: '||foglio,'')||coalesce(' Mappali: '||mappali,'')) as elenco_cu
                                 FROM 
                                     (select B.nome as sezione,coalesce(foglio,'')as foglio,array_to_string(array_agg(coalesce(mappale,'')),',') as mappali from pe.curbano A left join nct.sezioni B using(sezione) WHERE pratica = ? GROUP BY 1,2) AS FOO",
             "oneri"=>           "SELECT 
                                     totali.cc + totali.b1 + totali.b2 - totali.scb1 - totali.scb2 AS totale, 
-                                    CASE
-                                        WHEN totali.rateizzato = 0 THEN totali.quietanza
-                                        WHEN totali.rateizzato = 1 THEN 'PAGAMENTO RATEIZZATO'::character varying
-                                        ELSE NULL::character varying
-                                    END AS quietanza, totali.data, totali.oblazione, totali.q_oblazione, totali.data_oblazione, totali.indennita, totali.q_indennita, totali.data_indennita, totali.id, totali.pratica, totali.calcolo, totali.chk
+                                    totali.quietanza AS quietanza, totali.data as data_quietanza, oblazione, q_oblazione as quietanza_, data_oblazione, indennita, totali.q_indennita as quietanza_indennita, data_indennita
                                 FROM 
                                     oneri.totali
                                 WHERE 
@@ -265,14 +252,11 @@ $query=Array(
                                 ORDER BY data_rich DESC",
             
             "oneri_calcoli"=>   "SELECT 
-                                    calcolati.anno as anno, (e_tariffe.funzione::text || ' mq '::text) || calcolati.sup::text AS calcolo, e_tariffe.funzione AS destuso, e_tariffe.descrizione AS descrizione, e_interventi.descrizione AS intervento,
+                                    calcolati.anno as anno, e_tariffe.funzione::text || ' mq '::text || calcolati.sup::text AS calcolo, e_tariffe.funzione AS destuso, e_tariffe.descrizione AS descrizione, e_interventi.descrizione AS intervento,
                                     calcolati.perc as percentuale, calcolati.degradato as degradato, calcolati.sup as superficie, 
                                     calcolati.cc as cc, calcolati.b1 as b1, calcolati.b2 as b2, calcolati.e1 as e1, calcolati.e2 as e2, calcolati.note as note,
-                                    e_c1.descrizione AS c1, e_c2.descrizione AS c2, e_c3.descrizione AS c3, e_c4.descrizione AS c4, e_d1.descrizione AS d1, e_d2.descrizione AS d2, calcolati.chk, calcolati.b1 + calcolati.b2 + calcolati.cc AS totale, 
-                                    CASE
-                                        WHEN COALESCE(calcolati.sup::numeric, 0::numeric) > 0::numeric THEN (calcolati.b1 + calcolati.b2 + calcolati.cc) / calcolati.sup::numeric
-                                        ELSE 0::numeric
-                                    END AS tot_unitario
+                                    e_c1.descrizione AS c1, e_c2.descrizione AS c2, e_c3.descrizione AS c3, e_c4.descrizione AS c4, e_d1.descrizione AS d1, e_d2.descrizione AS d2, calcolati.chk, calcolati.b1 + calcolati.b2 + calcolati.cc AS totale
+                                    
                                 FROM 
                                     oneri.calcolati
                                     LEFT JOIN oneri.e_c1 ON calcolati.tabella::text = e_c1.tabella::text AND calcolati.c1 = e_c1.valore
@@ -295,4 +279,7 @@ $query=Array(
                                     pratica=?"
     )
 );
+        }
+}
+
 ?>

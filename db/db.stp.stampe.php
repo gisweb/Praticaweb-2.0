@@ -1,5 +1,5 @@
 <?php
-include_once "./login.php";
+require_once "./login.php";
 //error_reporting(E_ALL);
 $usr=$_SESSION['USER_NAME'];
 $idpratica=$_REQUEST["pratica"];
@@ -16,7 +16,7 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database ".DB_NAME);
 $db=appUtils::getDB();
 
 if ($_POST["azione"]==="Crea Documento") {	//	Creo un nuovo documento
-    include_once "lib/stampe.word.class.php";
+    require_once APPS_DIR."lib/stampe.word.class.php";
     list($sc,$f)=explode(".",$form);
     $schema="stp";
     $doc=new wordDoc($id_modello,$idpratica);

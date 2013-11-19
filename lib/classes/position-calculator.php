@@ -44,8 +44,8 @@ require_once(dirname(__FILE__) . '/exceptions.php');
  */
 class PositionCalculator extends PHPSQLParserUtils {
 
-    private static $allowedOnOperator = array("\t", "\n", "\r", " ", ",", "(", ")", "_", "'", "\"","|");
-    private static $allowedOnOther = array("\t", "\n", "\r", " ", ",", "(", ")", "<", ">", "*", "+", "-", "/", "|",
+    private static $allowedOnOperator = array("\t", "\n", "\r", " ", ",", "(", ")", "_", "'", "\"","|","'",":");
+    private static $allowedOnOther = array("\t", "\n", "\r", " ", ",", "(", ")", "<", ">", "*", "+", "-", "/", "|","'",":",
                                            "&", "=", "!", ";");
 
     private function printPos($text, $sql, $charPos, $key, $parsed, $backtracking) {
