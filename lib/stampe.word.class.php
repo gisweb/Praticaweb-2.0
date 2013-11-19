@@ -201,7 +201,48 @@ class wordDoc {
                                 FROM 
                                     pe.abitabi
                                 WHERE 
-                                    pratica=?"            
+                                    pratica=?",
+            "progetto"=>        "SELECT 
+                                    destuso1 as dest_uso_primaria,destuso2 as dest_uso_secondaria,tavole
+                                FROM
+                                    pe.progetto
+                                WHERE
+                                    pratica=?",
+            "parere_ce"=>       "SELECT prot_rich as prot_richiesta_ce, data_rich as data_richiesta_ce,  prot_ril as protocollo_rilascio_ce, data_ril as data_rilascio_ce, prot_rice as protocollo_ricezione_ce, data_rice as data_ricezione_ce, 
+                                        testo_ce,prescrizioni_ce, numero_doc as numero_parere_ce
+                                FROM 
+                                    pe.pareri
+                                WHERE
+                                    pratica=? AND codice='ce' 
+                                ORDER BY data _ril DESC LIMIT 1;",
+            "parere_cei"=>      "SELECT prot_rich as protocollo_richiesta_cei, data_rich as data_richiesta_cei, prot_ril as protocollo_rilascio_cei, data_ril as data_rilascio_cei, prot_rice as protocollo_ricezione_cei, data_rice as data_ricezione_cei, 
+                                        testo_cei,prescrizioni_cei, numero_doc as numero_parere_cei
+                                FROM 
+                                    pe.pareri
+                                WHERE
+                                    pratica=? AND codice='cei' 
+                                ORDER BY data _ril DESC LIMIT 1;",
+            "parere_clp"=>      "SELECT prot_rich as protocollo_richiesta_clp, data_rich as data_richiesta_clp, prot_ril as protocollo_rilascio_clp, data_ril as data_rilascio_clp, prot_rice as protocollo_ricezione_clp, data_rice as data_ricezione_clp, 
+                                        testo_clp,prescrizioni_clp, numero_doc as numero_parere_clp
+                                FROM 
+                                    pe.pareri
+                                WHERE
+                                    pratica=? AND codice='clp' 
+                                ORDER BY data _ril DESC LIMIT 1;",
+            "parere_asl"=>      "SELECT prot_rich as protocollo_richiesta_asl, data_rich as data_richiesta_asl, prot_ril as protocollo_rilascio_asl, data_ril as data_rilascio_asl, prot_rice as protocollo_ricezione_asl, data_rice as data_ricezione_asl, 
+                                        testo_asl,prescrizioni_asl, numero_doc as numero_parere_asl
+                                FROM 
+                                    pe.pareri
+                                WHERE
+                                    pratica=? AND codice='asl' 
+                                ORDER BY data _ril DESC LIMIT 1;",
+            "parere_vf"=>       "SELECT prot_rich as protocollo_richiesta_vf, data_rich as data_richiesta_vf, prot_ril as protocollo_rilascio_vf, data_ril as data_rilascio_vf, prot_rice as protocollo_ricezione_vf, data_rice as data_ricezione_vf, 
+                                        testo_vf,prescrizioni_vf, numero_doc as numero_parere_vf
+                                FROM 
+                                    pe.pareri
+                                WHERE
+                                    pratica=? AND codice='vf' 
+                                ORDER BY data _ril DESC LIMIT 1;"
         ),
         "multiple"=>Array(
             "soggetti"=>        "SELECT DISTINCT coalesce(app,'') as app, coalesce(cognome,'') as cognome, coalesce(nome,'') as nome,coalesce(app||' ','')||coalesce(cognome||' ','')||coalesce(nome,'') as nominativo, 
