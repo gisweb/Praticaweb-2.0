@@ -495,7 +495,7 @@ $msgerr="Oggetto non presente in cartografia";
 				$via=$indi["via"];
 				$civico=$indi["civico"];
 				//
-				$sql="SELECT gid from civici.civici inner join civici.vie on(id=strada) where nome ilike '$via' and label='$civico';";
+				$sql="SELECT gid from civici.pe_civici inner join civici.pe_vie on(id=strada) where nome ilike '$via' and label='$civico';";
 				$result = $this->db->sql_query($sql);
 				$map=$this->db->sql_fetchrow();
 				if ($map){	

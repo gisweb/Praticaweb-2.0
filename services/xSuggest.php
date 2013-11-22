@@ -183,7 +183,7 @@ switch($field) {
             );
         break;
     case 'via':
-        $sql="SELECT DISTINCT nome as valore FROM civici.vie WHERE nome ilike '%$value%' order by 1";
+        $sql="SELECT DISTINCT nome as valore FROM civici.pe_vie WHERE nome ilike '%$value%' order by 1";
         if($db->sql_query($sql)){
             $res=$db->sql_fetchrowset();
             for($i=0;$i<count($res);$i++){
@@ -206,7 +206,7 @@ switch($field) {
         break;
     case 'civico':
         $strada=(isset($_REQUEST['via']))?(addslashes($_REQUEST['via'])):('%');
-        $sql="SELECT DISTINCT label as valore,length(label) FROM civici.civici inner join civici.vie on(vie.id=civici.strada) WHERE label ilike '$value%' and nome ilike '$strada' order by 2,1";
+        $sql="SELECT DISTINCT label as valore,length(label) FROM civici.pe_civici A inner join civici.pe_vie B on(B.id=A.strada) WHERE label ilike '$value%' and nome ilike '$strada' order by 2,1";
         if($db->sql_query($sql)){
             $res=$db->sql_fetchrowset();
             for($i=0;$i<count($res);$i++){

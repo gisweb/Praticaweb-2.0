@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("login.php");
 $tabpath="pe";
 $idpratica=$_REQUEST["pratica"];
@@ -58,7 +58,7 @@ function link(id){
 </script>
 </head>
 <body  background="" leftMargin="0" topMargin="0" marginheight="0" marginwidth="0">
-<?
+<?php
 if (($modo=="edit") or ($modo=="new")){
 	include_once "./lib/tabella_h.class.php";
 	include_once "./lib/tabella_v.class.php";
@@ -135,7 +135,7 @@ $elenco_vincoli = $db->sql_fetchrowset();?>
 <H2 class="blueBanner">Vincoli presenti</H2>
 <TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">	
 <TR><TD>
-<?
+<?php
 $tabella_zone->set_titolo("Elenco delle zone e dei vincoli","modifica");
 $tabella_zone->get_titolo();
 foreach($elenco_vincoli as $row){ 
@@ -157,7 +157,7 @@ foreach($elenco_vincoli as $row){
 			<!-- fine intestazione-->
 			</TD>
 		  </TR>
-<?}// end for
+<?php }// end for
 echo "</TABLE>";
 }//end if
 ?>

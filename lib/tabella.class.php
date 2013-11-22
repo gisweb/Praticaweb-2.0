@@ -505,13 +505,14 @@ EOT;
 				$editor=Array($rdp,$idRds,$idDiri);
 			break;
 		}
-        if($_SESSION["PERMESSI"]<2) $owner=1;
+        if($_SESSION["PERMESSI"]<2 ) $owner=1;
+        
         /*$result = appUtils::getPraticaRole($cfg,$this->idpratica);
         $roles=$result["roles"];
         $editor=$result["editor"];
         $owner=$result["owner"];*/
         //print_array($roles);
-		if (!$cfg['viewable'] or $_SESSION["PERMESSI"]<3){
+		if (!$cfg['viewable'] or $_SESSION["PERMESSI"]<3 || ALWAYS_VIEWABLE==1){
 			$this->viewable=true;
 		}
 		else{
@@ -522,7 +523,8 @@ EOT;
 			else
 				$this->viewable=false;
 		}
-		if ((!$cfg['editable'] or $_SESSION["PERMESSI"]<2) && in_array($owner,Array(1,3))){
+                
+		if ((!$cfg['editable'] or $_SESSION["PERMESSI"]<2) && in_array($owner,Array(1,3)) || ALWAYS_EDITABLE==1){
 			$this->editable=true;
 		}
 		else{
@@ -534,7 +536,7 @@ EOT;
 			else
 				$this->editable=false;
 		}
-		
+
 		//$sql="SELECT * FROM pe.assegnazione_pratiche WHERE pratica=$this->idpratica";
 		//if($this->db->sql_query($sql)){
 		//	$ris=$this->db->sql_fetchrowset();

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 form per il calcolo automatico oneri di urbanizzazione e costo di costruzione Regione Liguria
 in modalità  edit permette il calcolo automatico o la modifica di un calcolo esistente 
@@ -145,14 +145,14 @@ if (($modo=="new") or ($modo=="edit")){
 		  <tr> 
 			<td> 
 				<!-- contenuto-->
-			<?
+			<?php
                 
                 if(isset($Errors) && $Errors){
 					$tabella->set_errors($Errors);
 					$tabella->set_dati($_POST);
 				}
 				elseif ($modo=="edit"){	
-					$tabella->set_dati("pratica=$idpratica");
+					$tabella->set_dati("id=$id");
 				}
                 else{
                     $pr=new pratica($idpratica);

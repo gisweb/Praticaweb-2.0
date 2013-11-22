@@ -69,8 +69,9 @@ elseif($_POST["azione"]=="Aggiungi"){
 	(area(intersection (particelle.".THE_GEOM.",zona_plg.the_geom))>10 or (area(intersection(particelle.".THE_GEOM.",zona_plg.the_geom))/area (particelle.".THE_GEOM.")*100)>=0.02) and 
 	($sqlmappali) and nome_vincolo||nome_tavola||nome_zona not in (select vincolo||tavola||zona from pe.vincoli where pratica=$idpratica) group by nome_vincolo,nome_tavola,nome_zona";
 	
-	//if (DEBUG) echo $sql;
+	//if (DEBUG) 
+        
 	$db->sql_query ($sql);
 }
-
+//echo "<p>$sql</p>";
 ?>
