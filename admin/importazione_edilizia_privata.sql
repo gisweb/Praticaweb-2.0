@@ -105,26 +105,31 @@ INSERT INTO pe.e_documenti(id,iter, nome, descrizione)
 
 DELETE FROM pe.avvioproc;
 select setSequence('pe','avvioproc','id');
+DELETE FROM pe.scadenze;
+select setSequence('pe','scadenze','id');
 INSERT INTO pe.avvioproc(pratica, numero,data_presentazione,  protocollo, data_prot, tipo, oggetto,data_chiusura, note, anno)
 (SELECT "ID","NUMERO", "DATA", "PROTOCOLLO", "DATAPROT", "TIPO", "OGGETTO", "DATACHIUSA",  coalesce("NOTE_SCADENZE"||E'\n','')|| coalesce("NOTE_PROGETTO"||E'\n','')|| coalesce("NOTE_SORVEGLIANZA"||E'\n',''),date_part('year',"DATA"::date)
   FROM import."PRATICHE"
 );
 
-select setSequence('pe','avvioproc','id');
 INSERT INTO pe.menu(pratica,menu_file,menu_list) (SELECT pratica,'pratica',menu_default FROM pe.avvioproc inner join pe.e_tipopratica B on (tipo=B.id));
 /* INSERIMENTO DELLA DESTINAZIONE D'USO (pe.progetto)*/
 
 /*INSERIMENTO DATI DEL TITOLO (pe.titolo)*/			
-
-INSERT INTO pe.titolo(pratica,titolo,protocollo,data_rilascio,data_ritiro,intervento) (SELECT "ID","TITOLO","PROT_TITOLO","DATARILASCIO","DATARITIRO","INTERVENTO" FROM  import."PRATICHE" WHERE NOT "TITOLO" IS NULL);
+delete from pe.titolo;
 select setSequence('pe','titolo','id');
+INSERT INTO pe.titolo(pratica,titolo,protocollo,data_rilascio,data_ritiro,intervento) (SELECT "ID","TITOLO","PROT_TITOLO","DATARILASCIO","DATARITIRO","INTERVENTO" FROM  import."PRATICHE" WHERE NOT "TITOLO" IS NULL);
+
 
 /* INSERIMENTO SCADENZE DEI LAVORI (pe.lavori)*/
-
-INSERT INTO pe.lavori(pratica,scade_il,scade_fl,il,fl) (SELECT "ID","SCADE_IL","SCADE_FL","IL","FL" FROM  import."PRATICHE" WHERE (NOT "SCADE_FL" IS NULL) or (NOT "SCADE_IL" IS NULL) or (NOT "IL" IS NULL) or (NOT "FL" IS NULL));
+delete from pe.lavori;
 select setSequence('pe','lavori','id');
+INSERT INTO pe.lavori(pratica,scade_il,scade_fl,il,fl) (SELECT "ID","SCADE_IL","SCADE_FL","IL","FL" FROM  import."PRATICHE" WHERE (NOT "SCADE_FL" IS NULL) or (NOT "SCADE_IL" IS NULL) or (NOT "IL" IS NULL) or (NOT "FL" IS NULL));
+
 
 /* INSERIMENTO PARERI (pe.pareri)*/
+delete from pe.pareri;
+select setSequence('pe','pareri','id');
 INSERT INTO pe.pareri(
             pratica, ente, prot_rich, data_rich, prot_soll, data_soll, 
             parere, numero_doc, prot_ril, data_ril,
@@ -141,11 +146,13 @@ WHEN ("PARERE" ILIKE '%favorevole%' or "PARERE" ILIKE '%positivo%' or "PARERE" I
 ELSE NULL END as parere ,
  "NUMERO", "PROT_RIL", "DATA_RIL",  "PRESCRIZIONI","PARERE"
   FROM import."PARERI" WHERE "PRATICA" IN (SELECT DISTINCT pratica from pe.avvioproc));
-select setSequence('pe','pareri','id');
+
 
 
  /* INSERIMENTO DEGLI INDIRIZZI DELLA PRATICA (pe.indirizzi) */
- 
+delete from pe.curbano; 
+delete from pe.indirizzi;
+delete from pe.cterreni;
 select setSequence('pe','curbano','id');
 select setSequence('pe','cterreni','id');
 select setSequence('pe','indirizzi','id');
