@@ -37,7 +37,7 @@ class wordDoc {
 	var $pratica;
 	var $viste;
 	var $funzioni;
-	var $data;
+	var $data = Array();
 	var $schema='stp';
 	var $modelliDir;
         var $fields;
@@ -85,14 +85,19 @@ class wordDoc {
 				$this->data[$funzione]=$ris;
 			}
 		}
+                
                 foreach($this->query["single"] as $sql){
                     $ris=$db->fetchAssoc($sql,Array($this->pratica));
-                    array_merge($ris,$this->data);
+                    $this->data=(!$ris)?($this->data):(array_merge($this->data,$ris));
+                    
+                    
                 }
                 foreach($this->query["multiple"] as $key=>$sql){
                     $ris=$db->fetchAll($sql,Array($this->pratica));
                     $this->data[$key]=$ris;
                 }
+                
+
 		$customData=$this->data;
                 
 		switch($this->type){
@@ -105,6 +110,8 @@ class wordDoc {
 			default:
 				if(file_exists(LOCAL_INCLUDE."stampe.php")){
 					include_once LOCAL_INCLUDE."stampe.php";
+                                        print_debug($this->data,null,'STAMPE_LOCAL');
+
 				}
 				break;
 		}
@@ -167,10 +174,11 @@ class wordDoc {
         }
         function setQuery(){
             return Array(
-        "single"=>Array(
+            "single"=>Array(
             "pratica"=>         "SELECT  numero, B.nome as tipo, C.descrizione as intervento, anno, 
                                     data_presentazione, protocollo, data_prot as data_protocollo, protocollo_int, data_prot_int,  
                                     D.nome as responsabile_procedimento, data_resp as data_responsabile, com_resp, data_com_resp as data_comunicazione_responsabile,
+                                    E.nome as istruttore_tecnico,data_resp_it as data_responsabile_it,
                                     rif_aut_amb as numero_autorizzazione_amb,  oggetto, note, rif_pratica as numero_pratica_precedente,  
                                     diritti_segreteria, riduzione_diritti, pagamento_diritti
                                 FROM 
@@ -181,6 +189,12 @@ class wordDoc {
                                     LEFT JOIN admin.users F ON (A.resp_ia=F.userid)
                                 WHERE 
                                     pratica=?",
+            "ubicazione"=>      "SELECT  
+                                    array_to_string(array_agg(coalesce(via,'') || coalesce(' '||civico) || coalesce('int.'||interno,'')),', ') as ubicazione
+                                FROM 
+                                    pe.indirizzi 
+                                WHERE
+                                    pratica=?;",
             "elenco_ct"=>       "SELECT 
                                     trim(coalesce('Sezione: '||sezione,'')||coalesce(' Foglio: '||foglio,'')||coalesce(' Mappali: '||mappali,'')) as elenco_ct
                                 FROM 
@@ -209,40 +223,40 @@ class wordDoc {
                                 WHERE
                                     pratica=?",
             "parere_ce"=>       "SELECT prot_rich as prot_richiesta_ce, data_rich as data_richiesta_ce,  prot_ril as protocollo_rilascio_ce, data_ril as data_rilascio_ce, prot_rice as protocollo_ricezione_ce, data_rice as data_ricezione_ce, 
-                                        testo_ce,prescrizioni_ce, numero_doc as numero_parere_ce
+                                        testo as testo_ce,prescrizioni as prescrizioni_ce, numero_doc as numero_parere_ce
                                 FROM 
-                                    pe.pareri
+                                    pe.pareri A INNER JOIN pe.e_enti B ON(A.ente=B.id)
                                 WHERE
                                     pratica=? AND codice='ce' 
-                                ORDER BY data _ril DESC LIMIT 1;",
+                                ORDER BY data_ril DESC LIMIT 1;",
             "parere_cei"=>      "SELECT prot_rich as protocollo_richiesta_cei, data_rich as data_richiesta_cei, prot_ril as protocollo_rilascio_cei, data_ril as data_rilascio_cei, prot_rice as protocollo_ricezione_cei, data_rice as data_ricezione_cei, 
-                                        testo_cei,prescrizioni_cei, numero_doc as numero_parere_cei
+                                        testo as testo_cei,prescrizioni as prescrizioni_cei, numero_doc as numero_parere_cei
                                 FROM 
-                                    pe.pareri
+                                    pe.pareri A INNER JOIN pe.e_enti B ON(A.ente=B.id)
                                 WHERE
                                     pratica=? AND codice='cei' 
-                                ORDER BY data _ril DESC LIMIT 1;",
+                                ORDER BY data_ril DESC LIMIT 1;",
             "parere_clp"=>      "SELECT prot_rich as protocollo_richiesta_clp, data_rich as data_richiesta_clp, prot_ril as protocollo_rilascio_clp, data_ril as data_rilascio_clp, prot_rice as protocollo_ricezione_clp, data_rice as data_ricezione_clp, 
-                                        testo_clp,prescrizioni_clp, numero_doc as numero_parere_clp
+                                        testo as testo_clp,prescrizioni as prescrizioni_clp, numero_doc as numero_parere_clp
                                 FROM 
-                                    pe.pareri
+                                    pe.pareri A INNER JOIN pe.e_enti B ON(A.ente=B.id)
                                 WHERE
                                     pratica=? AND codice='clp' 
-                                ORDER BY data _ril DESC LIMIT 1;",
+                                ORDER BY data_ril DESC LIMIT 1;",
             "parere_asl"=>      "SELECT prot_rich as protocollo_richiesta_asl, data_rich as data_richiesta_asl, prot_ril as protocollo_rilascio_asl, data_ril as data_rilascio_asl, prot_rice as protocollo_ricezione_asl, data_rice as data_ricezione_asl, 
-                                        testo_asl,prescrizioni_asl, numero_doc as numero_parere_asl
+                                        testo as testo_asl,prescrizioni as prescrizioni_asl, numero_doc as numero_parere_asl
                                 FROM 
-                                    pe.pareri
+                                    pe.pareri A INNER JOIN pe.e_enti B ON(A.ente=B.id)
                                 WHERE
                                     pratica=? AND codice='asl' 
-                                ORDER BY data _ril DESC LIMIT 1;",
+                                ORDER BY data_ril DESC LIMIT 1;",
             "parere_vf"=>       "SELECT prot_rich as protocollo_richiesta_vf, data_rich as data_richiesta_vf, prot_ril as protocollo_rilascio_vf, data_ril as data_rilascio_vf, prot_rice as protocollo_ricezione_vf, data_rice as data_ricezione_vf, 
-                                        testo_vf,prescrizioni_vf, numero_doc as numero_parere_vf
+                                        testo as testo_vf,prescrizioni as prescrizioni_vf, numero_doc as numero_parere_vf
                                 FROM 
-                                    pe.pareri
+                                    pe.pareri A INNER JOIN pe.e_enti B ON(A.ente=B.id)
                                 WHERE
                                     pratica=? AND codice='vf' 
-                                ORDER BY data _ril DESC LIMIT 1;"
+                                ORDER BY data_ril DESC LIMIT 1;"
         ),
         "multiple"=>Array(
             "soggetti"=>        "SELECT DISTINCT coalesce(app,'') as app, coalesce(cognome,'') as cognome, coalesce(nome,'') as nome,coalesce(app||' ','')||coalesce(cognome||' ','')||coalesce(nome,'') as nominativo, 

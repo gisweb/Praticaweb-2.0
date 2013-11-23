@@ -50,7 +50,7 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
 					type:'POST',
 					data:{action:'printFieldsList'},
 				});*/
-                                window.open('/admin.fieldsList.php');
+                                window.open('/stp.fieldsList.php');
 			});
 		});
 	</script>
