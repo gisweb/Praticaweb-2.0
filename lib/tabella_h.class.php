@@ -496,7 +496,8 @@ $msgerr="Oggetto non presente in cartografia";
 				$civico=$indi["civico"];
 				//
 				$sql="SELECT gid from civici.pe_civici inner join civici.pe_vie on(id=strada) where nome ilike '$via' and label='$civico';";
-				$result = $this->db->sql_query($sql);
+				echo 
+                                $result = $this->db->sql_query($sql);
 				$map=$this->db->sql_fetchrow();
 				if ($map){	
 					$func="ApriMappa('".MAPSETID."','".TEMPLATE."','qt=".QTID_CIVICI."&objid=$map[gid]')";

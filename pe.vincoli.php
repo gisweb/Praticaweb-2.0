@@ -83,7 +83,7 @@ if (($modo=="edit") or ($modo=="new")){
 				<input name="active_form" type="hidden" value="pe.vincoli.php">
 				<input type="hidden" name="mode" value="new">
 
-				<?
+				<?php
 				if($Errors){
 					$tabellav->set_errors($Errors);
 					$tabellav->set_dati($_POST);
