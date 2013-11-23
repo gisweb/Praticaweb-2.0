@@ -97,7 +97,7 @@ class wordDoc {
                     $this->data[$key]=$ris;
                 }
                 
-
+                
 		$customData=$this->data;
                 
 		switch($this->type){
@@ -116,6 +116,7 @@ class wordDoc {
 				break;
 		}
 		$this->data=$customData;
+                print_debug($this->data,null,'STAMPE');
 	}
         private function getFields(){
 		$db=$this->db;
@@ -175,9 +176,10 @@ class wordDoc {
         function setQuery(){
             return Array(
             "single"=>Array(
+            "data_odierna"=>    "SELECT CURRENT_DATE as oggi;",
             "pratica"=>         "SELECT  numero, B.nome as tipo, C.descrizione as intervento, anno, 
                                     data_presentazione, protocollo, data_prot as data_protocollo, protocollo_int, data_prot_int,  
-                                    D.nome as responsabile_procedimento, data_resp as data_responsabile, com_resp, data_com_resp as data_comunicazione_responsabile,
+                                    D.nome as responsabile_procedimento, data_resp as data_responsabile, com_resp as protocollo_com_rdp, data_com_resp as data_comunicazione_responsabile,
                                     E.nome as istruttore_tecnico,data_resp_it as data_responsabile_it,
                                     rif_aut_amb as numero_autorizzazione_amb,  oggetto, note, rif_pratica as numero_pratica_precedente,  
                                     diritti_segreteria, riduzione_diritti, pagamento_diritti
@@ -260,7 +262,7 @@ class wordDoc {
         ),
         "multiple"=>Array(
             "soggetti"=>        "SELECT DISTINCT coalesce(app,'') as app, coalesce(cognome,'') as cognome, coalesce(nome,'') as nome,coalesce(app||' ','')||coalesce(cognome||' ','')||coalesce(nome,'') as nominativo, 
-                                    coalesce(indirizzo,'') as indirizzo, coalesce(comune,'') as comune, coalesce(prov,'') as prov, coalesce(cap,'') as cap, 
+                                    coalesce(indirizzo,coalesce(sede,'')) as indirizzo, coalesce(comune,coalesce(comuned,'')) as comune, coalesce(prov,coalesce(provd,'')) as prov, coalesce(cap,coalesce(capd,'')) as cap, 
                                     comunato, provnato, datanato, sesso, codfis,titolo,
                                     telefono, email, pec, 
                                     titolod, ragsoc, 
@@ -274,6 +276,36 @@ class wordDoc {
                                     pe.soggetti 
                                 WHERE 
                                     pratica=? and comunicazioni = 1",
+            "richiedenti"=>        "SELECT DISTINCT coalesce(app,'') as app, coalesce(cognome,'') as cognome, coalesce(nome,'') as nome,coalesce(app||' ','')||coalesce(cognome||' ','')||coalesce(nome,'') as nominativo, 
+                                    coalesce(indirizzo,coalesce(sede,'')) as indirizzo, coalesce(comune,coalesce(comuned,'')) as comune, coalesce(prov,coalesce(provd,'')) as prov, coalesce(cap,coalesce(capd,'')) as cap, 
+                                    comunato, provnato, datanato, sesso, codfis,titolo,
+                                    telefono, email, pec, 
+                                    titolod, ragsoc, 
+                                    sede, comuned, provd, capd, 
+                                    piva, ccia, cciaprov, inail, inailprov, inps, inpsprov, cedile, cedileprov, 
+                                    albo, albonumero, alboprov,
+                                    coalesce(voltura,0) as voltura, comunicazioni, note, 
+                                    proprietario,richiedente, concessionario, progettista, direttore, esecutore, 
+                                    sicurezza, collaudatore,geologo, collaudatore_ca, progettista_ca, economia_diretta 
+                                FROM 
+                                    pe.soggetti 
+                                WHERE 
+                                    pratica=? and comunicazioni = 1 and richiedente=1",
+            "progettisti"=>        "SELECT DISTINCT coalesce(app,'') as app, coalesce(cognome,'') as cognome, coalesce(nome,'') as nome,coalesce(app||' ','')||coalesce(cognome||' ','')||coalesce(nome,'') as nominativo, 
+                                    coalesce(indirizzo,coalesce(sede,'')) as indirizzo, coalesce(comune,coalesce(comuned,'')) as comune, coalesce(prov,coalesce(provd,'')) as prov, coalesce(cap,coalesce(capd,'')) as cap, 
+                                    comunato, provnato, datanato, sesso, codfis,titolo,
+                                    telefono, email, pec, 
+                                    titolod, ragsoc, 
+                                    sede, comuned, provd, capd, 
+                                    piva, ccia, cciaprov, inail, inailprov, inps, inpsprov, cedile, cedileprov, 
+                                    albo, albonumero, alboprov,
+                                    coalesce(voltura,0) as voltura, comunicazioni, note, 
+                                    proprietario,richiedente, concessionario, progettista, direttore, esecutore, 
+                                    sicurezza, collaudatore,geologo, collaudatore_ca, progettista_ca, economia_diretta 
+                                FROM 
+                                    pe.soggetti 
+                                WHERE 
+                                    pratica=? and comunicazioni = 1 and progettista=1",
             "indirizzi"=>       "SELECT  
                                     via, civico, interno, scala, piano
                                 FROM 
