@@ -32,13 +32,14 @@ function get_cella($row,$col){
 	$valore=htmlspecialchars($this->array_dati[$row][$nome], ENT_QUOTES,"UTF-8");//valore del campo
 	$w=$this->def_col[$col][2];//larghezza del campo
 	$tipo=trim($this->def_col[$col][3]);//tipo del campo
-	
+	//echo "<p>Riga $row $nome : $valore</p>";
 	switch ($tipo){//tipo campo in configfile
 		case "idriga":
 			$retval="<td><input type=\"hidden\" name=\"idriga\" value=\"$valore\" ></td>\n";
 			break;
 		case "pratica":
 		case "text":
+                    
 			$valore=html_entity_decode($valore);
 			$retval="<td>$valore</td>\n";
 			break;
@@ -263,7 +264,7 @@ function get_cella($row,$col){
 		//Genera un array di text indicizzati su id
 		case "text_box":
 			//$data=$this->date_format(stripslashes($valore));
-            $data=$valore;
+                        $data=$valore;
 			$nome.="[".$this->array_dati[$row]["id"]."]";
 			$retval="<td><input $class maxLength=\"$w\" size=\"$w\"  class=\"textbox\" name=\"$nome\" id=\"data\" value=\"$data\">$help"; 
 			break;

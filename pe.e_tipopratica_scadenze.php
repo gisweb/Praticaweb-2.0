@@ -9,8 +9,15 @@ $id=(isset($_REQUEST["id"]))?($_REQUEST["id"]):('');
 $tabpath="pe";
 $formaction="pe.e_tipopratica_scadenze.php";
 $codice=$_REQUEST["codice"];
+$JOIN = ($modo=='list')?('INNER'):('LEFT');
 include "db/db.pe.e_tipopratica_scadenze.php";
-$sql="SELECT A.*,B.nome,C.nome as nome_scadenza FROM pe.e_tipopratica_scadenze A INNER JOIN pe.e_tipopratica B ON(A.tipo_pratica=B.id) INNER JOIN pe.e_scadenze C USING (codice) WHERE codice='$codice'";
+$sql="SELECT 
+A.id as id_scadenza ,B.id ,B.nome,A.tabella,coalesce(A.codice,'$codice') as codice,A.scadenza,C.nome as nome_scadenza,tipologia
+FROM pe.e_tipopratica B LEFT JOIN 
+(SELECT * FROM pe.e_tipopratica_scadenze WHERE codice='$codice') A ON(A.tipo_pratica=B.id) 
+$JOIN JOIN pe.e_scadenze C USING(codice)    
+WHERE enabled=1 ORDER BY tipologia,nome";
+
 $dbconn->sql_query($sql);
 $res=$dbconn->sql_fetchrowset();
 $nomeScadenza=$res[0]["nome_scadenza"];
@@ -24,9 +31,12 @@ $tit="$nomeScadenza - Dati sui Tipi di Pratica ";
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
     <SCRIPT language="javascript" type="text/javascript">
-        function confirmSubmit(){
-            return confirm('Sei sicuro di voler eliminare questo stato?');
-        }
+        $(document).ready(function(){
+            $('#azione-chiudi').bind('click',function(event){
+               event.preventDefault();
+               linkToList('<?php echo $formaction;?>',{'codice':'<?php echo $codice?>'});
+            });
+        });
     </SCRIPT>
 
     </head>
@@ -34,10 +44,10 @@ $tit="$nomeScadenza - Dati sui Tipi di Pratica ";
 <?php 
 include "./inc/inc.page_header.php";
 ?>
-<H2 class="blueBanner"><?php echo "$tit";?></H2>
-<?
+
+<?php
 	if (($modo=="edit") or ($modo=="new")){
-		$tabella=new tabella_v("$tabpath/$file_config",$modo);
+		$tabella=new tabella_h("$tabpath/$file_config",$modo);
 		unset($_SESSION["ADD_NEW"]);
 		?>	
 		<FORM id="stati" name="utenti" method="post" action="<?php echo $formaction; ?>">
@@ -49,54 +59,43 @@ include "./inc/inc.page_header.php";
 				<!-- contenuto-->
 				<?php
                   
-				  if ($id)	{
+				  
                      //print_array($Errors);
-					 if ($Errors)
-						$tabella->set_errors($Errors);
-					 if (!count($Errors)) $tabella->set_dati("id=$id");
-					 else
-						$tabella->set_dati($_POST);
-				}
-				$tabella->edita();?>
+                                if ($Errors)
+                                       $tabella->set_errors($Errors);
+                                if (!count($Errors)){
+                                       $tabella->array_dati=$res;
+                                       $tabella->num_record=count($res);
+                                }
+                                else
+                                       $tabella->set_dati($_POST);
+                                   
+				$tabella->elenco();?>
 				<!-- fine contenuto-->
 			</td>
 		  </tr> 
 		</TABLE>
-		<input name="active_form" type="hidden" value="pe.e_enti.php">
+		<input name="active_form" type="hidden" value="pe.e_tipopratica_scadenze.php">
         <input name="mode" type="hidden" value="<?=$_POST["mode"]?>">
-        <input name="id" type="hidden" value="<?=$id?>">
+        <input name="codice" type="hidden" value="<?=$codice?>">
 		</FORM>		
 
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 <?
-}elseif($modo=="view") {
-		$tabella=new Tabella_v("$tabpath/$file_config",$modo);?>
-		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
-		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
-			<TR> 
-				<TD> 
-				<!-- contenuto-->
-			  <?$tabella->set_titolo("Scadenza","modifica",Array("id"=>$id));
-				$tabella->set_dati("id=".$id);
-				$tabella->get_titolo();				
-				$tabella->tabella();
-			  ?>			
-				</TD>
-			</TR>
-		</TABLE>
-<?}
+}
 else {
 	$tabella=new Tabella_h("$tabpath/$file_config",'list');
-	$tabella->set_titolo("Elenco degle Scadenze","nuovo");
-	$tabella->set_dati();
-	
+	$tabella->set_titolo("Elenco degle Scadenze - $nomeScadenza","modifica",Array("codice"=>$codice));
+	$tabella->array_dati=$res;
+	$tabella->num_record=count($res);
+        //print_array($tabella);
 	?>
 	<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
 		<TR> 
 			<TD> 
 				
 				<?php
-                $tabella->get_titolo();
+                                $tabella->get_titolo();
 				$tabella->elenco();?>
 			</TD>
 		</TR>

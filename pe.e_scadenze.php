@@ -88,7 +88,7 @@ include "./inc/inc.page_header.php";
 					icons:{}
 				}).bind('click',function(event){
 					event.preventDefault();
-					linkToView('pe.e_tipopratica_scadenze.php',{codice:$('#codice').val()});
+					linkToList('pe.e_tipopratica_scadenze.php',{codice:$('#codice').val()});
 				});
 			});
 		</script>

@@ -27,7 +27,7 @@ else
 </script>
 </head>
 <body  background="">
-<?
+<?php
 
 
 $form="pareri";

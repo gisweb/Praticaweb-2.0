@@ -206,8 +206,8 @@ class wordDoc {
                                 FROM 
                                     (select B.nome as sezione,coalesce(foglio,'')as foglio,array_to_string(array_agg(coalesce(mappale,'')),',') as mappali from pe.curbano A left join nct.sezioni B using(sezione) WHERE pratica = ? GROUP BY 1,2) AS FOO",
             "oneri"=>           "SELECT 
-                                    totali.cc + totali.b1 + totali.b2 - totali.scb1 - totali.scb2 AS totale, 
-                                    totali.quietanza AS quietanza, totali.data as data_quietanza, oblazione, q_oblazione as quietanza_, data_oblazione, indennita, totali.q_indennita as quietanza_indennita, data_indennita
+                                    totali.cc + totali.b1 + totali.b2 - totali.scb1 - totali.scb2 AS oneri, 
+                                    totali.quietanza AS oneri_quietanza, totali.data as oneri_data_quietanza, oblazione, q_oblazione as oblazione_quietanza,data_oblazione as oblazione_data_quietanza, indennita, totali.q_indennita as indennita_quietanza, data_indennita as indenita_data_quietanza
                                 FROM 
                                     oneri.totali
                                 WHERE 

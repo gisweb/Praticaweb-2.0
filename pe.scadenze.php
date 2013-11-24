@@ -1,11 +1,14 @@
-<?
+<?php
 include_once("login.php");
-include "./lib/tabella_h.class.php";
+require_once APPS_DIR."lib/tabella_h.class.php";
+require_once APPS_DIR."lib/tabella_v.class.php";
 $tabpath="pe";
 
 $idpratica=$_REQUEST["pratica"];
-$modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
+$id=$_REQUEST["id"];
+$modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('list');
 $today=date('j-m-y'); 
+$filetab="$tabpath/scadenze";
 ?>
 
 <html>
@@ -17,28 +20,60 @@ $today=date('j-m-y');
 </head>
 <body>
 <?php
+if(in_array($modo,Array("edit","new"))){
 //-<<<<<<<<<<<<<<<<<<<<<< VISUALIZZA ITER >>>>>>>>>>>>>>>>>>>>>>>>>>>----------------------->	
-	$tabella=new tabella_h("$tabpath/scadenze");?>
-	<H2 class="blueBanner">Scadenze della pratica</H2>
-	<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
-	  <TR> 
-		<TD> 
-		<!-- contenuto-->
-<?
-	$sql="SELECT id,nome from pe.e_iter order by ordine";	
-	$tabella->connettidb();
-	$tabella->db->sql_query($sql);	
-	$iter=$tabella->db->sql_fetchrowset();
-	for($i=0;$i<count($iter);$i++){
-		$tabella->set_titolo($iter[$i]["nome"]);
-		$tabella->get_titolo();
-		$table="<table class=\"stiletabella\" width=\"90%\"><tr><td><img src=\"get_scadenza.php?pratica=$idpratica&iter=".$iter[$i]["id"]."\" border=\"0\"></td></tr></table>"; 
-		echo $table;
-	}
-				?>
+    include "./inc/inc.page_header.php";
+    unset($_SESSION["ADD_NEW"]);		
+    $tabella=new tabella_v($filetab,$modo);
+    if($Errors){
+        $tabella->set_errors($Errors);
+        $tabella->set_dati($_POST);
+        $titolo="";
+    }
+    elseif ($modo=="edit"){	
+        $tabella->set_dati("id=$id");
+    }
+    ?>	
+    <!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN EDITING  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
+    <FORM height=0 method="post" action="praticaweb.php">
+	<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">		 
+            <TR>
+                <td>
+						<!-- contenuto-->
+<?php
+        
+        $tabella->edita();
+?>
 		<!-- fine contenuto-->
-		 </TD>
-	     </TR>
-	</TABLE>	
+								</TD>
+						</TR>
+
+				</TABLE>
+		<input name="active_form" type="hidden" value="pe.scadenze.php">
+		<input name="mode" type="hidden" value="<?=$modo?>">
+
+		</FORM>	
+<?php
+include "./inc/inc.window.php";
+}
+else{
+    
+    $tabella=new tabella_h("$tabpath/scadenze","list");
+    $tabella->set_titolo("Elenco degle Scadenze","nuovo");
+    $tabella->set_dati("pratica=$idpratica");
+?>    
+    <TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
+        <TR> 
+            <TD> 
+<?php
+    $tabella->get_titolo();
+    $tabella->elenco();
+?>
+            </TD>
+        </TR>
+    </TABLE>
+<?php        
+}
+?>
 </body>
 </html>
