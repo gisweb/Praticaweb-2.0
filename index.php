@@ -88,7 +88,7 @@ $menu=0;
       <IMG height=1 src="images/gray_light.gif" width="100%"  vspace=1><BR>
 
       <P class=footer><IMG height=1 alt="" src="images/pixel.gif"  space=4><BR>
-        <table class="footer" cellspacing="10"><tr><td>Ultima modifica: <a href="#">18/04/2012</a></td><td>Telefono : 010-2474491</td><td>email : <a href="mailto:assistenza@gisweb.it">gisweb</a></td></tr></table><BR>
+       <!-- <table class="footer" cellspacing="10"><tr><td>Ultima modifica: <a href="#">18/04/2012</a></td><td>Telefono : 010-2474491</td><td>email : <a href="mailto:assistenza@gisweb.it">gisweb</a></td></tr></table><BR>-->
       </P>
  </TR>
   </TBODY> 
