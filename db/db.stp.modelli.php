@@ -6,7 +6,7 @@ if (in_array($azione, Array("salva","elimina"))){
     require_once 'db.savedata.php';
     $modo=($azione=='elimina')?("list"):("view");
     $id=($_SESSION["ADD_NEW"])?($_SESSION["ADD_NEW"]):($_REQUEST["id"]);
-    if ($_FILES["file"]){
+    if ($_FILES['file']['tmp_name']){
         $fName=$_REQUEST['nome'];
         if (file_exists(MODELLI. $fName)) $r=unlink (MODELLI. $fName);
         if (!$r) echo "<p>Impossibile rimuovere il file ".MODELLI."$fName</p>";

@@ -1,4 +1,5 @@
-<?/*
+<?php
+/*
 Descrizione della classe e dei metodi
 
 

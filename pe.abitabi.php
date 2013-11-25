@@ -1,4 +1,5 @@
-<?include_once("login.php");
+<?
+include_once("login.php");
 include "./lib/tabella_v.class.php";
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $tabpath="pe";

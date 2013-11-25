@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("login.php");
 include "./lib/tabella_v.class.php";
 $tabpath="pe";

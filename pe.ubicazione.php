@@ -1,4 +1,4 @@
-<?
+<?php
 //Stesso codice che utilizzo in ubicazione.php, progetto.php, asservimento.php
 include_once("login.php");
 $tabpath="pe";
@@ -57,7 +57,7 @@ function elimina(id){
 
 <body>
 
-<?
+<?php
 if (($modo=="edit") or ($modo=="new")){
 		$tab_new=$_POST["tab_new"].".tab";
 		$tab_edit=$_POST["tab_edit"].".tab";
@@ -85,7 +85,7 @@ if (($modo=="edit") or ($modo=="new")){
 				<input type="hidden" name="tab_new" value=<?=$_POST["tab_new"]?>>
 				<input type="hidden" name="tab_edit" value=<?=$_POST["tab_edit"]?>>
 				<input type="hidden" name="titolo" value=<?=$_POST["titolo"]?>>
-				<?
+				<?php
 				
 				
 				if($Errors){
@@ -101,7 +101,8 @@ if (($modo=="edit") or ($modo=="new")){
 		  </tr> 
 		</TABLE>
 			
-		<?php include "./inc/inc.window.php"; // contiene la gesione della finestra popup
+<?php 
+                include "./inc/inc.window.php"; // contiene la gesione della finestra popup
 
 }else{// modalità vedi
 ?>
@@ -109,23 +110,26 @@ if (($modo=="edit") or ($modo=="new")){
 
 		<H2 class="blueBanner">Ubicazione dell'intervento</H2>
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
-		<?$array_file_tab=array("$tabpath/indirizzi","$tabpath/catasto_terreni","$tabpath/catasto_urbano");
-		$array_titolo=array("Indirizzi","Catasto Terreni","Catasto Urbano");
-		for($i=0;$i<3;$i++){
-			  $file_tab=$array_file_tab[$i];
-			  $titolo=$array_titolo[$i];?>
+<?php
+$array_file_tab=array("$tabpath/indirizzi","$tabpath/catasto_terreni","$tabpath/catasto_urbano");
+$array_titolo=array("Indirizzi","Catasto Terreni","Catasto Urbano");
+for($i=0;$i<3;$i++){
+    $file_tab=$array_file_tab[$i];
+    $titolo=$array_titolo[$i];
+?>
 		  <tr> 
 			<td> 
 			<!--  intestazione-->
-			<?$tabella=new Tabella_h($file_tab);
-			  $tabella->set_titolo($titolo,"modifica",array("titolo"=>$titolo,"tab_new"=>$file_tab,"tab_edit"=>$file_tab));
-			  $numrows=$tabella->set_dati("pratica=$idpratica;");
-			  $tabella->get_titolo();
-				  if ($numrows)	
-					$tabella->elenco();
-				else
-					print ("<p><b>Elenco vuoto</b></p>");
-			?>
+<?php
+    $tabella=new Tabella_h($file_tab);
+    $tabella->set_titolo($titolo,"modifica",array("titolo"=>$titolo,"tab_new"=>$file_tab,"tab_edit"=>$file_tab));
+    $numrows=$tabella->set_dati("pratica=$idpratica;");
+    $tabella->get_titolo();
+    if ($numrows)	
+        $tabella->elenco();
+    else
+        print ("<p><b>Elenco vuoto</b></p>");
+?>
 			<!-- fine intestazione-->
 			<br>
 			</td>
@@ -133,7 +137,9 @@ if (($modo=="edit") or ($modo=="new")){
 		<?}?>
 		  
 		</table>
-<?}?>
+<?php
+}
+?>
 
 </body>
 </html>
