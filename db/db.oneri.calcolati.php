@@ -143,14 +143,20 @@ if ($_POST["azione"]!="Elimina"){
 	print_debug($sql);
 }
 // Dopo aver aggiornato la tabella oneri.calcolati con l'ultimo calcolo devo aggiornare la tabella oneritotali contenente i dati complessivi
-// se questo è il primo calcolo devo aggiungere il record 
+// se questo Ã¨ il primo calcolo devo aggiungere il record 
 // se ho eliminato l'ultimo calcolo devo eliminare anche il record da oneri.totali
 
 
 
 if ($_POST["azione"]=="Elimina"){
-	$sql="delete from oneri.totali where pratica=".$_POST["pratica"];
+	$sql="SELECT count(*) as num from oneri.calcolati where pratica=".$_POST["pratica"];
+	//echo $sql;
 	if(!$db->sql_query($sql)) print_debug($sql);
+	$calcoli=$db->sql_fetchfield("num");
+       if ($calcoli==0){
+		$sql="delete from oneri.totali where pratica=".$_POST["pratica"];
+		if(!$db->sql_query($sql)) print_debug($sql);
+	}
 }
 
 $sql="SELECT count(*) as num from oneri.totali where pratica=".$_POST["pratica"];
