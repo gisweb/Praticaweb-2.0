@@ -1,4 +1,4 @@
-<?
+<?php
 //VERIFICARE IN BASE AL TIPO DI UTENTE I SERVIZI DISPONIBILI
 //se passo un idpratica punto alla pratica
 

@@ -18,19 +18,6 @@ function decode(&$item, &$key){
 	$item=(mb_detect_encoding($item)=='UTF-8' && FALSE)?(utf8_decode($item)):($item);
 }
 
-
-
-function parse_query($sql,$title=""){
-    $parser = new PHPSQLParser($sql, true);
-    foreach ($parser->parsed["SELECT"] as $v){
-        $key=($v["alias"])?($v["alias"]["name"]):($v["base_expr"]);
-	$res[$key]=Array("title"=>$key);
-    }
-    asort($res);
-    return ($title)?Array("title"=>$title,"isFolder"=>"true","key"=>$title,"children"=>array_values($res)):($res);
-}
-
-
 class wordDoc {
 	var $db;
 	var $modello;
@@ -97,7 +84,7 @@ class wordDoc {
                     $this->data[$key]=$ris;
                 }
                 
-                
+                print_debug($this->data,null,"STAMPE-PRE");
 		$customData=$this->data;
                 
 		switch($this->type){
@@ -197,6 +184,18 @@ class wordDoc {
                                     pe.indirizzi 
                                 WHERE
                                     pratica=?;",
+            "elenco_richiedenti"=>      "SELECT  
+                                    array_to_string(array_agg(coalesce(ragsoc,coalesce(app||' ','')||cognome || coalesce(' '||nome),'')),', ') as elenco_richiedenti
+                                FROM 
+                                    pe.soggetti 
+                                WHERE
+                                    pratica=? AND voltura=0 AND comunicazioni=1 AND richiedente=1",
+            "elenco_progettisti"=>      "SELECT  
+                                    array_to_string(array_agg(coalesce(ragsoc,coalesce(app||' ','')||cognome || coalesce(' '||nome),'')),', ') as elenco_progettisti
+                                FROM 
+                                    pe.soggetti 
+                                WHERE
+                                    pratica=? AND voltura=0 AND comunicazioni=1 AND progettista=1",
             "elenco_ct"=>       "SELECT 
                                     trim(coalesce('Sezione: '||sezione,'')||coalesce(' Foglio: '||foglio,'')||coalesce(' Mappali: '||mappali,'')) as elenco_ct
                                 FROM 
@@ -206,8 +205,17 @@ class wordDoc {
                                 FROM 
                                     (select B.nome as sezione,coalesce(foglio,'')as foglio,array_to_string(array_agg(coalesce(mappale,'')),',') as mappali from pe.curbano A left join nct.sezioni B using(sezione) WHERE pratica = ? GROUP BY 1,2) AS FOO",
             "oneri"=>           "SELECT 
-                                    totali.cc + totali.b1 + totali.b2 - totali.scb1 - totali.scb2 AS oneri, 
-                                    totali.quietanza AS oneri_quietanza, totali.data as oneri_data_quietanza, oblazione, q_oblazione as oblazione_quietanza,data_oblazione as oblazione_data_quietanza, indennita, totali.q_indennita as indennita_quietanza, data_indennita as indenita_data_quietanza
+                                    to_char(totali.cc + totali.b1 + totali.b2 - totali.scb1 - totali.scb2,'999G999G999D99') AS oneri_totale,
+                                    to_char(totali.cc,'999G999G999D99') as oneri_cc,
+                                    to_char(b1,'999G999G999D99') as oneri_urb_1,
+                                    to_char(b2,'999G999G999D99') as oneri_urb_2,
+                                    to_char(scb1,'999G999G999D99') as oneri_scomputo_urb_1, 
+                                    to_char(scb2,'999G999G999D99') as oneri_scomputo_urb_2,
+                                    to_char((b1+b2-scb1-scb2),'999G999G999D99') as oneri_urb,
+                                    to_char(((b1+b2)/10)::float,'999G999G999D99') as oneri_urb_a15_lr15_1989
+                                    totali.quietanza AS oneri_quietanza, totali.data as oneri_data_quietanza,
+                                    to_char(oblazione,'999G999G999D99') as oblazione_totali, q_oblazione as oblazione_quietanza,data_oblazione as oblazione_data_quietanza,
+                                    to_char(indennita,'999G999G999D99') as indennita_totali, totali.q_indennita as indennita_quietanza, data_indennita as indenita_data_quietanza
                                 FROM 
                                     oneri.totali
                                 WHERE 
