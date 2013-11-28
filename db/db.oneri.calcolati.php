@@ -138,7 +138,7 @@ if ($_POST["azione"]!="Elimina"){
 	$B2=$B2*$sup;
 	
 	$sql="update oneri.calcolati set cc=$CC,b1=$B1,b2=$B2 where id=$id;"; 
-    //echo "<p>$sql</p>";
+        echo "<p>$sql</p>";
 	$db->sql_query($sql);
 	print_debug($sql);
 }
@@ -162,7 +162,7 @@ if ($_POST["azione"]=="Elimina"){
 $sql="SELECT count(*) as num from oneri.totali where pratica=".$_POST["pratica"];
 if(!$db->sql_query($sql)) print_debug($sql);
 $totali=$db->sql_fetchfield("num");
-$sql=(!$totali)?("insert into oneri.totali (pratica,cc,b1,b2,calcolo) select pratica,sum(cc),sum(b1),sum(b2),1 from oneri.calcolati where pratica=".$_POST["pratica"]." group by pratica;"):("update oneri.totali set cc=(select sum(calcolati.cc) from oneri.calcolati where pratica=".$_POST["pratica"]."),b1=(select sum(calcolati.b1) from oneri.calcolati where pratica=".$_POST["pratica"]."),b2=(select sum(calcolati.b2) from oneri.calcolati where pratica=".$_POST["pratica"]."),calcolo=1 where pratica=".$_POST["pratica"]);
+    $sql=(!$totali)?("insert into oneri.totali (pratica,cc,b1,b2,calcolo) select pratica,sum(cc),sum(b1),sum(b2),1 from oneri.calcolati where pratica=".$_POST["pratica"]." group by pratica;"):("update oneri.totali set cc=(select sum(calcolati.cc) from oneri.calcolati where pratica=".$_POST["pratica"]."),b1=(select sum(calcolati.b1) from oneri.calcolati where pratica=".$_POST["pratica"]."),b2=(select sum(calcolati.b2) from oneri.calcolati where pratica=".$_POST["pratica"]."),calcolo=1 where pratica=".$_POST["pratica"]);
 //echo "<p>$sql</p>";
 if(!$db->sql_query($sql)) print_debug($sql);
 

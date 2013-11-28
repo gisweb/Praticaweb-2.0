@@ -372,8 +372,9 @@ class wordDoc {
                                     INNER JOIN pe.e_documenti B ON(A.documento=B.id) 
                                 WHERE 
                                     pratica=?",
-			"oneri_dettaglio"=>	"SELECT 
+            "oneri_dettaglio"=>	"SELECT 
 A.tabella, A.anno,B.descrizione as funzione, C.descrizione as intervento, perc, trim(to_char(sup,'999G999G999D99')) as superficie, cc, b1, b2, 
+trim(to_char(cc / sup ,'999G999G999D99')) as mq_cc, trim(to_char(b1 / sup ,'999G999G999D99')) as mq_b1,trim(to_char(b2 / sup ,'999G999G999D99')) as mq_b2,
 CASE 
 	WHEN (coalesce(c1,0) + coalesce(c2,0) + coalesce(c3,0) + coalesce(c4,0))=0 THEN 'Nessuna riduzione'
 	WHEN coalesce(c1,0) = 0 THEN ''
