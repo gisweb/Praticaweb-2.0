@@ -204,7 +204,7 @@ class wordDoc {
                                     trim(coalesce('Sezione: '||sezione,'')||coalesce(' Foglio: '||foglio,'')||coalesce(' Mappali: '||mappali,'')) as elenco_cu
                                 FROM 
                                     (select B.nome as sezione,coalesce(foglio,'')as foglio,array_to_string(array_agg(coalesce(mappale,'')),',') as mappali from pe.curbano A left join nct.sezioni B using(sezione) WHERE pratica = ? GROUP BY 1,2) AS FOO",
-            "oneri"=>           "SELECT 
+            /*"oneri"=>           "SELECT 
                                     to_char(totali.cc + totali.b1 + totali.b2 - totali.scb1 - totali.scb2,'999G999G999D99') AS oneri_totale,
                                     to_char(totali.cc,'999G999G999D99') as oneri_cc,
                                     to_char(b1,'999G999G999D99') as oneri_urb_1,
@@ -219,7 +219,7 @@ class wordDoc {
                                 FROM 
                                     oneri.totali
                                 WHERE 
-                                    pratica=?;",
+                                    pratica=?;",*/
             "agibilita"=>       "SELECT 
                                     numero_rich as numero_richiesta_agi,prot_rich as prot_richiesta_agi,data_rich as data_richiesta_agi,numero_doc as numero_agi,prot_doc as protocollo_agi,data_ril as data_agi
                                 FROM 
@@ -371,7 +371,31 @@ class wordDoc {
                                     pe.allegati A 
                                     INNER JOIN pe.e_documenti B ON(A.documento=B.id) 
                                 WHERE 
-                                    pratica=?"
+                                    pratica=?",
+			"oneri_dettaglio"=>	"SELECT 
+A.tabella, A.anno,B.descrizione as funzione, C.descrizione as intervento, perc, trim(to_char(sup,'999G999G999D99')) as superficie, cc, b1, b2, 
+CASE 
+	WHEN (coalesce(c1,0) + coalesce(c2,0) + coalesce(c3,0) + coalesce(c4,0))=0 THEN 'Nessuna riduzione'
+	WHEN coalesce(c1,0) = 0 THEN ''
+	ELSE 'Mancato Aggravio del carico insediativo '||trim(to_char((coalesce(c1,0)),'999G999G999'))||'%' END AS aggravio_carico_insediativo,
+CASE 
+	WHEN (coalesce(c2,0) + coalesce(c3,0) + coalesce(c4,0))=0 THEN ''
+	ELSE 'Incentivo Comunale '||trim(to_char((coalesce(c2,0) + coalesce(c3,0) + coalesce(c4,0)),'999G999G999'))||'%' END as incentivo_comunale,
+	
+CASE 
+	WHEN coalesce(d1,0) + coalesce(d2,0) = 0 THEN 'Incremento: Nessuno'
+	WHEN coalesce(d1,0) = 0 THEN ''
+	ELSE 'Caratteristiche Tipologiche Superiori : '||trim(to_char((coalesce(d1,0)),'999G999G999'))||'%' END AS tipologie_superiori,
+CASE 
+	WHEN coalesce(d2,0) =0 THEN ''
+	ELSE 'Interventi in Area non Urbanizzata (SUA) '||trim(to_char((coalesce(d2,0)),'999G999G999'))||'%' END as interventi_in_sua,	
+ e1, e2, degradato, note
+FROM oneri.calcolati A
+INNER JOIN oneri.e_tariffe B USING(tabella,anno)
+INNER JOIN oneri.e_interventi C ON (A.tabella=C.tabella AND A.intervento=C.valore)
+WHERE 
+                                    pratica=?  ;
+"
     )
 );
         }
