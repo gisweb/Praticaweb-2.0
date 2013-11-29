@@ -164,6 +164,7 @@ class wordDoc {
             return Array(
             "single"=>Array(
             "data_odierna"=>    "SELECT CURRENT_DATE as oggi;",
+            "dirigente"=>       "SELECT dirigente FROM stp.dirigente WHERE pratica=?; ",
             "pratica"=>         "SELECT  numero, B.nome as tipo, C.descrizione as intervento, anno, 
                                     data_presentazione, protocollo, data_prot as data_protocollo, protocollo_int, data_prot_int,  
                                     D.nome as responsabile_procedimento, data_resp as data_responsabile, com_resp as protocollo_com_rdp, data_com_resp as data_comunicazione_responsabile,
@@ -373,8 +374,15 @@ class wordDoc {
                                 WHERE 
                                     pratica=?",
             "oneri_dettaglio"=>	"SELECT 
-A.tabella, A.anno,B.descrizione as funzione, C.descrizione as intervento, perc, trim(to_char(sup,'999G999G999D99')) as superficie, cc, b1, b2, 
-trim(to_char(cc / sup ,'999G999G999D99')) as mq_cc, trim(to_char(b1 / sup ,'999G999G999D99')) as mq_b1,trim(to_char(b2 / sup ,'999G999G999D99')) as mq_b2,
+A.tabella, A.anno,B.descrizione as funzione, C.descrizione as intervento, 
+ltrim(trim(to_char(coalesce(perc,0),'999G999G999D99')),',00') as perc, 
+ltrim(trim(to_char(coalesce(sup,0),'999G999G999D99')),',00') as superficie, 
+ltrim(trim(to_char(coalesce(cc,0),'999G999G999D99')),',00') as cc, 
+ltrim(trim(to_char(coalesce(b1,0),'999G999G999D99')),',00') as b1, 
+ltrim(trim(to_char(coalesce(b2,0),'999G999G999D99')),',00') as b2, 
+ltrim(trim(to_char(coalesce(cc,0) / coalesce(sup,1) ,'999G999G999D99')),',00') as mq_cc, 
+ltrim(trim(to_char(coalesce(b1,0) / coalesce(sup,1) ,'999G999G999D99')),'00') as mq_b1,
+ltrim(trim(to_char(coalesce(b2,0) / coalesce(sup,1) ,'999G999G999D99')),'00') as mq_b2,
 CASE 
 	WHEN (coalesce(c1,0) + coalesce(c2,0) + coalesce(c3,0) + coalesce(c4,0))=0 THEN 'Nessuna riduzione'
 	WHEN coalesce(c1,0) = 0 THEN ''
