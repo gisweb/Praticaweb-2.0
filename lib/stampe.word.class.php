@@ -198,11 +198,13 @@ class wordDoc {
                                 WHERE
                                     pratica=? AND voltura=0 AND comunicazioni=1 AND progettista=1",
             "elenco_ct"=>       "SELECT 
-                                    trim(coalesce('Sezione: '||sezione,'')||coalesce(' Foglio: '||foglio,'')||coalesce(' Mappali: '||mappali,'')) as elenco_ct
+                                    trim(coalesce('Sezione: '||sezione,'')||coalesce(' Foglio: '||foglio,'')||coalesce(' Mappali: '||mappali,'')) as elenco_ct,
+                                    trim(coalesce('Sezione: '||sezione,'')||coalesce(' Foglio: '||foglio,'')||coalesce(' Mappali: '||mappali,'')) as elenco_terreni
                                 FROM 
                                     (select B.nome as sezione,coalesce(foglio,'')as foglio,array_to_string(array_agg(coalesce(mappale,'')),',') as mappali from pe.cterreni A left join nct.sezioni B using(sezione) WHERE pratica = ? GROUP BY 1,2) AS FOO",
             "elenco_cu"=>      "SELECT 
-                                    trim(coalesce('Sezione: '||sezione,'')||coalesce(' Foglio: '||foglio,'')||coalesce(' Mappali: '||mappali,'')) as elenco_cu
+                                    trim(coalesce('Sezione: '||sezione,'')||coalesce(' Foglio: '||foglio,'')||coalesce(' Mappali: '||mappali,'')) as elenco_cu,
+                                    trim(coalesce('Sezione: '||sezione,'')||coalesce(' Foglio: '||foglio,'')||coalesce(' Mappali: '||mappali,'')) as elenco_urbano
                                 FROM 
                                     (select B.nome as sezione,coalesce(foglio,'')as foglio,array_to_string(array_agg(coalesce(mappale,'')),',') as mappali from pe.curbano A left join nct.sezioni B using(sezione) WHERE pratica = ? GROUP BY 1,2) AS FOO",
             /*"oneri"=>           "SELECT 
@@ -226,7 +228,7 @@ class wordDoc {
                                 FROM 
                                     pe.abitabi
                                 WHERE 
-                                    pratica=?",
+                                    pratica=? ",
             "progetto"=>        "SELECT 
                                     destuso1 as dest_uso_primaria,destuso2 as dest_uso_secondaria,tavole
                                 FROM
@@ -373,6 +375,13 @@ class wordDoc {
                                     INNER JOIN pe.e_documenti B ON(A.documento=B.id) 
                                 WHERE 
                                     pratica=?",
+            "allegati_mancanti"=>        "SELECT 
+                                    coalesce(B.descrizione,B.nome) as documento,allegato,mancante,integrato,sostituito
+                                FROM 
+                                    pe.allegati A 
+                                    INNER JOIN pe.e_documenti B ON(A.documento=B.id) 
+                                WHERE 
+                                    pratica=? AND mancante=1",
             "oneri_dettaglio"=>	"SELECT 
 A.tabella, A.anno,B.descrizione as funzione, C.descrizione as intervento, 
 ltrim(trim(to_char(coalesce(perc,0),'999G999G999D99')),',00') as perc, 

@@ -49,12 +49,18 @@ $substitutions=Array(
     "pratica.dirigente"=>"dirigente",
     "pratica.el_urbano"=>"elenco_cu",
     "pratica.el_terreni"=>"elenco_ct",
-	"oneri.cc"=>"oneri_cc",
+    "data_prot"=>"data_protocollo",
+    "data_ce"=>"data_rilascio_ce",
+    "data_cei"=>"data_rilascio_cei",
+    "elenco_urbano"=>"elenco_cu",
+    "elenco_terreni"=>"elenco_ct",
+    
+	/*"oneri.cc"=>"oneri_cc",
 	"oneri.totale"=>"oneri_totale",
 	"oneri.ou_pr90p"=>"",
 	"oneri.ou_sec93p"=>"",
-	"oneri.ou_sec7p"=>""
-	"oneri.ou_pr10p"=>"oneri_urb_a15_lr15_1989"
+	"oneri.ou_sec7p"=>"",
+	"oneri.ou_pr10p"=>"oneri_urb_a15_lr15_1989"*/
 );
 $i=0;
 $tot=count($files);
