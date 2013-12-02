@@ -6,7 +6,7 @@ include_once ("login.php");
 
 $file = TAB_ELENCO."elenco_index.tab";
 $menu=0;
-
+$last_change=shell_exec("git log -1 --pretty=format:'%ci'");
 ?>
 
 <html>
@@ -88,7 +88,7 @@ $menu=0;
       <IMG height=1 src="images/gray_light.gif" width="100%"  vspace=1><BR>
 
       <P class=footer><IMG height=1 alt="" src="images/pixel.gif"  space=4><BR>
-       <!-- <table class="footer" cellspacing="10"><tr><td>Ultima modifica: <a href="#">18/04/2012</a></td><td>Telefono : 010-2474491</td><td>email : <a href="mailto:assistenza@gisweb.it">gisweb</a></td></tr></table><BR>-->
+        <table class="footer" cellspacing="10"><tr><td>Ultima modifica: <a href="#"><?php echo $last_change?></a></td><td>Telefono : 010-2474491</td><td>email : <a href="mailto:assistenza@gisweb.it">gisweb</a></td></tr></table><BR>
       </P>
  </TR>
   </TBODY> 

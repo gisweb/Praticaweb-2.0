@@ -1,4 +1,4 @@
-<?
+<?php
 //Nota conservo il tipo per poter verificere se Ãš cambiato
 include_once("login.php");
 $tabpath="pe";
