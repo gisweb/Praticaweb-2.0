@@ -89,7 +89,10 @@ if (($modo=="edit") or ($modo=="new")){
 <?php
         $tabella->set_titolo("Aggiungi una nuova Nota","nuovo");
         $tabella->get_titolo();
-        $tabella->elenco();
+        if ($tabella->num_record) 
+            $tabella->elenco();
+        else
+            print ("<p><b>Nessuna Nota Salvata</b></p>");
         print "<BR>";
 	//if ($tabella->editable) print($tabella->elenco_stampe());
 ?>
