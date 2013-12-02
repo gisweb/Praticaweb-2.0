@@ -69,9 +69,10 @@ else{
     $tabella->get_titolo();
     if ($tabella->num_record) 
             $tabella->elenco();
-    else
+    else{
         print ("<p><b>Nessun Scadenza Impostata</b></p>");
-    $tabella->elenco();
+    }
+    
 ?>
             </TD>
         </TR>
