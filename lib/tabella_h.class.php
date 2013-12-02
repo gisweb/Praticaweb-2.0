@@ -32,6 +32,7 @@ function get_cella($row,$col){
 	$valore=htmlspecialchars($this->array_dati[$row][$nome], ENT_QUOTES,"UTF-8");//valore del campo
 	$w=$this->def_col[$col][2];//larghezza del campo
 	$tipo=trim($this->def_col[$col][3]);//tipo del campo
+        $classe=($this->array_dati[$row]["row_class"])?(' class="'.$this->array_dati[$row]["row_class"].'"'):("");
 	//echo "<p>Riga $row $nome : $valore</p>";
 	switch ($tipo){//tipo campo in configfile
 		case "idriga":
@@ -39,52 +40,51 @@ function get_cella($row,$col){
 			break;
 		case "pratica":
 		case "text":
-                    
 			$valore=html_entity_decode($valore);
-			$retval="<td>$valore</td>\n";
+			$retval="<td$classe>$valore</td>\n";
 			break;
 			
 	//	Modificato Marco
 		case "ora":
 			$valore=number_format($dati[$campo],2, ':', '');
 			if ($valore!=0)	
-				$retval="<td>$valore</td>\n";
+				$retval="<td$classe>$valore</td>\n";
 			else
-				$retval="<td>---</td>\n";
+				$retval="<td$classe>---</td>\n";
 			break;
 		case "numero":
 			$valore=number_format($valore,4, ',', '.');
 			if ($valore!=0)	
-				$retval="<td>$valore</td>\n";
+				$retval="<td$classe>$valore</td>\n";
 			else
-				$retval="<td>---</td>\n";
+				$retval="<td$classe>---</td>\n";
 			break;
 			
 		case "valuta":
 			//echo("<br>Formatto valuta : $valore<br>");
 			if ($valore){
 				$valore=number_format($valore,2, ',', '.');
-				$retval="<td> $valore</td>\n";
+				$retval="<td$classe> $valore</td>\n";
 			}
 			else
-				$retval="<td>---</td>\n";
+				$retval="<td$classe>---</td>\n";
 			break;
 		case "superficie":
 			if ($valore!=0)	
-				$retval="<td>$valore mq</td>\n";
+				$retval="<td$classe>$valore mq</td>\n";
 			else
-				$retval="<td>---</td>\n";
+				$retval="<td$classe>---</td>\n";
 			break;
 		case "volume":
 			if ($valore!=0)	
-				$retval="<td>$valore mc</td>\n";
+				$retval="<td$classe>$valore mc</td>\n";
 			else
-				$retval="<td>---</td>\n";
+				$retval="<td$classe>---</td>\n";
 			break;
 	// Fine Modifica
 		case "data":
 			$data=$this->date_format(stripslashes($valore));
-			$retval="<td>$data</td>\n";
+			$retval="<td$classe>$data</td>\n";
 			break;	
 			
 		case "checkbox":
@@ -107,45 +107,47 @@ function get_cella($row,$col){
 			$retval="<td align=\"center\" valign=\"middle\" width=\"7\"><input width=\"7\" type=\"radio\" name=\"$id\" value=\"$nome\" $selezionato></td>\n";
 			break;
 		case "btn_edit":
-            $prms=$this->getParams($row,$w);
-            $obj=json_encode($prms['params']);
-            $retval="";
-            if ($this->editable){
-                $retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
-                $retval.="<a href='javascript:linkToEdit(\"".$prms['form'].".php\",$obj)'><img title=\"Modifica\" src=\"images/edit.png\" border=\"0\"></a>";
-                $retval.="</td>\n";
-            }
-            break;
-        case "btn_pwview":
-            $prms=$this->getParams($row,$w);
-            $obj=json_encode($prms['params']);
-            $retval="";
-            if ($this->viewable){
-                $retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
-                $retval.="<a href='javascript:loadInto(\"".$prms['form'].".php\",$obj)'><img title=\"Visualizza\" src=\"images/view.png\" border=\"0\"></a>";
-                $retval.="</td>\n";
-            }
-            break;
-        case "btn_view":
-            $prms=$this->getParams($row,$w);
-            $obj=json_encode($prms['params']);
-            $retval="";
-            if ($this->viewable){
-                $retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
-                $retval.="<a href='javascript:linkToView(\"".$prms['form'].".php\",$obj)'><img title=\"Visualizza\" src=\"images/view.png\" border=\"0\"></a>";
-                $retval.="</td>\n";
-            }
-            break;
-        case "btn_delete":
-            $prms=$this->getParams($row,$w);
-            $obj=json_encode($prms['params']);
-            $retval="";
-            if ($this->editable){
-                $retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
-                $retval.="<a href='javascript:linkToDelete(\"".$prms['form'].".php\",$obj)'><img title=\"Elimina\" src=\"images/delete.png\" border=\"0\"></a>";
-                $retval.="</td>\n";
-            }
-            break;
+                    $prms=$this->getParams($row,$w);
+                    $obj=json_encode($prms['params']);
+                    $destination=($this->array_dati[$row]["row_form"])?($this->array_dati[$row]["row_form"]):($prms['form']);
+                    $retval="";
+                    if ($this->editable){
+                        $retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
+                        $retval.="<a href='javascript:linkToEdit(\"$destination.php\",$obj)'><img title=\"Modifica\" src=\"images/edit.png\" border=\"0\"></a>";
+                        $retval.="</td>\n";
+                    }
+                    break;
+                case "btn_pwview":
+                    $prms=$this->getParams($row,$w);
+                    $obj=json_encode($prms['params']);
+                    $retval="";
+                    if ($this->viewable){
+                        $retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
+                        $retval.="<a href='javascript:loadInto(\"".$prms['form'].".php\",$obj)'><img title=\"Visualizza\" src=\"images/view.png\" border=\"0\"></a>";
+                        $retval.="</td>\n";
+                    }
+                    break;
+                case "btn_view":
+                    $prms=$this->getParams($row,$w);
+                    $obj=json_encode($prms['params']);
+                    $retval="";
+                    $destination=($this->array_dati[$row]["row_form"])?($this->array_dati[$row]["row_form"]):($prms['form']);
+                    if ($this->viewable){
+                        $retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
+                        $retval.="<a href='javascript:linkToView(\"$destination.php\",$obj)'><img title=\"Visualizza\" src=\"images/view.png\" border=\"0\"></a>";
+                        $retval.="</td>\n";
+                    }
+                    break;
+                case "btn_delete":
+                    $prms=$this->getParams($row,$w);
+                    $obj=json_encode($prms['params']);
+                    $retval="";
+                    if ($this->editable){
+                        $retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
+                        $retval.="<a href='javascript:linkToDelete(\"".$prms['form'].".php\",$obj)'><img title=\"Elimina\" src=\"images/delete.png\" border=\"0\"></a>";
+                        $retval.="</td>\n";
+                    }
+                    break;
         case "btn_word":
             $prms=$this->getParams($row,$w);
             $obj=json_encode($prms['params']);
@@ -266,7 +268,7 @@ function get_cella($row,$col){
 			//$data=$this->date_format(stripslashes($valore));
                         $data=$valore;
 			$nome.="[".$this->array_dati[$row]["id"]."]";
-			$retval="<td><input $class maxLength=\"$w\" size=\"$w\"  class=\"textbox\" name=\"$nome\" id=\"data\" value=\"$data\">$help"; 
+			$retval="<td$classe><input $class maxLength=\"$w\" size=\"$w\"  class=\"textbox\" name=\"$nome\" id=\"data\" value=\"$data\">$help"; 
 			break;
 		case "multiple_yesno":
 			$nome.="[".$this->array_dati[$row]["id"]."]";
@@ -308,11 +310,11 @@ function get_cella($row,$col){
 		case "nota":
 			$nome.="[".$this->array_dati[$row]["id"]."]";
 			$imm="imm_".$nome;
-			$retval="<td>&nbsp;&nbsp;<img border=\"0\" id=\"$imm\" height=\"12\" src=\"images/left.gif\" onclick=\"show_note('$nome','$imm')\">&nbsp;<span id=\"$nome\" style=\"display:none\"><textarea name=\"$nome\" cols=\"$w\" rows=\"2\">$valore</textarea>$help</span>"; 
+			$retval="<td$classe>&nbsp;&nbsp;<img border=\"0\" id=\"$imm\" height=\"12\" src=\"images/left.gif\" onclick=\"show_note('$nome','$imm')\">&nbsp;<span id=\"$nome\" style=\"display:none\"><textarea name=\"$nome\" cols=\"$w\" rows=\"2\">$valore</textarea>$help</span>"; 
 			break;
 		case "selectdb":		//Restituisce il campo descrittivo di un elenco 
 			$size=explode("x",$w);
-			$retval="<td valign=\"middle\" width=\"$size[0]\">".$this->get_selectdb_value($valore,"id",$size[1],"opzione")."</td>";
+			$retval="<td$classe valign=\"middle\" width=\"$size[0]\">".$this->get_selectdb_value($valore,"id",$size[1],"opzione")."</td>";
 			break;	
 	}
 	return $retval;
@@ -329,16 +331,24 @@ $all="center";
 
 	//riga intestazione colonne ecreazione di def_col
 	for ($i=0;$i<$ncols;$i++){
-		$this->def_col[]=explode(";",$this->tab_config[$i][0]);//qui trovo la definizione della i-esima colonna 
-		$tabella.="\t\t\t\t<th align=\"$all\" width=\"".$this->def_col[$i][2]."\"><font face=\"Verdana\" color=\"$this->color_head_font\" size=\"1\"><b>".$this->def_col[$i][0]."</b></font></th>\n";		
-		$all="left";
+		$rowDef=explode(";",$this->tab_config[$i][0]);//qui trovo la definizione della i-esima colonna 
+                $this->def_col[]=$rowDef;
+                
+                if (!in_array($rowDef[3],Array("hidden"))){
+                    $tabella.="\t\t\t\t<th align=\"$all\" width=\"".$this->def_col[$i][2]."\"><font face=\"Verdana\" color=\"$this->color_head_font\" size=\"1\"><b>".$this->def_col[$i][0]."</b></font></th>\n";		
+                    $all="left";
+                }
 	}
 	$tabella.="\t\t\t</tr>\n";
 	
 	for ($i=0;$i<$this->num_record;$i++){
 		$tabella.="\t\t\t<tr>\n";//CICLO SULLE COLONNE
-		for ($j=0; $j<$ncols; $j++)
-			$tabella.="\t\t\t\t".$this->get_cella($i,$j);
+                for ($j=0; $j<$ncols; $j++){
+                    if (!in_array($this->tab_config[$i][3],Array("hidden"))){
+                        $tabella.="\t\t\t\t".$this->get_cella($i,$j);
+                    }
+                }
+			
 		 $tabella.="\t\t\t</tr>\n";
 		 $tabella.="\t\t\t<tr>\n\t\t\t\t<td colspan=\"$ncols\"><img src=\"images/gray_light.gif\" height=\"1\" width=\"99%\"></td>\n\t\t\t</tr>\n";			
 	}
@@ -375,8 +385,8 @@ function get_selectdb_value($val,$fld,$tab,$campo){
 			
 }
 function elenco_h($t){
-$ncols=$this->num_record;
-$all="center";
+        $ncols=$this->num_record;
+        $all="center";
 
 	//Intestazione delle colonne
 	$tabella="
@@ -386,13 +396,17 @@ $all="center";
 	//riga intestazione colonne ecreazione di def_col
 	for ($i=0;$i<$ncols;$i++){
 		$this->def_col[]=explode(",",$this->tab_config[$i][0]);//qui trovo la definizione della i-esima colonna 
-		$tabella.="\t\t\t\t<td width=\"".$this->def_col[$i][2]."\"><font face=\"Verdana\" color=\"$this->color_head_font\" size=\"1\"><b>".$this->def_col[$i][0]."</b></font></td>\n";		
-		$all="left";
+                 if (!in_array($this->tab_config[$i][3],Array("hidden"))){
+                    $tabella.="\t\t\t\t<td width=\"".$this->def_col[$i][2]."\"><font face=\"Verdana\" color=\"$this->color_head_font\" size=\"1\"><b>".$this->def_col[$i][0]."</b></font></td>\n";		
+                    $all="left";
+                 }
 	}
 	$tabella.="\t\t\t</tr>\n";
 	$tabella.="\t\t\t<tr><td valign=\"middle\" class=\"printhide\">\n<b>$t&nbsp;:&nbsp;</b>";//CICLO SULLE COLONNE
 	for ($i=0;$i<$this->num_record;$i++){
-		$tabella.="\t\t\t\t".$this->get_cella($i,0)."&nbsp;&nbsp;";
+                 if (!in_array($this->tab_config[$i][3],Array("hidden"))){
+                    $tabella.="\t\t\t\t".$this->get_cella($i,0)."&nbsp;&nbsp;";
+                 }
 	}
 	$tabella.="</td>\t\t\t</tr>\n";
 	$tabella.="\t\t\t<tr>\n\t\t\t\t<td colspan=\"$ncols\"><img src=\"images/gray_light.gif\" height=\"1\" width=\"99%\"></td>\n\t\t\t</tr>\n";			

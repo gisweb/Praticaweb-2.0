@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("login.php");
 include "./lib/tabella_h.class.php";
 $tabpath="pe";
@@ -48,7 +48,8 @@ function elimina(id){
 </script>
 </head>
 <body>
-<?if (($modo=="edit") or ($modo=="new") ){
+<?php
+if (($modo=="edit") or ($modo=="new") ){
 	//---<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  EDITA ELENCO ITER >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>------------------------------>
 		$tabella=new tabella_h("$tabpath/iter",$modo);
 		include "./inc/inc.page_header.php";?>
@@ -130,7 +131,7 @@ function elimina(id){
 			</tr>
 		</FORM>		
 		</TABLE>
-	<?
+	<?php
 }	
 else{
 	//-<<<<<<<<<<<<<<<<<<<<<< VISUALIZZA ITER >>>>>>>>>>>>>>>>>>>>>>>>>>>----------------------->	
@@ -155,7 +156,9 @@ else{
 	      </TR>
 		</TABLE>
 	
-<?}?>		
+<?php
+}
+?>		
 
 </body>
 </html>
