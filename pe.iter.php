@@ -7,6 +7,9 @@ $idpratica=$_REQUEST["pratica"];
 $modo=(isset($_REQUEST["mode"]) && $_REQUEST["mode"])?($_REQUEST["mode"]):('view');
 $today=date('j-m-y'); 
 
+$pr=new pratica($idpratica);
+$pr->createStructure();
+
 if (isset($_POST["azione"]) && $_POST["azione"]){
 	//$id=$_POST["idrow"];
 	$active_form=$_REQUEST["active_form"];
