@@ -138,7 +138,7 @@ if (($modo=="edit") or ($modo=="new") ){
 }	
 else{
 	//-<<<<<<<<<<<<<<<<<<<<<< VISUALIZZA ITER >>>>>>>>>>>>>>>>>>>>>>>>>>>----------------------->	
-		$tabella=new tabella_h("$tabpath/iter",$modo);
+		$tabella=new tabella_h("$tabpath/iter_pratica",$modo);
 
 		$nrec=$tabella->set_dati("pratica = $idpratica");	?>			
 		<H2 class="blueBanner">Iter della pratica</H2>

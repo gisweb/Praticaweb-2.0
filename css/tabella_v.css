@@ -41,3 +41,46 @@ table.stiletabella td.titolo{
 table.stiletabella td.intestazione{
     
 }
+
+.scadenze{
+    color:orange;
+    font-weight:bold !important; 
+}
+.in-scadenza{
+    color:red !important;
+    text-decoration: blink;
+    font-weight:bold !important; 
+    animation-name: blinker;
+    animation-duration: 1s;
+    animation-timing-function:linear;
+    animation-iteration-count: infinite;
+
+    -webkit-animation-name: blinker;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+}
+.scaduta{
+    color:green;
+    font-weight:bold !important; 
+}
+
+
+
+@-moz-keyframes blinker {  /* Decimal not necessary, 0 and 1 is enough */
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
+
+@-webkit-keyframes blinker {  
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
+
+@keyframes blinker {  
+    0% { opacity: 1.0; }
+    50% { opacity: 0.0; }
+    100% { opacity: 1.0; }
+}
