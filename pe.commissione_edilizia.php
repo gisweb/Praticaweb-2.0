@@ -1,17 +1,20 @@
-<?
+<?php
 include_once("login.php");
 include "./lib/tabella_v.class.php";
 $tabpath="pe";
+$config_file="ce";
 $idpratica=$_REQUEST["pratica"];
-$titolo=$_SESSION["TITOLO_$idpratica"];
+$modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
+$filetab="$tabpath/$config_file";
+$id=$_REQUEST["id"];
+$pageTitle="Commissione Edilizia - ".$_SESSION["TITOLO_".$idpratica];
 ?>
 <html>
 <head>
-<title>Pareri - <?=$_SESSION[$idpratica]["TITOLO"]?></title>
+<title><?php echo $pageTitle?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
-<SCRIPT language="javascript" src="src/http_request.js" type="text/javascript"></SCRIPT>
 
 <script LANGUAGE="JavaScript">
 function confirmSubmit()
@@ -23,25 +26,17 @@ if (agree)
 else
 	return false ;
 }
+
 </script>
 </head>
 <body  background="">
-<?
+<?php
 
-$modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
+
 $form="pareri";
 if (($modo=="edit") or ($modo=="new")){
-		include "./inc/inc.page_header.php";
-		unset($_SESSION["ADD_NEW"]);
-		$filetab="$tabpath/comm_edil";
-		if ($modo=="edit"){
-			$id=$_POST["id"];
-			$titolo=$_POST["nome_ente"];
-			$filtro="id=$id";
-		}
-		else{
-			$titolo="Inserisci nuovo parere";
-		}
+    include "./inc/inc.page_header.php";
+    unset($_SESSION["ADD_NEW"]);
 
 		//aggiungendo un nuovo parere uso pareri_edit che contiene anche l'elenco degli ENTI
 		$tabella=new tabella_v($filetab,$modo);?>	
@@ -49,43 +44,51 @@ if (($modo=="edit") or ($modo=="new")){
 		<FORM height=0 method="post" action="praticaweb.php">
 				<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">		
 						<TR> <!-- intestazione-->
-								<TD><H2 class="blueBanner"><?=$_SESSION[$idpratica]["TITOLO"]?></H2></TD>
+								<TD><H2 class="blueBanner"><?=$titolo?></H2></TD>
 						</TR> 
 						<TR>
 								<td>
 						<!-- contenuto-->
 		<?php
-		if($modo=="edit")
-				$tabella->set_dati($filtro);
-		$tabella->edita();
+		if($Errors){
+                        $tabella->set_errors($Errors);
+                        $tabella->set_dati($_POST);
+                }
+                elseif ($modo=="edit"){	
+                        $tabella->set_dati("id=$id");
+                }
+                $tabella->edita();
 		?>
 		<!-- fine contenuto-->
 								</TD>
 						</TR>
 
 				</TABLE>
-			<input name="active_form" type="hidden" value="pe.comm_edilizia.php">
-			<input name="mode" type="hidden" value="<?=$modo?>">	
+		<input name="active_form" type="hidden" value="pe.pareri.php">
+		<input name="mode" type="hidden" value="<?=$modo?>">
+
 		</FORM>	
-	<?include "./inc/inc.window.php";
+	<?php
+        include "./inc/inc.window.php";
 		
 	}else{
-		$tabella=new tabella_v("$tabpath/comm_edil");
+		$tabella=new tabella_v($filetab);
 		$tabella->set_errors($errors);
-		$numrec=$tabella->set_dati("pratica=$idpratica and ente in (2,8)");?>
+		$numrec=$tabella->set_dati("pratica=$idpratica and ente IN (SELECT DISTINCT id FROM pe.e_enti WHERE codice='ce')");?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
-		<H2 class="blueBanner">Elenco pareri</H2>
+		<H2 class="blueBanner">Elenco Pareri Commissione Locale del Paesaggio</H2>
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">
 		  <TR> 
 			<TD> 
 			<!-- contenuto-->
-				<?$tabella->set_titolo("nome_ente","modifica",array("nome_ente"=>"","id"=>""));
+				<?php
+                                $tabella->set_titolo("nome_ente","modifica",array("nome_ente"=>"","id"=>""));
 				for($i=0;$i<$numrec;$i++){
 					$tabella->curr_record=$i;
 					$tabella->idtabella=$tabella->array_dati[$i]['id'];
 					$tabella->get_titolo();
 					$tabella->tabella();
-					$tabella->elenco_stampe($form);		
+						
 				}
 					?>
 			<!-- fine contenuto-->
@@ -94,15 +97,19 @@ if (($modo=="edit") or ($modo=="new")){
 		  <TR> 
 			<TD> 
 			<!-- tabella nuovo inserimento-->
-				<?$tabella->set_titolo("Aggiungi un nuovo Parere","nuovo");?>
-				<?$tabella->get_titolo();?><BR>
-				
-				<?print($tabella->elenco_stampe("pe.comm_edilizia"));?>
+	<?php
+                $tabella->set_titolo("Aggiungi un nuovo Parere della Commisione Locale del Paesaggio","nuovo");
+                $tabella->get_titolo();
+                print "<BR>";
+				if ($tabella->editable) print($tabella->elenco_stampe());
+        ?>
 			<!-- fine tabella nuovo inserimento-->
 			</TD>
 		  </TR>			  
 		</TABLE>
-<?}?>
+<?php
+}
+?>
 
 </body>
 </html>

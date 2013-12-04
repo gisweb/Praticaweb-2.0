@@ -36,38 +36,25 @@ function readZippedXML($archiveFile, $dataFile) {
 $directory = DATA_DIR."..\\modelli\\";
 //get all text files with a .txt extension.
 $files = glob($directory . "*.docx");
-$debug=1;
+
 $i=0;
 $tot=count($files);
 $result=Array();
 echo "<ol>";
 for($j=0;$j<$tot;$j++){
 	$fileName=$files[$j];
-    $i++;
-    $zip = new ZipArchive;
-    if ($zip->open($fileName) === TRUE) {
-        $info=pathinfo($fileName);
-        $fName=$info["basename"];
-        //echo "<li>Considering File $fName $i di $tot:<li>";
-        $xmlString = $zip->getFromName('word/document.xml');
-        preg_match_all("|«([\w]+)»|U",$xmlString,$out, PREG_SET_ORDER);
 
-		for($k=0;$k<count($out);$k++){
-			$result[]=$out[$k][1];
-			if ($debug==1){
-				echo "<li>Found MergeField \"".$out[$k][1]."\" in file $fName</li>";
-			}
-		}
+	$info=pathinfo($fileName);
+	$fName=$info["filename"];
+	$ext=$info['extension'];
+	$tmp=explode('-',$fName);
+	if (count($tmp)==2){
+		$newName = $directory.trim($tmp[1])." - ".trim($tmp[0]).".$ext";
+		rename($files[$j],$newName);
+		echo "<li>Renaming \"".$files[$j]."\" To \"$newName\"</li>";
+	}
         
 
-        $zip->close();
-    } else {
-        echo "<li>Failed Opening $directory$fName</li>";
-    }
 }
 echo "</ol>";
-$res = array_unique($result);
-print "Array(<br>";
-foreach($res as $r) print "\"$r\"=>\"\",<br>";
-print ")";
 ?>

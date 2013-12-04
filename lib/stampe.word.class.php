@@ -207,22 +207,14 @@ class wordDoc {
                                     trim(coalesce('Sezione: '||sezione,'')||coalesce(' Foglio: '||foglio,'')||coalesce(' Mappali: '||mappali,'')) as elenco_urbano
                                 FROM 
                                     (select B.nome as sezione,coalesce(foglio,'')as foglio,array_to_string(array_agg(coalesce(mappale,'')),',') as mappali from pe.curbano A left join nct.sezioni B using(sezione) WHERE pratica = ? GROUP BY 1,2) AS FOO",
-            /*"oneri"=>           "SELECT 
-                                    to_char(totali.cc + totali.b1 + totali.b2 - totali.scb1 - totali.scb2,'999G999G999D99') AS oneri_totale,
-                                    to_char(totali.cc,'999G999G999D99') as oneri_cc,
-                                    to_char(b1,'999G999G999D99') as oneri_urb_1,
-                                    to_char(b2,'999G999G999D99') as oneri_urb_2,
-                                    to_char(scb1,'999G999G999D99') as oneri_scomputo_urb_1, 
-                                    to_char(scb2,'999G999G999D99') as oneri_scomputo_urb_2,
-                                    to_char((b1+b2-scb1-scb2),'999G999G999D99') as oneri_urb,
-                                    to_char(((b1+b2)/10)::float,'999G999G999D99') as oneri_urb_a15_lr15_1989
-                                    totali.quietanza AS oneri_quietanza, totali.data as oneri_data_quietanza,
-                                    to_char(oblazione,'999G999G999D99') as oblazione_totali, q_oblazione as oblazione_quietanza,data_oblazione as oblazione_data_quietanza,
-                                    to_char(indennita,'999G999G999D99') as indennita_totali, totali.q_indennita as indennita_quietanza, data_indennita as indenita_data_quietanza
-                                FROM 
-                                    oneri.totali
+            "oneri"=>           "SELECT  oneri_totale, oneri_cc, oneri_urb_1, oneri_urb_2, oneri_scomputo_urb_1, 
+       oneri_scomputo_urb_2, oneri_urb, oneri_b1_90p, oneri_b2_93p, 
+       oneri_b2_7p, oneri_b1b2_10p, oneri_quietanza, oneri_data_quietanza, 
+       oblazione_totali, oblazione_quietanza, oblazione_data_quietanza, 
+       indennita_totali, indennita_quietanza, indenita_data_quietanza
+  FROM stp.single_oneri;
                                 WHERE 
-                                    pratica=?;",*/
+                                    pratica=?;",
             "agibilita"=>       "SELECT 
                                     numero_rich as numero_richiesta_agi,prot_rich as prot_richiesta_agi,data_rich as data_richiesta_agi,numero_doc as numero_agi,prot_doc as protocollo_agi,data_ril as data_agi
                                 FROM 

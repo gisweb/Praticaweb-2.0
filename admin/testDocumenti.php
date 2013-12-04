@@ -1,7 +1,7 @@
 <?php
 require_once '../login.php';
 $offset=($_REQUEST["offset"])?($_REQUEST["offset"]):('0');
-$sql="SELECT id FROM stp.e_modelli WHERE form='pe.avvioproc' ORDER BY nome LIMIT 50 OFFSET $offset;";
+$sql="SELECT id FROM stp.e_modelli WHERE form='pe.avvioproc' AND id >199 ORDER BY nome LIMIT 50 OFFSET $offset;";
 $dbconn->sql_query($sql);
 $ris=$dbconn->sql_fetchlist('id');
 

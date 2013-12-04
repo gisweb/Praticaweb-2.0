@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("login.php");
 include_once "./lib/tabella_v.class.php";
 $tabpath="pe";
@@ -19,7 +19,7 @@ else{
 if(($ruolo=="proprietario") || ($ruolo=="richiedente") || ($ruolo=="concessionario")){
 	$config_file="richiedente";
 }
-elseif(($ruolo=="progettista") || ($ruolo=="direttore") || ($ruolo=="esecutore") || ($ruolo=="sicurezza") || ($ruolo=="collaudatore")){
+elseif(($ruolo=="progettista") || ($ruolo=="direttore") || ($ruolo=="esecutore") || ($ruolo=="sicurezza") || ($ruolo=="collaudatore") || ($ruolo=="collaudatore_ca") || ($ruolo=="geologo") || ($ruolo=="progettista_ca")){
 	$config_file="tecnico";
 }
 elseif($ruolo=="esecutore"){
@@ -60,7 +60,7 @@ function confirmSave()
 </script>
 </head>
 <body  background="">
-<?
+<?php
 switch ($modo) { 
 
 // <<<<<<<<<<<<<<<<<<<<<   MODALITA' NUOVO INSERIMENTO  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
@@ -96,7 +96,7 @@ switch ($modo) {
 	<input name="mode" type="hidden" value="find">
 
 	</FORM>
-<?	break;
+<?php	break;
 
 // <<<<<<<<<<<<<<<<<<<<<   VEDO SE IL NOME GIA ARCHIVIATO  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 	case "find":
@@ -147,7 +147,7 @@ switch ($modo) {
 	<input name="pratica" type="hidden" value="<?=$idpratica?>">
 				
 	</FORM>	
-		<?
+		<?php
 		break;//mi fermo solo se ho trovato qualche nome altrimenti carico la pagina di editing per il nuovo nome con giÃ  inseriti i valori che ho usato per la ricerca
 		} //end if ricerca nominativi giÃ  presenti in elenco.
 	
@@ -226,8 +226,9 @@ switch ($modo) {
 
 		</TABLE>	
 		
-<?
-} //end switch?>
+<?php
+} //end switch
+?>
 
 </body>
 </html>

@@ -47,15 +47,15 @@ if (($modo=="edit") || ($modo=="new")) {
 		  <tr> 
 			<td> 
 				<!-- contenuto-->
-				<?
-				if($Errors){
-					$tabella->set_errors($Errors);
-					$tabella->set_dati($_POST);
-				}
-				elseif ($modo=="edit"){	
-					$tabella->set_dati("pratica=$idpratica");
-				}
-				$tabella->edita();?>			  
+            <?php
+            if($Errors){
+                    $tabella->set_errors($Errors);
+                    $tabella->set_dati($_POST);
+            }
+            elseif ($modo=="edit"){	
+                    $tabella->set_dati("pratica=$idpratica");
+            }
+            $tabella->edita();?>			  
 			</td>
 		  </tr>  
 		</TABLE>
