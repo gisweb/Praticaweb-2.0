@@ -1,4 +1,5 @@
-<?//Creazione della query di ricerca		
+<?php
+//Creazione della query di ricerca		
 
  //print_array($_POST);
 		$numeroprat=$_POST["numero"];
@@ -208,11 +209,11 @@
 		
 		if ($sqlProtocollo){
 			$sql="($sqlProtocollo) $op";
-			$order="order by coalesce(coalesce(data_presentazione,data_prot),'01/01/1980'::date) DESC";
+			$order="order by 2 DESC";
 		}
 		if ($sqlData){
 			$sql.="($sqlData) $op";
-			//$order="order by data_presentazione DESC";
+			$order="order by 2 DESC";
 		}
 		if ($sqlTitolo){
 			$sql.="($sqlTitolo) $op";
@@ -220,40 +221,40 @@
              }
 		if ($sqlRichiedente){
 			$sql.="($sqlRichiedente) $op";
-			$order="order by coalesce(coalesce(data_presentazione,data_prot),'01/01/1980'::date) DESC";
+			$order="order by 2 DESC";
         }		
 		if ($sqlProgettista){
 			$sql.="($sqlProgettista) $op";
-			$order="order by coalesce(coalesce(data_presentazione,data_prot),'01/01/1980'::date) DESC";
+			$order="order by 2 DESC";
         }
 		if ($sqlTecnico){
 			$sql.="($sqlTecnico) $op";
-			$order="order by coalesce(coalesce(data_presentazione,data_prot),'01/01/1980'::date) DESC";
+			$order="order by 2 DESC";
         }
         if ($sqlDitta){
 			$sql.="($sqlDitta) $op";
-			$order="order by coalesce(coalesce(data_presentazione,data_prot),'01/01/1980'::date) DESC";
+			$order="order by 2 DESC";
         }
         if ($sqlCE){
 			$sql.="($sqlCE) $op";
-			$order="order by coalesce(coalesce(data_presentazione,data_prot),'01/01/1980'::date) DESC";
+			$order="order by 2 DESC";
         }
 		if ($sqlIndirizzo){
 			$sql.="($sqlIndirizzo) $op";
-			$order="order by coalesce(coalesce(data_presentazione,data_prot),'01/01/1980'::date) DESC";
+			$order="order by 2 DESC";
 		}
 		if ($sqlNCT){
 			$sql.="($sqlNCT) $op";
-			$order="order by coalesce(coalesce(data_presentazione,data_prot),'01/01/1980'::date) DESC";
+			$order="order by 2 DESC";
         }	
 		if ($sqlNCEU){
 			$sql.="($sqlNCEU) $op";
-			$order="order by coalesce(coalesce(data_presentazione,data_prot),'01/01/1980'::date) DESC";
+			$order="order by 2 DESC";
         }	
 		
 		if ($sqlAbitabi){
 			$sql.="($sqlAbitabi) $op";
-			$order="order by coalesce(coalesce(data_presentazione,data_prot),'01/01/1980'::date) DESC";
+			$order="order by 2 DESC";
         }	
 		if ($sqlCommiss_pr)
 			$sql.="($sqlCommiss_pr) $op";

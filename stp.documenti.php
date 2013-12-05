@@ -64,10 +64,14 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
 <?php
 }
 else{
-    $tabella=new Tabella_h("$tabpath/documenti",'list');
+    $tabella=new Tabella_h("$file_config",'list');
     
    
 ?>
+    <form method="post" target="_parent" action="stp.documenti.php">
+	 <input type="hidden" name="mode" value="new">
+        <input type="hidden" name="pratica" value="<?php echo $idpratica;?>">
+    
     <H2 class="blueBanner">Elenco dei documenti della pratica</H2><form method="post" name="modelli" action="">
         <TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
         
@@ -76,7 +80,7 @@ else{
 
 
 		//Visualizzare solo quelli inerenti il form e opzioni 
-		$num_doc=$tabella->set_dati("pratica='$idpratica' AND NOT form IN ('cdu.vincoli')");
+		$num_doc=$tabella->set_dati("pratica='$idpratica' AND NOT coalesce(form,'') IN ('cdu.vincoli')");
                 $tabella->set_titolo("Elenco Documenti prodotti","nuovo");
 
 		
@@ -99,6 +103,7 @@ else{
 
                 
         </TABLE>
+        </form>
 <?php
 }
 ?>

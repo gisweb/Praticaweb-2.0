@@ -32,14 +32,18 @@ function readZippedXML($archiveFile, $dataFile) {
     // In case of failure return empty string
     return "";
 }
-
-$directory = DATA_DIR."..\\modelli\\";
-//get all text files with a .txt extension.
+$localDir=Array("praticaweb","modelli");
+$directory = DATA_DIR.implode(DIRECTORY_SEPARATOR,$localDir).DIRECTORY_SEPARATOR;
+echo "<p>Scanning Directory $directory</p>";
+//get all text files with a .docx extension.
 $files = glob($directory . "*.docx");
 $debug=1;
 $i=0;
 $tot=count($files);
+echo "Found $tot files";
 $result=Array();
+$regexpOldField="|«([\w]+)»|U";
+$regexpNewField="|\[([\w]+)\]|";
 echo "<ol>";
 for($j=0;$j<$tot;$j++){
 	$fileName=$files[$j];
@@ -48,9 +52,9 @@ for($j=0;$j<$tot;$j++){
     if ($zip->open($fileName) === TRUE) {
         $info=pathinfo($fileName);
         $fName=$info["basename"];
-        //echo "<li>Considering File $fName $i di $tot:<li>";
+        echo "<li>Considering File $fName $i di $tot:<li>";
         $xmlString = $zip->getFromName('word/document.xml');
-        preg_match_all("|«([\w]+)»|U",$xmlString,$out, PREG_SET_ORDER);
+        preg_match_all($regexpNewField,$xmlString,$out, PREG_SET_ORDER);
 
 		for($k=0;$k<count($out);$k++){
 			$result[]=$out[$k][1];

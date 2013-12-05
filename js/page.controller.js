@@ -1,6 +1,3 @@
-function pippo(){
-    alert('');
-}
 $(document).ready(function(){
    $.each($('.textbox-date'),function(k,v){
        $(v).datepicker({
@@ -16,6 +13,13 @@ $(document).ready(function(){
        var fn = $(v).attr('data-change');
        $(v).bind('change', function(){
            eval(fn+'($(v));')
+       });
+   });
+   $.each($('.stampe'),function(k,v){
+       
+       $(v).bind('click',function(event){
+           event.preventDefault();
+           window.open(window.parent.url_documenti+$(this).text(),'stampe');
        });
    });
 });

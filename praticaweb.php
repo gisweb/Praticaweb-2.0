@@ -89,7 +89,7 @@ $_SESSION["TITOLO_".$idpratica]=$pr->titolo;
 <BODY >
 <script language="javascript">
 	window.name='praticaweb';
-
+        var url_documenti='<?php echo $pr->url_documenti;?>';
 </script>
 
 

@@ -2,16 +2,30 @@
 
 $azione=  strtolower($_REQUEST["azione"]);
 $modo=($_REQUEST["mode"])?($_REQUEST["mode"]):('view');
+$pr=new pratica($idpratica);
+
 if (in_array($azione, Array("salva","elimina"))){
-    require_once 'db.savedata.php';
+    
     $modo=($azione=='elimina')?("list"):("view");
     $id=($_SESSION["ADD_NEW"])?($_SESSION["ADD_NEW"]):($_REQUEST["id"]);
-    if ($_FILES['file']['tmp_name']){
-        $fName=$_REQUEST['nome'];
-        if (file_exists(DOCUMENTI. $fName)) $r=unlink (DOCUMENTI. $fName);
-        if (!$r) echo "<p>Impossibile rimuovere il file ".MODELLI."$fName</p>";
-        if (!@move_uploaded_file($_FILES['file']['tmp_name'], DOCUMENTI. $fName)) { 
-          print("***ERROR: Non è possibile copiare il file.<br />\n". MODELLI. $fName); 
+    if ($azione=='elimina'){
+        require_once 'db.savedata.php';
+        $fName=$_REQUEST['file_doc'];
+        $r=unlink (DOCUMENTI. $fName);
+        
+    }
+    elseif ($_FILES['file']['tmp_name']){
+        $fName=($_REQUEST['file_doc'])?($_REQUEST['file_doc']):($_FILES['file']['name']);
+        $_POST['file_doc']=$fName;
+        
+        require_once 'db.savedata.php';
+        if (file_exists($pr->documenti. $fName)){
+            $r=unlink ($pr->documenti. $fName);
+            if (!$r) echo "<p>Impossibile rimuovere il file ".$pr->documenti."$fName</p>";
+        }
+        
+        if (!@move_uploaded_file($_FILES['file']['tmp_name'], $pr->documenti. $fName)) { 
+          print("***ERROR: Non è possibile copiare il file.<br />\n". $pr->documenti. $fName); 
 	} 
     }
      $modo='list';
@@ -19,4 +33,5 @@ if (in_array($azione, Array("salva","elimina"))){
 elseif($azione=="annulla"){
     $modo='list';
 }
+$active_form="stp.documenti.php?mode=$modo&pratica=$idpratica";
 ?>

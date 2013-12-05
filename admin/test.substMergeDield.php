@@ -33,7 +33,9 @@ function readZippedXML($archiveFile, $dataFile) {
     return "";
 }
 
-$directory = DATA_DIR."..\\modelli\\";
+$localDir=Array("praticaweb","modelli");
+$directory = DATA_DIR.implode(DIRECTORY_SEPARATOR,$localDir).DIRECTORY_SEPARATOR;
+echo "<p>Scanning Directory $directory</p>";
 //get all text files with a .txt extension.
 $files = glob($directory . "*.docx");
 
@@ -71,7 +73,7 @@ $substitutions=Array(
 "NOMI_RICHIED"=>"[elenco_richiedenti]",
 "DATARIL_CONC"=>"[data_rilascio_titolo]"
 );
-
+$substitutions=Array("[data_ce]"=>"[data_rilascio_commissione]");
 $i=0;
 $tot=count($files);
 echo "<ol>";

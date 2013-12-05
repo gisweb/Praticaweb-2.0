@@ -108,13 +108,17 @@ class wordDoc {
         private function getFields(){
 		$db=$this->db;
                 $result=Array();
-		foreach($this->query['single'] as $key=>$sql){
+                $result=$db->fetchAll("SELECT colonna||coalesce(' : '||descrizione,'') as title FROM stp.descrizioni_colonne_di_stampa WHERE tabella=? AND colonna <> 'pratica' ORDER BY 1;",Array(""));
+		/*foreach($this->query['single'] as $key=>$sql){
                     $res=parse_query($sql);
                     $result=array_merge($res,$result);
-                }
-                foreach($this->query['multiple'] as $key=>$sql){
-                        $result[$key]=parse_query($sql,$key);
-                }
+                }*/
+                $views=$db->fetchAll("SELECT DISTINCT tabella FROM stp.descrizioni_colonne_di_stampa WHERE length(tabella)>0 ORDER BY 1");
+                foreach($views as $v){
+                        $view=$v["tabella"];
+                        $ris=$db->fetchAll("SELECT colonna||coalesce(' : '||descrizione,'') as title FROM stp.descrizioni_colonne_di_stampa WHERE tabella=? AND colonna <> 'pratica' ORDER BY 1;",Array($view));
+                        $result[$view]=Array("title"=>$view,"isFolder"=>"true","key"=>$view,"children"=>$ris);
+                }       
 		$customFields=$result;
                 
                 /*if(file_exists(LOCAL_INCLUDE."cdu.php")){
@@ -161,254 +165,47 @@ class wordDoc {
             return json_encode($data);
         }
         function setQuery(){
+            
+	
+
             return Array(
             "single"=>Array(
-            "data_odierna"=>    "SELECT CURRENT_DATE as oggi;",
-            "dirigente"=>       "SELECT dirigente FROM stp.dirigente WHERE pratica=?; ",
-            "pratica"=>         "SELECT  numero, B.nome as tipo, C.descrizione as intervento, anno, 
-                                    data_presentazione, protocollo, data_prot as data_protocollo, protocollo_int, data_prot_int,  
-                                    D.nome as responsabile_procedimento, data_resp as data_responsabile, com_resp as protocollo_com_rdp, data_com_resp as data_comunicazione_responsabile,
-                                    E.nome as istruttore_tecnico,data_resp_it as data_responsabile_it,
-                                    rif_aut_amb as numero_autorizzazione_amb,  oggetto, note, rif_pratica as numero_pratica_precedente,  
-                                    diritti_segreteria, riduzione_diritti, pagamento_diritti
-                                FROM 
-                                    pe.avvioproc A LEFT JOIN pe.e_tipopratica B ON (A.tipo=B.id) 
-                                    LEFT JOIN pe.e_intervento C ON (A.intervento=C.id) 
-                                    LEFT JOIN admin.users D ON (A.resp_proc=D.userid)  
-                                    LEFT JOIN admin.users E ON (A.resp_it=E.userid)  
-                                    LEFT JOIN admin.users F ON (A.resp_ia=F.userid)
-                                WHERE 
-                                    pratica=?",
-            "ubicazione"=>      "SELECT  
-                                    array_to_string(array_agg(coalesce(via,'') || coalesce(' '||civico) || coalesce('int.'||interno,'')),', ') as ubicazione
-                                FROM 
-                                    pe.indirizzi 
-                                WHERE
-                                    pratica=?;",
-            "elenco_richiedenti"=>      "SELECT  
-                                    array_to_string(array_agg(coalesce(ragsoc,coalesce(app||' ','')||cognome || coalesce(' '||nome),'')),', ') as elenco_richiedenti
-                                FROM 
-                                    pe.soggetti 
-                                WHERE
-                                    pratica=? AND voltura=0 AND comunicazioni=1 AND richiedente=1",
-            "elenco_progettisti"=>      "SELECT  
-                                    array_to_string(array_agg(coalesce(ragsoc,coalesce(app||' ','')||cognome || coalesce(' '||nome),'')),', ') as elenco_progettisti
-                                FROM 
-                                    pe.soggetti 
-                                WHERE
-                                    pratica=? AND voltura=0 AND comunicazioni=1 AND progettista=1",
-            "elenco_ct"=>       "SELECT 
-                                    trim(coalesce('Sezione: '||sezione,'')||coalesce(' Foglio: '||foglio,'')||coalesce(' Mappali: '||mappali,'')) as elenco_ct,
-                                    trim(coalesce('Sezione: '||sezione,'')||coalesce(' Foglio: '||foglio,'')||coalesce(' Mappali: '||mappali,'')) as elenco_terreni
-                                FROM 
-                                    (select B.nome as sezione,coalesce(foglio,'')as foglio,array_to_string(array_agg(coalesce(mappale,'')),',') as mappali from pe.cterreni A left join nct.sezioni B using(sezione) WHERE pratica = ? GROUP BY 1,2) AS FOO",
-            "elenco_cu"=>      "SELECT 
-                                    trim(coalesce('Sezione: '||sezione,'')||coalesce(' Foglio: '||foglio,'')||coalesce(' Mappali: '||mappali,'')) as elenco_cu,
-                                    trim(coalesce('Sezione: '||sezione,'')||coalesce(' Foglio: '||foglio,'')||coalesce(' Mappali: '||mappali,'')) as elenco_urbano
-                                FROM 
-                                    (select B.nome as sezione,coalesce(foglio,'')as foglio,array_to_string(array_agg(coalesce(mappale,'')),',') as mappali from pe.curbano A left join nct.sezioni B using(sezione) WHERE pratica = ? GROUP BY 1,2) AS FOO",
-            "oneri"=>           "SELECT  oneri_totale, oneri_cc, oneri_urb_1, oneri_urb_2, oneri_scomputo_urb_1, 
-       oneri_scomputo_urb_2, oneri_urb, oneri_b1_90p, oneri_b2_93p, 
-       oneri_b2_7p, oneri_b1b2_10p, oneri_quietanza, oneri_data_quietanza, 
-       oblazione_totali, oblazione_quietanza, oblazione_data_quietanza, 
-       indennita_totali, indennita_quietanza, indenita_data_quietanza
-  FROM stp.single_oneri;
-                                WHERE 
-                                    pratica=?;",
-            "agibilita"=>       "SELECT 
-                                    numero_rich as numero_richiesta_agi,prot_rich as prot_richiesta_agi,data_rich as data_richiesta_agi,numero_doc as numero_agi,prot_doc as protocollo_agi,data_ril as data_agi
-                                FROM 
-                                    pe.abitabi
-                                WHERE 
-                                    pratica=? ",
-            "progetto"=>        "SELECT 
-                                    destuso1 as dest_uso_primaria,destuso2 as dest_uso_secondaria,tavole
-                                FROM
-                                    pe.progetto
-                                WHERE
-                                    pratica=?",
-            "parere_ce"=>       "SELECT prot_rich as prot_richiesta_ce, data_rich as data_richiesta_ce,  prot_ril as protocollo_rilascio_ce, data_ril as data_rilascio_ce, prot_rice as protocollo_ricezione_ce, data_rice as data_ricezione_ce, 
-                                        testo as testo_ce,prescrizioni as prescrizioni_ce, numero_doc as numero_parere_ce
-                                FROM 
-                                    pe.pareri A INNER JOIN pe.e_enti B ON(A.ente=B.id)
-                                WHERE
-                                    pratica=? AND codice='ce' 
-                                ORDER BY data_ril DESC LIMIT 1;",
-            "parere_cei"=>      "SELECT prot_rich as protocollo_richiesta_cei, data_rich as data_richiesta_cei, prot_ril as protocollo_rilascio_cei, data_ril as data_rilascio_cei, prot_rice as protocollo_ricezione_cei, data_rice as data_ricezione_cei, 
-                                        testo as testo_cei,prescrizioni as prescrizioni_cei, numero_doc as numero_parere_cei
-                                FROM 
-                                    pe.pareri A INNER JOIN pe.e_enti B ON(A.ente=B.id)
-                                WHERE
-                                    pratica=? AND codice='cei' 
-                                ORDER BY data_ril DESC LIMIT 1;",
-            "parere_clp"=>      "SELECT prot_rich as protocollo_richiesta_clp, data_rich as data_richiesta_clp, prot_ril as protocollo_rilascio_clp, data_ril as data_rilascio_clp, prot_rice as protocollo_ricezione_clp, data_rice as data_ricezione_clp, 
-                                        testo as testo_clp,prescrizioni as prescrizioni_clp, numero_doc as numero_parere_clp
-                                FROM 
-                                    pe.pareri A INNER JOIN pe.e_enti B ON(A.ente=B.id)
-                                WHERE
-                                    pratica=? AND codice='clp' 
-                                ORDER BY data_ril DESC LIMIT 1;",
-            "parere_asl"=>      "SELECT prot_rich as protocollo_richiesta_asl, data_rich as data_richiesta_asl, prot_ril as protocollo_rilascio_asl, data_ril as data_rilascio_asl, prot_rice as protocollo_ricezione_asl, data_rice as data_ricezione_asl, 
-                                        testo as testo_asl,prescrizioni as prescrizioni_asl, numero_doc as numero_parere_asl
-                                FROM 
-                                    pe.pareri A INNER JOIN pe.e_enti B ON(A.ente=B.id)
-                                WHERE
-                                    pratica=? AND codice='asl' 
-                                ORDER BY data_ril DESC LIMIT 1;",
-            "parere_vf"=>       "SELECT prot_rich as protocollo_richiesta_vf, data_rich as data_richiesta_vf, prot_ril as protocollo_rilascio_vf, data_ril as data_rilascio_vf, prot_rice as protocollo_ricezione_vf, data_rice as data_ricezione_vf, 
-                                        testo as testo_vf,prescrizioni as prescrizioni_vf, numero_doc as numero_parere_vf
-                                FROM 
-                                    pe.pareri A INNER JOIN pe.e_enti B ON(A.ente=B.id)
-                                WHERE
-                                    pratica=? AND codice='vf' 
-                                ORDER BY data_ril DESC LIMIT 1;"
-        ),
-        "multiple"=>Array(
-            "soggetti"=>        "SELECT DISTINCT coalesce(app,'') as app, coalesce(cognome,'') as cognome, coalesce(nome,'') as nome,coalesce(app||' ','')||coalesce(cognome||' ','')||coalesce(nome,'') as nominativo, 
-                                    coalesce(indirizzo,coalesce(sede,'')) as indirizzo, coalesce(comune,coalesce(comuned,'')) as comune, coalesce(prov,coalesce(provd,'')) as prov, coalesce(cap,coalesce(capd,'')) as cap, 
-                                    comunato, provnato, datanato, sesso, codfis,titolo,
-                                    telefono, email, pec, 
-                                    titolod, ragsoc, 
-                                    sede, comuned, provd, capd, 
-                                    piva, ccia, cciaprov, inail, inailprov, inps, inpsprov, cedile, cedileprov, 
-                                    albo, albonumero, alboprov,
-                                    coalesce(voltura,0) as voltura, comunicazioni, note, 
-                                    proprietario,richiedente, concessionario, progettista, direttore, esecutore, 
-                                    sicurezza, collaudatore,geologo, collaudatore_ca, progettista_ca, economia_diretta 
-                                FROM 
-                                    pe.soggetti 
-                                WHERE 
-                                    pratica=? and comunicazioni = 1",
-            "richiedenti"=>        "SELECT DISTINCT coalesce(app,'') as app, coalesce(cognome,'') as cognome, coalesce(nome,'') as nome,coalesce(app||' ','')||coalesce(cognome||' ','')||coalesce(nome,'') as nominativo, 
-                                    coalesce(indirizzo,coalesce(sede,'')) as indirizzo, coalesce(comune,coalesce(comuned,'')) as comune, coalesce(prov,coalesce(provd,'')) as prov, coalesce(cap,coalesce(capd,'')) as cap, 
-                                    comunato, provnato, datanato, sesso, codfis,titolo,
-                                    telefono, email, pec, 
-                                    titolod, ragsoc, 
-                                    sede, comuned, provd, capd, 
-                                    piva, ccia, cciaprov, inail, inailprov, inps, inpsprov, cedile, cedileprov, 
-                                    albo, albonumero, alboprov,
-                                    coalesce(voltura,0) as voltura, comunicazioni, note, 
-                                    proprietario,richiedente, concessionario, progettista, direttore, esecutore, 
-                                    sicurezza, collaudatore,geologo, collaudatore_ca, progettista_ca, economia_diretta 
-                                FROM 
-                                    pe.soggetti 
-                                WHERE 
-                                    pratica=? and comunicazioni = 1 and richiedente=1",
-            "progettisti"=>        "SELECT DISTINCT coalesce(app,'') as app, coalesce(cognome,'') as cognome, coalesce(nome,'') as nome,coalesce(app||' ','')||coalesce(cognome||' ','')||coalesce(nome,'') as nominativo, 
-                                    coalesce(indirizzo,coalesce(sede,'')) as indirizzo, coalesce(comune,coalesce(comuned,'')) as comune, coalesce(prov,coalesce(provd,'')) as prov, coalesce(cap,coalesce(capd,'')) as cap, 
-                                    comunato, provnato, datanato, sesso, codfis,titolo,
-                                    telefono, email, pec, 
-                                    titolod, ragsoc, 
-                                    sede, comuned, provd, capd, 
-                                    piva, ccia, cciaprov, inail, inailprov, inps, inpsprov, cedile, cedileprov, 
-                                    albo, albonumero, alboprov,
-                                    coalesce(voltura,0) as voltura, comunicazioni, note, 
-                                    proprietario,richiedente, concessionario, progettista, direttore, esecutore, 
-                                    sicurezza, collaudatore,geologo, collaudatore_ca, progettista_ca, economia_diretta 
-                                FROM 
-                                    pe.soggetti 
-                                WHERE 
-                                    pratica=? and comunicazioni = 1 and progettista=1",
-            "indirizzi"=>       "SELECT  
-                                    via, civico, interno, scala, piano
-                                FROM 
-                                    pe.indirizzi 
-                                WHERE
-                                    pratica=?;",
-            "particelle_ct"=>  "SELECT DISTINCT 
-                                    coalesce(B.nome,'') as sezione,foglio,mappale 
-                                FROM 
-                                    pe.cterreni A 
-                                    LEFT JOIN nct.sezioni B USING(sezione) 
-                                WHERE 
-                                    pratica=?",
-
-            "particelle_cu"=>   "SELECT DISTINCT 
-                                    coalesce(B.nome,'') as sezione,foglio,mappale 
-                                FROM 
-                                    pe.curbano A 
-                                    LEFT JOIN nct.sezioni B USING(sezione) 
-                                WHERE 
-                                    pratica=?",
-            "pareri"=>          "SELECT 
-                                    prot_rich as protocollo_richiesta, data_rich as data_richiesta, prot_soll as protocollo_sollecito, data_soll as data_sollecito, prot_ril as protocollo_rilascio, data_ril as data_rilascio, prot_rice as protocollo_ricezione, data_rice as data_ricezione, 
-                                    C.nome as parere,testo,prescrizioni, note,numero_doc as numero_parere,B.nome as ente,B.codice as codice_ente
-                                FROM 
-                                    (SELECT AA.* FROM pe.pareri AA INNER JOIN (SELECT ente,max(data_rich) as data_rich FROM pe.pareri GROUP BY ente ) BB USING(ente,data_rich)) A 
-                                    INNER JOIN (SELECT * FROM pe.e_enti WHERE enabled=1) B ON (A.ente=B.id) 
-                                    LEFT JOIN pe.e_pareri C ON (A.parere=C.id)
-                                WHERE 
-                                    pratica=? 
-                                ORDER BY data_rich DESC",
-            
-            "oneri_calcoli"=>   "SELECT 
-                                    calcolati.anno as anno, e_tariffe.funzione::text || ' mq '::text || calcolati.sup::text AS calcolo, e_tariffe.funzione AS destuso, e_tariffe.descrizione AS descrizione, e_interventi.descrizione AS intervento,
-                                    calcolati.perc as percentuale, calcolati.degradato as degradato, calcolati.sup as superficie, 
-                                    calcolati.cc as cc, calcolati.b1 as b1, calcolati.b2 as b2, calcolati.e1 as e1, calcolati.e2 as e2, calcolati.note as note,
-                                    e_c1.descrizione AS c1, e_c2.descrizione AS c2, e_c3.descrizione AS c3, e_c4.descrizione AS c4, e_d1.descrizione AS d1, e_d2.descrizione AS d2, calcolati.chk, calcolati.b1 + calcolati.b2 + calcolati.cc AS totale
-                                    
-                                FROM 
-                                    oneri.calcolati
-                                    LEFT JOIN oneri.e_c1 ON calcolati.tabella::text = e_c1.tabella::text AND calcolati.c1 = e_c1.valore
-                                    LEFT JOIN oneri.e_c2 ON calcolati.tabella::text = e_c2.tabella::text AND calcolati.c2 = e_c2.valore
-                                    LEFT JOIN oneri.e_c3 ON calcolati.tabella::text = e_c3.tabella::text AND calcolati.c3 = e_c3.valore
-                                    LEFT JOIN oneri.e_c4 ON calcolati.tabella::text = e_c4.tabella::text AND calcolati.c4 = e_c4.valore
-                                    LEFT JOIN oneri.e_d1 ON calcolati.tabella::text = e_d1.tabella::text AND calcolati.d1 = e_d1.valore
-                                    LEFT JOIN oneri.e_d2 ON calcolati.tabella::text = e_d2.tabella::text AND calcolati.d2 = e_d2.valore
-                                    JOIN oneri.e_interventi ON calcolati.tabella::text = e_interventi.tabella::text AND calcolati.intervento = e_interventi.valore
-                                    JOIN oneri.e_tariffe ON calcolati.tabella::text = e_tariffe.tabella::text AND calcolati.anno = e_tariffe.anno
-                                WHERE
-                                    pratica=? 
-                                ORDER BY calcolati.id DESC;",
-            "allegati"=>        "SELECT 
-                                    coalesce(B.descrizione,B.nome) as documento,allegato,mancante,integrato,sostituito
-                                FROM 
-                                    pe.allegati A 
-                                    INNER JOIN pe.e_documenti B ON(A.documento=B.id) 
-                                WHERE 
-                                    pratica=?",
-            "allegati_mancanti"=>        "SELECT 
-                                    coalesce(B.descrizione,B.nome) as documento,allegato,mancante,integrato,sostituito
-                                FROM 
-                                    pe.allegati A 
-                                    INNER JOIN pe.e_documenti B ON(A.documento=B.id) 
-                                WHERE 
-                                    pratica=? AND mancante=1",
-            "oneri_dettaglio"=>	"SELECT 
-A.tabella, A.anno,B.descrizione as funzione, C.descrizione as intervento, 
-ltrim(trim(to_char(coalesce(perc,0),'999G999G999D99')),',00') as perc, 
-ltrim(trim(to_char(coalesce(sup,0),'999G999G999D99')),',00') as superficie, 
-ltrim(trim(to_char(coalesce(cc,0),'999G999G999D99')),',00') as cc, 
-ltrim(trim(to_char(coalesce(b1,0),'999G999G999D99')),',00') as b1, 
-ltrim(trim(to_char(coalesce(b2,0),'999G999G999D99')),',00') as b2, 
-ltrim(trim(to_char(coalesce(cc,0) / coalesce(sup,1) ,'999G999G999D99')),',00') as mq_cc, 
-ltrim(trim(to_char(coalesce(b1,0) / coalesce(sup,1) ,'999G999G999D99')),'00') as mq_b1,
-ltrim(trim(to_char(coalesce(b2,0) / coalesce(sup,1) ,'999G999G999D99')),'00') as mq_b2,
-CASE 
-	WHEN (coalesce(c1,0) + coalesce(c2,0) + coalesce(c3,0) + coalesce(c4,0))=0 THEN 'Nessuna riduzione'
-	WHEN coalesce(c1,0) = 0 THEN ''
-	ELSE 'Mancato Aggravio del carico insediativo '||trim(to_char((coalesce(c1,0)),'999G999G999'))||'%' END AS aggravio_carico_insediativo,
-CASE 
-	WHEN (coalesce(c2,0) + coalesce(c3,0) + coalesce(c4,0))=0 THEN ''
-	ELSE 'Incentivo Comunale '||trim(to_char((coalesce(c2,0) + coalesce(c3,0) + coalesce(c4,0)),'999G999G999'))||'%' END as incentivo_comunale,
-	
-CASE 
-	WHEN coalesce(d1,0) + coalesce(d2,0) = 0 THEN 'Incremento: Nessuno'
-	WHEN coalesce(d1,0) = 0 THEN ''
-	ELSE 'Caratteristiche Tipologiche Superiori : '||trim(to_char((coalesce(d1,0)),'999G999G999'))||'%' END AS tipologie_superiori,
-CASE 
-	WHEN coalesce(d2,0) =0 THEN ''
-	ELSE 'Interventi in Area non Urbanizzata (SUA) '||trim(to_char((coalesce(d2,0)),'999G999G999'))||'%' END as interventi_in_sua,	
- e1, e2, degradato, note
-FROM oneri.calcolati A
-INNER JOIN oneri.e_tariffe B USING(tabella,anno)
-INNER JOIN oneri.e_interventi C ON (A.tabella=C.tabella AND A.intervento=C.valore)
-WHERE 
-                                    pratica=?  ;
-"
-    )
-);
-        }
+                "data_odierna"=>    "SELECT CURRENT_DATE as oggi;",
+                "single_dirigente"=>"SELECT * FROM stp.single_dirigente WHERE pratica=?;",
+                "single_ubicazione"=>"SELECT * FROM stp.single_ubicazione WHERE pratica=?;",
+                "single_progetto"=>"SELECT * FROM stp.single_progetto WHERE pratica=?;",
+                "single_pratica"=>"SELECT * FROM stp.single_pratica WHERE pratica=?;",
+                "single_parere_vf"=>"SELECT * FROM stp.single_parere_vf WHERE pratica=?;",
+                "single_parere_clp"=>"SELECT * FROM stp.single_parere_clp WHERE pratica=?;",
+                "single_parere_ce"=>"SELECT * FROM stp.single_parere_ce WHERE pratica=?;",
+                "single_parere_asl"=>"SELECT * FROM stp.single_parere_asl WHERE pratica=?;",
+                "single_elenco_richiedenti"=>"SELECT * FROM stp.single_elenco_richiedenti WHERE pratica=?;",
+                "single_elenco_progettisti"=>"SELECT * FROM stp.single_elenco_progettisti WHERE pratica=?;",
+                "single_elenco_cu"=>"SELECT * FROM stp.single_elenco_cu WHERE pratica=?;",
+                "single_elenco_ct"=>"SELECT * FROM stp.single_elenco_ct WHERE pratica=?;",
+                "single_parere_commissione"=>"SELECT * FROM stp.single_parere_commissione WHERE pratica=?;",
+                "single_agibilita"=>"SELECT * FROM stp.single_agibilita WHERE pratica=?;",
+                "single_oneri"=>"SELECT * FROM stp.single_oneri WHERE pratica=?;",
+                "single_elenco_esecutori"=>"SELECT * FROM stp.single_elenco_esecutori WHERE pratica=?;",
+                "single_elenco_direttori"=>"SELECT * FROM stp.single_elenco_direttori WHERE pratica=?;"
+            ),
+            "multiple"=>Array(
+                "soggetti"=>"SELECT * FROM stp.multiple_soggetti WHERE pratica=?;",
+                "richiedente"=>"SELECT * FROM stp.multiple_richiedenti WHERE pratica=?;",
+                "progettista"=>"SELECT * FROM stp.multiple_progettisti WHERE pratica=?;",
+                "particelle_cu"=>"SELECT * FROM stp.multiple_particelle_cu WHERE pratica=?;",
+                "particelle_ct"=>"SELECT * FROM stp.multiple_particelle_ct WHERE pratica=?;",
+                "pareri"=>"SELECT * FROM stp.multiple_pareri WHERE pratica=?;",
+                "oneri_calcolati"=>"SELECT * FROM stp.multiple_oneri_calcolati WHERE pratica=?;",
+                "indirizzi"=>"SELECT * FROM stp.multiple_indirizzi WHERE pratica=?;",
+                "allegati_mancanti"=>"SELECT * FROM stp.multiple_allegati_mancanti WHERE pratica=?;",
+                "allegati"=>"SELECT * FROM stp.multiple_allegati WHERE pratica=?;",
+                "oneri_dettagli"=>"SELECT * FROM stp.multiple_oneri_dettagli WHERE pratica=?;",
+                "esecutore"=>"SELECT * FROM stp.multiple_esecutori WHERE pratica=?;",
+                "direttore"=>"SELECT * FROM stp.multiple_direttori WHERE pratica=?;"
+            )
+        );
+    }
 }
 
 ?>

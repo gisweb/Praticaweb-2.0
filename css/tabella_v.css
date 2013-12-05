@@ -42,13 +42,18 @@ table.stiletabella td.intestazione{
     
 }
 
+.stampe{
+    cursor: pointer;
+    cursor: hand;
+    text-decoration: underline;
+}
 .scadenze{
-    color:orange;
+    //color:orange;
     font-weight:bold !important; 
 }
 .in-scadenza{
     color:red !important;
-    text-decoration: blink;
+   /* text-decoration: blink;
     font-weight:bold !important; 
     animation-name: blinker;
     animation-duration: 1s;
@@ -58,16 +63,16 @@ table.stiletabella td.intestazione{
     -webkit-animation-name: blinker;
     -webkit-animation-duration: 1s;
     -webkit-animation-timing-function: linear;
-    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-iteration-count: infinite;*/
 }
 .scaduta{
-    color:green;
+    //color:green;
     font-weight:bold !important; 
 }
 
 
-
-@-moz-keyframes blinker {  /* Decimal not necessary, 0 and 1 is enough */
+/*
+@-moz-keyframes blinker {  
     0% { opacity: 1.0; }
     50% { opacity: 0.0; }
     100% { opacity: 1.0; }
@@ -84,3 +89,4 @@ table.stiletabella td.intestazione{
     50% { opacity: 0.0; }
     100% { opacity: 1.0; }
 }
+*/

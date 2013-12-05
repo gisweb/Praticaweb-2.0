@@ -174,6 +174,9 @@ function get_cella($row,$col){
             
             $retval.="</td>\n";
             break;
+        case "stampe":
+            $retval="<td class=\"stampe\" data-url=\"$valore\" title=\"Visualizza il documento\">$valore</td>\n";
+            break;
         case "info":
             if(isset($this->tag) && $this->tag){
                     $args=$this->tag;
