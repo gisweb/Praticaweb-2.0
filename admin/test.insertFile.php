@@ -33,10 +33,11 @@ function readZippedXML($archiveFile, $dataFile) {
     return "";
 }
 
-$directory = DATA_DIR."..\\modelli\\";
+$localDir=Array("praticaweb","modelli");
+$directory = DATA_DIR.implode(DIRECTORY_SEPARATOR,$localDir).DIRECTORY_SEPARATOR;
 //get all text files with a .txt extension.
 $files = glob($directory . "*.docx");
-
+echo "Processing $directory";
 $i=0;
 $tot=count($files);
 $result=Array();
@@ -48,8 +49,9 @@ for($j=0;$j<$tot;$j++){
 	$fName=$info["filename"];
 	$name=$info["basename"];
 	$ext=$info['extension'];
-	$sql="INSERT INTO stp.e_modelli(nome,form,descrizione,proprietario) VALUES('$name','pe.avvioproc','$fName','pubblico');";
-	$dbconn->sql_query($sql);
+	$sql="<p>INSERT INTO stp.e_modelli(nome,form,descrizione,proprietario) VALUES('$name','pe.avvioproc','$fName','pubblico');</p>";
+	//$dbconn->sql_query($sql);
+        echo $sql;
         
 
 }

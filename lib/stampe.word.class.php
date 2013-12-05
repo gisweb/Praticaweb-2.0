@@ -96,7 +96,7 @@ class wordDoc {
 				break;
 			default:
 				if(file_exists(LOCAL_INCLUDE."stampe.php")){
-					include_once LOCAL_INCLUDE."stampe.php";
+					//include_once LOCAL_INCLUDE."stampe.php";
                                         print_debug($this->data,null,'STAMPE_LOCAL');
 
 				}
