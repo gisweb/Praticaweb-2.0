@@ -12,7 +12,7 @@ $(document).ready(function(){
    $.each($('[data-change]'),function(k,v){
        var fn = $(v).attr('data-change');
        $(v).bind('change', function(){
-           eval(fn+'($(v));')
+           eval(fn+'($(v));');
        });
    });
    $.each($('.stampe'),function(k,v){

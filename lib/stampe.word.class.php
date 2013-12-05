@@ -198,7 +198,7 @@ class wordDoc {
                 "pareri"=>"SELECT * FROM stp.multiple_pareri WHERE pratica=?;",
                 "oneri_calcolati"=>"SELECT * FROM stp.multiple_oneri_calcolati WHERE pratica=?;",
                 "indirizzi"=>"SELECT * FROM stp.multiple_indirizzi WHERE pratica=?;",
-                "allegati_mancanti"=>"SELECT * FROM stp.multiple_allegati_mancanti WHERE pratica=?;",
+                "documenti_mancanti"=>"SELECT * FROM stp.multiple_allegati_mancanti WHERE pratica=?;",
                 "allegati"=>"SELECT * FROM stp.multiple_allegati WHERE pratica=?;",
                 "oneri_dettagli"=>"SELECT * FROM stp.multiple_oneri_dettagli WHERE pratica=?;",
                 "esecutore"=>"SELECT * FROM stp.multiple_esecutori WHERE pratica=?;",
