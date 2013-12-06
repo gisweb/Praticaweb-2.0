@@ -51,6 +51,26 @@ switch($action) {
 		}
 		$result=$customData;
 		break;
+        case "export-table":
+            $tables=$_REQUEST['tabella'];
+            $exportDir=DATA_DIR.implode(DIRECTORY_SEPARATOR,Array("db","export_file")).DIRECTORY_SEPARATOR;
+            foreach($tables as $t){
+                $sql="COPY $t TO '$exportDir$t.csv' CSV DELIMITER '|' HEADER";
+                $sql=str_replace(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR,$sql);
+                $db->query($sql);
+                $result[]=$sql;
+            }
+            break;
+        case "import-table":
+            $tables=$_REQUEST['tabella'];
+            $importDir=DATA_DIR.implode(DIRECTORY_SEPARATOR,Array("db","import_file")).DIRECTORY_SEPARATOR;
+            foreach($tables as $t){
+                $sql="COPY $t FROM '$importDir$t.csv' CSV DELIMITER '|' HEADER";
+                $sql=str_replace(DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR,$sql);
+                $db->query($sql);
+                $result[]=$sql;
+            }
+            break;
 	default:
 		break;
 }

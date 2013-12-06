@@ -73,7 +73,7 @@ $substitutions=Array(
 "NOMI_RICHIED"=>"[elenco_richiedenti]",
 "DATARIL_CONC"=>"[data_rilascio_titolo]"
 );
-$substitutions=Array("[data_ce]"=>"[data_rilascio_commissione]");
+
 $i=0;
 $tot=count($files);
 echo "<ol>";

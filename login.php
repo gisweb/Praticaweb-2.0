@@ -38,6 +38,7 @@
 	include_once DATA_DIR.'config.php';
 	require_once DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."lib".DIRECTORY_SEPARATOR."pratica.class.php";
         require_once DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."lib".DIRECTORY_SEPARATOR."app.utils.class.php";
+        require_once DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."lib".DIRECTORY_SEPARATOR."utils.class.php";
 	require_once APPS_DIR."lib".DIRECTORY_SEPARATOR."menu.class.php";
 	
 	//per il debug

@@ -1,5 +1,5 @@
 <?php
-require_once "../login.php";
+require_once "../../login.php";
 function odt2text($filename) {
     return readZippedXML($filename, "content.xml");
 }
