@@ -45,6 +45,24 @@ $exportDir=DATA_DIR.implode(DIRECTORY_SEPARATOR,$localDir).DIRECTORY_SEPARATOR;
                        }
                     });
                 });
+                $("#btn_select_all").button({
+                    label:'Seleziona Tutti'
+                }).bind('click',function(event){
+                    $('.export-table').each(function(k,v){
+                        if ($(v).hasClass('deselected')){
+                            $(v).attr('checked','checked');
+                            $(v).removeClass('deselected');
+                            $(v).addClass('selected');
+                            $("#btn_select_all").button('option','label','Deseleziona Tutti');
+                        }
+                        else{
+                            v.removeAttribute('checked');
+                            $(v).removeClass('selected');
+                            $(v).addClass('deselected');
+                            $("#btn_select_all").button('option','label','Seleziona Tutti');
+                        }
+                    });
+                });
             });
         </script>
     </head>
@@ -54,17 +72,18 @@ $exportDir=DATA_DIR.implode(DIRECTORY_SEPARATOR,$localDir).DIRECTORY_SEPARATOR;
         <div class="" id="export">        
 <?php
 
-    echo "<table style=\"width:1000px\">";
+    echo "<table style=\"width:1250px\">";
     for($i=0;$i<count($tables);$i++){
         $tabella=$tables[$i]["tabella"];
         
         if ((int)($i%5)==0) echo "<tr>";
-        echo "<td style=\"width:200px;\"><input type=\"checkbox\" class=\"export-table\" value=\"$tabella\" id=\"$tabella\"/>$tabella</input></td>";
+        echo "<td style=\"width:250px;\"><input type=\"checkbox\" class=\"export-table deselected\" value=\"$tabella\" id=\"$tabella\"/>$tabella</input></td>";
         if ((int)($i%5)==4) echo "</tr>";
     }
     echo "</table>";
 ?>
             <button id="btn_export"></button>
+            <button id="btn_select_all"></button>
         </div>  
     
 </body>

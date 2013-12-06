@@ -40,7 +40,7 @@ function get_cella($row,$col){
 			break;
 		case "pratica":
 		case "text":
-			$valore=html_entity_decode($valore);
+			//$valore=html_entity_decode($valore);
 			$retval="<td$classe>$valore</td>\n";
 			break;
 			
