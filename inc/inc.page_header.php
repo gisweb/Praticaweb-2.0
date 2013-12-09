@@ -16,11 +16,12 @@
 		</div>
 		<div style="float:right; margin-top:26px; margin-right:16px; color:#FFFFFF; font-family:arial; font-weight:bold; font-size:16px; height:24; width:450px; text-align:right">
 			<div id="top_menu">
+                                <a href="javascript:NewWindow('https://indata.istat.it/pdc/','istatPraticaweb',0,0,'yes')">[ ISTAT ]</a>
 				<a href="javascript:NewWindow('index.php','indexPraticaweb',0,0,'yes');window.close()">[Inizio]</a>
 				<a href="javascript:NewWindow('pe.ricerca.php','ricercaPraticaweb',0,0,'yes')">[Ricerca]</a>
 				<a href="#">[Guida]</a>
 				<a href="javascript:window.print();">[Stampa]</a>
-				<a href="javascript:window.close()">[Chiudi]</a>
+				<a href="javascript:closeWindow()">[Chiudi]</a>
 				<?if ($_SESSION['USER_ID']){?><a href="./admin/logout.php">[Esci]</a><?}?>
 			</div>
                      
@@ -28,3 +29,8 @@
 		</div>
 	</div>
 <!-- ### STANDARD  PAGE  HEADER  FINE ##################################################### -->
+<SCRIPT language="javascript" >
+    if (window.name!='indexPraticaweb')
+        var firstWin = window.opener.firstWin;
+    
+</SCRIPT>

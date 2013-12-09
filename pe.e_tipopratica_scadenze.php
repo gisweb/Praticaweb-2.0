@@ -16,11 +16,14 @@ A.id as id_scadenza ,B.id ,B.nome,A.tabella,coalesce(A.codice,'$codice') as codi
 FROM pe.e_tipopratica B LEFT JOIN 
 (SELECT * FROM pe.e_tipopratica_scadenze WHERE codice='$codice') A ON(A.tipo_pratica=B.id) 
 $JOIN JOIN pe.e_scadenze C USING(codice)    
-WHERE enabled=1 ORDER BY tipologia,nome";
-
+WHERE B.enabled=1 ORDER BY tipologia,nome";
 $dbconn->sql_query($sql);
 $res=$dbconn->sql_fetchrowset();
-$nomeScadenza=$res[0]["nome_scadenza"];
+
+$sql="SELECT nome FROM pe.e_scadenze WHERE codice='$codice'";
+$dbconn->sql_query($sql);
+$r=$dbconn->sql_fetchfield('nome');
+$nomeScadenza=$r;
 $file_config="e_tipopratica_scadenze.tab";
 $tit="$nomeScadenza - Dati sui Tipi di Pratica ";
 
@@ -81,11 +84,11 @@ include "./inc/inc.page_header.php";
 		</FORM>		
 
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
-<?
+<?php
 }
 else {
 	$tabella=new Tabella_h("$tabpath/$file_config",'list');
-	$tabella->set_titolo("Elenco degle Scadenze - $nomeScadenza","modifica",Array("codice"=>$codice));
+	$tabella->set_titolo("Elenco delle Scadenze - $nomeScadenza","modifica",Array("codice"=>$codice));
 	$tabella->array_dati=$res;
 	$tabella->num_record=count($res);
         //print_array($tabella);
@@ -94,9 +97,14 @@ else {
 		<TR> 
 			<TD> 
 				
-				<?php
+			<?php
                                 $tabella->get_titolo();
-				$tabella->elenco();?>
+				if ($tabella->num_record==0){
+                                    echo "<p><b>Nessuna Scadenza impostata</b></p>";
+                                }
+                                else
+                                    $tabella->elenco();
+                        ?>
 			</TD>
 		</TR>
 	</TABLE>
@@ -108,11 +116,10 @@ else {
 		 },
 		 label:'Chiudi'
 	  }).click(function(){
-		 window.opener.focus();
-		 window.close();
+		 window.location.href='/pe.e_scadenze?mode=list';
 	  });
    </script>
-	<?
+	<?php
 	}?>
 	
 </body>

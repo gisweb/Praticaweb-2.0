@@ -183,10 +183,12 @@ function selectZona(obj){
 }
 
 
-function closeWindow(obj){
-	window.blur();
-	(window.open(window.opener.location, window.opener.name) || window).focus();
-	window.close();
+function closeWindow(){
+	firstWin.focus();
+        if(window.name=='indexPraticaweb')
+            window.close();
+        else
+            firstWin.windows[window.name].close();
 }
 function NewWindow(url, winname, winwidth, winheight, scroll) {
 	
@@ -197,9 +199,9 @@ function NewWindow(url, winname, winwidth, winheight, scroll) {
 	winprops = 'height='+winheight+',width='+winwidth+',scrollbars='+scroll+',menubar=no,top=0,status=yes,left=0,screenX=0,screenY=0,resizable,close=no';
 	
 	
-	win = window.open(url, winname, winprops)
+	firstWin.windows[winname] = window.open(url, winname, winprops)
 	if (parseInt(navigator.appVersion) >= 4) { 
-		win.window.focus(); 
+		firstWin.windows[winname].window.focus(); 
 	}
 }
 function selectOneriAnno(){

@@ -21,12 +21,15 @@ $last_change=shell_exec("git log -1 --pretty=format:'%ci'");
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
 <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<SCRIPT language="javascript" >
+    window.name='indexPraticaweb';
+    var firstWin = window;
+    var windows={};
+</SCRIPT>
 
 
 </head>
-<body onload = "javascript: window.name='indexPraticaweb';if (parseInt(navigator.appVersion) >= 4) { 
-		window.focus(); 
-	}" >
+<body>
 
 <?include "./inc/inc.page_header.php";	?>
 <TABLE id=main_layout cellSpacing=0 cellPadding=0 width="102%" border=0>

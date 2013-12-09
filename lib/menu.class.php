@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 GESTIONE DEI MENU
 NOTA quando aggiungo un idmenu alla lista lo aggiungo con un carattere # in testa in modo da sapere che è stato aggiunto dopo
@@ -118,7 +118,7 @@ class Menu{
 		</DIV>");
 		
 		if ($this->tipo=="pratica" or $this->tipo=="condono" or $this->tipo=="cdu" or $this->tipo="commissione" or $this->tipo=="ambiente") print ("<div style=\"width:160; border-width:1 0 1 0px; border-style:solid; border-color:#336699; padding:2 0 2 0px\">
-			<a href=\"javascript:loadintoIframe('myframe','".$this->path.".iter.php?pratica=$idpratica&tipo=$this->tipo')\" style=\"width:160\" class=\"iter-button\">Documenti Prodotti</a>
+			<a href=\"javascript:loadintoIframe('myframe','".$this->path.".iter.php?pratica=$idpratica&tipo=$this->tipo')\" style=\"width:160\" class=\"iter-button\">Iter della Pratica</a>
 	 
               </div>
 		");
