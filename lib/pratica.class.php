@@ -71,8 +71,8 @@ class generalPratica {
                     $anno=($r['anno'])?($r['anno']):($tmp[0]);
 
                     //Struttura delle directory
-                    $arrDir=Array(DOCUMENTI,'pe',$anno);
-
+                    //$arrDir=Array('/data','sanremo','pe','praticaweb','documenti','pe',$anno);
+			$arrDir=Array(DATA_DIR,'praticaweb','documenti','pe',$anno);
                     $this->annodir=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
                     $arrDir[]=$numero;
                     $this->documenti=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
@@ -118,8 +118,7 @@ class generalPratica {
 			$r=$db->fetchAssoc($sql,Array($this->pratica));
 			$this->info=$r;
 			extract($r);
-			//$arrDir=Array(DATA_DIR,'praticaweb','documenti','cdu',$anno);
-            $arrDir=Array(DOCUMENTI,'cdu',$anno);
+			$arrDir=Array(DATA_DIR,'praticaweb','documenti','cdu',$anno);
 			$this->annodir=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
 			$arrDir[]=$protocollo;
 			$this->documenti=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
@@ -131,6 +130,7 @@ class generalPratica {
 	
 		function createStructure(){
 		if($this->pratica){
+			
 			if(!file_exists($this->annodir)) {
 				mkdir($this->annodir);
 				chmod($this->annodir,0777);
