@@ -326,6 +326,7 @@ function get_cella($row,$col){
 
 function elenco (){
 $ncols=$this->num_col;
+
 $all="center";
 	//Intestazione delle colonne
 	$tabella="
@@ -343,12 +344,13 @@ $all="center";
                 }
 	}
 	$tabella.="\t\t\t</tr>\n";
-	
+
 	for ($i=0;$i<$this->num_record;$i++){
 		$tabella.="\t\t\t<tr>\n";//CICLO SULLE COLONNE
                 for ($j=0; $j<$ncols; $j++){
                     if (!in_array($this->tab_config[$i][3],Array("hidden"))){
                         $tabella.="\t\t\t\t".$this->get_cella($i,$j);
+                        
                     }
                 }
 			
@@ -361,7 +363,7 @@ $all="center";
 	$buttons=$this->set_buttons();
 
 	print $tabella;
-    print $buttons;
+        print $buttons;
 }
 function get_selectdb_value($val,$fld,$tab,$campo){
 	if ($val==-1)
@@ -488,7 +490,7 @@ $msgerr="Oggetto non presente in cartografia";
 			if ($mappale[2]) $sezione=" and sezione='". $mappale[2] ."'";
 			$sql = "SELECT gid, xmin(box3d(".THE_GEOM."))-50 as xmin, ymin(box3d(".THE_GEOM."))-50 as ymin, xmax(box3d(".THE_GEOM."))+50 as xmax, ymax(box3d(".THE_GEOM."))+50 as ymax FROM nct.particelle where foglio='". $mappale[1] ."' and mappale='" .$mappale[0] . "'"  .$sezione ;
 			if (!isset($this->db)) $this->connettidb();
-			$result = $this->db->sql_query($sql); //echo"$sql";
+			$result = $this->db->sql_query($sql); 
 			$map=$this->db->sql_fetchrow();
 			
 			$_SESSION["MAPSET_".MAPPA_PRATICHE]["RESULT"]= Array("LAYER"=>"OBJ_LAYER","LAYER_TYPE"=>"2","ID_FIELD" => "gid","ID_LIST" => Array("0"=>$map["gid"]),"EXTENT" => Array("0"=>$map["xmin"],"1"=>$map["ymin"],"2"=>$map["xmax"],"3"=>$map["ymax"]));
@@ -514,7 +516,6 @@ $msgerr="Oggetto non presente in cartografia";
 				$civico=$indi["civico"];
 				//
 				$sql="SELECT gid from civici.pe_civici inner join civici.pe_vie on(id=strada) where nome ilike '$via' and label='$civico';";
-				echo 
                                 $result = $this->db->sql_query($sql);
 				$map=$this->db->sql_fetchrow();
 				if ($map){	

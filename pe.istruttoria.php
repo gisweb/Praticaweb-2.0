@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("login.php");
 include "./lib/tabella_v.class.php";
 $tabpath="pe";
@@ -7,15 +7,7 @@ $user=$_SESSION["USER_ID"];
 $data=date("d/m/Y");
 
 $pr=new pratica($idpratica);
-/*if ($pr->tipopratica=='ambientale'){
-	$filetab="$tabpath/istruttoria_amb";
-}
-elseif($pr->tipopratica=='dia'){
-	$filetab="$tabpath/istruttoria_dia";
-}
-else{
-	$filetab="$tabpath/istruttoria";
-}*/
+
 $filetab="$tabpath/istruttoria";
 ?>
 <html>
@@ -39,7 +31,7 @@ else
 </script>
 </head>
 <body  background="">
-<?
+<?php
 
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $form="pareri";

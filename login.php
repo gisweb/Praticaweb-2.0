@@ -1,5 +1,16 @@
 <?php
-	error_reporting(E_ERROR);
+    function loadLibs(){
+        $libs=Array("pratica.class.php","app.utils.class.php","utils.class.php","menu.class.php");
+        foreach($libs as $lib){
+            if (file_exists(LOCAL_LIB.$lib)){
+                require_once LOCAL_LIB.$lib;
+            }
+            else{
+                require_once LIB.$lib;
+            }
+        }
+    };
+    error_reporting(E_ERROR);
     //error_reporting(E_ALL);
 	if (!session_id())
 		session_start();
@@ -36,10 +47,16 @@
 	
 	
 	include_once DATA_DIR.'config.php';
-	require_once DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."lib".DIRECTORY_SEPARATOR."pratica.class.php";
-        require_once DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."lib".DIRECTORY_SEPARATOR."app.utils.class.php";
+        loadLibs();
+	/*require_once DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."lib".DIRECTORY_SEPARATOR."pratica.class.php";
+        if (file_exists(DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."lib".DIRECTORY_SEPARATOR."app.utils.class.php")){
+            require_once DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."lib".DIRECTORY_SEPARATOR."app.utils.class.php";
+        }
+        else {
+            require_once APPS_DIR."lib".DIRECTORY_SEPARATOR."app.utils.class.php";
+        }
         require_once DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."lib".DIRECTORY_SEPARATOR."utils.class.php";
-	require_once APPS_DIR."lib".DIRECTORY_SEPARATOR."menu.class.php";
+	require_once APPS_DIR."lib".DIRECTORY_SEPARATOR."menu.class.php";*/
 	
 	//per il debug
 	$dbconn=new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
@@ -56,7 +73,7 @@
 		else
 			include_once "./admin/controlla_utente.php";
 	}	
-	//Se la sessione non è impostata mi devo nuovamente loggare
+	//Se la sessione non � impostata mi devo nuovamente loggare
 	if (!isset($_SESSION["USER_ID"])) {
 		include_once "./admin/enter.php";
 		exit;

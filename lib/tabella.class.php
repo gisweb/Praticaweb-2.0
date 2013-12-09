@@ -171,9 +171,9 @@ class Tabella{
 		//$self=$_SERVER["PHP_SELF"];
 		$pr=$this->idpratica;
 		//testo titolo
+                
 		$titolo=(isset($this->array_dati[$this->curr_record][$this->titolo]))?($this->array_dati[$this->curr_record][$this->titolo]):($this->titolo);//se il titolo Ã¨ dato dal campo 
 		//if(!isset($titolo)) $titolo=$this->titolo;//altrimenti il titolo Ã¨ la stringa passata
-		
 		//pulsante di menÃ¹
 		
 		if ($this->editable || $forceEditBtn){
@@ -194,9 +194,10 @@ class Tabella{
 				}
 			}
 		}
-		$tit=str_replace(' ','_',strtolower($titolo));
+		//$tit=str_replace('_','',$titolo);
+
 		//$riga_titolo="<td width=\"90%\" bgColor=\"".$this->sfondo_titolo."\"><font face=\"Verdana\" color=\"".$this->testo_titolo."\" size=\"2\"><b>".ucfirst(strtolower($titolo))."</b></font></td>";
-		$riga_titolo="<td class=\"titolo\">".ucfirst(strtolower($titolo))."</td>";
+		$riga_titolo="<td class=\"titolo\">".ucfirst($titolo)."</td>";
 		if (isset($butt)){
 			//$riga_titolo.="<td><input type=\"image\" src=\"images/$butt\"></td>";
             //$idobj="btn_".$tit."_".$this->idtabella;

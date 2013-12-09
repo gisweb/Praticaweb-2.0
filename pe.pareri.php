@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("login.php");
 include "./lib/tabella_v.class.php";
 $tabpath="pe";
@@ -10,8 +10,10 @@ $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 <title>Pareri - <?=$_SESSION["TITOLO_".$idpratica]?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
-<SCRIPT language="javascript" src="src/http_request.js" type="text/javascript"></SCRIPT>
+<?php
+    utils::writeCSS();
+    utils::writeJS();
+?>
 
 <script LANGUAGE="JavaScript">
 function confirmSubmit()
@@ -71,19 +73,21 @@ if (($modo=="edit") or ($modo=="new")){
 		<input name="mode" type="hidden" value="<?=$modo?>">
 
 		</FORM>	
-	<?include "./inc/inc.window.php";
+	<?php
+        include "./inc/inc.window.php";
 		
 	}else{
 		$tabella=new tabella_v("$tabpath/pareri");
 		$tabella->set_errors($errors);
-		$numrec=$tabella->set_dati("pratica=$idpratica and ente<>1");?>
+		$numrec=$tabella->set_dati("pratica=$idpratica AND NOT ente IN (SELECT id FROM pe.e_enti WHERE codice='ut')");?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 		<H2 class="blueBanner">Elenco pareri</H2>
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">
 		  <TR> 
 			<TD> 
 			<!-- contenuto-->
-				<?$tabella->set_titolo("nome_ente","modifica",array("nome_ente"=>"","id"=>""));
+			<?php
+                                $tabella->set_titolo("nome_ente","modifica",array("nome_ente"=>"","id"=>""));
 				for($i=0;$i<$numrec;$i++){
 					$tabella->curr_record=$i;
 					$tabella->idtabella=$tabella->array_dati[$i]['id'];
@@ -91,24 +95,16 @@ if (($modo=="edit") or ($modo=="new")){
 					$tabella->tabella();
 					//$tabella->elenco_stampe($form);	
 				}
-					?>
-			<!-- fine contenuto-->
-			 </TD>
-	      </TR>
-		  <TR> 
-			<TD> 
-			<!-- tabella nuovo inserimento-->
-				<?php
+		print "</td></tr><tr><td>";
+                
                 $tabella->set_titolo("Aggiungi un nuovo Parere","nuovo");
                 $tabella->get_titolo();
                 print "<BR>";
-				if ($tabella->editable) print($tabella->elenco_stampe());
-                ?>
-			<!-- fine tabella nuovo inserimento-->
-			</TD>
-		  </TR>			  
-		</TABLE>
-<?}?>
+		if ($tabella->editable) print($tabella->elenco_stampe());
+               
+                print "</td></tr></table>";
+    }
+?>
 
 </body>
 </html>

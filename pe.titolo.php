@@ -16,7 +16,7 @@ $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 </head>
 <body  background="">
 
-<?
+<?php
 
 $tab=$_POST["tabella"];
 if (($modo=="edit") || ($modo=="new")) {

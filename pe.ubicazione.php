@@ -21,9 +21,9 @@ if ($azione){
 			$dbconn->sql_query($sql);
 			$partic=$dbconn->sql_fetchrow();
 			
-            include_once "./db/db.savedata.php";
+                        include_once "./db/db.savedata.php";
 			if($_REQUEST['config_file']=='pe/catasto_terreni.tab') 
-                include_once "db/db.pe.assegna_vincoli.php";   //aggiunto per aggiungere o eliminare vincoli dei mappali
+                            include_once "db/db.pe.assegna_vincoli.php";   //aggiunto per aggiungere o eliminare vincoli dei mappali
 			
 		}
 	}	$_SESSION["ADD_NEW"]=$_POST;
@@ -113,31 +113,25 @@ if (($modo=="edit") or ($modo=="new")){
 <?php
 $array_file_tab=array("$tabpath/indirizzi","$tabpath/catasto_terreni","$tabpath/catasto_urbano");
 $array_titolo=array("Indirizzi","Catasto Terreni","Catasto Urbano");
-for($i=0;$i<3;$i++){
-    $file_tab=$array_file_tab[$i];
-    $titolo=$array_titolo[$i];
-?>
-		  <tr> 
-			<td> 
-			<!--  intestazione-->
-<?php
-    $tabella=new Tabella_h($file_tab);
-    $tabella->set_titolo($titolo,"modifica",array("titolo"=>$titolo,"tab_new"=>$file_tab,"tab_edit"=>$file_tab));
-    $numrows=$tabella->set_dati("pratica=$idpratica;");
-    $tabella->get_titolo();
-    if ($numrows)	
-        $tabella->elenco();
-    else
-        print ("<p><b>Elenco vuoto</b></p>");
-?>
-			<!-- fine intestazione-->
-			<br>
-			</td>
-		  </tr>
-		<?}?>
-		  
-		</table>
-<?php
+    for($i=0;$i<3;$i++){
+
+        $file_tab=$array_file_tab[$i];
+        $titolo=$array_titolo[$i];
+        print "<tr><td>";
+        $tabella=new Tabella_h($file_tab);
+        
+        $tabella->set_titolo($titolo,"modifica",array("titolo"=>$titolo,"tab_new"=>$file_tab,"tab_edit"=>$file_tab));
+
+        $numrows=$tabella->set_dati("pratica=$idpratica;");
+        $tabella->get_titolo();
+                
+        if ($numrows)	
+            $tabella->elenco();
+        else
+            print ("<p><b>Elenco vuoto</b></p>");
+            print "<br/></td></tr>";
+    }
+print "</table>";
 }
 ?>
 
