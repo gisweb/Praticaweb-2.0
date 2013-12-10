@@ -38,7 +38,7 @@ if (isset($_POST["pag"])){
 				<script language="javascript">
 					document.location='praticaweb.php?pratica=<?=$idpratica?>';
 				</script></body></html>
-		<?	
+		<?php	
 			exit;
 		}
 		$pages=intval($totrec/$pratichexpagina); 
@@ -67,6 +67,7 @@ $(document).ready(function(){
         $('#elencopratiche').val($('#elenco').val())
         $('#frm-report').submit();
     });
+    
 });
 </script>
 </head>
@@ -84,7 +85,7 @@ $(document).ready(function(){
 	 <table border=0 cellpadding=0 width=1% cellspacing=4 align=center>
 	<tr>
 	<td valign="bottom" nowrap class="selezione">Pagina dei risultati:&nbsp;<td>
-	<?
+	<?php
 	
 	for ($i=1;$i<$pages+1;$i++){
 		if ($i==$pagenum)
@@ -93,7 +94,7 @@ $(document).ready(function(){
 			$numpag=$i;
 		?> 
 		<td><a href="javascript:paginasucc(<?=$i?>)"><br><?=$numpag?></a></td>
-		<?}?>
+		<?php }?>
 	</tr>
 	</table>
 	</form>
@@ -107,7 +108,7 @@ $(document).ready(function(){
 
 </body></html>
 
-<?
+<?php
 		exit;
 	}
 	else{
@@ -125,9 +126,18 @@ include "./lib/tabella_v.class.php";
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<script language="javascript">
+    $(document).ready(function(){
+        $(".textbox").bind("keyup",function(event){
+            if(event.keyCode == 13){
+                $("#avvia-ricerca").click();
+            }
+        });
+    });
+</script>
 </head>
 <body>
-<?include "./inc/inc.page_header.php";?>
+<?php include "./inc/inc.page_header.php";?>
  	<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">		
 		<FORM id="ricerca" name="ricerca" method="post" action="pe.ricerca.php">		  
 		  <tr> 
@@ -140,7 +150,7 @@ include "./lib/tabella_v.class.php";
 		  <tr> 
 			<td> 			
 				<!-- ricerca base pratica -->
-				<?
+				<?php
 				if ($notfound) echo("<p><b>La ricerca non ha dato alcun risultato</b></p>");
 				$tabella=new tabella_v("$tabpath/ricerca.tab",'standard');
 				$tabella->set_db($db);	
@@ -188,7 +198,7 @@ include "./lib/tabella_v.class.php";
 				</td>
 				<td>
 						<input class="textbox" name="xpag" type="text" size="3" value="<?=$pratichexpagina?>">
-						<input name="azione" style="width:120px" type="submit" class="hexfield1" tabindex="14" value="Avvia ricerca >>>">
+						<input id="avvia-ricerca" name="azione" style="width:120px" type="submit" class="hexfield1" tabindex="1" value="Avvia ricerca >>>">
 				</td>
 			</tr>
 			<tr>
@@ -198,7 +208,7 @@ include "./lib/tabella_v.class.php";
 			</tr>
 		</FORM>	
 		</table>	
-		<?include "./inc/inc.window.php"; // contiene la gesione della finestra popup
+		<?php include "./inc/inc.window.php"; // contiene la gesione della finestra popup
 		$db->sql_close();?>
 </body>
 </html>
