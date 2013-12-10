@@ -200,7 +200,7 @@ class wordDoc {
                 "indirizzi"=>"SELECT * FROM stp.multiple_indirizzi WHERE pratica=?;",
                 "documenti_mancanti"=>"SELECT * FROM stp.multiple_allegati_mancanti WHERE pratica=?;",
                 "allegati"=>"SELECT * FROM stp.multiple_allegati WHERE pratica=?;",
-                "oneri_dettagli"=>"SELECT * FROM stp.multiple_oneri_dettagli WHERE pratica=?;",
+                "oneri_dettaglio"=>"SELECT * FROM stp.multiple_oneri_dettaglio WHERE pratica=?;",
                 "esecutore"=>"SELECT * FROM stp.multiple_esecutori WHERE pratica=?;",
                 "direttore"=>"SELECT * FROM stp.multiple_direttori WHERE pratica=?;"
             )
