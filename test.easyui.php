@@ -13,25 +13,29 @@
     <script type="text/javascript" src="/js/jquery.easyui.min.js"></script>
     <script type="text/javascript" src="/js/locale/easyui-lang-it.js"></script>
     <script type="text/javascript" src="/js/datagrid-detailview.js"></script>
-    <style>
-        div.center {
-            width:100%; 
-            padding-top:3%;
-            padding-left:15%; 
-            padding-right:15%;
-          }
-    </style>
+
     <script>
         $(document).ready(function(){
             var colsDef={
                 civici:[[
-                    {title:'',field:'viacivico'},
-                    {title:'Via',field:'via',sortable:true,width:500},
-                    {title:'Civico',field:'civico',sortable:true,width:100}
+                    {title:'Indirizzo',field:'indirizzo',sortable:true,width:1000},
+                    //{title:'Via',field:'via',sortable:true,width:500},
+                    //{title:'Civico',field:'civico',sortable:true,width:100}
                 ]],
-                pratica:[]
+                pratica:[[
+                    {title:'Numero',field:'numero',sortable:true,width:100},
+                    {title:'Protocollo',sortable:true,field:'protocollo',width:100},
+                    {title:'Data Prot.',sortable:true,field:'data_protocollo',width:100},
+                    {title:'Tipo',field:'tipo_pratica',sortable:true,width:150},
+                    {title:'Intervento',sortable:true,field:'intervento',width:100},
+                ]],
+                default_cols:[[
+                    {title:'',sortable:true,field:'',width:100},
+                ]]
+                
             }
             $('#report-table').datagrid({
+                title:'Elenco degli indirizzi delle pratiche',
                 url:'/services/xSearchNew.php',
                 queryParams:{ricerca:'civici'},
                 method:'post',
@@ -54,11 +58,7 @@
                         rownumbers:true,
                         loadMsg:'',
                         height:'auto',
-                        columns:[[
-                            {field:'orderid',title:'Order ID',width:100},
-                            {field:'quantity',title:'Quantity',width:100},
-                            {field:'unitprice',title:'Unit Price',width:100}
-                        ]],
+                        columns:colsDef['pratica'],
                         onResize:function(){
                             $('#dg').datagrid('fixDetailRowHeight',index);
                         },
@@ -75,8 +75,10 @@
     </script>
 </head>
 <body>
-    <div class="center">
-        <table id="report-table" style="width:800px;"></table>
+    <?php 
+include "./inc/inc.page_header.php";
+?>
+<table id="report-table" style="width:1000px;margin-top:20px;margin-left:20px;"></table>
         
 <!-- <table class="easyui-datagrid" title="Basic DataGrid"  style="width:800px;"
 data-options="singleSelect:true,collapsible:true,url:'/services/xSearchNew.php',queryParams:{ricerca:'civici'},method:'post',pagination:true">
