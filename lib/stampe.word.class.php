@@ -11,6 +11,8 @@
  */
 //require_once APPS_DIR."plugins/phpWord.php";
 
+
+require_once APPS_DIR."login.php";
 require_once APPS_DIR."plugins/openTbs/tbs_class_php5.php";
 require_once APPS_DIR."plugins/openTbs/tbs_plugin_opentbs.php";
 require_once APPS_DIR."/lib/php-sql-parser.php";
@@ -44,7 +46,7 @@ class wordDoc {
 		$info=pathinfo($this->modello);
 		$this->basename=$info["filename"];
 		$this->extension=$info["extension"];
-		$this->docName=$this->pratica."-".$this->modello;
+		$this->docName=utils::rand_str()."-".$this->modello;
 		$this->actions=$ris["action"];
                 $this->query=$this->setQuery();
 	}
