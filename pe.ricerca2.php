@@ -9,6 +9,12 @@ require_once APPS_DIR.'lib/tabella_v.class.php';
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<link rel="stylesheet" type="text/css" href="/css/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="/css/icon.css">
+<script type="text/javascript" src="/js/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="/js/locale/easyui-lang-it.js"></script>
+<script type="text/javascript" src="/js/datagrid-detailview.js"></script>
+
 <script language="javascript">
     $(document).ready(function(){
         $(".textbox").bind("keyup",function(event){
@@ -16,6 +22,7 @@ require_once APPS_DIR.'lib/tabella_v.class.php';
                 $("#avvia-ricerca").click();
             }
         });
+        $( "#result-container" ).hide();
     });
     function getSearchFilter(){
 	var searchFilter=new Object();
@@ -80,7 +87,28 @@ require_once APPS_DIR.'lib/tabella_v.class.php';
     });	
 	return searchFilter;
 }
+var colsDef={
+    civici:[[
+        {title:'Indirizzo',field:'indirizzo',sortable:true,width:1000},
+        //{title:'Via',field:'via',sortable:true,width:500},
+        //{title:'Civico',field:'civico',sortable:true,width:100}
+    ]],
+    pratica:[[
+        {title:'',field:'pratica',sortable:false,width:20,formatter: function(value,row,index){return '<a target="new" href="praticaweb.php?pratica=' + value + '"><div class="ui-icon ui-icon-search"/></a>'}},
+        {title:'Tipo Pratica',field:'tipo_pratica',sortable:true,width:150},
+        {title:'Numero',field:'numero',sortable:true,width:100},
+        {title:'Protocollo',sortable:true,field:'protocollo',width:100},
+        {title:'Data Prot.',sortable:true,field:'data_prot',width:100},
+        
+        {title:'Intervento',sortable:true,field:'tipo_intervento',width:150},
+        {title:'Oggetto',sortable:true,field:'oggetto',width:350}
+    ]],
+    default_cols:[[
+        {title:'',sortable:true,field:'',width:100},
+    ]]
 
+}
+var dataPost={};
 </script>
 </head>
 <body>
@@ -119,13 +147,52 @@ require_once APPS_DIR.'lib/tabella_v.class.php';
 			<td align="left">
                             <button id="avvia-ricerca">Avvia Ricerca</button>
                             <script>
+                                var result={};
+                                
                                 $('#avvia-ricerca').button({
                                     icons:{primary:'ui-icon-search'}
                                 }).bind('click',function(event){
-                                    var dataSend={};
+                                    
                                     event.preventDefault();
-                                   dataSend=getSearchFilter();
-                                   console.log(dataSend);
+                                    dataPost=getSearchFilter();
+                                    $('#ricerca').hide('slide',500)
+                                    $('#result-container').show('slide',500)
+                                    $('#result-table').datagrid({
+                                        title:'Risultato della ricerca',
+                                        url:searchUrl,
+                                        method:'post',
+                                        nowrap:false,
+                                        columns:colsDef['pratica'],
+                                        fitColumns:false,
+                                        pagination:true,
+                                        autoRowHeight:true,
+                                        
+                                        queryParams:{data:dataPost,action:'search'},
+                                        view: detailview,
+                                        detailFormatter:function(index,row){
+                                            return '<div class="ddv" style="padding:5px 0"></div>';
+                                        },
+                                        onExpandRow: function(index,row){
+                                            var ddv = $(this).datagrid('getRowDetail',index).find('div.ddv');
+                                            var text = '\n\
+<table width="100%">\n\
+    <tr>\n\
+        <td><div class="datagrid-cell"><b>Ubicazione :</b></div></td>\n\
+        <td><div class="datagrid-cell">' + row.ubicazione + '</div></td>\n\
+    </tr>\n\
+    <tr>\n\
+        <td><div class="datagrid-cell"><b>Richiedenti :</b></div></td>\n\
+        <td><div class="datagrid-cell">' + row.richiedente + '</div></td>\n\
+    </tr>\n\
+    <tr>\n\
+        <td><div class="datagrid-cell"><b>Progettisti :</b></div></td>\n\
+        <td><div class="datagrid-cell">' + row.progettista + '</div></td>\n\
+    </tr>\n\
+</table>';
+                                            $(ddv).html(text);
+                                            $('#result-table').datagrid('fixDetailRowHeight',index);
+                                        }
+                                    });
                                 });
                             </script>
                         </td>            
@@ -133,6 +200,29 @@ require_once APPS_DIR.'lib/tabella_v.class.php';
 		</TABLE>
 		
         </FORM>
+<div id="result-container" >
+    <table id="result-table" width="100%">
+        <!--<tr>
+        <th field="tipo_pratica" width="10%">Tipo Pratica</th>
+        <th field="numero" width="5%">Numero</th>
+        <th field="protocollo" width="5%">Protocollo</th>
+        <th field="data_prot" width="10%">Data Protocollo</th>
+        
+        <th field="tipo_intervento" width="10%">Intervento</th>
+        <th field="oggetto" width="40%">Oggetto</th>
+        </tr>-->
+    </table>
+        <button id="btn-back">Torna alla Ricerca</button>
+        <script>
+            $('#btn-back').button({
+                icons:{primary:'ui-icon-arrowreturnthick-1-w'}
+            }).bind('click',function(event){
+                event.preventDefault();
+                $( "#result-container" ).hide( 'slide', 500 );
+                $( "#ricerca" ).show( 'slide', 500 );
+            });
+        </script>
+</div>   
     
 </body>
 </html>

@@ -36,7 +36,7 @@ $exportDir=DATA_DIR.implode(DIRECTORY_SEPARATOR,$localDir).DIRECTORY_SEPARATOR;
                     });
                     console.log(d);
                     $.ajax({
-                       url:'/services/xServer.php',
+                       url:searchUrl,
                        data:d,
                        type:'JSON',
                        method:'POST',

@@ -1,5 +1,7 @@
 var baseURL='/gisclient/template/';
 var searchUrl='/services/xSearch.php';
+var serverUrl='/services/xServer.php';
+var suggestUrl='/services/xSuggest.php';
 
 $.widget( "custom.catcomplete", $.ui.autocomplete, {
         _renderMenu: function( ul, items ) {
