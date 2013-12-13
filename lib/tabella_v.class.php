@@ -285,20 +285,21 @@ EOT;*/
 			break;	
 			
 		case "pword":
-            $size=intval($w+($w/5));
+                        $size=intval($w+($w/5));
 			$testo=stripslashes($dato);
 			$retval="<INPUT $class type=\"password\" maxLength=\"$w\" size=\"$size\"  class=\"textbox\" name=\"$campo\" id=\"$campo\" value=\"$dato\" $disabilitato>$help";
 			break;
 		case "search_text":
+			list($schema,$table,$campo)=explode('.',$campo);
 			$size=intval($w+($w/5));
 			$retval=<<<EOT
-<select style="width:150px" class="textbox search text"  name="$campo"  id="op_$campo">
+<select style="width:200px" class="textbox search text"  name="$campo"  id="op_$campo" datatable="$schema.$table">
 	<option value="">Seleziona =====></option>
 	<option value="equal">Uguale a</option>
 	<option value="contains">Contiene</option>
 	<option value="startswith">Inizia per</option>
 	<option value="endswith">Finisce per</option>
-</select>			
+</select>
 <INPUT $class size="$size" class="textbox search" name="$campo" id="1_$campo" value="">
 <script>
 
@@ -306,15 +307,16 @@ EOT;*/
 EOT;
 			break;
 		case "search_date":
+			list($schema,$table,$campo)=explode('.',$campo);
 			$size=intval($w+($w/5));
 			$retval=<<<EOT
-<select style="width:200px" class="textbox search date"  name="$campo"  id="op_$campo">
+<select style="width:200px" class="textbox search date"  name="$campo"  id="op_$campo" datatable="$schema.$table">
 	<option value="">Seleziona =====></option>
 	<option value="equal">Uguale a</option>
-	<option value="great">Maggiore di</option>
-	<option value="less">Minore di</option>
+	<option value="great">Dopo il</option>
+	<option value="less">Prima del</option>
 	<option value="between">Compreso tra</option>
-</select>			
+</select>
 <INPUT $class size="$size" class="textbox search" name="$campo" id="1_$campo" value="">
 <INPUT $class size="$size" class="textbox search" style="display:none;" name="$campo" id="2_$campo" value="">
 <script>
@@ -347,15 +349,16 @@ EOT;
 EOT;
 			break;
 		case "search_number":
+			list($schema,$table,$campo)=explode('.',$campo);
 			$size=intval($w+($w/5));
 			$retval=<<<EOT
-<select style="width:200px" class="textbox search number"  name="$campo"  id="op_$campo">
+<select style="width:200px" class="textbox search number"  name="$campo"  id="op_$campo" datatable="$schema.$table">
 	<option value="">Seleziona =====></option>
 	<option value="equal">Uguale a</option>
 	<option value="great">Maggiore di</option>
 	<option value="less">Minore di</option>
 	<option value="between">Compreso tra</option>
-</select>			
+</select>
 <INPUT $class size="$size" class="textbox search" name="$campo" id="1_$campo" value="">
 <INPUT $class size="$size" class="textbox search" style="display:none;" name="$campo" id="2_$campo" value="">
 <script>
@@ -375,6 +378,23 @@ EOT;
 </script>
 EOT;
 			break;
+		case "search_list":
+
+			list($schema,$table,$campo)=explode('.',$campo);
+			$size=explode("x",$w);
+			$opzioni=$this->elenco_selectdb($size[1],Array($dati[$campo]),isset($size[2])?($size[2]):(null));
+			//$retval="<select style=\"width:$size[0]px\" $class  name=\"$campo\"  id=\"$campo\" onmousewheel=\"return false\" $onChange $disabilitato>$opzioni</select>$help";
+			$retval=<<<EOT
+<select style="width:200px" class="textbox search text"  name="$campo"  id="op_$campo" datatable="$schema.$table">
+	<option value="">Seleziona =====></option>
+	<option value="equal">Uguale a</option>
+</select>
+<select style="width:$size[0]px" class="textbox search"  name="$campo"  id="1_$campo">$opzioni</select>
+<script>
+
+</script>
+EOT;
+		break;
 	}	
 		
 	return $retval;
