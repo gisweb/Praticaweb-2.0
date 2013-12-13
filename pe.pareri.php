@@ -4,6 +4,7 @@ include "./lib/tabella_v.class.php";
 $tabpath="pe";
 $idpratica=$_REQUEST["pratica"];
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
+$filetab="$tabpath/pareri";
 ?>
 <html>
 <head>
@@ -36,19 +37,20 @@ $form="pareri";
 if (($modo=="edit") or ($modo=="new")){
 		include "./inc/inc.page_header.php";
 		unset($_SESSION["ADD_NEW"]);
+                $tabella=new tabella_v($filetab,$modo);
 		if ($modo=="edit"){
 			$id=$_POST["id"];
-			$titolo=$_POST["nome_ente"];
-			$filetab="$tabpath/pareri";
 			$filtro="id=$id";
+                        $tabella->set_dati($filtro);
+                        $db=appUtils::getDB();
+                        $titolo=$db->fetchColumn('SELECT nome FROM pe.e_enti inner join pe.pareri on(pareri.ente=e_enti.id) WHERE pareri.id=?',Array($id),0);
 		}
 		else{
-			$filetab="$tabpath/pareri";
 			$titolo="Inserisci nuovo parere";
 		}
 
 		//aggiungendo un nuovo parere uso pareri_edit che contiene anche l'elenco degli ENTI
-		$tabella=new tabella_v($filetab,$modo);?>	
+		?>	
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN EDITING  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 		<FORM height=0 method="post" action="praticaweb.php">
 				<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">		
@@ -59,8 +61,7 @@ if (($modo=="edit") or ($modo=="new")){
 								<td>
 						<!-- contenuto-->
 		<?php
-		if($modo=="edit")
-				$tabella->set_dati($filtro);
+
         
 		$tabella->edita();
 		?>
