@@ -13,8 +13,9 @@
  */
 class message {
     public static $message = Array(
-        "file-not-found"=>"Il file %s non è stato trovato.",
         "default"=>"Default Message",
+        "file-not-found"=>"Il file %s non è stato trovato.",
+        "edit"=>"Modifica",
         "no-message"=>"Messaggio non trovato",
         "no-view-right"=>"Non si dispone dei diritti per visualizzare i dati"
     );

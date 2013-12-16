@@ -139,8 +139,13 @@ class Tabella{
         }
     }
 
-    function getHTML5Attr($cfg){
-        return "";
+    function getAttr($cfg){
+        $attr=Array();
+        if (!$cfg) return "";
+        foreach($cfg as $key=>$val){
+            $attr[]=sprintf("%s:%s",$key,$val);
+        }
+        return implode(";",$attr);
     }
 
     function set_db($db){
@@ -155,6 +160,27 @@ class Tabella{
     function connettidb(){
         $this->db=utils::getDoctrineDB();
     }
+    
+    function getSelectionList($val,$table,$id='id',$label='opzione',$order='',$filter=''){
+        $filter=($filter)?(" WHERE $filter"):("");
+        $order=($order)?("ORDER BY $order"):("");
+        $sql="SELECT $id as id,$label as label FROM $table $filter $order";
+        $ris=$this->db->fetchAll($sql,Array());
+        if(count($ris)){
+            //$vals[]=sprintf("<option value=\"%s\">%s</option>","","Seleziona ======\>");
+            for($i=0;$i<count($ris);$i++) {
+                $selected=($ris[$i]["id"]==$val)?("selected"):("");
+                $vals[]=sprintf("<option value=\"%s\" %s>%s</option>",$ris[$i]["id"],$selected,$ris[$i]["label"]);
+            }
+        }
+        else
+            $vals[]=sprintf("<option value=\"%s\">%s</option>","","Nessun Valore");
+        return implode("",$vals);
+    }
+    function toJson(){
+        return json_encode($this->array_dati);
+    }
+    
 }//end class
 
 ?>	

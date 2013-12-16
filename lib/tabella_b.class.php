@@ -6,15 +6,21 @@ class Tabella_b extends Tabella{
     public function viewTable($curr=0){
 
 	$nrows=$this->num_col;
+        $editButton=<<<EOT
+<button type="button" class="btn pull-right btn-mini">%s<i class="icon-pencil"></i></button>
+EOT;
+        $title=$this->title;
+        $editButton=($this->mode=='view')?(sprintf($editButton,message::getMessage("edit"))):("");
         $table=<<<EOT
-        <div class="container">
+        <div class="container well">
+            <h4 class="alert alert-info">%s %s</h4>
 %s
         </div>
 EOT;
 	if ($this->viewable){
             for ($i=0;$i<$nrows;$i++){
                 $text=<<<EOT
-            <div class="row">
+            <div class="row-fluid">
                 %s
             </div>
 EOT;
@@ -23,15 +29,15 @@ EOT;
 	}
 	else{
             $text=<<<EOT
-            <div class="row">
-                <div class="alert alert-warning col-md-12">
+            <div class="row-fluid">
+                <div class="alert alert-warning span12">
                     %s
                 </div>
             </div>
 EOT;
            $rows[]=sprintf($text,message::getMessage('no-view-right'));
         }
-	$table=sprintf($table,implode("",$rows));
+	$table=sprintf($table,$title,$editButton,implode("",$rows));
     
   
 //AGGIUNTA 24/11/2011 BOTTONI   
@@ -49,47 +55,64 @@ EOT;
             $cfg=$rowCfg[$i];
             extract($cfg);
             $span=($span)?($span):(4);
-            $dato=(in_array($this->mode,Array("new","edit")))?($this->controllo($cfg)):($this->get_dato($cfg));
+            $dato=$this->get_dato($cfg);
+            $offset=(isset($cfg["offset"]) && $cfg["offset"])?("offset".$cfg["offset"]):("");
             $text=<<<EOT
-            <div class="col-md-$span">
+            <div class="span$span $offset">
                 <label for="$field">$label</label>
-                $dato
+                <div>$dato</div>
             </div>
 EOT;
             $cols[]=$text;
         }
         return implode("",$cols);
     }
-    
-    function get_dato($cfg){
+        
+    function get_dato ($cfg){
+        $disabled=(in_array($this->mode,Array("new","edit")))?(""):("disabled");
+        //$disabled="";
         $val=$this->array_dati[$this->curr_record][$cfg["field"]];
-        $html5Attr=(in_array("html5",array_keys($cfg)))?($this->getHTML5Attr($cfg["html5"])):("");
-        switch($cfg["type"]){
-            default:
+        extract($cfg);
+        $style=(in_array("style",array_keys($cfg)))?($this->getAttr($cfg["style"])):("");
+        $html5Attr=(in_array("html5",array_keys($cfg)))?($this->getAttr($cfg["html5"])):("");
+        $class=array_merge(Array("pw-data"),($class)?($class):(Array()));
+        switch($cfg["fieldType"]){
+            case "select":
+                $opts=$this->getSelectionList($val,$source,$source_key,$source_label,$source_order,$source_filter);
                 $value=<<<EOT
-<span id="$cfg[field]" class="%s" style="%s" %s>%s</span>                
+<select id="$field" name="$field" class="select pw-data %s" style="%s" %s %s/>
+    $opts
+</select>
 EOT;
                 break;
-        }
-        $value=sprintf($value,$cfg["class"],$cfg["style"],$html5Attr,$val);
-        return $value;
-    }
-    
-    function get_controllo ($cfg){
-        $val=$this->array_dati[$this->curr_record][$cfg["field"]];
-        $html5Attr=(in_array("html5",array_keys($cfg)))?($this->getHTML5Attr($cfg["html5"])):("");
-        switch($cfg["type"]){
-            case "select":
-
-                    break;
-                default:
+            case "date":
+                $class[]="datepicker";
+                $valueEdit=<<<EOT
+    <div class="input-append date">
+        <input type="text" id="$field" name="$field" value="$val" class="%s" style="%s" %s %s><span class="add-on"><i class="icon-th"></i></span>
+    </div>                    
+EOT;
+                $valueView=<<<EOT
+        <input type="text" id="$field" name="$field" value="$val" class="%s" style="%s" %s %s>                    
+EOT;
+                $value=(in_array($this->mode,Array("edit","new")))?($valueEdit):($valueView);
+                break;
+            case "textarea":
                 $value=<<<EOT
-<input type="text" id="$cfg[field]" name="$cfg[field]" value="$val" class="%s" style="%s" %s/>                
+<textarea id="$field" name="$field" class="%s" rows="$rows" style="%s" %s %s>
+$val
+</textarea>        
+EOT;
+                break;
+            case "text":
+            default:
+                $value=<<<EOT
+<input type="text" id="$field" name="$field" value="$val" class="%s" style="%s" %s %s/>                
 EOT;
                     break;
         }
-        $value=sprintf($value,$cfg["class"],$cfg["style"],$html5Attr,$val);
+        $value=sprintf($value,implode(" ",$class),$style,$html5Attr,$disabled);
         return $value;
-    }   
+    }
 }
 ?>

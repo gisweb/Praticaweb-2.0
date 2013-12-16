@@ -2,8 +2,8 @@
 class appUtils {
     const jsURL = "/js";
     const cssURL="/css";
-    public static $js = Array('jquery-1.10.2.min','jquery.easyui.min','/locale/easyui-lang-it','bootstrap.min');
-    public static $css = Array('bootstrap.min','bootstrap-theme.min','bootstrap/easyui','icon','praticaweb');
+    public static $js = Array('jquery-1.10.2.min','jquery.easyui.min','/locale/easyui-lang-it','bootstrap.min','bootstrap-datepicker','locales/bootstrap-datepicker.it','page.controller');
+    public static $css = Array('bootstrap','bootstrap-responsive','bootstrap/easyui','icon','datepicker','praticaweb');
     
     static function writeJS(){
         foreach(self::$js as $js){

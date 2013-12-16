@@ -9,8 +9,13 @@ and open the template in the editor.
 */
 
 div.container{
-    padding-top:50px;;
+    margin-top: 20px;
+    padding:20px;
+    
 }
 div.row{
     margin-top:10px;
+}
+input.pw-data{
+    height:30px;
 }
