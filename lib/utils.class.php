@@ -1,20 +1,8 @@
 <?php
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- * Description of utils
- *
- * @author marco
- */
+use Doctrine\Common\ClassLoader;
+require_once APPS_DIR.'plugins/Doctrine/Common/ClassLoader.php';
 class utils {
-    const jsURL = "/js";
-    const cssURL="/css";
-    public static $js = Array('jquery-1.9.1','jquery-ui-1.10.2.min','jquery.ui.datepicker-it','jquery.dataTables.min','dataTables.date.order','window','praticaweb','page.controller');
-    public static $css = Array('praticaweb/jquery-ui-1.9.1.custom','styles','TableTools','TableTools_JUI','demo_page','demo_table_jui','tabella_v','menu');
+    
     
     static function mergeParams($prms=Array(),$defaultParams=Array()){
         foreach($defaultParams as $key=>$val){
@@ -37,25 +25,47 @@ class utils {
     static function resizeImages($prms=Array()) {
         
     }
-    static function getDb($params=Array()){
+    static function getDoctrineDB(){
+		$classLoader = new ClassLoader('Doctrine', APPS_DIR.'plugins/');
+		$classLoader->register();
+		$config = new \Doctrine\DBAL\Configuration();
+		$connectionParams = array(
+			'dbname' => DB_NAME,
+			'user' => DB_USER,
+			'password' => DB_PWD,
+			'host' => DB_HOST,
+			'port' => DB_PORT,
+			'driver' => DB_DRIVER,
+		);
+		$conn = \Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);
+		return $conn;
+	}
+    static function getLastId($db,$tab,$sk=null,$tb=null){
+		if(!$sk || !$tb) list($sk,$tb)=explode('.',$tab);
+		//$db=self::getDB();
+		$sql="select array_to_string(regexp_matches(column_default, 'nextval[(][''](.+)['']::regclass[)]'),'') as sequence from information_schema.columns where table_schema=? and table_name=? and column_default ilike 'nextval%'";
+		$sequence=$db->fetchColumn($sql,Array($sk,$tb));
+		return $db->fetchColumn("select currval('$sequence')");
+	}
+    
+    static function isNumeric($v){
+        try{
+            $value=self::toNumber($v);
+            return (int)(is_numeric($value));
+        }
+        catch(Exception $e){
+            return 0;
+        }
+    }
+    static function toNumber($v){
+        return str_replace(",",".",$v);
+    }
+    static function getPDODB($params=Array()){
         $dsn = sprintf('pgsql:dbname=%s;host=%s;port=%s',DB_NAME,DB_HOST,DB_PORT);
 		$conn = new PDO($dsn, DB_USER, DB_PWD);
         return $conn;
     }
-    static function writeJS(){
-        foreach(self::$js as $js){
-           $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s/%s.js\"></script>",self::jsURL,$js);
-           echo $tag;
-        }
-        
-    }
-    static function writeCSS(){
-        foreach(self::$css as $css){
-           $tag=sprintf("\n\t\t<LINK media=\"screen\" href=\"%s/%s.css\" type=\"text/css\" rel=\"stylesheet\"></link>",self::cssURL,$css);
-           echo $tag;
-        }
-        
-    }
+    
     static function rand_str($length = 8, $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'){
         // Length of character list
         $chars_length = (strlen($chars) - 1);
@@ -76,5 +86,19 @@ class utils {
         // Return the string
         return $string;
     }
+    static function printArray($arr){
+        echo "<pre>";
+        print_r($arr);
+        echo "</pre>";
+    }
+    static function debug($file,$data,$mode='w+'){
+	$f=fopen(DEBUG_DIR.$file,$mode);
+	ob_start();
+	print_r($data);
+	$result=ob_get_contents();
+	ob_end_clean();
+	fwrite($f,$result."\n");
+	fclose($f);
+}
 }
 ?>

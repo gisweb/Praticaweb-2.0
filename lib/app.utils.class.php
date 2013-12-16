@@ -1,46 +1,24 @@
 <?php
-use Doctrine\Common\ClassLoader;
-require_once APPS_DIR.'plugins/Doctrine/Common/ClassLoader.php';
-
-
-
 class appUtils {
-   static function getDB(){
-		$classLoader = new ClassLoader('Doctrine', APPS_DIR.'plugins/');
-		$classLoader->register();
-		$config = new \Doctrine\DBAL\Configuration();
-		$connectionParams = array(
-			'dbname' => DB_NAME,
-			'user' => DB_USER,
-			'password' => DB_PWD,
-			'host' => DB_HOST,
-			'port' => DB_PORT,
-			'driver' => DB_DRIVER,
-		);
-		$conn = \Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);
-		return $conn;
-	}
-    static function getLastId($db,$tab,$sk=null,$tb=null){
-		if(!$sk || !$tb) list($sk,$tb)=explode('.',$tab);
-		//$db=self::getDB();
-		$sql="select array_to_string(regexp_matches(column_default, 'nextval[(][''](.+)['']::regclass[)]'),'') as sequence from information_schema.columns where table_schema=? and table_name=? and column_default ilike 'nextval%'";
-		$sequence=$db->fetchColumn($sql,Array($sk,$tb));
-		return $db->fetchColumn("select currval('$sequence')");
-	}
+    const jsURL = "/js";
+    const cssURL="/css";
+    public static $js = Array('jquery-1.10.2.min','jquery.easyui.min','/locale/easyui-lang-it','bootstrap.min');
+    public static $css = Array('bootstrap.min','bootstrap-theme.min','bootstrap/easyui','icon','praticaweb');
     
-    static function isNumeric($v){
-        try{
-            $value=self::toNumber($v);
-            return (int)(is_numeric($value));
+    static function writeJS(){
+        foreach(self::$js as $js){
+           $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s/%s.js\"></script>",self::jsURL,$js);
+           echo $tag;
         }
-        catch(Exception $e){
-            return 0;
+        
+    }
+    static function writeCSS(){
+        foreach(self::$css as $css){
+           $tag=sprintf("\n\t\t<LINK media=\"screen\" href=\"%s/%s.css\" type=\"text/css\" rel=\"stylesheet\"></link>",self::cssURL,$css);
+           echo $tag;
         }
-    }
-    static function toNumber($v){
-        return str_replace(",",".",$v);
-    }
-    
+        
+    } 
     static function getUserId(){
         return $_SESSION["USER_ID"];
     }
@@ -60,7 +38,7 @@ class appUtils {
     
 /*-------------------------------------------------------------------------------------------*/
     static function getInfoPratica($pratica){
-        $db=self::getDb();
+        $db=utils::getDoctrineDB();
         $sql="SELECT numero,tipo,resp_proc,resp_it,resp_ia,date_part('year',data_presentazione) as anno,data_presentazione,data_prot FROM pe.avvioproc  WHERE pratica=?";
 		$r=$db->fetchAssoc($sql, Array($pratica));
         //ESTRAGGO INFORMAZIONI SUL DIRIGENTE
@@ -82,29 +60,29 @@ class appUtils {
 	}
     
     static function getIdTrans($m){
-        $db=self::getDb();
+        $db=utils::getDoctrineDB();
         $id=$db->fetchColumn("SELECT id FROM pe.e_transizioni WHERE codice=?",Array($m),0);
         return $id;
     }
 /*--------------------------------------------------------------------------------------------*/  
     static function getPraticaRole($cfg,$pratica){
-        $db=self::getDB();
-		//Recupero il responsabile del procedimento
-		$rdp=$db->fetchColumn("SELECT resp_proc FROM pe.avvioproc WHERE pratica=?",Array($pratica),0);
-		
-		//Verifico il dirigente
-		$idDiri=$db->fetchColumn("SELECT userid FROM admin.users WHERE (SELECT DISTINCT id::varchar FROM admin.groups WHERE nome='dirigenza')=ANY(string_to_array(coalesce(gruppi,''),','))",Array(),0);
-		/*$db->sql_query($sql);
-		$idDiri=$db->sql_fetchfield('userid');*/
-		
-		//Verifico il responsabile del Servizio
-		$idRds=$db->fetchColumn("SELECT userid FROM admin.users WHERE (SELECT DISTINCT id::varchar FROM admin.groups WHERE nome='rds')=ANY(string_to_array(coalesce(gruppi,''),','))",Array(),0);
-		/*$db->sql_query($sql);
-		$idRds=$db->sql_fetchfield('userid');*/
-        
-        //Verifico gli archivisti
-		$sql="SELECT userid FROM admin.users WHERE (SELECT DISTINCT id::varchar FROM admin.groups WHERE nome='archivio')=ANY(string_to_array(coalesce(gruppi,''),','));";
-		$r=$db->fetchAll($sql);
+        $db=utils::getDoctrineDB();
+        //Recupero il responsabile del procedimento
+        $rdp=$db->fetchColumn("SELECT resp_proc FROM pe.avvioproc WHERE pratica=?",Array($pratica),0);
+
+        //Verifico il dirigente
+        $idDiri=$db->fetchColumn("SELECT userid FROM admin.users WHERE (SELECT DISTINCT id::varchar FROM admin.groups WHERE nome='dirigenza')=ANY(string_to_array(coalesce(gruppi,''),','))",Array(),0);
+        /*$db->sql_query($sql);
+        $idDiri=$db->sql_fetchfield('userid');*/
+
+        //Verifico il responsabile del Servizio
+        $idRds=$db->fetchColumn("SELECT userid FROM admin.users WHERE (SELECT DISTINCT id::varchar FROM admin.groups WHERE nome='rds')=ANY(string_to_array(coalesce(gruppi,''),','))",Array(),0);
+        /*$db->sql_query($sql);
+        $idRds=$db->sql_fetchfield('userid');*/
+
+//Verifico gli archivisti
+        $sql="SELECT userid FROM admin.users WHERE (SELECT DISTINCT id::varchar FROM admin.groups WHERE nome='archivio')=ANY(string_to_array(coalesce(gruppi,''),','));";
+        $r=$db->fetchAll($sql);
         for($i=0;$i<count($r);$i++){
             $idArch[]=$r[$i];
             $roles[$r[$i]]="archivio";
@@ -112,9 +90,9 @@ class appUtils {
         }
 		//Array con tutti i ruoli
         $supRoles=Array($rdp,$idRds,$idDiri);
-		$ris=Array($rdp,$idRds,$idDiri);
-		
-		$sql="SELECT role,utente FROM pe.wf_roles WHERE pratica=?";
+        $ris=Array($rdp,$idRds,$idDiri);
+
+        $sql="SELECT role,utente FROM pe.wf_roles WHERE pratica=?";
         $res=$db->fetchAll($sql,Array($pratica));
         $roles[$idDiri]=Array('dir');
 		$roles[$idRds]=Array('rds');
@@ -137,27 +115,27 @@ class appUtils {
     }
 /*---------------------------------------------------------------------------------------------*/    
     static function addRole($pratica,$role,$usr,$d){
-		$t=time();
-		$db=self::getDB();
-		$data=($d)?(($d=='CURRENT_DATE')?('now'):($d)):('now');
-		$arrDati=Array(
-			'pratica'=>$pratica,
-			'role'=>$role,
-			'utente'=>$usr,
-			'data'=>$data,
-			'tmsins'=>$t,
-			'uidins'=>self::getUserId()
-		);
-		$db->insert('pe.wf_roles', $arrDati);
-	}
-	static function delRole($pratica,$role){
-		$db=self::getDB();
-		$db->delete('pe.wf_roles',Array('pratica'=>$pratica,'role'=>$role));
-	}
+        $t=time();
+        $db=utils::getDoctrineDB();
+        $data=($d)?(($d=='CURRENT_DATE')?('now'):($d)):('now');
+        $arrDati=Array(
+                'pratica'=>$pratica,
+                'role'=>$role,
+                'utente'=>$usr,
+                'data'=>$data,
+                'tmsins'=>$t,
+                'uidins'=>self::getUserId()
+        );
+        $db->insert('pe.wf_roles', $arrDati);
+    }
+    static function delRole($pratica,$role){
+        $db=utils::getDoctrineDB();
+        $db->delete('pe.wf_roles',Array('pratica'=>$pratica,'role'=>$role));
+    }
     
     
     static function addTransition($pratica,$prms){
-        $db=self::getDb();
+        $db=utils::getDoctrineDB();
         $userid=appUtils::getUserId();
 		$initVal=Array("pratica"=>$pratica,'codice'=>null,'utente_in'=>$userid,'utente_fi'=>null,'data'=>"now",'stato_in'=>null,'stato_fi'=>null,'note'=>null,'tmsins'=>time(),'uidins'=>$userid);
 		foreach($initVal as $key=>$val) $params[$key]=(in_array($key,array_keys($prms)) && $prms[$key])?($prms[$key]):($val);
@@ -216,8 +194,8 @@ class appUtils {
         $params=array_keys($data);
         
         //Volume Totale
-        if (self::isNumeric($data[$prms["ve"]]) && self::isNumeric($data[$prms["vp"]]) && self::isNumeric($data[$prms["vd"]])){
-            $v=(double)self::toNumber($data[$prms["ve"]])+(double)self::toNumber($data[$prms["vp"]])-(double)self::toNumber($data[$prms["vd"]]);
+        if (utils::isNumeric($data[$prms["ve"]]) && utils::isNumeric($data[$prms["vp"]]) && utils::isNumeric($data[$prms["vd"]])){
+            $v=(double)utils::toNumber($data[$prms["ve"]])+(double)utils::toNumber($data[$prms["vp"]])-(double)utils::toNumber($data[$prms["vd"]]);
             try{
                 $db->insert($table,Array("pratica"=>$pratica,"parametro"=>$e_prm["v"],"valore"=>$v));
                 $lastid=self::getLastId($db,$table);
@@ -227,8 +205,8 @@ class appUtils {
             catch(Exception $e){}
         }
         //Indice di Fabbricabilità
-        if (self::isNumeric($data[$prms["v"]]) && self::isNumeric($data[$prms["slot"]])){
-            $v=(double)self::toNumber($data[$prms["v"]])/(double)self::toNumber($data[$prms["slot"]]);
+        if (utils::isNumeric($data[$prms["v"]]) && utils::isNumeric($data[$prms["slot"]])){
+            $v=(double)utils::toNumber($data[$prms["v"]])/(double)utils::toNumber($data[$prms["slot"]]);
             try{
                 $db->insert($table,Array("pratica"=>$pratica,"parametro"=>$e_prm["iif"],"valore"=>$v));
                 $lastid=self::getLastId($db,$table);
@@ -239,8 +217,8 @@ class appUtils {
         }
         
         //Indice di copertura
-        if (self::isNumeric($data[$prms["sc"]]) && self::isNumeric($data[$prms["slot"]])){
-            $v=((double)self::toNumber($data[$prms["sc"]])/(double)self::toNumber($data[$prms["slot"]]))*100;
+        if (utils::isNumeric($data[$prms["sc"]]) && utils::isNumeric($data[$prms["slot"]])){
+            $v=((double)utils::toNumber($data[$prms["sc"]])/(double)utils::toNumber($data[$prms["slot"]]))*100;
             try{
                 $db->insert($table,Array("pratica"=>$pratica,"parametro"=>$e_prm["ic"],"valore"=>$v));
                 $lastid=self::getLastId($db,$table);
@@ -250,8 +228,8 @@ class appUtils {
             catch(Exception $e){}
         }
         //Superficie Coperta Totale
-        if (self::isNumeric($data[$prms["sce"]]) && self::isNumeric($data[$prms["scp"]]) && self::isNumeric($data[$prms["scd"]])){
-            $v=(double)self::toNumber($data[$prms["sce"]])+(double)self::toNumber($data[$prms["scp"]])-(double)self::toNumber($data[$prms["scd"]]);
+        if (utils::isNumeric($data[$prms["sce"]]) && utils::isNumeric($data[$prms["scp"]]) && utils::isNumeric($data[$prms["scd"]])){
+            $v=(double)utils::toNumber($data[$prms["sce"]])+(double)utils::toNumber($data[$prms["scp"]])-(double)utils::toNumber($data[$prms["scd"]]);
             try{
                 $db->insert($table,Array("pratica"=>$pratica,"parametro"=>$e_prm["sc"],"valore"=>$v));
                 $lastid=self::getLastId($db,$table);
@@ -261,8 +239,8 @@ class appUtils {
             catch(Exception $e){}
         }
         //Superficie Utile Totale
-        if (self::isNumeric($data[$prms["sue"]]) && self::isNumeric($data[$prms["sup"]]) && self::isNumeric($data[$prms["sud"]])){
-            $v=(double)self::toNumber($data[$prms["sue"]])+(double)self::toNumber($data[$prms["sup"]])-(double)self::toNumber($data[$prms["sud"]]);
+        if (utils::isNumeric($data[$prms["sue"]]) && utils::isNumeric($data[$prms["sup"]]) && utils::isNumeric($data[$prms["sud"]])){
+            $v=(double)utils::toNumber($data[$prms["sue"]])+(double)utils::toNumber($data[$prms["sup"]])-(double)utils::toNumber($data[$prms["sud"]]);
             try{
                 $db->insert($table,Array("pratica"=>$pratica,"parametro"=>$e_prm["su"],"valore"=>$v));
                 $lastid=self::getLastId($db,$table);
@@ -273,8 +251,8 @@ class appUtils {
         }
         
         //Indice di utilizzo fondiario
-        if (self::isNumeric($data[$prms["su"]]) && self::isNumeric($data[$prms["sf"]])){
-            $v=(double)self::toNumber($data[$prms["su"]])/(double)self::toNumber($data[$prms["sf"]]);
+        if (utils::isNumeric($data[$prms["su"]]) && utils::isNumeric($data[$prms["sf"]])){
+            $v=(double)utils::toNumber($data[$prms["su"]])/(double)utils::toNumber($data[$prms["sf"]]);
             try{
                 $db->insert($table,Array("pratica"=>$pratica,"parametro"=>$e_prm["uf"],"valore"=>$v));
                 $lastid=self::getLastId($db,$table);
@@ -284,8 +262,8 @@ class appUtils {
             catch(Exception $e){}
         }
         //Indice di copertura esistente
-        if (self::isNumeric($data[$prms["sce"]]) && self::isNumeric($data[$prms["slot"]])){
-            $v=(double)self::toNumber($data[$prms["sce"]])/(double)self::toNumber($data[$prms["slot"]]);
+        if (utils::isNumeric($data[$prms["sce"]]) && utils::isNumeric($data[$prms["slot"]])){
+            $v=(double)utils::toNumber($data[$prms["sce"]])/(double)utils::toNumber($data[$prms["slot"]]);
             try{
                 $db->insert($table,Array("pratica"=>$pratica,"parametro"=>$e_prm["ice"],"valore"=>$v));
                 $lastid=self::getLastId($db,$table);
@@ -295,8 +273,8 @@ class appUtils {
             catch(Exception $e){}
         }
         //Volume con indice 3/1
-        if (self::isNumeric($data[$prms["slot"]])){
-            $v=(double)3*(double)self::toNumber($data[$prms["slot"]]);
+        if (utils::isNumeric($data[$prms["slot"]])){
+            $v=(double)3*(double)utils::toNumber($data[$prms["slot"]]);
             try{
                 $db->insert($table,Array("pratica"=>$pratica,"parametro"=>$e_prm["v3_1"],"valore"=>$v));
                 $lastid=self::getLastId($db,$table);
@@ -306,8 +284,8 @@ class appUtils {
             catch(Exception $e){}
         }
         //Volume Esistente - Volume da demolire
-        if (self::isNumeric($data[$prms["ve"]]) && self::isNumeric($data[$prms["vd"]])){
-            $v=(double)self::toNumber($data[$prms["ve"]])-(double)self::toNumber($data[$prms["vd"]]);
+        if (utils::isNumeric($data[$prms["ve"]]) && utils::isNumeric($data[$prms["vd"]])){
+            $v=(double)utils::toNumber($data[$prms["ve"]])-(double)utils::toNumber($data[$prms["vd"]]);
             try{
                 $db->insert($table,Array("pratica"=>$pratica,"parametro"=>$e_prm["ve_vd"],"valore"=>$v));
                 $lastid=self::getLastId($db,$table);
@@ -317,8 +295,8 @@ class appUtils {
             catch(Exception $e){}
         }
         //Volume Progetto - Volume da demolire
-        if (self::isNumeric($data[$prms["vp"]]) && self::isNumeric($data[$prms["vd"]])){
-            $v=(double)self::toNumber($data[$prms["vp"]])-(double)self::toNumber($data[$prms["vd"]]);
+        if (utils::isNumeric($data[$prms["vp"]]) && utils::isNumeric($data[$prms["vd"]])){
+            $v=(double)utils::toNumber($data[$prms["vp"]])-(double)utils::toNumber($data[$prms["vd"]]);
             try{
                 $db->insert($table,Array("pratica"=>$pratica,"parametro"=>$e_prm["vp_vd"],"valore"=>$v));
                 $lastid=self::getLastId($db,$table);
