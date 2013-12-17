@@ -11,16 +11,16 @@ switch($mode){
     case "view":
         $table= new Tabella_b($cfg,$mode);
         $table->set_dati("pratica=$idPratica");
-        $table->title="Dati di avvio procedimento";
+        //$table->title="Dati di avvio procedimento";
         break;
     case "edit":
         $table= new Tabella_b($cfg,$mode);
         $table->set_dati("pratica=$idPratica");
-        $table->title="Modifica dati di avvio procedimento";
+        //$table->title="Modifica dati di avvio procedimento";
         break;
     case "new":
         $table= new Tabella_b($cfg,$mode);
-        $table->title="Nuova Pratica";
+        //$table->title="Nuova Pratica";
         break;
     case "list":
         $table= new Tabella_b($cfg,$mode);

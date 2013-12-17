@@ -13,11 +13,17 @@
  */
 class message {
     public static $message = Array(
+        "cancel"=>"Annulla",
+        "close"=>"Chiudi",
         "default"=>"Default Message",
-        "file-not-found"=>"Il file %s non è stato trovato.",
+        "delete"=>"Elimina",
         "edit"=>"Modifica",
+        "file-not-found"=>"Il file %s non è stato trovato.",
         "no-message"=>"Messaggio non trovato",
-        "no-view-right"=>"Non si dispone dei diritti per visualizzare i dati"
+        "no-view-right"=>"Non si dispone dei diritti per visualizzare i dati",
+        "save"=>"Salva",
+        "select"=>"Seleziona",
+        "select-all"=>"Seleziona Tutti"
     );
     static function getMessage($key="default",$v=''){
         $m=self::$message;

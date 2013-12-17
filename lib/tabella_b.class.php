@@ -4,18 +4,20 @@ class Tabella_b extends Tabella{
    
 //CREATES TABLE IN VIEW MODE  
     public function viewTable($curr=0){
-
 	$nrows=$this->num_col;
+        $this->getTitle();
         $editButton=<<<EOT
-<button type="button" class="btn pull-right btn-mini">%s<i class="icon-pencil"></i></button>
+<button id="btn_edit" type="button" class="btn pull-right">%s<i class="icon-edit"></i></button>
 EOT;
         $title=$this->title;
         $editButton=($this->mode=='view')?(sprintf($editButton,message::getMessage("edit"))):("");
         $table=<<<EOT
-        <div class="container well">
-            <h4 class="alert alert-info">%s %s</h4>
+    <div class="container">
+        <div id="title" class="title well">%s %s</div>
+        <div class="well">       
 %s
         </div>
+    </div>
 EOT;
 	if ($this->viewable){
             for ($i=0;$i<$nrows;$i++){
@@ -55,6 +57,7 @@ EOT;
             $cfg=$rowCfg[$i];
             extract($cfg);
             $span=($span)?($span):(4);
+            //$dato=(in_array($this->mode,Array("new","edit"))?($this->getControl($cfg)):($this->get_dato($cfg));
             $dato=$this->get_dato($cfg);
             $offset=(isset($cfg["offset"]) && $cfg["offset"])?("offset".$cfg["offset"]):("");
             $text=<<<EOT
@@ -68,13 +71,15 @@ EOT;
         return implode("",$cols);
     }
         
-    function get_dato ($cfg){
-        $disabled=(in_array($this->mode,Array("new","edit")))?(""):("disabled");
-        //$disabled="";
-        $val=$this->array_dati[$this->curr_record][$cfg["field"]];
+    function getControl ($cfg){
+        
         extract($cfg);
+        $disabled=(in_array($this->mode,Array("new","edit")))?(""):("disabled");
+
+        $val=$this->array_dati[$this->curr_record][$cfg["field"]];
+        
         $style=(in_array("style",array_keys($cfg)))?($this->getAttr($cfg["style"])):("");
-        $html5Attr=(in_array("html5",array_keys($cfg)))?($this->getAttr($cfg["html5"])):("");
+        $html5Attr=(in_array("html5",array_keys($cfg)))?($this->getHTML5Attr($cfg["html5"])):("");
         $class=array_merge(Array("pw-data"),($class)?($class):(Array()));
         switch($cfg["fieldType"]){
             case "select":

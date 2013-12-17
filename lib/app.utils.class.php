@@ -40,16 +40,16 @@ class appUtils {
     static function getInfoPratica($pratica){
         $db=utils::getDoctrineDB();
         $sql="SELECT numero,tipo,resp_proc,resp_it,resp_ia,date_part('year',data_presentazione) as anno,data_presentazione,data_prot FROM pe.avvioproc  WHERE pratica=?";
-		$r=$db->fetchAssoc($sql, Array($pratica));
-        //ESTRAGGO INFORMAZIONI SUL DIRIGENTE
-		$sql="SELECT userid as dirigente FROM admin.users WHERE attivato=1 and '13' = ANY(string_to_array(coalesce(gruppi,''),','));";
-		$dirig=$db->fetchColumn($sql);
-		$r['dirigente']=$dirig;
-		//ESTRAGGO INFORMAZIONI SUL RESPONSABILE DEL SERVIZIO
-		$sql="SELECT userid as rds FROM admin.users WHERE attivato=1 and '15' = ANY(string_to_array(coalesce(gruppi,''),','));";
-		$rds=$db->fetchColumn($sql);
-		$r['rds']=$rds;
-		return $r;
+        $r=$db->fetchAssoc($sql, Array($pratica));
+//ESTRAGGO INFORMAZIONI SUL DIRIGENTE
+        $sql="SELECT userid as dirigente FROM admin.users WHERE attivato=1 and '13' = ANY(string_to_array(coalesce(gruppi,''),','));";
+        $dirig=$db->fetchColumn($sql);
+        $r['dirigente']=$dirig;
+        //ESTRAGGO INFORMAZIONI SUL RESPONSABILE DEL SERVIZIO
+        $sql="SELECT userid as rds FROM admin.users WHERE attivato=1 and '15' = ANY(string_to_array(coalesce(gruppi,''),','));";
+        $rds=$db->fetchColumn($sql);
+        $r['rds']=$rds;
+        return $r;
     }
     
     static function getStato($id){

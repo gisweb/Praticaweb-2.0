@@ -48,6 +48,10 @@ class Tabella{
         $f=fopen(TAB.$config_file,'r');
         $cfgFile=fread($f,filesize(TAB.$config_file));
         $cfg=json_decode($cfgFile,true);
+        if(in_array("standard",array_keys($cfg))){
+            $cfg[$mode]=array_merge($cfg[$mode],$cfg["standard"]);
+        }
+        
         if (!in_array($mode,array_keys($cfg))){
                 if ($mode=='new' && in_array('edit',array_keys($cfg)))
                         $lay=$cfg['edit'];
@@ -63,40 +67,19 @@ class Tabella{
         $this->mode=$mode;
         $this->debug=null;
         $this->tabelladb=(isset($lay["table"]))?($lay["table"]) :($cfg['general']['table']);
-        //$this->function_prms=(isset($lay['function_prms']) && $lay['function_prms'])?($lay['function_prms']):(null);
-        $this->campi_obbl=(isset($lay['mandatory-field']) && $lay['mandatory-field'])?(explode(';',$lay['mandatory-field'])):(null);
-        $this->campi_ord=(isset($lay['order-field']) && $lay['order-field'])?(explode(';',$lay['order-field'])):(null);
+        $this->campi_obbl=(isset($lay['mandatory-field']) && $lay['mandatory-field'])?($lay['mandatory-field']):(null);
+        $this->campi_ord=(isset($lay['order-field']) && $lay['order-field'])?($lay['order-field']):(null);
         $this->num_col=$ncol;
         /*$this->viewable=(isset($lay['viewable']))?($lay["viewable"]) :($cfg['general']['viewable']);
         $this->editable=(isset($lay["editable"]))?($lay["editable"]):($cfg['general']['editable']);*/
         $this->viewable=1;
         $this->editable=1;
-        //$lay=file(TAB.$config_file);
-        //$datidb=explode(',',$lay[0]);//prima_riga[0] contiene le info per il db: nome tabella e campi obbligatori 
-        //$ncol=count($lay)-1;
-        //for ($i=0;$i<count($lay['rows']);$i++)//comincio da 1 perchÃ¨ sulla prima riga ho il nome della tabella e i campi obbligatori
-                        //$row[]=explode('|',$lay['data'][$i]);//array di configurazione delle tabelle
-        //
         $row=$lay["rows"];
-                    ////estraggo l'elenco dei campi
-                    /*for ($i=0;$i<$ncol;$i++){
-                                    for ($j=0;$j<count($row[$i]);$j++){ //ogni elemento puÃ² avere un numero di elementi arbitrario
-                                                    list($label,$campo,$prms,$tipo)=explode(';',$row[$i][$j]);
-                                                    $tipo=trim($tipo);
-                                                    if (($campo!="id") and ($campo!="pratica") and ($tipo!="submit") and ($tipo!="button") and ($tipo!="upload"))
-                                                                    ($campi)?(($campo)?($campi.=",".$campo):($campi)):($campi=$campo);
-
-                                    }
-                    }
-                    
-
-            */
-            $this->tab_config=$row;
-            $this->config_file=$config_file;
-            $this->idtabella=$id;
-            $this->idpratica=($pratica)?($pratica):((isset($_REQUEST["pratica"]))?($_REQUEST["pratica"]):(null));
-
-            //echo "<pre>";print_r($this);echo "</pre>";
+        $this->configuration=$lay;            
+        $this->tab_config=$row;
+        $this->config_file=$config_file;
+        $this->idtabella=$id;
+        $this->idpratica=($pratica)?($pratica):((isset($_REQUEST["pratica"]))?($_REQUEST["pratica"]):(null));
     }
 
     function get_idpratica(){
@@ -139,15 +122,12 @@ class Tabella{
         }
     }
 
-    function getAttr($cfg){
-        $attr=Array();
-        if (!$cfg) return "";
-        foreach($cfg as $key=>$val){
-            $attr[]=sprintf("%s:%s",$key,$val);
-        }
-        return implode(";",$attr);
+    function getTitle(){
+        $title=$this->configuration["title"];
+        $title=$this->mergeParams($title);
+        $this->title=$title;
     }
-
+    
     function set_db($db){
             $this->db=$db;
     }
@@ -162,6 +142,7 @@ class Tabella{
     }
     
     function getSelectionList($val,$table,$id='id',$label='opzione',$order='',$filter=''){
+        if (!isset($this->db)) $this->connettidb();
         $filter=($filter)?(" WHERE $filter"):("");
         $order=($order)?("ORDER BY $order"):("");
         $sql="SELECT $id as id,$label as label FROM $table $filter $order";
@@ -181,6 +162,43 @@ class Tabella{
         return json_encode($this->array_dati);
     }
     
+    function mergeParams($text){
+        $curr=$this->curr_record;
+        if(preg_match_all("|@(?P<field>[A-z_]+)@|Ui",$text,$ris)){
+            if(is_array($ris["field"])){
+                for($i=0;$i<count($ris["field"]);$i++){
+                    $key=$ris["field"][$i];
+                    $value=($this->array_dati[$curr][$key])?($this->array_dati[$curr][$key]):(($_SESSION["dati_pratica"][$key])?($_SESSION["dati_pratica"][$key]):($key));
+                    $text=str_replace("@$key@",$value,$text);
+                }
+            }
+            else{
+                $key=$ris["field"];
+                $value=($this->array_dati[$curr][$key])?($this->array_dati[$curr][$key]):(($_SESSION["dati_pratica"][$key])?($_SESSION["dati_pratica"][$key]):($key));
+                $text=str_replace("@$key@",$value,$text);
+            }
+        }
+        return $text;
+    }
+    
+    function getAttr($cfg){
+        $attr=Array();
+        if (!$cfg) return "";
+        foreach($cfg as $key=>$val){
+            $attr[]=sprintf("%s:%s",$key,$val);
+        }
+        return implode(";",$attr);
+    }
+    
+    function getHTML5Attr($cfg){
+        $attr=Array();
+        if (!$cfg) return "";
+        foreach($cfg as $key=>$val){
+            $val=$this->mergeParams($val);
+            $attr[]=sprintf("data-$key=\"$val\"",$key,$val);
+        }
+        return implode(" ",$attr);
+    }
 }//end class
 
 ?>	
