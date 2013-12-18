@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("login.php");
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $idpratica=$_REQUEST["pratica"];
@@ -32,7 +32,7 @@ window.open('http://'+host+'/praticaweb/carica_foto.php?pratica='+idpr+'&form=vi
 </script>
 </head>
 <body  background="">
-	<?
+	<?php
 	
 	//<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN EDIT DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 

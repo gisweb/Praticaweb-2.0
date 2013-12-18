@@ -1,7 +1,7 @@
 <?php
 include_once("login.php");
 include "./lib/tabella_v.class.php";
-$tabpath="vigi";
+$tabpath="pe";
 $filetab=$tabpath.DIRECTORY_SEPARATOR."sanzioni";
 $idpratica=$_REQUEST["pratica"];
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');

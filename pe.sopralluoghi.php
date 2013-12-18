@@ -1,81 +1,107 @@
-<?
+<?php
 include_once("login.php");
-include "./lib/tabella_v.class.php";
-$tabpath="pe";
+$modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $idpratica=$_REQUEST["pratica"];
-$titolo=$_SESSION["TITOLO_$idpratica"];?>
+$tabpath="vigi";
+$config_file="$tabpath/sopralluoghi";
+$host=$_SERVER["HTTP_HOST"];
+$modal=$_POST["modal"];
+include "./lib/tabella_v.class.php";
+include "./lib/tabella_h.class.php";
+?>
 <html>
 <head>
-<title>Lavori- <?=$_SESSION[$idpratica]["TITOLO"]?></title>
+<title>Sopralluogo</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<script language=javascript>
+function link(file){
+	window.open("foto/"+file,'new',"HEIGHT=400,WIDTH=500,menubar=false,toolbar=false,scrollbars=false,title=false");
+}
+function apri_foto(file,w,h){
+	window.open("foto/"+file,'new',"HEIGHT="+h+",WIDTH="+w+",menubar=false,toolbar=false,scrollbars=false,title=false");
+}
+function aggiungi_foto(){
+idpr=pippo.pratica.value;
+spr=pippo.id_sopralluoghi.value;
+host=pippo.host.value;
+
+window.open('http://'+host+'/praticaweb/carica_foto.php?pratica='+idpr+'&form=vigilanza&id_sopralluoghi='+spr,'Documento','Height=200,Width=550,toolbar=no,resizable=no');
+}
+</script>
 </head>
 <body  background="">
-
-<?
-$modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
-$tab=$_POST["tabella"];
-$id=$_POST["id"];
-if (($modo=="edit") || ($modo=="new")) {
-	unset($_SESSION["ADD_NEW"]);
-	$titolo_form="Sopralluoghi";
-	$file_config="$tabpath/sopralluoghi_edit.tab";
-	$tabella=new Tabella_v($file_config,$modo);	
-	include "./inc/inc.page_header.php";?>
+	<?php
 	
-		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN EDITING  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
-	<FORM id="" name="" method="post" action="praticaweb.php">
-		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">		
-			<tr> 
-				<td><!-- intestazione--><H2 class="blueBanner"><?=$titolo_form?></H2><!-- fine intestazione-->
-			</td>
-		  </tr>
-		  <tr> 
-			<td> 
-				<!-- contenuto-->
-				<?
-				if($Errors){
-					$tabella->set_errors($Errors);
-					$tabella->set_dati($_POST);
-				}
-				elseif ($modo=="edit"){	
-					$tabella->set_dati("id=$id");
-				}
-				$tabella->edita();?>			  
-			</td>
-		  </tr> 
-		</TABLE>
+	//<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN EDIT DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 
-		<input name="active_form" type="hidden" value="pe.sopralluoghi.php">
+	if ($modo=="edit" or $modo=="new" ) {
+		include "./inc/inc.page_header.php";
+		print("<H2 class=\"blueBanner\">Nuovo Sopralluogo</H2>");
+		$id=$soprall=$_POST["id_sopralluoghi"];
+
+		//if ($modo=="edit") $config_file.="v";
+		$tabella=new tabella_v($config_file,$modo);
+		$tabella->set_errors($Errors);
+		if ($modo=="edit") $tabella->set_dati("id=".$_POST["id_sopralluoghi"]);
+		else
+			unset($_SESSION["ADD_NEW"]);
+		
+		print "<form method=\"post\" action=\"praticaweb.php\">";
+		
+		$tabella->edita();
+		
+		if ($modal) {
+			if (strlen($_POST["descrizione"])) $desc=$_POST["descrizione"];
+			$uploaddir = getcwd()."/foto/";
+			$form="vigilanza";
+			$idallegato=$_POST["id_sopralluoghi"];
+			include "./lib/upload.php";
+		}
+	?>
+	
+	<br>
+		<input name="active_form" type="hidden" value="pe.sopralluoghi.php">				
+		<input name="id_sopralluoghi" type="hidden" value="<?=$soprall;?>">
+		<input name="host" type="hidden" value="<?=$host;?>">
 		<input name="mode" type="hidden" value="<?=$modo?>">
-		<input name="tabella" type="hidden" value="<?=$tab?>"></td>
-	</FORM>
-<?include "./inc/inc.window.php";
+		<input name="id" type="hidden" value="<?=$id;?>">
 
-}else{
-		$tabella=new Tabella_v("$tabpath/sopralluoghi");?>
-		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
-		<H2 class="blueBanner">Esecuzione Lavori</H2>
-		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
-		  <TR> 
-			<TD> 
-			<!-- contenuto-->
-				<?php
-				if($tabella->set_dati("pratica=$idpratica")){
-					$tabella->set_titolo("Sopralluoghi","modifica",array("id"=>""));
-					$tabella->elenco();
-				}
-				echo ("<br>");
-				$tabella->set_titolo("Inserisci dati di un nuovo sopralluogo","nuovo",array("tabella"=>"sopralluoghi"));
+	</form>
+	<br>
+	<br>
+	<?php
+		
+	include "./inc/inc.window.php"; // contiene la gesione della finestra popup
+	}
+	else{
+	
+		//<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
+	
+			print("<H2 class=\"blueBanner\">Sopralluoghi effettuati</H2>");
+
+			$tabella=new tabella_v($config_file,$modo);
+			$nrec=$tabella->set_dati("pratica=$idpratica order by data");
+			
+			for($i=0;$i<$nrec;$i++){
+				$tabella->curr_record=$i;
+				$dati_id=$tabella->get_campo("id");
+				$dati_data=$tabella->get_campo("data");
+				//$dati_soprall=$tabella->get_campo("vigilanza");
+				$tabella->idtabella=$dati_id;
+				$tabella->set_titolo("Sopralluogo del ".$dati_data,"modifica",array("id_sopralluoghi"=>$dati_id));
 				$tabella->get_titolo();
-				//print ("<p><b>Nessun sopralluogo registrato</b></p>");
-					
-?>
-			<!-- fine contenuto-->
-			 </TD>
-	      </TR>
-		</TABLE>
-<?}?>
+				$tabella->tabella();
+				print "<div class=\"button_line\"></div>\n";
+				
+				//$tabella->elenco_stampe("vigilanza");
+			}
+			
+			$tabella->set_titolo("Nuovo Sopralluogo","nuovo");
+			$tabella->get_titolo();
+	}?>
+
 </body>
 </html>
+
