@@ -58,7 +58,7 @@ EOT;
             extract($cfg);
             $span=($span)?($span):(4);
             //$dato=(in_array($this->mode,Array("new","edit"))?($this->getControl($cfg)):($this->get_dato($cfg));
-            $dato=$this->get_dato($cfg);
+            $dato=$this->getControl($cfg);
             $offset=(isset($cfg["offset"]) && $cfg["offset"])?("offset".$cfg["offset"]):("");
             $text=<<<EOT
             <div class="span$span $offset">

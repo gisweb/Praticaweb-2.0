@@ -73,7 +73,16 @@ EOT;
         return sprintf($el,implode(" ",$prms),implode("\n\t\t",$opts));
     }
     static function textarea($params,$value){
-        
+        $prms=Array();
+        foreach($params as $key=>$val){ 
+            $prms[]="$key=\"$val\"";
+        }
+        $el=<<<EOT
+    <textarea %s>
+        %s
+    </textarea>            
+EOT;
+        return sprintf($el,implode(" ",$prms),$value);
     }
     static function radio($params,$options,$selected){
         
