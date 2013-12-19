@@ -27,66 +27,69 @@ require_once APPS_DIR.'lib/tabella_v.class.php';
     function getSearchFilter(){
 	var searchFilter=new Object();
 	$(".search").each(function(index){
-        var name=$(this).attr('name');
-        var opValue=$(this).val();
-        var filter;
-        var t=($(this).hasClass('text'))?('text'):(($(this).hasClass('number'))?('number'):('date'));
-        if (opValue == 'between'){
-            if(t=='date'){
-                filter=name+" >= '"+$('#1_'+name).val()+"'::date AND "+name +" <= '"+$('#2_'+name).val()+"'::date";
+            var name=$(this).attr('name');
+            var opValue=$(this).val();
+            var filter='';
+            var t=($(this).hasClass('text'))?('text'):(($(this).hasClass('number'))?('number'):('date'));
+            if (!$('#1_'+name).val()){
+                filter='';
             }
-            else{
-                filter=name+" >= "+$('#1_'+name).val()+" AND "+name +" <= "+$('#2_'+name).val();
+            else if (opValue == 'between'){
+                if(t=='date'){
+                    filter=name+" >= '"+$('#1_'+name).val()+"'::date AND "+name +" <= '"+$('#2_'+name).val()+"'::date";
+                }
+                else{
+                    filter=name+" >= "+$('#1_'+name).val()+" AND "+name +" <= "+$('#2_'+name).val();
+                }
             }
-        }
-        else if(opValue == 'equal'){
-             if(t=='date'){
-                filter=name+" = '"+$('#1_'+name).val()+"'::date";
+            else if(opValue == 'equal'){
+                 if(t=='date'){
+                    filter=name+" = '"+$('#1_'+name).val()+"'::date";
+                }
+                else if (t=='text'){
+                    filter=name+"::varchar ilike '"+$('#1_'+name).val()+"'";
+                }
+                else{
+                    filter=name+" = "+$('#1_'+name).val();
+                }
             }
-            else if (t=='text'){
-                filter=name+"::varchar ilike '"+$('#1_'+name).val()+"'";
+            else if(opValue == 'great'){
+                if(t=='date'){
+                    filter=name+" > '"+$('#1_'+name).val()+"'::date";
+                }
+                else{
+                    filter=name+" > "+$('#1_'+name).val();
+                }
             }
-            else{
-                filter=name+" = "+$('#1_'+name).val();
+            else if(opValue == 'less'){
+                if(t=='date'){
+                    filter=name+" < '"+$('#1_'+name).val()+"'::date";
+                }
+                else{
+                    filter=name+" < "+$('#1_'+name).val();
+                }
             }
-        }
-        else if(opValue == 'great'){
-            if(t=='date'){
-                filter=name+" > '"+$('#1_'+name).val()+"'::date";
+            else if(opValue == 'contains'){
+                filter=name+" ilike '%"+$('#1_'+name).val()+"%'";
             }
-            else{
-                filter=name+" > "+$('#1_'+name).val();
+            else if(opValue == 'startswith'){
+                 filter=name+" ilike '"+$('#1_'+name).val()+"%'";
             }
-        }
-        else if(opValue == 'less'){
-            if(t=='date'){
-                filter=name+" < '"+$('#1_'+name).val()+"'::date";
+            else if(opValue == 'endswith'){
+                 filter=name+" ilike '%"+$('#1_'+name).val()+"'";
             }
-            else{
-                filter=name+" < "+$('#1_'+name).val();
+            if (filter) {
+                var table=$(this).attr('datatable');
+                if (searchFilter[table]) searchFilter[table].push(filter);
+                else{
+                    searchFilter[table]=new Array();
+                    searchFilter[table].push(filter);
+                }
             }
-        }
-        else if(opValue == 'contains'){
-            filter=name+" ilike '%"+$('#1_'+name).val()+"%'";
-        }
-        else if(opValue == 'startswith'){
-             filter=name+" ilike '"+$('#1_'+name).val()+"%'";
-        }
-        else if(opValue == 'endswith'){
-             filter=name+" ilike '%"+$('#1_'+name).val()+"'";
-        }
-        if (filter) {
-            var table=$(this).attr('datatable');
-            if (searchFilter[table]) searchFilter[table].push(filter);
-            else{
-                searchFilter[table]=new Array();
-                searchFilter[table].push(filter);
-            }
-        }
 		
-    });	
+        });	
 	return searchFilter;
-}
+    }
 var colsDef={
     civici:[[
         {title:'Indirizzo',field:'indirizzo',sortable:true,width:1000},
@@ -128,7 +131,7 @@ var dataPost={};
 				<!-- ricerca base pratica -->
                             <?php
                             
-                            $tabella=new tabella_v("pe/ricerca2.tab",'standard');
+                            $tabella=new tabella_v("pe/ricerca_new.tab",'standard');
                             //$tabella->set_db($db);	
                             //$tabella_avanzata=new tabella_v("$tabpath/ricerca_avanzata.tab",'standard');
                             //in avanzata devo settare il db perchÃš c'Ãš un elenco

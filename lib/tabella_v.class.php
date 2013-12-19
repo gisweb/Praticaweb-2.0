@@ -289,6 +289,14 @@ EOT;*/
 			$testo=stripslashes($dato);
 			$retval="<INPUT $class type=\"password\" maxLength=\"$w\" size=\"$size\"  class=\"textbox\" name=\"$campo\" id=\"$campo\" value=\"$dato\" $disabilitato>$help";
 			break;
+                case "search_text_equal":
+			list($schema,$table,$campo)=explode('.',$campo);
+			$size=intval($w+($w/5));
+			$retval=<<<EOT
+<input type="hidden" value="equal" name="$campo" class="textbox search text" id="op_$campo" datatable="$schema.$table"/>                           
+<INPUT $class size="$size" class="textbox search" name="$campo" id="1_$campo" value="">
+EOT;
+			break;
 		case "search_text":
 			list($schema,$table,$campo)=explode('.',$campo);
 			$size=intval($w+($w/5));
@@ -300,11 +308,8 @@ EOT;*/
 	<option value="startswith">Inizia per</option>
 	<option value="endswith">Finisce per</option>
 </select>-->
-<input type="hidden" value="contains" name="$campo"  id="op_$campo" datatable="$schema.$table"/>                           
+<input type="hidden" value="contains" name="$campo" class="textbox search text" id="op_$campo" datatable="$schema.$table"/>                           
 <INPUT $class size="$size" class="textbox search" name="$campo" id="1_$campo" value="">
-<script>
-
-</script>
 EOT;
 			break;
 		case "search_date":
@@ -391,7 +396,7 @@ EOT;
 	<option value="equal">Uguale a</option>
 </select>-->
                             
-<input type="hidden" value="equal" name="$campo"  id="op_$campo" datatable="$schema.$table"/>                           
+<input type="hidden" value="equal" name="$campo" class="textbox search text" id="op_$campo" datatable="$schema.$table"/>                           
 select style="width:$size[0]px" class="textbox search"  name="$campo"  id="1_$campo">$opzioni</select>
 <script>
 

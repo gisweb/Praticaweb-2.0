@@ -1,4 +1,4 @@
-<?
+<?php
 include "db/db.savedata.php";
 if ($_POST["azione"]=="Elimina"){
 	$db->sql_query("DELETE FROM vigi.dest_provvedimenti WHERE pratica=$idpratica and id_provv=$id");

@@ -4,6 +4,6 @@ if (($_POST["azione"]=="Salva") || ($_POST["azione"]=="Elimina") )
 	include_once "./db/db.savedata.php";
 	
 	
-$active_form="pe.notifiche.php?pratica=$idpratica";
+$active_form="pe.ordinanze.php?pratica=$idpratica";
 	
 ?>

@@ -14,7 +14,7 @@ $offset = ($page-1)*$rows;
 $order = isset($_POST['sort']) ? ("ORDER BY ".$_POST['sort']) : "ORDER BY data_prot";
 $orderType = isset($_POST['order']) ? ($_POST['order']) : "DESC";
 $result=Array();
-$db=utils::getDoctrineDB();
+$db=appUtils::getDB();
 switch($action){
     default:
         foreach($data as $key=>$value){
@@ -46,7 +46,7 @@ admin.users D ON(A.resp_proc=D.userid) LEFT JOIN
 WHERE pratica IN ($filter) 
 $order $orderType LIMIT $rows OFFSET $offset                 
 EOT;
-      
+        utils::debug("search",$sql);
         $res=$db->fetchAll($sql);
         $result=Array("total"=>$total,"rows"=>$res,"filter"=>$filter);
         break;
