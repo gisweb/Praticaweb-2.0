@@ -226,6 +226,7 @@ function valida_campi($arr){
 
 	$tb=new Tabella($config_file,$modo);
 	$tabelladb=$tb->tabelladb;
+        $ref_table=$tb->tabella_ref_db;
 	$campi_obbl=$tb->campi_obbl;
 	$array_config=$tb->tab_config;
 	//print_array($tb);
@@ -336,7 +337,7 @@ function valida_campi($arr){
 		//se ho inserito un nuovo valore ricavo l'ultimo id
 		if ($_POST["mode"]=="new") {
             
-			$sql=($tb->table_list)?("SELECT max(id) FROM $tabelladb"):("select currval ('".trim($tabelladb)."_id_seq')");
+			$sql=($tb->table_list)?("SELECT max(id) FROM $ref_table"):("select currval ('".trim($ref_table)."_id_seq')");
 			//echo "<p>$sql</p>";
 			$db->sql_query ($sql);
 			$row=$db->sql_fetchrow();

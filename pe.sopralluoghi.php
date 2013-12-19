@@ -2,7 +2,7 @@
 include_once("login.php");
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $idpratica=$_REQUEST["pratica"];
-$tabpath="vigi";
+$tabpath="pe";
 $config_file="$tabpath/sopralluoghi";
 $host=$_SERVER["HTTP_HOST"];
 $modal=$_POST["modal"];

@@ -204,7 +204,7 @@ EOT;*/
 			//echo $size;
 			$size=explode("x",$w);
 			$opzioni=$this->elenco_select($size[1],$dati[$campo]);
-			$retval="<select style=\"width:$size[0]px\"  name=\"$campo\"  id=\"$campo\" onmousewheel=\"return false\" $disabilitato>$opzioni</select>$help";
+			$retval="<select style=\"width:$size[0]px\" class=\"$class\" name=\"$campo\"  id=\"$campo\" onmousewheel=\"return false\" $disabilitato>$opzioni</select>$help";
 			break;
 		
 		case "multiselectdb":
@@ -293,13 +293,14 @@ EOT;*/
 			list($schema,$table,$campo)=explode('.',$campo);
 			$size=intval($w+($w/5));
 			$retval=<<<EOT
-<select style="width:200px" class="textbox search text"  name="$campo"  id="op_$campo" datatable="$schema.$table">
+<!--<select style="width:200px" class="textbox search text"  name="$campo"  id="op_$campo" datatable="$schema.$table">
 	<option value="">Seleziona =====></option>
 	<option value="equal">Uguale a</option>
 	<option value="contains">Contiene</option>
 	<option value="startswith">Inizia per</option>
 	<option value="endswith">Finisce per</option>
-</select>
+</select>-->
+<input type="hidden" value="contains" name="$campo"  id="op_$campo" datatable="$schema.$table"/>                           
 <INPUT $class size="$size" class="textbox search" name="$campo" id="1_$campo" value="">
 <script>
 
@@ -385,11 +386,13 @@ EOT;
 			$opzioni=$this->elenco_selectdb($size[1],Array($dati[$campo]),isset($size[2])?($size[2]):(null));
 			//$retval="<select style=\"width:$size[0]px\" $class  name=\"$campo\"  id=\"$campo\" onmousewheel=\"return false\" $onChange $disabilitato>$opzioni</select>$help";
 			$retval=<<<EOT
-<select style="width:200px" class="textbox search text"  name="$campo"  id="op_$campo" datatable="$schema.$table">
+<!--<select style="width:200px" class="textbox search text"  name="$campo"  id="op_$campo" datatable="$schema.$table">
 	<option value="">Seleziona =====></option>
 	<option value="equal">Uguale a</option>
-</select>
-<select style="width:$size[0]px" class="textbox search"  name="$campo"  id="1_$campo">$opzioni</select>
+</select>-->
+                            
+<input type="hidden" value="equal" name="$campo"  id="op_$campo" datatable="$schema.$table"/>                           
+select style="width:$size[0]px" class="textbox search"  name="$campo"  id="1_$campo">$opzioni</select>
 <script>
 
 </script>
@@ -670,10 +673,19 @@ function elenco_select($tabella,$selezionato){
 // dal file tab crea la lista di opzioni per il controllo SELECT
 	$retval='';
 	$elenco=file(TAB_ELENCO."$tabella.tab");
-	for ($i=0;$i<count($elenco);$i++){
-		(trim($elenco[$i])==trim($selezionato))?($selected="selected"):($selected="");
-		$retval.="\n<option $selected>".trim($elenco[$i])."</option>";
-  	}
+        if(count(explode(',',$elenco[$i]))==2){
+            for ($i=0;$i<count($elenco);$i++){
+                    list($value,$label)=explode(',',$elenco[$i]);
+                    (trim($$value)==trim($selezionato))?($selected="selected"):($selected="");
+                    $retval.="\n<option value=\"$value\" $selected>".trim($label)."</option>";
+            }
+        }
+        else{
+            for ($i=0;$i<count($elenco);$i++){
+                    (trim($elenco[$i])==trim($selezionato))?($selected="selected"):($selected="");
+                    $retval.="\n<option $selected>".trim($elenco[$i])."</option>";
+            }
+        }
 	return $retval;
 }
 

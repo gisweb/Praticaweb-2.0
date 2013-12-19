@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("login.php");
 $tabpath="vigi";
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');

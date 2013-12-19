@@ -1,4 +1,5 @@
-<?//creare un trigger sul db per la numerazione automatica
+<?php
+//creare un trigger sul db per la numerazione automatica
 	//per ora calcolo qui il nuovo numero pratica senza controlli
 	//CREARE UN TRIGGER CHE AGGIORNA PRATICA A ID NELLA TABELLA AVVIOPROC 
 	//UTILIZZARE UNA TRANSAZIONE PER L'EREDITARIETA DEI DATI DELLA NUOVA PRATICA
