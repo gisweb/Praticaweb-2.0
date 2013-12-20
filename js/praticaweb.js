@@ -263,3 +263,72 @@ function selectOneriIntervento(){
           
       }
   }
+  
+  
+  function getSearchFilter(){
+	var searchFilter=new Object();
+	$(".search").each(function(index){
+            var name=$(this).attr('name');
+            var id = $(this).attr('id').replace('op_','');
+            var opValue=$(this).val();
+            var filter='';
+            var t=($(this).hasClass('text'))?('text'):(($(this).hasClass('number'))?('number'):('date'));
+            if (!$('#1_'+id).val()){
+                filter='';
+            }
+            else if (opValue == 'between'){
+                if(t=='date'){
+                    filter=name+" >= '"+$('#1_'+id).val()+"'::date AND "+name +" <= '"+$('#2_'+id).val()+"'::date";
+                }
+                else{
+                    filter=name+" >= "+$('#1_'+id).val()+" AND "+name +" <= "+$('#2_'+id).val();
+                }
+            }
+            else if(opValue == 'equal'){
+                 if(t=='date'){
+                    filter=name+" = '"+$('#1_'+id).val()+"'::date";
+                }
+                else if (t=='text'){
+                    filter=name+"::varchar ilike '"+$('#1_'+id).val()+"'";
+                }
+                else{
+                    filter=name+" = "+$('#1_'+id).val();
+                }
+            }
+            else if(opValue == 'great'){
+                if(t=='date'){
+                    filter=name+" > '"+$('#1_'+id).val()+"'::date";
+                }
+                else{
+                    filter=name+" > "+$('#1_'+id).val();
+                }
+            }
+            else if(opValue == 'less'){
+                if(t=='date'){
+                    filter=name+" < '"+$('#1_'+id).val()+"'::date";
+                }
+                else{
+                    filter=name+" < "+$('#1_'+id).val();
+                }
+            }
+            else if(opValue == 'contains'){
+                filter=name+" ilike '%"+$('#1_'+id).val()+"%'";
+            }
+            else if(opValue == 'startswith'){
+                 filter=name+" ilike '"+$('#1_'+id).val()+"%'";
+            }
+            else if(opValue == 'endswith'){
+                 filter=name+" ilike '%"+$('#1_'+id).val()+"'";
+            }
+            if (filter) {
+                var table=$(this).attr('datatable');
+                if (searchFilter[table]) searchFilter[table].push(filter);
+                else{
+                    searchFilter[table]=new Array();
+                    searchFilter[table].push(filter);
+                }
+            }
+		
+        });	
+	return searchFilter;
+    }

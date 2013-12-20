@@ -1,123 +1,6 @@
 <?php
-include_once("login.php");
-$tabpath="pe";
-$notfound=0;
-//Attenzione funzione relazione tra il file elenco e 
-$pratichexpagina=5;
-$offset=0;
-$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
-if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
-
-if (isset($_POST["pag"])){
-	//pagina con i risultati al primo giro faccio tutta la query poi mi porto dietro l'array delle pratiche trovate
-	$pagenum=$_POST["pag"];
-	$pratichexpagina=$_POST["xpag"];
-	$elenco=$_POST["elenco"];
-	$criterio=$_POST["criterio"];
-
-	if (!isset($elenco)){		
-		//se non ho ancora fatto la query la costruisco
-		include_once "./db/db.pe.queryricerca.php";	
-		//echo $sqlRicerca;
-		$db->sql_query ($sqlRicerca);//trovo l'elenco degli id delle pratiche che mi interessano
-		$elenco_pratiche=$db->sql_fetchlist("pratica");
-		if ($elenco_pratiche) $elenco=implode(",",$elenco_pratiche);
-		$_SESSION["RICERCA"]=$_POST;
-	} 
-	else{
-		//sono al secondo giro ho l'elenco delle pratiche per la query
-		$elenco_pratiche=explode(",",$elenco);
-	}		
-	//così faccio una query in più la prima volta ma evito di fare una query pesante ad ogni pagina
-
-	if ($elenco_pratiche){
-		$totrec=count($elenco_pratiche);		
-		if ($totrec==1){
-			$idpratica=$elenco_pratiche[0];
-			?><html><body>
-				<script language="javascript">
-					document.location='praticaweb.php?pratica=<?=$idpratica?>';
-				</script></body></html>
-		<?php	
-			exit;
-		}
-		$pages=intval($totrec/$pratichexpagina); 
-		if ($totrec%$pratichexpagina) $pages++; 
-		$offset=($pagenum-1)*$pratichexpagina;		
-		$prat_max=$offset+$pratichexpagina;		
-		if($prat_max > $totrec) $prat_max=$totrec;
-?>
-<html>
-<head>
-<title>Risultato Ricerca</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
-
-<script language="javascript">
-function paginasucc(pg){
-	document.result.pag.value=pg
-	document.result.submit();
-}
-$(document).ready(function(){
-    $('#report').bind('click',function(event){
-        event.preventDefault();
-        $('#frm-report').remove();
-        $('body').append('<form id="frm-report" action="./services/xReport.php" method="POST" target="reportPraticaweb"><input type="hidden" value="" name="elenco" id="elencopratiche"/></form>')
-        $('#elencopratiche').val($('#elenco').val())
-        $('#frm-report').submit();
-    });
-    
-});
-</script>
-</head>
-<body link="#0000FF" vlink="#0000FF" alink="#0000FF">
-<?include "./inc/inc.page_header.php";?>
-<H2 class=blueBanner>Esito della ricerca&nbsp;&nbsp;<font size=-1 color=#000000>Risultati <b><?=$offset+1?></b> - <b><?=$prat_max?></b> su <?=$totrec?> <b></b></font></H2>
-<p><font size="-2"><b>criteri di ricerca:</b> <?=$criterio?></font></p>
-
-<?include "pe.elenco_pratiche.php";?>
-	<form name="result" method="post" action="pe.ricerca.php">
-	  <input type="hidden" name="pag" value=""> 
-	  <input type="hidden" name="xpag" value="<?=$pratichexpagina?>">
-	  <input type="hidden" id="elenco" name="elenco" value="<?=$elenco?>">
-	  <input type="hidden" name="criterio" value="<?=$criterio?>">
-	 <table border=0 cellpadding=0 width=1% cellspacing=4 align=center>
-	<tr>
-	<td valign="bottom" nowrap class="selezione">Pagina dei risultati:&nbsp;<td>
-	<?php
-	
-	for ($i=1;$i<$pages+1;$i++){
-		if ($i==$pagenum)
-			$numpag="<font color=#FF0000>$i</font>";
-		else
-			$numpag=$i;
-		?> 
-		<td><a href="javascript:paginasucc(<?=$i?>)"><br><?=$numpag?></a></td>
-		<?php }?>
-	</tr>
-	</table>
-	</form>
-	
-      <IMG height=1 src="images/gray_light.gif" width="100%"  vspace=1><BR>      
-	  <!-- ### FOOTER INCLUDE ######################################################################### -->
-      <P class=footer><IMG height=1 alt="" src="images/pixel.gif"  vspace=4><BR>
-<input  class="hexfield"  type="button" value="Annulla" onClick="javascript: document.location='pe.ricerca.php'"/ />
-<input  class="hexfield"  type="button" value="Report" id="report"/>
-      </P>
-
-</body></html>
-
-<?php
-		exit;
-	}
-	else{
-		$notfound=1;
-	}  // END IF TROVATE
-
-}
-
-include "./lib/tabella_v.class.php";
+require_once 'login.php';
+require_once APPS_DIR.'lib/tabella_v.class.php';
 ?>
 <html>
 <head>
@@ -126,6 +9,12 @@ include "./lib/tabella_v.class.php";
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<link rel="stylesheet" type="text/css" href="/css/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="/css/icon.css">
+<script type="text/javascript" src="/js/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="/js/locale/easyui-lang-it.js"></script>
+<script type="text/javascript" src="/js/datagrid-detailview.js"></script>
+
 <script language="javascript">
     $(document).ready(function(){
         $(".textbox").bind("keyup",function(event){
@@ -133,13 +22,177 @@ include "./lib/tabella_v.class.php";
                 $("#avvia-ricerca").click();
             }
         });
+        $( "#result-container" ).hide();
+        $('#btn-report').button({
+            icons:{primary:'ui-icon-document'}
+        }).bind('click',function(event){
+            event.preventDefault();
+            $('#frm-report').remove();
+            $('body').append('<form id="frm-report" action="./services/xReport.php" method="POST" target="reportPraticaweb"><input type="hidden" value="" name="elenco" id="elencopratiche"/></form>')
+            $('#elencopratiche').val($('#elenco').val())
+            $('#frm-report').submit();
+        });
+        $('#btn-back').button({
+            icons:{primary:'ui-icon-arrowreturnthick-1-w'}
+        }).bind('click',function(event){
+            event.preventDefault();
+            $( "#result-container" ).hide( 'slide', 500 );
+            $( "#ricerca" ).show( 'slide', 500 );
+        });
+        
+        $('#avvia-ricerca').button({
+            icons:{primary:'ui-icon-search'}
+        }).bind('click',function(event){
+
+            event.preventDefault();
+            var oper=$('#op').val();
+            dataPost=getSearchFilter();
+            $('#ricerca').hide('slide',500)
+            $('#result-container').show('slide',500)
+            $('#result-table').datagrid({
+                title:'Risultato della ricerca',
+                url:searchUrl,
+                method:'post',
+                nowrap:false,
+                columns:colsDef['pratica'],
+                fitColumns:false,
+                pagination:true,
+                autoRowHeight:true,
+
+                queryParams:{data:dataPost,action:'search',op:oper},
+                view: detailview,
+                detailFormatter:function(index,row){
+                    return '<div class="ddv" style="padding:5px 0;background-color:#EEF7FF"></div>';
+                },
+                onLoadSuccess:function(data){
+                    $('#elenco').val(data['elenco_id']);
+                },
+                onExpandRow: function(index,row){
+                    var ddv = $(this).datagrid('getRowDetail',index).find('div.ddv');
+                    var text = '\n\
+<table width="100%">\n\
+<tr>\n\
+<td width="10%"><div class="datagrid-cell"><b>Catasto Terreni :</b></div></td>\n\
+<td width="40%"><div class="datagrid-cell">' + row.elenco_ct + '</div></td>\n\
+<td width="10%" rowspan="2"><div class="datagrid-cell"><b>Ubicazione :</b></div></td>\n\
+<td width="40%"rowspan="2"><div class="datagrid-cell">' + row.ubicazione + '</div></td>\n\
+</tr>\n\
+<tr>\n\
+<td width="10%"><div class="datagrid-cell"><b>Catasto Urbano :</b></div></td>\n\
+<td><div class="datagrid-cell">' + row.elenco_cu + '</div></td>\n\
+</tr>\n\
+<tr>\n\
+<td width="10%"><div class="datagrid-cell"><b>Richiedenti :</b></div></td>\n\
+<td colspan="3"><div class="datagrid-cell">' + row.richiedente + '</div></td>\n\
+</tr>\n\
+<tr>\n\
+<td width="10%"><div class="datagrid-cell"><b>Progettisti :</b></div></td>\n\
+<td colspan="3"><div class="datagrid-cell">' + row.progettista + '</div></td>\n\
+</tr>\n\
+</table>';
+                    $(ddv).html(text);
+                    $('#result-table').datagrid('fixDetailRowHeight',index);
+                }
+            });
+        });
     });
+    var result={};
+    /*function getSearchFilter(){
+	var searchFilter=new Object();
+	$(".search").each(function(index){
+            var name=$(this).attr('name');
+            var id = $(this).attr('id').replace('op_','');
+            var opValue=$(this).val();
+            var filter='';
+            var t=($(this).hasClass('text'))?('text'):(($(this).hasClass('number'))?('number'):('date'));
+            if (!$('#1_'+id).val()){
+                filter='';
+            }
+            else if (opValue == 'between'){
+                if(t=='date'){
+                    filter=name+" >= '"+$('#1_'+id).val()+"'::date AND "+name +" <= '"+$('#2_'+id).val()+"'::date";
+                }
+                else{
+                    filter=name+" >= "+$('#1_'+id).val()+" AND "+name +" <= "+$('#2_'+id).val();
+                }
+            }
+            else if(opValue == 'equal'){
+                 if(t=='date'){
+                    filter=name+" = '"+$('#1_'+id).val()+"'::date";
+                }
+                else if (t=='text'){
+                    filter=name+"::varchar ilike '"+$('#1_'+id).val()+"'";
+                }
+                else{
+                    filter=name+" = "+$('#1_'+id).val();
+                }
+            }
+            else if(opValue == 'great'){
+                if(t=='date'){
+                    filter=name+" > '"+$('#1_'+id).val()+"'::date";
+                }
+                else{
+                    filter=name+" > "+$('#1_'+id).val();
+                }
+            }
+            else if(opValue == 'less'){
+                if(t=='date'){
+                    filter=name+" < '"+$('#1_'+id).val()+"'::date";
+                }
+                else{
+                    filter=name+" < "+$('#1_'+id).val();
+                }
+            }
+            else if(opValue == 'contains'){
+                filter=name+" ilike '%"+$('#1_'+id).val()+"%'";
+            }
+            else if(opValue == 'startswith'){
+                 filter=name+" ilike '"+$('#1_'+id).val()+"%'";
+            }
+            else if(opValue == 'endswith'){
+                 filter=name+" ilike '%"+$('#1_'+id).val()+"'";
+            }
+            if (filter) {
+                var table=$(this).attr('datatable');
+                if (searchFilter[table]) searchFilter[table].push(filter);
+                else{
+                    searchFilter[table]=new Array();
+                    searchFilter[table].push(filter);
+                }
+            }
+		
+        });	
+	return searchFilter;
+    }*/
+var colsDef={
+    civici:[[
+        {title:'Indirizzo',field:'indirizzo',sortable:true,width:1000},
+        //{title:'Via',field:'via',sortable:true,width:500},
+        //{title:'Civico',field:'civico',sortable:true,width:100}
+    ]],
+    pratica:[[
+        {title:'',field:'pratica',sortable:false,width:20,formatter: function(value,row,index){return '<a target="new" href="praticaweb.php?pratica=' + value + '"><div class="ui-icon ui-icon-search"/></a>'}},
+        {title:'Tipo Pratica',field:'tipo_pratica',sortable:true,width:150},
+        {title:'Numero',field:'numero',sortable:true,width:100},
+        {title:'Protocollo',sortable:true,field:'protocollo',width:100},
+        {title:'Data Prot.',sortable:true,field:'data_prot',width:100},
+        
+        {title:'Intervento',sortable:true,field:'tipo_intervento',width:150},
+        {title:'Oggetto',sortable:true,field:'oggetto',width:350}
+    ]],
+    default_cols:[[
+        {title:'',sortable:true,field:'',width:100},
+    ]]
+
+}
+var dataPost={};
 </script>
 </head>
 <body>
 <?php include "./inc/inc.page_header.php";?>
+    <FORM id="ricerca" name="ricerca" method="post" action="pe.ricerca.php">
  	<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">		
-		<FORM id="ricerca" name="ricerca" method="post" action="pe.ricerca.php">		  
+				  
 		  <tr> 
 			<td> 
 			<!-- intestazione-->
@@ -150,65 +203,42 @@ include "./lib/tabella_v.class.php";
 		  <tr> 
 			<td> 			
 				<!-- ricerca base pratica -->
-				<?php
-				if ($notfound) echo("<p><b>La ricerca non ha dato alcun risultato</b></p>");
-				$tabella=new tabella_v("$tabpath/ricerca.tab",'standard');
-				$tabella->set_db($db);	
-				$tabella_avanzata=new tabella_v("$tabpath/ricerca_avanzata.tab",'standard');
-				//in avanzata devo settare il db perchÃš c'Ãš un elenco
-				$tabella_avanzata->set_db($db);				
-				if((!$_GET["new"]) ||($notfound))
-					$tabella->set_dati($_SESSION["RICERCA"]);
-				$tabella->edita();?>
-				<!-- ricerca avanzata pratica -->
-				<SPAN id="close" style="DISPLAY: none">
-				<IMG onclick="invisibile(document.all.avanzata,document.all.close,document.all.open)" src="images/avanzata_open.png"></SPAN>
-				<SPAN id="open">
-					<IMG onclick="visibile(document.all.avanzata,document.all.close,document.all.open)" src="images/avanzata_close.png" >
-				</SPAN>
-				<SPAN id="avanzata" style="DISPLAY: none">
-				<?$tabella_avanzata->edita();?>
-				<img onclick="invisibile(document.all.avanzata,document.all.close,document.all.open)" src="images/top.gif" >Chiudi
-				</SPAN>
+                            <?php
+                            
+                            $tabella=new tabella_v("pe/ricerca.tab",'standard');
+                            //$tabella->set_db($db);	
+                            //$tabella_avanzata=new tabella_v("$tabpath/ricerca_avanzata.tab",'standard');
+                            //in avanzata devo settare il db perchÃš c'Ãš un elenco
 
-				</td>
+                            $tabella->edita();?>
+				<!-- ricerca avanzata pratica -->
+
+
+			</td>
 		  </tr>
 		  <tr> 
 				<!-- riga finale -->
 				<td align="left"><img src="images/gray_light.gif" height="2" width="90%"></td>
 		   </tr>  
-		</TABLE>
-		<table class="stiletabella" cellpadding="2" cellspacing="2">
-			<tr>
-				<td>
-					<input name="active_form" type="hidden" value="pe.ricerca.php">
-					<input name="pag" type="hidden" value="1">
-					<b>Tipo di ricerca:</b>
-				</td>
-				<td>
-					<b>Pratiche per pagina:</b>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<select name="tiporicerca">
-						<option value="1" selected>Tutti i criteri devono essere verificati</option>
-						<option value="0">Almeno un criterio deve essere verificato</option>
-					</select>
-				</td>
-				<td>
-						<input class="textbox" name="xpag" type="text" size="3" value="<?=$pratichexpagina?>">
-						<input id="avvia-ricerca" name="azione" style="width:120px" type="submit" class="hexfield1" tabindex="1" value="Avvia ricerca >>>">
-				</td>
-			</tr>
-			<tr>
-				<td>
-				<input  name=""  id="" class="hexfield1"  type="button" value="  Chiudi  " onClick="javascript:window.open('index.php','indexPraticaweb');window.close()"></td>
-			<td></td>
-			</tr>
-		</FORM>	
-		</table>	
-		<?php include "./inc/inc.window.php"; // contiene la gesione della finestra popup
-		$db->sql_close();?>
+        </table>
+            <div style="margin-top:20px;">
+                <select id="op" class="textbox">
+                    <option value="AND">Tutte le opzioni devono essere verificate</option>
+                    <option value="OR">Almeno una opzione deve essere verificata</option>
+                </select>
+                <button style=";margin-left:20px;" id="avvia-ricerca">Avvia Ricerca</button>
+            </div>                    
+    </FORM>
+<div id="result-container" >
+    <table id="result-table" width="100%">
+    </table>
+    <div style="margin-top:20px;">
+        <button id="btn-back">Torna alla Ricerca</button>
+        <button id="btn-report">Crea Report</button>
+        
+        <input type="hidden" id="elenco" value=""/>
+    </div>
+</div>   
+    
 </body>
 </html>

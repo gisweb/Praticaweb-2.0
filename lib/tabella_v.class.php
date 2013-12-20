@@ -290,95 +290,107 @@ EOT;*/
 			$retval="<INPUT $class type=\"password\" maxLength=\"$w\" size=\"$size\"  class=\"textbox\" name=\"$campo\" id=\"$campo\" value=\"$dato\" $disabilitato>$help";
 			break;
                 case "search_text_equal":
+                    list($schema,$table,$campo)=explode('.',$campo);
+                    $id=sprintf("%s-%s-%s",$schema,$table,$campo);
+                    $size=intval($w+($w/5));
+                    $retval=<<<EOT
+<input type="hidden" value="equal" name="$campo" class="search text" id="op_$id" datatable="$schema.$table"/>                           
+<INPUT $class type="text" size="$size" class="textbox search" name="$campo" id="1_$id" value="">
+EOT;
+			break;
+                case "search_text_contains":
 			list($schema,$table,$campo)=explode('.',$campo);
+                        $id=sprintf("%s-%s-%s",$schema,$table,$campo);
 			$size=intval($w+($w/5));
 			$retval=<<<EOT
-<input type="hidden" value="equal" name="$campo" class="textbox search text" id="op_$campo" datatable="$schema.$table"/>                           
-<INPUT $class size="$size" class="textbox search" name="$campo" id="1_$campo" value="">
+<input type="hidden" value="contains" name="$campo" class="textbox search text" id="op_$id" datatable="$schema.$table"/>                           
+<INPUT $class type="text" size="$size" class="textbox search" name="$campo" id="1_$id" value="">
 EOT;
 			break;
 		case "search_text":
 			list($schema,$table,$campo)=explode('.',$campo);
+                        $id=sprintf("%s-%s-%s",$schema,$table,$campo);
 			$size=intval($w+($w/5));
 			$retval=<<<EOT
-<!--<select style="width:200px" class="textbox search text"  name="$campo"  id="op_$campo" datatable="$schema.$table">
+<select style="width:200px" class="textbox search text"  name="$campo"  id="op_$id" datatable="$schema.$table">
 	<option value="">Seleziona =====></option>
 	<option value="equal">Uguale a</option>
 	<option value="contains">Contiene</option>
 	<option value="startswith">Inizia per</option>
 	<option value="endswith">Finisce per</option>
-</select>-->
-<input type="hidden" value="contains" name="$campo" class="textbox search text" id="op_$campo" datatable="$schema.$table"/>                           
-<INPUT $class size="$size" class="textbox search" name="$campo" id="1_$campo" value="">
+</select>
+<INPUT $class type="text" size="$size" class="textbox search" name="$campo" id="1_$id" value="">
 EOT;
 			break;
 		case "search_date":
-			list($schema,$table,$campo)=explode('.',$campo);
-			$size=intval($w+($w/5));
-			$retval=<<<EOT
-<select style="width:200px" class="textbox search date"  name="$campo"  id="op_$campo" datatable="$schema.$table">
+                    list($schema,$table,$campo)=explode('.',$campo);
+                    $id=sprintf("%s-%s-%s",$schema,$table,$campo);
+                    $size=intval($w+($w/5));
+                    $retval=<<<EOT
+<select style="width:200px" class="textbox search date"  name="$campo"  id="op_$id" datatable="$schema.$table">
 	<option value="">Seleziona =====></option>
 	<option value="equal">Uguale a</option>
 	<option value="great">Dopo il</option>
 	<option value="less">Prima del</option>
 	<option value="between">Compreso tra</option>
 </select>
-<INPUT $class size="$size" class="textbox search" name="$campo" id="1_$campo" value="">
-<INPUT $class size="$size" class="textbox search" style="display:none;" name="$campo" id="2_$campo" value="">
+<INPUT $class type="text" size="$size" class="textbox search" name="$campo" id="1_$id" value="">
+<INPUT $class type="text" size="$size" class="textbox search" style="display:none;" name="$campo" id="2_$id" value="">
 <script>
-	$('#1_$campo').datepicker({
+	$('#1_$id').datepicker({
 		'dateFormat':'dd-mm-yy',
 		changeMonth: true,
 		changeYear: true,
 		$range
 	});
-	$('#2_$campo').datepicker({
+	$('#2_$id').datepicker({
 		'dateFormat':'dd-mm-yy',
 		changeMonth: true,
 		changeYear: true,
 		$range
 	});
-	$('#op_$campo').bind('change',function(){
+	$('#op_$id').bind('change',function(){
 		if($(this).val()==''){
-			$('#1_$campo').val('');
-			$('#2_$campo').val('');
-			$('#2_$campo').hide();
+			$('#1_$id').val('');
+			$('#2_$id').val('');
+			$('#2_$id').hide();
 		}
 		else if($(this).val()=='between'){
-			$('#2_$campo').show();
+			$('#2_$id').show();
 		}
 		else{
-			$('#2_$campo').hide();
+			$('#2_$id').hide();
 		}
 	});
 </script>
 EOT;
 			break;
 		case "search_number":
-			list($schema,$table,$campo)=explode('.',$campo);
-			$size=intval($w+($w/5));
-			$retval=<<<EOT
-<select style="width:200px" class="textbox search number"  name="$campo"  id="op_$campo" datatable="$schema.$table">
+                    list($schema,$table,$campo)=explode('.',$campo);
+                    $id=sprintf("%s-%s-%s",$schema,$table,$campo);
+                    $size=intval($w+($w/5));
+                    $retval=<<<EOT
+<select style="width:200px" class="textbox search number"  name="$campo"  id="op_$id" datatable="$schema.$table">
 	<option value="">Seleziona =====></option>
 	<option value="equal">Uguale a</option>
 	<option value="great">Maggiore di</option>
 	<option value="less">Minore di</option>
 	<option value="between">Compreso tra</option>
 </select>
-<INPUT $class size="$size" class="textbox search" name="$campo" id="1_$campo" value="">
-<INPUT $class size="$size" class="textbox search" style="display:none;" name="$campo" id="2_$campo" value="">
+<INPUT $class type="text" size="$size" class="textbox search" name="$campo" id="1_$id" value="">
+<INPUT $class type="text" size="$size" class="textbox search" style="display:none;" name="$campo" id="2_$id" value="">
 <script>
-	$('#op_$campo').bind('change',function(){
+	$('#op_$id').bind('change',function(){
 		if($(this).val()==''){
-			$('#1_$campo').val('');
-			$('#2_$campo').val('');
-			$('#2_$campo').hide();
+			$('#1_$id').val('');
+			$('#2_$id').val('');
+			$('#2_$id').hide();
 		}
 		else if($(this).val()=='between'){
-			$('#2_$campo').show();
+			$('#2_$id').show();
 		}
 		else{
-			$('#2_$campo').hide();
+			$('#2_$id').hide();
 		}
 	});
 </script>
@@ -386,18 +398,19 @@ EOT;
 			break;
 		case "search_list":
 
-			list($schema,$table,$campo)=explode('.',$campo);
-			$size=explode("x",$w);
-			$opzioni=$this->elenco_selectdb($size[1],Array($dati[$campo]),isset($size[2])?($size[2]):(null));
-			//$retval="<select style=\"width:$size[0]px\" $class  name=\"$campo\"  id=\"$campo\" onmousewheel=\"return false\" $onChange $disabilitato>$opzioni</select>$help";
-			$retval=<<<EOT
-<!--<select style="width:200px" class="textbox search text"  name="$campo"  id="op_$campo" datatable="$schema.$table">
+                    list($schema,$table,$campo)=explode('.',$campo);
+                    $id=sprintf("%s-%s-%s",$schema,$table,$campo);
+                    $size=explode("x",$w);
+                    $opzioni=$this->elenco_selectdb($size[1],Array($dati[$campo]),isset($size[2])?($size[2]):(null));
+                    //$retval="<select style=\"width:$size[0]px\" $class  name=\"$campo\"  id=\"$campo\" onmousewheel=\"return false\" $onChange $disabilitato>$opzioni</select>$help";
+                    $retval=<<<EOT
+<!--<select style="width:200px" class="textbox search text"  name="$campo"  id="op_$id" datatable="$schema.$table">
 	<option value="">Seleziona =====></option>
 	<option value="equal">Uguale a</option>
 </select>-->
                             
-<input type="hidden" value="equal" name="$campo" class="textbox search text" id="op_$campo" datatable="$schema.$table"/>                           
-select style="width:$size[0]px" class="textbox search"  name="$campo"  id="1_$campo">$opzioni</select>
+<input type="hidden" value="equal" name="$campo" class="textbox search text" id="op_$id" datatable="$schema.$table"/>                           
+select style="width:$size[0]px" class="textbox search"  name="$campo"  id="1_$id">$opzioni</select>
 <script>
 
 </script>
@@ -565,8 +578,10 @@ function edita(){
 //if($this->error_flag==1)
 	//echo ("I campi evidenziati in rosso non sono validi");
 	//crea la tabella di editing
+        $info = pathinfo(TAB.$this->config_file);
+        $idTab=sprintf("%s-%s",$info["filename"],($this->curr_record)?($this->curr_record):('0'));
 	$nrighe=$this->num_col;
-	$tabella="<table cellPadding=\"2\" border=\"0\" class=\"stiletabella\" width=\"100%\">\n";
+	$tabella="<table id=\"$idTab\" cellPadding=\"2\" border=\"0\" class=\"stiletabella\" width=\"100%\">\n";
 
 	//MODIFICA PER LOCK STATI
 	/*CONTROLLO CHE LO STATO DELLA TABELLA NON SIA FROZEN   ---   CONDIZIONI PERCHE' AVVENGA:  IL DB DEVE ESSERE SETTATO , DEVO AVERE UNA TABELLA*/

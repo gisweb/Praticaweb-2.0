@@ -13,15 +13,37 @@ $rows = isset($_POST['rows']) ? intval($_POST['rows']) : 10;
 $offset = ($page-1)*$rows;
 $order = isset($_POST['sort']) ? ("ORDER BY ".$_POST['sort']) : "ORDER BY data_prot";
 $orderType = isset($_POST['order']) ? ($_POST['order']) : "DESC";
+$groupBy=isset($_POST['field']) ? ($_POST['field']) : "civico";
 $result=Array();
 $db=appUtils::getDB();
 switch($action){
+    case "group":
+        foreach($data as $key=>$value){
+            $filter=implode(" $op ",$value);
+        }
+        
+        if ($groupBy=="civico"){
+            $sql="SELECT DISTINCT lower(trim(via)) as via,coalesce(civico,'') as civico,lower(trim(via))||coalesce(' '||civico,'') as indirizzo,replace(lower(trim(via))||coalesce('-'||civico,''),' ','') as id,'closed' as state,count(*) as tot FROM pe.indirizzi WHERE $filter group by 1,2,3,4,5 order by 1,2";
+        }
+        elseif($groupBy=="particella-terreni")
+            $sql="SELECT DISTINCT foglio,mappale,coalesce('Foglio: '||foglio,'')||coalesce('Mappale: '||mappale,'') as particella FROM pe.cterreni WHERE $filter order by 1,2";
+        else
+            $sql="SELECT DISTINCT foglio,mappale,coalesce('Foglio: '||foglio,'')||coalesce('Mappale: '||mappale,'') as particella FROM pe.curbano WHERE $filter order by 1,2";
+        $total=count($db->fetchAll($sql));
+        //$sql=$sql." LIMIT $rows OFFSET $offset";
+        utils::debug("search",$sql);
+        $res=$db->fetchAll($sql);
+        $result=$res;
+        break;
     default:
         foreach($data as $key=>$value){
             $query[]="(SELECT DISTINCT pratica FROM $key WHERE ".implode(" $op ",$value).")";
         }
+        $listId=Array();
         $filter=implode(" $queryOP ",$query);
-        $total=count($db->fetchAll($filter));
+        $tmp=$db->fetchAll($filter);
+        for($i=0;$i<count($tmp);$i++) $listId[]=$tmp[$i]['pratica'];
+        $total=count($listId);
         $sql=<<<EOT
 SELECT DISTINCT A.pratica,A.numero,A.protocollo,A.data_prot,A.data_presentazione,A.oggetto,B.nome as tipo_pratica,C.descrizione as tipo_intervento,coalesce(D.nome,'non assegnata')  as responsabile,E.richiedente,F.progettista,G.elenco_ct,H.elenco_cu,I.ubicazione
 FROM pe.avvioproc A LEFT JOIN 
@@ -48,10 +70,10 @@ $order $orderType LIMIT $rows OFFSET $offset
 EOT;
         utils::debug("search",$sql);
         $res=$db->fetchAll($sql);
-        $result=Array("total"=>$total,"rows"=>$res,"filter"=>$filter);
+        $result=Array("total"=>$total,"rows"=>$res,"filter"=>$filter,"elenco_id"=>$listId);
         break;
 }
-
+header('Content-Type: application/json');
 print json_encode($result);
 return;
 
