@@ -23,6 +23,17 @@ switch($action){
         }
         
         if ($groupBy=="civico"){
+            $sql="SELECT DISTINCT upper(via) as via FROM pe.indirizzi WHERE $filter order by 1";
+            $r1=$db->fetchAll($sql);
+            for($i=0;$i<count($r1);$i++){
+                $via=$ris[$i]['via'];
+                $tmp=Array("id"=>$via,"via"=>$via,"state"=>"closed");
+                $sql="SELECT DISTINCT civico FROM pe.indirizzi WHERE $filter AND via='$via' order by 1";
+                $r2=$db->fetchAll($sql);
+                for($j=0;$j<count($r2);$j++){
+                    
+                }
+            }
             $sql="SELECT DISTINCT lower(trim(via)) as via,coalesce(civico,'') as civico,lower(trim(via))||coalesce(' '||civico,'') as indirizzo,replace(lower(trim(via))||coalesce('-'||civico,''),' ','') as id,'closed' as state,count(*) as tot FROM pe.indirizzi WHERE $filter group by 1,2,3,4,5 order by 1,2";
         }
         elseif($groupBy=="particella-terreni")
