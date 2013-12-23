@@ -36,20 +36,21 @@ else
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $form="pareri";
 if (($modo=="edit") or ($modo=="new")){
-		include "./inc/inc.page_header.php";
-		unset($_SESSION["ADD_NEW"]);
-		//$filetab="$tabpath/istruttoria";
-		if ($modo=="edit"){
-			$id=$_POST["id"];
-			$titolo="Parere Ufficio Tecnico";
-			$filtro="id=$id";
-		}
-		else{
-			$titolo="Inserisci nuovo parere";
-		}
-		
-		//aggiungendo un nuovo parere uso pareri_edit che contiene anche l'elenco degli ENTI
-		$tabella=new tabella_v($filetab,$modo);?>	
+    include "./inc/inc.page_header.php";
+    unset($_SESSION["ADD_NEW"]);
+    //$filetab="$tabpath/istruttoria";
+    if ($modo=="edit"){
+            $id=$_POST["id"];
+            $titolo="Parere Ufficio Tecnico";
+            $filtro="id=$id";
+    }
+    else{
+            $titolo="Inserisci nuovo parere";
+    }
+
+    //aggiungendo un nuovo parere uso pareri_edit che contiene anche l'elenco degli ENTI
+    $tabella=new tabella_v($filetab,$modo);
+                ?>	
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN EDITING  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 		<FORM height=0 method="post" action="praticaweb.php">
 				<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">		
@@ -76,7 +77,8 @@ if (($modo=="edit") or ($modo=="new")){
 			<input name="active_form" type="hidden" value="pe.istruttoria.php">
 			<input name="mode" type="hidden" value="<?=$modo?>">	
 		</FORM>	
-	<?include "./inc/inc.window.php";
+	<?php
+        include "./inc/inc.window.php";
 		
 	}else{
 		$tabella=new tabella_v($filetab);
@@ -103,7 +105,9 @@ if (($modo=="edit") or ($modo=="new")){
 			 </TD>
 	      </TR>  
 		</TABLE>
-<?}?>
+<?php
+}
+?>
 
 </body>
 </html>
