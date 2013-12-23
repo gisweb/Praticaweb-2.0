@@ -12,7 +12,10 @@ $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 <title>Titolo - <?=$_SESSION[$idpratica]["TITOLO"]?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+    utils::writeCSS();
+    utils::writeJS();
+?>
 </head>
 <body  background="">
 
@@ -64,7 +67,9 @@ if (($modo=="edit") || ($modo=="new")) {
 		<input name="mode" type="hidden" value="<?=$modo?>">
 		<input name="tabella" type="hidden" value="<?=$tab?>">
 	</FORM>	
-<?}else{
+<?php
+
+            }else{
 		$tabella=new Tabella_v("$tabpath/titolo");?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 		<H2 class="blueBanner">Rilascio del titolo</H2>
@@ -72,33 +77,36 @@ if (($modo=="edit") || ($modo=="new")) {
 		  <TR> 
 			<TD> 
 			<!-- contenuto-->
-				<?if($tabella->set_dati("pratica=$idpratica")){
-						$tabella->set_titolo("Rilascio Titolo","modifica",array("tabella"=>"titolo"));
-						$tabella->elenco();
-						echo("<br>");					
-						$tabella_voltura=new tabella_v("$tabpath/voltura");
-						$tabella_voltura->set_titolo("Voltura","modifica",array("tabella"=>"volture"));
-						$tabella_voltura->set_dati("pratica=$idpratica");
-						$tabella_voltura->elenco();
-						echo("<br>");					
-						$tabella_voltura->set_titolo("Inserisci Voltura ","nuovo",array("tabella"=>"volture"));
-						$tabella_voltura->get_titolo();
-						print("<br>");
-						if ($tabella->editable) print($tabella->elenco_stampe("pe.titolo"));
+				<?php
+                                if($tabella->set_dati("pratica=$idpratica")){
+                                    $tabella->set_titolo("Rilascio Titolo","modifica",array("tabella"=>"titolo"));
+                                    $tabella->elenco();
+                                    echo("<br>");					
+                                    $tabella_voltura=new tabella_v("$tabpath/voltura");
+                                    $tabella_voltura->set_titolo("Voltura","modifica",array("tabella"=>"volture"));
+                                    $tabella_voltura->set_dati("pratica=$idpratica");
+                                    $tabella_voltura->elenco();
+                                    echo("<br>");					
+                                    $tabella_voltura->set_titolo("Inserisci Voltura ","nuovo",array("tabella"=>"volture"));
+                                    $tabella_voltura->get_titolo();
+                                    print("<br>");
+                                    if ($tabella->editable) print($tabella->elenco_stampe("pe.titolo"));
 
-						}				
-					else{
-						$tabella->set_titolo("Inserisci dati relativi al titolo rilasciato","nuovo",array("tabella"=>"titolo"));
-						print $tabella->get_titolo();
-						print ("<p><b>Nessun titolo rilasciato</b></p>");
-						print("<br>");
-						if ($tabella->editable) print($tabella->elenco_stampe("pe.titolo"));
-					}
+                                    }				
+                                    else{
+                                        $tabella->set_titolo("Inserisci dati relativi al titolo rilasciato","nuovo",array("tabella"=>"titolo"));
+                                        print $tabella->get_titolo();
+                                        print ("<p><b>Nessun titolo rilasciato</b></p>");
+                                        print("<br>");
+                                        if ($tabella->editable) print($tabella->elenco_stampe("pe.titolo"));
+                                    }
 ?>
 			<!-- fine contenuto-->
 			 </TD>
 	      </TR>
 		</TABLE>
-<?}?>
+<?php
+}
+?>
 </body>
 </html>

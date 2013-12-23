@@ -25,6 +25,7 @@ $last_change=shell_exec("git log -1 --pretty=format:'%ci'");
     window.name='indexPraticaweb';
     var firstWin = window;
     var windows={};
+
 </SCRIPT>
 
 

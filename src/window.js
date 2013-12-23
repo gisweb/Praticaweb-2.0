@@ -3,6 +3,8 @@
 //For full source code, documentation, and terms of usage,
 //Visit http://www.dynamicdrive.com/dynamicindex9/dhtmlwindow.htm
 
+
+
 var dragapproved=false
 var minrestore=0
 var initialwidth,initialheight
@@ -69,7 +71,7 @@ document.getElementById("dwindow").style.top=ns6? window.pageYOffset+"px" : ieco
 }
 
 function closeit(){
-document.getElementById("cframe").src=""//se è lento caricare di base un file di attesa
+document.getElementById("cframe").src=""//se ï¿½ lento caricare di base un file di attesa
 document.getElementById("dwindow").style.display="none"
 }
 
@@ -147,18 +149,18 @@ function get_file(txt_campo){
 
 
 function NewWindow(url, winname, winwidth, winheight, scroll) {
-	
+
 	if (!winwidth)
 		  winwidth =screen.availWidth-10;
 	if (!winheight)
 		  winheight = screen.availHeight-35;
 	winprops = 'height='+winheight+',width='+winwidth+',scrollbars='+scroll+',menubar=no,top=0,status=no,left=0,screenX=0,screenY=0,resizable,close=no';
 	
-	
 	win = window.open(url, winname, winprops)
 	if (parseInt(navigator.appVersion) >= 4) { 
 		win.window.focus(); 
 	}
+        
 }
 
 function OpenMapset (mapsetid,template,parameters){

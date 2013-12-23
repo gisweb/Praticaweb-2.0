@@ -16,21 +16,15 @@ require_once APPS_DIR.'lib/tabella_v.class.php';
 <script type="text/javascript" src="/js/datagrid-detailview.js"></script>
 
 <script language="javascript">
+    
     $(document).ready(function(){
+        $( "#result-container" ).hide();
         $(".textbox").bind("keyup",function(event){
             if(event.keyCode == 13){
                 $("#avvia-ricerca").click();
             }
         });
-        $( "#result-container" ).hide();
         
-        $('#btn-back').button({
-            icons:{primary:'ui-icon-arrowreturnthick-1-w'}
-        }).bind('click',function(event){
-            event.preventDefault();
-            $( "#result-container" ).hide( 'slide', 500 );
-            $( "#ricerca" ).show( 'slide', 500 );
-        });
         $('#btn-close').button({
             icons:{primary:'ui-icon-circle-close'}
         }).bind('click',function(event){
@@ -71,21 +65,46 @@ require_once APPS_DIR.'lib/tabella_v.class.php';
             var fld=$( "input[name='groupby']:checked" ).val();
             dataPost=getSearchFilter();
             $('#ricerca').hide('slide',500)
-            $('#result-container').show('slide',500)
-            $('#result-table').treegrid({
+            $('#result-container').show('slide',500);
+            if (fld=='civico'){
+                var id='#result-container #result-table-civici';
+                $('#result-container').html($('#container-civici').clone());
+                
+            }
+            else{
+                var id='#result-container #result-table-catasto';
+                $('#result-container').html($('#container-catasto').clone());
+            }
+            $('#result-container #btn-back').button({
+                icons:{primary:'ui-icon-arrowreturnthick-1-w'}
+            }).bind('click',function(event){
+                event.preventDefault();
+                $( "#result-container" ).hide('slide',500);
+                $( "#result-container" ).html('');
+                $( "#ricerca" ).show('slide',500);
+            });
+            $(id).treegrid({
                 title:'Risultato della ricerca',
                 url:searchUrl,
                 method:'post',
-                idField:'via',
-                treeField:'via',
+                idField:'id',
+                treeField:'name',
+                nowrap:false,
                 rownumbers: true,
                 queryParams:{data:dataPost,action:'group',field:fld}
             });
+           
         });
     });
     var result={};
-
-var dataPost={};
+    var dataPost={};
+    function formatLink(value,rowData,rowIndex){
+        var text=value;
+        if(rowData['pratica']){
+            text='<a target="praticaweb" href="praticaweb.php?pratica= ' + rowData["pratica"] + '">' + value +'</a>';
+        }
+        return text;
+    }
 </script>
 </head>
 <body>
@@ -124,26 +143,55 @@ var dataPost={};
             <div style="margin-top:20px;">
                 <fieldset style="display:inline;border:0px;">
                     <legend class="stiletabella" style="font-weight:bold;">Raggruppa per</legend>
-                    <input type="radio" class="textbox" name="groupby" value="civico" checked><span class="stiletabella" style="font-weight:bold;">Indirizzo</span>
-                    <input type="radio" class="textbox" name="groupby" value="particella-terreni"><span class="stiletabella" style="font-weight:bold;">Particella C.T.</span>
-                    <input type="radio" class="textbox" name="groupby" value="particella-urbano"><span class="stiletabella" style="font-weight:bold;">Particella C.U.</span>                
+                    <input type="radio" class="textbox" style="border:0px;" name="groupby" value="civico" checked><span class="stiletabella" style="font-weight:bold;">Indirizzo</span>
+                    <input type="radio" class="textbox" style="border:0px;" name="groupby" value="particella-terreni"><span class="stiletabella" style="font-weight:bold;">Particella C.T.</span>
+                    <input type="radio" class="textbox" style="border:0px;" name="groupby" value="particella-urbano"><span class="stiletabella" style="font-weight:bold;">Particella C.U.</span>                
                 </fieldset>
                 <button id="btn-close" style="margin-left:20px;">Chiudi</button>
                 <button style="margin-left:20px;" id="avvia-ricerca">Avvia Ricerca</button>
             </div>
     </FORM>
 <div id="result-container" >
-    <table id="result-table" width="100%">
-        <tr>
-                <th field="via" width="90%">Via</th>
-                <th field="civico" width="10%">Civico</th>
-        </tr>
-    </table>
-    <div style="margin-top:20px;">
-        <button id="btn-back">Torna alla Ricerca</button>
-        <input type="hidden" id="elenco" value=""/>
-    </div>
-</div>   
     
+    
+</div>   
+ 
+    <div id="res" style="display:none;">
+        <div id="container-civici">
+            <table id="result-table-civici" width="100%">
+                <thead>
+                   <tr>
+                   <th data-options="field:'name',formatter:formatLink" width="300px">Indirizzo</th>
+                   <th data-options="field:'pratica',hidden:true"></th>
+                   <th data-options="field:'oggetto'" width="300px">Oggetto</th>
+                   <th data-options="field:'ct'" width="300px" >Catasto Terreni</th>
+                   <th data-options="field:'cu'" width="300px">Catasto Urbano</th>
+                   </tr>
+               </thead>
+           </table>
+            <div style="margin-top:20px;">
+               <button id="btn-back">Torna alla Ricerca</button>
+               <input type="hidden" id="elenco" value=""/>
+           </div>  
+        </div>  
+       <div id="container-catasto">
+            <table id="result-table-catasto" width="100%">
+                 <thead>
+                    <tr>
+                    <th data-options="field:'name',formatter:formatLink" width="300px">Particella</th>
+                    <th data-options="field:'pratica',hidden:true"></th>
+                    <th data-options="field:'oggetto'" width="300px">Oggetto</th>
+                    <th data-options="field:'ubicazione'" width="300px" >Indirizzo</th>
+                    <th data-options="field:'cu'" width="300px">Catasto</th>
+                    </tr>
+                </thead>
+            </table>
+            <div style="margin-top:20px;">
+                <button id="btn-back">Torna alla Ricerca</button>
+                <input type="hidden" id="elenco" value=""/>
+            </div>  
+       </div>
+         
+    </div>    
 </body>
 </html>

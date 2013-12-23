@@ -3,6 +3,7 @@ var searchUrl='/services/xSearch.php';
 var serverUrl='/services/xServer.php';
 var suggestUrl='/services/xSuggest.php';
 
+
 $.widget( "custom.catcomplete", $.ui.autocomplete, {
         _renderMenu: function( ul, items ) {
             var that = this,
@@ -192,6 +193,7 @@ function closeWindow(){
         else
             firstWin.windows[window.name].close();
 }
+
 function NewWindow(url, winname, winwidth, winheight, scroll) {
 	
 	if (!winwidth)
@@ -200,11 +202,13 @@ function NewWindow(url, winname, winwidth, winheight, scroll) {
 		  winheight = screen.availHeight-35;
 	winprops = 'height='+winheight+',width='+winwidth+',scrollbars='+scroll+',menubar=no,top=0,status=yes,left=0,screenX=0,screenY=0,resizable,close=no';
 	
-	
-	firstWin.windows[winname] = window.open(url, winname, winprops)
+
+	firstWin.windows[winname] = window.open(url, winname, winprops);
+        
 	if (parseInt(navigator.appVersion) >= 4) { 
 		firstWin.windows[winname].window.focus(); 
 	}
+        //return win;
 }
 function selectOneriAnno(){
     

@@ -7,18 +7,6 @@ $idpratica=isset($_REQUEST["pratica"])?($_REQUEST["pratica"]):('');
 $pr=new pratica($idpratica);
 $pr->createStructure();
 $file_config="$tabpath/avvio_procedimento";
-
-
-
-/*
-if ($modo=='new'){
-	$intestazione='Nuova pratica';
-	if ($_POST["infogruppo"])
-		$intestazione.=" - Riferimento ".$_POST["infogruppo"] ." " .$_POST["infopratica"];
-	elseif ($_POST["riferimento"])
-		$intestazione.=" - Nuovo riferimento $newref";
-}
-else*/
 $intestazione='Avvio del procedimento e comunicazione responsabile';
 include "./lib/tabella_v.class.php";?>
 
@@ -27,7 +15,10 @@ include "./lib/tabella_v.class.php";?>
     <title>Avvio Procedimento - <?=$_SESSION["TITOLO_".$idpratica]?></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+    utils::writeCSS();
+    utils::writeJS();
+?>
 </head>
 <body>
 <?php
@@ -91,6 +82,8 @@ include "./lib/tabella_v.class.php";?>
 			 </TD>
 	      </TR>
 		</TABLE>
-<?}?>
+<?php
+}
+?>
 </body>
 </html>

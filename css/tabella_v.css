@@ -70,6 +70,9 @@ table.stiletabella td.intestazione{
     font-weight:bold !important; 
 }
 
+.datagrid-cell .tree-title{
+    font-size:11px !important;
+}
 
 /*
 @-moz-keyframes blinker {  

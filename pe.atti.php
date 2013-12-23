@@ -1,4 +1,4 @@
-<?
+<?php
 //Stesso codice che utilizzo in ubicazione.php, progetto.php, asservimento.php
 include_once ("login.php");
 $tabpath="pe";
@@ -17,10 +17,14 @@ $titolo=$_SESSION["TITOLO_$idpratica"];
 <title>Atti - <?=$titolo?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+    utils::writeCSS();
+    utils::writeJS();
+?>
 </head>
 <body>
-<?if (($modo=="edit") or ($modo=="new")){
+<?php
+if (($modo=="edit") or ($modo=="new")){
 	
 	//---<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  EDITA ATTO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>------------------------------>	
 		unset($_SESSION["ADD_NEW"]);
@@ -35,7 +39,7 @@ $titolo=$_SESSION["TITOLO_$idpratica"];
 			<tr> 
 				<td> 
 	<!-- contenuto-->
-	<?
+	<?php
 	if($Errors){
 		$tabella_asservimento->set_errors($Errors);
 		$tabella_asservimento->set_dati($_POST);
@@ -65,7 +69,7 @@ else{
 		  <TR> 
 			<TD> 
 			<!-- contenuto-->
-				<?
+				<?php
 				$tabella_asservimento=new tabella_v("$tabpath/atti");
 		        $nrec=$tabella_asservimento->set_dati("pratica = $idpratica order by data_reg");	
 
@@ -89,7 +93,9 @@ else{
 	      </TR>
 		</TABLE>
 	
-<?}?>		
+<?php
+
+}?>		
 
 </body>
 </html>

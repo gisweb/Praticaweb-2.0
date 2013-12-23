@@ -1,4 +1,4 @@
-<?
+<?php
 //Stesso codice che utilizzo in ubicazione.php, progetto.php, asservimento.php
 include_once("login.php");
 $userid=$_SESSION['USER_ID'];
@@ -36,7 +36,10 @@ if ($azione){
 <title>Movimenti Pratica - <?=$_SESSION["TITOLO_".$idpratica]?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+    utils::writeCSS();
+    utils::writeJS();
+?>
 <script language=javascript>
 function confirmSubmit()
 {
@@ -58,7 +61,7 @@ function elimina(id){
 
 <body>
 
-<?
+<?php
 if (in_array($modo,Array("edit","new"))){
 		$tab_new="pe/".$_POST["tab_new"].".tab";
 		$tab_edit="pe/".$_POST["tab_edit"].".tab";
@@ -107,7 +110,7 @@ if (in_array($modo,Array("edit","new"))){
 			
 		<?php include "./inc/inc.window.php"; // contiene la gesione della finestra popup
 
-}else{// modalit� vedi
+}else{// modalità vedi
 ?>
 
 
@@ -119,7 +122,7 @@ if (in_array($modo,Array("edit","new"))){
 		  <tr> 
 			<td> 
 			<!--  intestazione-->
-			<?
+			<?php
 				$file_tab="movimenti_pratiche";
 				$titolo="Movimenti Pratica";
 				$tabella=new tabella_h('pe/'.$file_tab,'view');
@@ -139,7 +142,8 @@ if (in_array($modo,Array("edit","new"))){
 		
 		  
 		</table>
-<?}?>
+<?php
+}?>
 
 </body>
 </html>

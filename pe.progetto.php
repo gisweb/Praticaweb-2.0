@@ -1,4 +1,4 @@
-<?
+<?php
 //Stesso codice che utilizzo in ubicazione.php, progetto.php, asservimento.php
 include_once ("login.php");
 include_once "./lib/tabella_h.class.php";
@@ -99,7 +99,7 @@ function elimina(id){
 		<input type="hidden" name="id" id="id" value="">
 		<input type="hidden" name="mode" value="<?php echo $modo?>">		
 	</form>	
-		<?
+		<?php
 		}
 		elseif ($_POST["progetto"]) {
 				$tabella=new tabella_v("$tabpath/progetto",$modo);
@@ -137,7 +137,7 @@ function elimina(id){
 		<input type="hidden" name="mode" value="<?=$modo?>"></td>
 	</FORM>		
 
-<?
+<?php
 		
 		
 		}
@@ -159,7 +159,8 @@ function link(id){
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
 		  <tr> 
 			<td> 
-			<?$tabella_progetto=new tabella_v("$tabpath/progetto");
+			<?php
+                        $tabella_progetto=new tabella_v("$tabpath/progetto");
 			$nrec=$tabella_progetto->set_dati("pratica = $idpratica");	
 			if($nrec){
 				$tabella_progetto->set_titolo("Progetto","modifica",array("progetto"=>1));	
@@ -187,7 +188,9 @@ function link(id){
 			</td>
 		  </tr>
 		</table>
-<?}?>
+<?php
+}
+?>
 
 </body>
 </html>
