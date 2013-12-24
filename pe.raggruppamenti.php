@@ -101,7 +101,7 @@ require_once APPS_DIR.'lib/tabella_v.class.php';
     function formatLink(value,rowData,rowIndex){
         var text=value;
         if(rowData['pratica']){
-            text='<a target="praticaweb" href="praticaweb.php?pratica= ' + rowData["pratica"] + '">' + value +'</a>';
+            text='<a target="praticaweb" href="praticaweb.php?pratica= ' + rowData["pratica"] + '&active_form=pe.ubicazione?pratica=' + rowData["pratica"] + '">' + value +'</a>';
         }
         return text;
     }

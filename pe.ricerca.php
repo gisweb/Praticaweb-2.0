@@ -14,6 +14,8 @@ require_once APPS_DIR.'lib/tabella_v.class.php';
 <script type="text/javascript" src="/js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="/js/locale/easyui-lang-it.js"></script>
 <script type="text/javascript" src="/js/datagrid-detailview.js"></script>
+<script type="text/javascript" src="/js/init.search.js"></script>
+
 
 <script language="javascript">
     $(document).ready(function(){
@@ -39,6 +41,12 @@ require_once APPS_DIR.'lib/tabella_v.class.php';
             $( "#result-container" ).hide( 'slide', 500 );
             $( "#ricerca" ).show( 'slide', 500 );
         });
+        $('#btn-close').button({
+            icons:{primary:'ui-icon-circle-close'}
+        }).bind('click',function(event){
+            event.preventDefault();
+            closeWindow();
+        });
         
         $('#avvia-ricerca').button({
             icons:{primary:'ui-icon-search'}
@@ -47,8 +55,8 @@ require_once APPS_DIR.'lib/tabella_v.class.php';
             event.preventDefault();
             var oper=$('#op').val();
             dataPost=getSearchFilter();
-            $('#ricerca').hide('slide',500)
-            $('#result-container').show('slide',500)
+            $('#ricerca').hide('slide',500);
+            $('#result-container').show('slide',500);
             $('#result-table').datagrid({
                 title:'Risultato della ricerca',
                 url:searchUrl,
@@ -97,94 +105,7 @@ require_once APPS_DIR.'lib/tabella_v.class.php';
         });
     });
     var result={};
-    /*function getSearchFilter(){
-	var searchFilter=new Object();
-	$(".search").each(function(index){
-            var name=$(this).attr('name');
-            var id = $(this).attr('id').replace('op_','');
-            var opValue=$(this).val();
-            var filter='';
-            var t=($(this).hasClass('text'))?('text'):(($(this).hasClass('number'))?('number'):('date'));
-            if (!$('#1_'+id).val()){
-                filter='';
-            }
-            else if (opValue == 'between'){
-                if(t=='date'){
-                    filter=name+" >= '"+$('#1_'+id).val()+"'::date AND "+name +" <= '"+$('#2_'+id).val()+"'::date";
-                }
-                else{
-                    filter=name+" >= "+$('#1_'+id).val()+" AND "+name +" <= "+$('#2_'+id).val();
-                }
-            }
-            else if(opValue == 'equal'){
-                 if(t=='date'){
-                    filter=name+" = '"+$('#1_'+id).val()+"'::date";
-                }
-                else if (t=='text'){
-                    filter=name+"::varchar ilike '"+$('#1_'+id).val()+"'";
-                }
-                else{
-                    filter=name+" = "+$('#1_'+id).val();
-                }
-            }
-            else if(opValue == 'great'){
-                if(t=='date'){
-                    filter=name+" > '"+$('#1_'+id).val()+"'::date";
-                }
-                else{
-                    filter=name+" > "+$('#1_'+id).val();
-                }
-            }
-            else if(opValue == 'less'){
-                if(t=='date'){
-                    filter=name+" < '"+$('#1_'+id).val()+"'::date";
-                }
-                else{
-                    filter=name+" < "+$('#1_'+id).val();
-                }
-            }
-            else if(opValue == 'contains'){
-                filter=name+" ilike '%"+$('#1_'+id).val()+"%'";
-            }
-            else if(opValue == 'startswith'){
-                 filter=name+" ilike '"+$('#1_'+id).val()+"%'";
-            }
-            else if(opValue == 'endswith'){
-                 filter=name+" ilike '%"+$('#1_'+id).val()+"'";
-            }
-            if (filter) {
-                var table=$(this).attr('datatable');
-                if (searchFilter[table]) searchFilter[table].push(filter);
-                else{
-                    searchFilter[table]=new Array();
-                    searchFilter[table].push(filter);
-                }
-            }
-		
-        });	
-	return searchFilter;
-    }*/
-var colsDef={
-    civici:[[
-        {title:'Indirizzo',field:'indirizzo',sortable:true,width:1000},
-        //{title:'Via',field:'via',sortable:true,width:500},
-        //{title:'Civico',field:'civico',sortable:true,width:100}
-    ]],
-    pratica:[[
-        {title:'',field:'pratica',sortable:false,width:20,formatter: function(value,row,index){return '<a target="new" href="praticaweb.php?pratica=' + value + '"><div class="ui-icon ui-icon-search"/></a>'}},
-        {title:'Tipo Pratica',field:'tipo_pratica',sortable:true,width:150},
-        {title:'Numero',field:'numero',sortable:true,width:100},
-        {title:'Protocollo',sortable:true,field:'protocollo',width:100},
-        {title:'Data Prot.',sortable:true,field:'data_prot',width:100},
-        
-        {title:'Intervento',sortable:true,field:'tipo_intervento',width:150},
-        {title:'Oggetto',sortable:true,field:'oggetto',width:350}
-    ]],
-    default_cols:[[
-        {title:'',sortable:true,field:'',width:100},
-    ]]
 
-}
 var dataPost={};
 </script>
 </head>
@@ -226,6 +147,7 @@ var dataPost={};
                     <option value="AND">Tutte le opzioni devono essere verificate</option>
                     <option value="OR">Almeno una opzione deve essere verificata</option>
                 </select>
+                <button style=";margin-left:20px;" id="btn-close">Chiudi</button>
                 <button style=";margin-left:20px;" id="avvia-ricerca">Avvia Ricerca</button>
             </div>                    
     </FORM>
