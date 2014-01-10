@@ -40,7 +40,7 @@
 		
 	}
 	else{
-            if ($hostname=='192.192.193.236' || $hostname=='vm-svsit') $user_data='savona';
+            if ($hostname=='10.129.67.229' || $hostname=='vm-svsit') $user_data='savona';
 		define('DATA_DIR',DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR,Array("data",$user_data,"pe")).DIRECTORY_SEPARATOR);
 		define('APPS_DIR',DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR,Array("apps",'praticaweb-2.0')).DIRECTORY_SEPARATOR);
 	}
