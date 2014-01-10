@@ -128,7 +128,7 @@ function get_controllo($label,$tipo,$w,$campo,$html5Attr,$frozen=0){
 			}
 	    
 			jQuery.ajax({
-			    url:searchUrl,
+			    url:suggestUrl,
 			    dataType:'json',
 			    type:'POST',
 			    data:data_$campo,
