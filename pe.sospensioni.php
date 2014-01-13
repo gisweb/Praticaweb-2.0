@@ -29,24 +29,21 @@ else
 <body  background="">
 <?php
 
-
 $form="sospensioni";
+$filetab="$tabpath/sospensioni";
+$tabella=new tabella_v($filetab,$modo);
 if (($modo=="edit") or ($modo=="new")){
     include "./inc/inc.page_header.php";
     unset($_SESSION["ADD_NEW"]);
     if ($modo=="edit"){
             $id=$_POST["id"];
             $titolo=$_POST["nome_ente"];
-            $filetab="$tabpath/sospensioni";
             $filtro="id=$id";
     }
-    else{
-            $filetab="$tabpath/sospensioni";
-            $titolo="Inserisci nuova sospensione";
-    }
-
-		
-    $tabella=new tabella_v($filetab,$modo);?>	
+    else{            
+        $titolo="Inserisci nuova sospensione";
+    }	
+?>	
     <!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN EDITING  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
     <FORM height=0 method="post" action="praticaweb.php">
         <TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">		
@@ -57,10 +54,13 @@ if (($modo=="edit") or ($modo=="new")){
                 <TD>
 <!-- contenuto-->
 <?php
-if($modo=="edit")
-$tabella->set_dati($filtro);
-
-$tabella->edita();
+    if ($Errors){
+        $tabella->set_errors($Errors);
+        $tabella->set_dati($_REQUEST);
+    }
+    elseif($modo=="edit")
+        $tabella->set_dati($filtro);
+    $tabella->edita();
 ?>
 <!-- fine contenuto-->
                 </TD>
@@ -72,11 +72,9 @@ $tabella->edita();
 
     </FORM>	
 <?php
-        include "./inc/inc.window.php";
+}        else{
 		
-	}else{
-		$tabella=new tabella_v("$tabpath/sospensioni");
-		$tabella->set_errors($errors);
+		
 		$numrec=$tabella->set_dati("pratica=$idpratica");?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
     <H2 class="blueBanner">Elenco Sospensioni</H2>
