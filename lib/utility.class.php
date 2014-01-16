@@ -13,7 +13,12 @@
  */
 
 
-function dsprintfMatch($m1,$m2,&$data,&$used_keys) {
+
+class utility {
+
+
+
+	static function dsprintfMatch($m1,$m2,&$data,&$used_keys) {
     if (isset($data[$m1])) { // if the key is there
         $str = $data[$m1];
         $used_keys[$m1] = $m1; // dont unset it, it can be used multiple times
@@ -23,7 +28,7 @@ function dsprintfMatch($m1,$m2,&$data,&$used_keys) {
         return "%".$m2; // else, return a regular %s, or %d or whatever is used
     }
 }
-class utility {
+
     static function dsprintf() {
         $data = func_get_args(); // get all the arguments
         $string = array_shift($data); // the string is the first one
@@ -32,7 +37,7 @@ class utility {
         }
         $used_keys = array();
         // get the matches, and feed them to our function
-        $string = preg_replace('/\%\((.*?)\)(.)/e','dsprintfMatch(\'$1\',\'$2\',\$data,$used_keys)',$string); 
+        $string = preg_replace('/\%\((.*?)\)(.)/e','self::dsprintfMatch(\'$1\',\'$2\',\$data,$used_keys)',$string); 
         $data = array_diff_key($data,$used_keys); // diff the data with the used_keys
         return vsprintf($string,$data); // yeah!
     }

@@ -28,7 +28,7 @@ function get_controllo($label,$tipo,$w,$campo,$html5Attr,$frozen=0){
 	$err=$this->errors[$campo];
 	$dato=$dati[$campo];
 	if(isset($err)){
-		$class="textbox ui-error";
+		$class="textbox ui-state-error";
 		$help="<image src=\"images/small_help.gif\" onclick=\"alert('$err')\">";
         $title="title=\"$err\"";
 	}
