@@ -186,7 +186,7 @@ elseif($modo=="view"){
                 alert('Selezionare una pratica');
         });
     </script>
-<?
+<?php
 }
 else{
     $tabella_modelli=new Tabella_h("$tabpath/modelli",'list');
@@ -202,7 +202,7 @@ else{
     <H2 class="blueBanner">Elenco dei modelli</H2><form method="post" name="modelli" action="">
         <TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
         
-<?	
+<?php	
     foreach ($elenco_form as $row){
 		$form=$row["form"];
 		$desc=$row["opzione"];

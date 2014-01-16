@@ -1,4 +1,4 @@
-<?
+<?php
 //IMPORATNTE : Nei documenti non si può utilizzare il tag <span> perchè è dedicato ai campi unione!!!!!!
 class stampe {
 	
