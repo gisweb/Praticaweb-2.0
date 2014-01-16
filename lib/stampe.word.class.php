@@ -18,6 +18,7 @@ require_once APPS_DIR."plugins/openTbs/tbs_plugin_opentbs.php";
 require_once APPS_DIR."/lib/php-sql-parser.php";
 function decode(&$item, &$key){
 	$item=(mb_detect_encoding($item)=='UTF-8' && FALSE)?(utf8_decode($item)):($item);
+        $item=str_replace('&','&amp;',$item);
 }
 
 class wordDoc {
@@ -58,7 +59,7 @@ class wordDoc {
 				$sql="SELECT * FROM ".$this->schema.".$vista WHERE pratica=?";
 				
 				$ris=$db->fetchAll($sql,Array($this->pratica));
-				array_walk_recursive($ris, 'decode');
+				//array_walk_recursive($ris, 'decode');
 				$this->data[$vista]=$ris;
 					
 				
@@ -70,7 +71,7 @@ class wordDoc {
 			if ($funzione){
 				$sql="SELECT * FROM ".$this->schema.".$funzione(?);";
 				$ris=$db->fetchAll($sql,Array($this->pratica));
-				array_walk_recursive($ris, 'decode');
+				//array_walk_recursive($ris, 'decode');
 				$this->data[$funzione]=$ris;
 			}
 		}
@@ -104,6 +105,7 @@ class wordDoc {
 				}
 				break;
 		}
+                array_walk_recursive($customData, 'decode');
 		$this->data=$customData;
                 print_debug($this->data,null,'STAMPE');
 	}
@@ -182,6 +184,7 @@ class wordDoc {
                 "single_parere_ce"=>"SELECT * FROM stp.single_parere_ce WHERE pratica=?;",
                 "single_parere_asl"=>"SELECT * FROM stp.single_parere_asl WHERE pratica=?;",
                 "single_elenco_richiedenti"=>"SELECT * FROM stp.single_elenco_richiedenti WHERE pratica=?;",
+                "single_elenco_concessionari"=>"SELECT * FROM stp.single_elenco_concessionari WHERE pratica=?;",
                 "single_elenco_progettisti"=>"SELECT * FROM stp.single_elenco_progettisti WHERE pratica=?;",
                 "single_elenco_cu"=>"SELECT * FROM stp.single_elenco_cu WHERE pratica=?;",
                 "single_elenco_ct"=>"SELECT * FROM stp.single_elenco_ct WHERE pratica=?;",
@@ -193,7 +196,8 @@ class wordDoc {
             ),
             "multiple"=>Array(
                 "soggetti"=>"SELECT * FROM stp.multiple_soggetti WHERE pratica=?;",
-                "richiedente"=>"SELECT * FROM stp.multiple_richiedenti WHERE pratica=?;",
+                "richiedenti"=>"SELECT * FROM stp.multiple_richiedenti WHERE pratica=?;",
+                "concessionari"=>"SELECT * FROM stp.multiple_concessionari WHERE pratica=?;",
                 "progettista"=>"SELECT * FROM stp.multiple_progettisti WHERE pratica=?;",
                 "particelle_cu"=>"SELECT * FROM stp.multiple_particelle_cu WHERE pratica=?;",
                 "particelle_ct"=>"SELECT * FROM stp.multiple_particelle_ct WHERE pratica=?;",
