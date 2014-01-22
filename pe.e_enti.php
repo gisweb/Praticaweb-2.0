@@ -30,14 +30,6 @@ switch ($modo) {
     <title>Elenco Enti</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
-    <SCRIPT language="javascript" type="text/javascript">
-        function link(id){
-            window.location="pe.stati.php?id="+id+"&mode=view";
-        }
-        function confirmSubmit(){
-            return confirm('Sei sicuro di voler eliminare questo stato?');
-        }
-    </SCRIPT>
 
     </head>
     <body>
@@ -45,7 +37,7 @@ switch ($modo) {
 include "./inc/inc.page_header.php";
 ?>
 <H2 class="blueBanner"><?php echo "$tit";?></H2>
-<?
+<?php
 	if (($modo=="edit") or ($modo=="new")){
 		$tabella=new tabella_v("$tabpath/$file_config",$modo);
 		unset($_SESSION["ADD_NEW"]);
@@ -60,12 +52,12 @@ include "./inc/inc.page_header.php";
 				<?php
                   
 				  if ($id)	{
-                     //print_array($Errors);
+                     print_array($Errors);
 					 if ($Errors)
 						$tabella->set_errors($Errors);
-					 if (!count($Errors)) $tabella->set_dati("id=$id");
 					 else
-						$tabella->set_dati($_POST);
+                                             $tabella->set_dati("id=$id");
+					 
 				}
 				$tabella->edita();?>
 				<!-- fine contenuto-->
@@ -78,7 +70,7 @@ include "./inc/inc.page_header.php";
 		</FORM>		
 
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
-<?
+<?php
 }elseif($modo=="view") {
 		$tabella=new Tabella_v("$tabpath/$file_config",$modo);?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
@@ -94,7 +86,7 @@ include "./inc/inc.page_header.php";
 				</TD>
 			</TR>
 		</TABLE>
-<?}
+<?php}
 else {
 	$tabella=new Tabella_h("$tabpath/$file_config",'list');
 	$tabella->set_titolo("Elenco degli enti","nuovo");
@@ -123,7 +115,7 @@ else {
 		 window.close();
 	  });
    </script>
-	<?
+	<?php
 	}?>
 	
 </body>
