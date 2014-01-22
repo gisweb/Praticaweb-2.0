@@ -52,7 +52,7 @@ include "./inc/inc.page_header.php";
 				<?php
                   
 				  if ($id)	{
-                     print_array($Errors);
+                     
 					 if ($Errors)
 						$tabella->set_errors($Errors);
 					 else
@@ -71,7 +71,8 @@ include "./inc/inc.page_header.php";
 
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 <?php
-}elseif($modo=="view") {
+}
+elseif($modo=="view") {
 		$tabella=new Tabella_v("$tabpath/$file_config",$modo);?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
@@ -86,7 +87,9 @@ include "./inc/inc.page_header.php";
 				</TD>
 			</TR>
 		</TABLE>
-<?php}
+<?php 
+
+}
 else {
 	$tabella=new Tabella_h("$tabpath/$file_config",'list');
 	$tabella->set_titolo("Elenco degli enti","nuovo");
