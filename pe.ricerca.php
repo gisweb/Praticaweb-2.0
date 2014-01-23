@@ -8,13 +8,16 @@ require_once APPS_DIR.'lib/tabella_v.class.php';
 <title>Ricerca pratica</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<!--<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>-->
+<?php
+utils::writeJS();
+utils::writeJS(Array("jquery.easyui.min","locale/easyui-lang-it","searchResultView","init.search"));
+utils::writeCSS();
+?>
 <link rel="stylesheet" type="text/css" href="/css/default/easyui.css">
 <link rel="stylesheet" type="text/css" href="/css/icon.css">
-<script type="text/javascript" src="/js/jquery.easyui.min.js"></script>
-<script type="text/javascript" src="/js/locale/easyui-lang-it.js"></script>
-<script type="text/javascript" src="/js/datagrid-detailview.js"></script>
-<script type="text/javascript" src="/js/init.search.js"></script>
+<!--<script type="text/javascript" src="/js/datagrid-detailview.js"></script>-->
+
 
 
 <script language="javascript">
@@ -62,20 +65,20 @@ require_once APPS_DIR.'lib/tabella_v.class.php';
                 url:searchUrl,
                 method:'post',
                 nowrap:false,
-                columns:colsDef['pratica'],
+                //columns:colsDef['pratica'],
                 fitColumns:false,
                 pagination:true,
                 autoRowHeight:true,
 
                 queryParams:{data:dataPost,action:'search',op:oper},
-                view: detailview,
-                detailFormatter:function(index,row){
+                view: myview,
+                /*detailFormatter:function(index,row){
                     return '<div class="ddv" style="padding:5px 0;background-color:#EEF7FF"></div>';
-                },
+                },*/
                 onLoadSuccess:function(data){
                     $('#elenco').val(data['elenco_id']);
                 },
-                onExpandRow: function(index,row){
+                /*onExpandRow: function(index,row){
                     var ddv = $(this).datagrid('getRowDetail',index).find('div.ddv');
                     var text = '\n\
 <table width="100%">\n\
@@ -100,7 +103,7 @@ require_once APPS_DIR.'lib/tabella_v.class.php';
 </table>';
                     $(ddv).html(text);
                     $('#result-table').datagrid('fixDetailRowHeight',index);
-                }
+                }*/
             });
         });
     });

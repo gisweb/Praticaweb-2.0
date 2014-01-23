@@ -19,15 +19,15 @@ class utility {
 
 
 	static function dsprintfMatch($m1,$m2,&$data,&$used_keys) {
-    if (isset($data[$m1])) { // if the key is there
-        $str = $data[$m1];
-        $used_keys[$m1] = $m1; // dont unset it, it can be used multiple times
-        return sprintf("%".$m2,$str); // sprintf the string, so %s, or %d works like it should
-    } 
-    else {
-        return "%".$m2; // else, return a regular %s, or %d or whatever is used
-    }
-}
+            if (isset($data[$m1])) { // if the key is there
+                $str = $data[$m1];
+                $used_keys[$m1] = $m1; // dont unset it, it can be used multiple times
+                return sprintf("%".$m2,$str); // sprintf the string, so %s, or %d works like it should
+            } 
+            else {
+                return "%".$m2; // else, return a regular %s, or %d or whatever is used
+            }
+        }
 
     static function dsprintf() {
         $data = func_get_args(); // get all the arguments

@@ -12,8 +12,10 @@
  */
 class utils {
     const jsURL = "/js";
+    const jsLocalURL = "/js/local";
     const cssURL="/css";
-    public static $js = Array('jquery-1.9.1','jquery-ui-1.10.2.min','jquery.ui.datepicker-it','jquery.dataTables.min','dataTables.date.order','window','praticaweb','page.controller');
+    const cssLocalURL="/css/local";
+    public static $js = Array('jquery-1.9.1','jquery-ui-1.10.2.min','jquery.ui.datepicker-it','jquery.dataTables.min','dataTables.date.order','window','praticaweb','page.controller','sprintf');
     public static $css = Array('praticaweb/jquery-ui-1.9.1.custom','styles','TableTools','TableTools_JUI','demo_page','demo_table_jui','tabella_v','menu');
     
     static function mergeParams($prms=Array(),$defaultParams=Array()){
@@ -42,12 +44,37 @@ class utils {
 		$conn = new PDO($dsn, DB_USER, DB_PWD);
         return $conn;
     }
-    static function writeJS(){
-        foreach(self::$js as $js){
-           $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s/%s.js\"></script>",self::jsURL,$js);
-           echo $tag;
+    
+    static function url_exists($url) {
+        $exists = true;
+        $file_headers = @get_headers($url);
+        $file_headers[]="$url";
+        utils::debug(DEBUG_DIR.'test.debug',$file_headers);
+        $InvalidHeaders = array('404', '403', '500');
+        foreach($InvalidHeaders as $HeaderVal)
+        {
+                if(strstr($file_headers[0], $HeaderVal))
+                {
+                        $exists = false;
+                        break;
+                }
         }
-        
+        return $exists;
+    }
+    
+    static function writeJS($f=Array()){
+        $jsList=($f)?($f):(self::$js);
+        foreach($jsList as $js){
+            $jsLocalURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],self::jsLocalURL,$js);
+            $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],self::jsURL,$js);
+            if (self::url_exists($jsLocalURL))
+                $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsLocalURL);
+            elseif(self::url_exists($jsURL))
+                $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsURL);
+            else
+                $tag="";
+            echo $tag;
+        } 
     }
     static function writeCSS(){
         foreach(self::$css as $css){
@@ -75,6 +102,42 @@ class utils {
 
         // Return the string
         return $string;
+    }
+    static function now(){
+        return date('d/m/Y h:i:s', time());
+    }
+    static function debug($file,$data,$mode='a+'){
+        $now=self::now();
+        $f=fopen($file,$mode);
+	ob_start();
+        echo "------- DEBUG DEL $now -------\n";
+	print_r($data);
+	$result=ob_get_contents();
+	ob_end_clean();
+	fwrite($f,$result."\n-------------------------\n");
+	fclose($f);
+    }
+    static function postRequest($url,$fields){
+
+        //array_walk_recursive($fields, 'urlencode');
+        //url-ify the data for the POST
+        $fields_string=http_build_query($fields);
+        
+
+        //open connection
+        $ch = curl_init();
+
+        //set the url, number of POST vars, POST data
+        curl_setopt($ch,CURLOPT_URL, $url);
+        curl_setopt($ch,CURLOPT_POST, count($fields));
+        curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+
+        //execute post
+        $result = curl_exec($ch);
+
+        //close connection
+        curl_close($ch);
+        return $result;
     }
 }
 ?>
