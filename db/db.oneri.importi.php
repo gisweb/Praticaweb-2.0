@@ -1,4 +1,4 @@
-<?
+<?php
 $menu_rate=120;
 $menu_fidi=130;
 

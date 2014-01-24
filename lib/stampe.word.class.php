@@ -198,7 +198,7 @@ class wordDoc {
                 "soggetti"=>"SELECT * FROM stp.multiple_soggetti WHERE pratica=?;",
                 "richiedenti"=>"SELECT * FROM stp.multiple_richiedenti WHERE pratica=?;",
                 "concessionari"=>"SELECT * FROM stp.multiple_concessionari WHERE pratica=?;",
-                "progettista"=>"SELECT * FROM stp.multiple_progettisti WHERE pratica=?;",
+                "progettisti"=>"SELECT * FROM stp.multiple_progettisti WHERE pratica=?;",
                 "particelle_cu"=>"SELECT * FROM stp.multiple_particelle_cu WHERE pratica=?;",
                 "particelle_ct"=>"SELECT * FROM stp.multiple_particelle_ct WHERE pratica=?;",
                 "pareri"=>"SELECT * FROM stp.multiple_pareri WHERE pratica=?;",

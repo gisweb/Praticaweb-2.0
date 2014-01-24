@@ -1,10 +1,10 @@
-<?
+<?php
 //Gestione della rateizzazione calcolo delle rate
 //DA RIVEDERE LE GESTIONE DEI DATI STATICI es titolo
 
 //DA PERSONALIZZARE SULLE ESIGENZE DEL COMUNE
 
-echo "calcolo della rateizzazione";
+//echo "calcolo della rateizzazione";
 //print_r($_POST);
 
 
