@@ -18,7 +18,11 @@ utils::writeCSS();
 <link rel="stylesheet" type="text/css" href="/css/icon.css">
 <!--<script type="text/javascript" src="/js/datagrid-detailview.js"></script>-->
 
-
+<style>
+    .c-label{
+        font-weight: bold;
+    }
+</style>
 
 <script language="javascript">
     $(document).ready(function(){
