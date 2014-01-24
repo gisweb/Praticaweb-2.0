@@ -8,8 +8,14 @@ $pr=new pratica($idpratica);
 $pr->createStructure();
 $file_config="$tabpath/avvio_procedimento";
 $intestazione='Avvio del procedimento e comunicazione responsabile';
-include "./lib/tabella_v.class.php";?>
+include "./lib/tabella_v.class.php";
+$sql="SELECT * FROM pe.elenco_categorie WHERE enabled=1;";
+$res=$db->fetchAll($sql);
+foreach($res as $val){
+    $categoria[$val["tipo"]][]=Array("id"=>$val["id"],"opzione"=>$val["opzione"]);
+}
 
+?>
 <html>
 <head>
     <title>Avvio Procedimento - <?=$_SESSION["TITOLO_".$idpratica]?></title>
@@ -19,7 +25,16 @@ include "./lib/tabella_v.class.php";?>
     utils::writeCSS();
     utils::writeJS();
 ?>
+    <script>
+    var selectdb = new Object;
+    selectdb['categoria'] = <?php print json_encode($categoria)?>;
+    $(document).ready(function(){
+        if ($('#mode').val()=='new') $('#tipo').trigger('change');
+        
+    });
+    </script>
 </head>
+
 <body>
 <?php
  if (($modo=="edit") or ($modo=="new")) {
