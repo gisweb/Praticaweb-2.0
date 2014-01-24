@@ -10,7 +10,7 @@ $file_config="$tabpath/avvio_procedimento";
 $intestazione='Avvio del procedimento e comunicazione responsabile';
 include "./lib/tabella_v.class.php";
 $db=appUtils::getDB();
-$sql="SELECT * FROM pe.elenco_categorie WHERE enabled=1;";
+$sql="SELECT * FROM pe.elenco_categorie;";
 $res=$db->fetchAll($sql);
 foreach($res as $val){
     $categoria[$val["tipo"]][]=Array("id"=>$val["id"],"opzione"=>$val["opzione"]);
