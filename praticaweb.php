@@ -73,7 +73,9 @@ else{
 	}
 }
 $pr=new pratica($idpratica,$is_cdu);
-$_SESSION["TITOLO_".$idpratica]=$pr->titolo;
+//$_SESSION["TITOLO_".$idpratica]=$pr->titolo;
+$_SESSION["TITOLO_".$idpratica]=  appUtils::titoloPratica($_REQUEST);
+//$_SESSION["TITOLO_PRATICA"]=$pr->titolo;
 ?>
 <HTML>
 	<HEAD>
