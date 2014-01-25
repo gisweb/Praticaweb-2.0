@@ -10,10 +10,10 @@ $file_config="$tabpath/avvio_procedimento";
 $intestazione='Avvio del procedimento e comunicazione responsabile';
 include "./lib/tabella_v.class.php";
 $db=appUtils::getDB();
-$sql="SELECT * FROM pe.elenco_categorie;";
+$sql="SELECT A.id,B.id as tipo,A.nome FROM pe.e_categoriapratica A inner join pe.e_tipopratica B ON(tipo=tipologia) WHERE A.enabled=1 AND B.enabled=1;";
 $res=$db->fetchAll($sql);
 foreach($res as $val){
-    $categoria[$val["tipo"]][]=Array("id"=>$val["id"],"opzione"=>$val["opzione"]);
+    $categoria[$val["tipo"]][]=Array("id"=>$val["id"],"opzione"=>$val["nome"]);
 }
 
 ?>
@@ -75,7 +75,7 @@ foreach($res as $val){
 <input name="ctfoglio" type="hidden" value="<?=$_POST["ctfoglio"]?>">
 <input name="ctmappale" type="hidden" value="<?=$_POST["ctmappale"]?>">
 <input name="oldtipo" type="hidden" value="<?=$tabella->get_campo("tipo")?>">
-<input name="mode" type="hidden" value="<?=$modo?>">
+<input name="mode" type="hidden" id="mode" value="<?=$modo?>">
 </FORM>
 <?//include "./inc/inc.window.php"; // contiene la gesione della finestra popup
 }else{

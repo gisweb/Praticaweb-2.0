@@ -253,7 +253,7 @@ function selectOneriIntervento(){
           var el = $('#'+prms[i]);
           var id = el.attr('id');
           var value = $(obj).val();
-          
+          console.log(obj);
           if ($(obj).is('select')){
               el.html('');
               if (typeof(selectdb[id][value])== 'undefined') 
