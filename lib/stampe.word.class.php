@@ -99,7 +99,7 @@ class wordDoc {
 				break;
 			default:
 				if(file_exists(LOCAL_INCLUDE."stampe.php")){
-					//include_once LOCAL_INCLUDE."stampe.php";
+					include_once LOCAL_INCLUDE."stampe.php";
                                         print_debug($this->data,null,'STAMPE_LOCAL');
 
 				}
@@ -125,13 +125,13 @@ class wordDoc {
                 }       
 		$customFields=$result;
                 
-                if(file_exists(LOCAL_INCLUDE."cdu.php")){
+                /*if(file_exists(LOCAL_INCLUDE."cdu.php")){
                         include_once LOCAL_INCLUDE."cdu.php";
                 }
                 
                 if(file_exists(LOCAL_INCLUDE."stampe.php")){
                         include_once LOCAL_INCLUDE."stampe.php";
-                }
+                }*/
 		$this->fields=$customFields;
 	}
 	function createDoc($test=0){
