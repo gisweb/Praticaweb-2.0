@@ -29,9 +29,27 @@ if($_POST["azione"])
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
-
+<link rel="stylesheet" type="text/css" href="/css/default/easyui.css">
+<link rel="stylesheet" type="text/css" href="/css/icon.css">
+<script type="text/javascript" src="/js/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="/js/locale/easyui-lang-it.js"></script>
+<script type="text/javascript" src="/js/datagrid-detailview.js"></script>
 <SCRIPT language="javascript">
-
+    $(document).ready(function(){
+        $('#result-table-modelli').tree({
+                title:'Elenco dei modelli di stampa',
+                data:modelli,
+                formatter:function(node){
+                    console.log(node);
+                    if (node.children)
+                        return sprintf('<b>%(text)s</b>',node);
+                        
+                    else
+                        return sprintf('<input type="radio" value="%(id)s" name="id" class="stiletabella">%(text)s</input>',node);
+                }
+                
+            });
+        });
 function home(){
 	document.main.azione.value="Annulla";
 	document.main.submit();
@@ -60,6 +78,14 @@ function submit_form(nome,act){
 		return false;
 	}
 }
+function formatLink(value,rowData,rowIndex){
+        var text=value;
+        if(rowData['id']){
+            text='<input type="radio" name="id" class="stiletabella">' + text + '</input>';
+        }
+        
+        return text;
+    }
 </SCRIPT>
 </head>	
 
@@ -69,10 +95,10 @@ function submit_form(nome,act){
 	include "./inc/inc.page_header.php";
     $pr=new pratica($idpratica);
     $arrFiltri=Array();
-    $arrFiltri["form"]="form='$form'";
+    //$arrFiltri["form"]="form='$form'";
     $arrFiltri["utente"]="(coalesce(proprietario,'pubblico')='pubblico' or proprietario='$usr')";
-    $arrFiltri["tipopratica"]="(coalesce(tipo_pratica,'0')='0' or '".floor((double)$pr->info['tipo']/100)."'=ANY(string_to_array(coalesce(tipo_pratica,''),',')) or '".$pr->info['tipo']."'=ANY(string_to_array(coalesce(tipo_pratica,''),',')))";
-	$arrFiltri["disponibili"]="NOT id IN (SELECT DISTINCT modello FROM stp.stampe A INNER JOIN stp.e_modelli B ON (B.id=A.modello) WHERE A.pratica=$idpratica and multiple=0)";
+    //$arrFiltri["tipopratica"]="(coalesce(tipo_pratica,'0')='0' or '".floor((double)$pr->info['tipo']/100)."'=ANY(string_to_array(coalesce(tipo_pratica,''),',')) or '".$pr->info['tipo']."'=ANY(string_to_array(coalesce(tipo_pratica,''),',')))";
+    $arrFiltri["disponibili"]="NOT A.id IN (SELECT DISTINCT modello FROM stp.stampe A INNER JOIN stp.e_modelli B ON (B.id=A.modello) WHERE A.pratica=$idpratica and multiple=0)";
     /*if ($_SESSION["PERMESSI"]<=3) $array_file_tab=(!$condono)?(array("$tabpath/stampe_docx","$tabpath/stampe_rtf","$tabpath/stampe_pdf")):(array("$tabpath/modelli_condono","$tabpath/stampehtml_condono","$tabpath/stampepdf_condono"));
 	else
 		$array_file_tab=(!$condono)?(array("$tabpath/modelli_usr","$tabpath/stampe_rtf","$tabpath/stampe_pdf")):(array("$tabpath/modelli_condono","$tabpath/stampehtml_condono","$tabpath/stampepdf_condono"));
@@ -80,52 +106,45 @@ function submit_form(nome,act){
     $file_tab="$tabpath/stampe";
     $titolo="Elenco Modelli";
     $filtro=implode(" AND ",$arrFiltri);
-    //$array_titolo=array("Elenco Modelli Disponibili","Documento Prodotto","Documento Finale");
-	//$array_param=array("modello","rtf","pdf");
-	//$array_filtro=array("form='$form' and $filtro_tipopratica and (proprietario='pubblico' or proprietario='$usr')","pratica=$idpratica and form='$form' and char_length(file_doc)>0","pratica=$idpratica and form='$form' and char_length(file_pdf)>0");
+    $sql="select coalesce(B.id::varchar,'')||'#'||coalesce(A.id::varchar,'') as codice,A.id,coalesce(B.id::varchar,'tutti') as idtipo,A.nome as modello,coalesce(B.nome,'Tutti i tipi di pratica') as tipo_pratica,form from stp.e_modelli A left join pe.e_tipopratica B on (B.id::varchar =ANY(string_to_array(tipo_pratica,','))) WHERE $filtro;";
+    $db=appUtils::getDb();
+    $res=$db->fetchAll($sql);
+    //print_array($res);
+    $modelli=  json_encode(appUtils::groupData("modelli",$res));
+   // print_array($modelli);
+    echo <<<EOT
+    <script>
+        var modelli=$modelli;
+    </script>
+EOT;
 ?>	
 <H2 class="blueBanner">Gestione Stampe e Modelli</H2>
 
 <!------------------------------------------------------------------------   MODELLI   ------------------------------------------------------------------------------------------------------------------------------------->
 
 
+            <ul id="result-table-modelli">
+
+           </ul>
+              
+        </div> 
 <TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="800">
 	<TR>
 		<TD colspan="4">
-		<?
+		<?/*php
 		$tabella=new Tabella_h($file_tab,'list'); 
 		$tabella->set_titolo($titolo);
 		$tabella->set_tag("modello");
-			//$filtro='';
-			//$campi=$tabella->elenco_campi;
-			//$campi=explode(',',$campi); 
-			//foreach ($campi as $i => $value) { 
-			//	if ($value=='tipo_pratica') $filtro="tipo_pratica ilike '$tipopratica%' and ";
-			//}
 		$numrows=$tabella->set_dati($filtro);
-
-			$tabella->get_titolo();
-        //print_array($tabella);
+                $tabella->get_titolo();
+        
 		if ($numrows){
 			$tabella->elenco();
 
 		}
-        else{
-            print ("<p><b>Nessun Modello disponibile</b></p>");
-        }
-		/*else{
-				foreach ($campi as $i => $value) { 
-					if ($value=='tipo_pratica') 
-						$numrows2=$tabella->set_dati($array_filtro[0]);
-				} 
-                
-                if ($numrows2)
-                    $tabella->elenco();
-                else
-                    print ("<p><b>Nessun documento prodotto</b></p>");        
-
-			}*/
-
+                else{
+                    print ("<p><b>Nessun Modello disponibile</b></p>");
+                }*/
 		?>
 		</TD>
 	</TR>
@@ -166,18 +185,14 @@ function submit_form(nome,act){
 		}).click(function(){
 			$("#azione").val('Crea Documento');
 			if (submit_form('id','crea')){
-				$('#print_btn').unbind('click');
-                $('#praticaFrm').submit();
-            }
+                            $('#print_btn').unbind('click');
+                            $('#praticaFrm').submit();
+                        }
 			else
-				return false;
+                            return false;
 		});
 	</script>
-<!--	<input type="submit" name="azione" value="Crea Documento" class="hexfield1" onclick="return ">
-<input type="submit" name="azione" value="Elimina Modello" class="hexfield1" onclick="return submit_form('id','elimina')">
-	<input class="hexfield1" style="width:100px;margin-top:10px" type="submit" value="Annulla" >-->
-
-</form>
+    </form>
 
 
 

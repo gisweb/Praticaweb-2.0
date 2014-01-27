@@ -329,17 +329,18 @@ class appUtils {
         }
     }
     static function titoloPratica($req){
+
         if (!$_REQUEST["pratica"]) return "";
         $pr=$_REQUEST["pratica"];
         if ($_REQUEST["cdu"]){
-            $sql="SELECT 'Certificato di Destinazione Urbanitica Prot N° '||protocollo as titolo FROM cdu.richiesta WHERE pratica=?";
+            $sql="SELECT 'Certificato di Destinazione Urbanitica Prot n° '||protocollo as titolo FROM cdu.richiesta WHERE pratica=?";
         }
         else{
-            $sql="SELECT B.nome||' - '|| C.nome ||' N° '||A.numero as titolo FROM pe.avvioproc A INNER JOIN pe.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN pe.e_categoriapratica C ON (B.tipologia=C.tipo) WHERE pratica=?;";
+            $sql="SELECT B.nome|| coalesce(' - '||C.nome,'') ||' n° '||A.numero as titolo FROM pe.avvioproc A INNER JOIN pe.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN pe.e_categoriapratica C ON (coalesce(A.categoria,0)=C.id)  WHERE pratica=?;";
         }
-        if($dbconn->sql_query($sql)){
-            $result=$db->fetchRowset($sql);
-        }
+        //echo $pr;
+        $db=self::getDb();
+        $result=$db->fetchAll($sql,Array($pr));
         return $result[0]["titolo"];
     }
 }

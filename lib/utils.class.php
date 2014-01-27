@@ -139,5 +139,23 @@ class utils {
         curl_close($ch);
         return $result;
     }
+    static function groupData($data=Array(),$groupField=Array(),$infoFields=Array()){
+        $result = Array();
+        for($j=0;$j<count($data);$j++){
+            $row=$data[$j];
+            for($i=0;$i<count($groupField);$i++){
+                $key=$groupField[$i];
+                
+            }
+        }
+    }
+    static function arrayGroupBy(array $arr, callable $key_selector) {
+        $result = array();
+        foreach ($arr as $i) {
+          $key = call_user_func($key_selector, $i);
+          $result[$key][] = $i;
+        }  
+        return $result;
+    }
 }
 ?>
