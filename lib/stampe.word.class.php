@@ -87,7 +87,7 @@ class wordDoc {
                     $this->data[$key]=$ris;
                 }
                 
-                print_debug($this->data,null,"STAMPE-PRE");
+                //print_debug($this->data,null,"STAMPE-PRE");
 		$customData=$this->data;
                 
 		switch($this->type){
@@ -100,7 +100,7 @@ class wordDoc {
 			default:
 				if(file_exists(LOCAL_INCLUDE."stampe.php")){
 					include_once LOCAL_INCLUDE."stampe.php";
-                                        print_debug($this->data,null,'STAMPE_LOCAL');
+                                        //print_debug($this->data,null,'STAMPE_LOCAL');
 
 				}
 				break;
