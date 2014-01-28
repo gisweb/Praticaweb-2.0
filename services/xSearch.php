@@ -22,6 +22,13 @@ $groupBy=isset($_POST['field']) ? ($_POST['field']) : "civico";
 $result=Array();
 $db=appUtils::getDB();
 switch($action){
+    case "list-draw":
+        $sql="SELECT DISTINCT pratica,numero,data_sorteggio,data_avvio,F.nome as resp_proc,C.nome as tipo_pratica FROM pe.verifiche A INNER JOIN pe.avvioproc B USING(pratica) LEFT JOIN pe.e_verifiche E ON(A.tipo=E.id) INNER JOIN pe.e_tipopratica C ON (B.tipo=C.id) LEFT JOIN admin.users F ON (A.resp_proc_verifica=F.userid) LEFT JOIN pe.e_categoriapratica D ON(B.categoria=D.id) WHERE coalesce(B.data_chiusura::varchar,'')='';";
+        $res=$db->fetchAll($sql);
+        $total=count($res);
+        utils::debug(DEBUG_DIR."draw.debug",$sql);
+        $result=Array("total"=>$total,"rows"=>$res,"elenco_id"=>$listId);
+        break;
     case "scadenze":
         utils::debug("scadenze",$query["scadenze"]);
         foreach($data as $key=>$value){
@@ -38,6 +45,7 @@ switch($action){
         $sql=sprintf($query["scadenze"],$f1,$filter,$order,$orderType,$rows,$offset);
         utils::debug(DEBUG_DIR."scadenze.debug",$sql);
         $res=$db->fetchAll($sql);
+        
         $result=Array("total"=>$total,"rows"=>$res,"filter"=>$filter,"elenco_id"=>$listId);
         
         break;

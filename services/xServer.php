@@ -6,6 +6,41 @@ $db=  appUtils::getDB();
 $result=Array();
 $action=(isset($_REQUEST["action"]) && $_REQUEST["action"])?($_REQUEST["action"]):("");
 switch($action) {
+        case "check-draw":
+            $tipo=$_REQUEST["tipo"];
+            $sql="SELECT id FROM pe.e_verifiche WHERE codice=?";
+            $idTipo=$db->fetchColumn($sql,Array($tipo),0);
+            $sql="SELECT count(*) as sorteggiato FROM pe.verifiche WHERE tipo=? and date_part('month',data_sorteggio)=date_part('month',CURRENT_DATE) AND date_part('year',data_sorteggio)=date_part('year',CURRENT_DATE);";
+            $sorteggiato=(int)(bool)$db->fetchColumn($sql,Array($idTipo),0);
+            $result=Array("sorteggiato"=>$sorteggiato);
+            break;
+        case "draw":
+            $tipo=$_REQUEST["tipo"];
+            $sql="SELECT id FROM pe.e_verifiche WHERE codice=?";
+            $idTipo=$db->fetchColumn($sql,Array($tipo),0);
+            switch($tipo){
+                case "agibi":
+                    $sql="SELECT pratica FROM pe.abitabi WHERE autocertificata=1 AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche WHERE id = (SELECT id FROM pe.e_verifiche WHERE codice = 'agibi'));";
+                    $perc=0.1;
+                    $res=$db->fetchAll($sql);
+                    $tot=(int)(count($res)*$perc);
+                    shuffle($res);
+                    $result=array_slice($res,0,$tot);
+                    $success=1;
+                    for($i=0;$i<count($result);$i++){
+                        $sql=sprintf("INSERT INTO pe.verifiche(pratica, tipo, uidins, tmsins, data_sorteggio) VALUES (%s, %s, %s, %s, %s);",$result[$i]["pratica"],$idTipo,$_SESSION["USER_ID"],time(),CURRENT_DATE);
+                        if(!$db->executeQuery($sql)) {
+                            $success=0;
+                            $message="Si è verificato un problema nell'estrazione dei certificati";
+                        }
+                    }
+                    $result=Array("success"=>$success,"message"=>$message);
+                    break;
+                case "pratica":
+                    $result=Array("message"=>"Not yet implemented");
+            }
+            
+            break;
 	case "nuovi_oneri":
 		$data_inizio=$_REQUEST["inizio"];
 		$sqlData="SELECT code,zona,c_1,c_2,c_3,c_4,c_5,c_6,c_7,c_8,c_9,c_10,c_11,c_12,c_13,c_14,c_15,c_16,c_17,c_18,c_19,c_20,'$data_inizio'::date as inizio_validita FROM oneri.tabella_b WHERE inizio_validita = (SELECT max(inizio_validita) from oneri.tabella_b)";

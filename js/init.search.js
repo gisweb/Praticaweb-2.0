@@ -22,6 +22,16 @@ var colsDef={
         {title:'Intervento',sortable:true,field:'tipo_intervento',width:150},
         {title:'Oggetto',sortable:true,field:'oggetto',width:350}
     ]],
+    draw:[[
+        {title:'',field:'pratica',sortable:false,width:20,formatter: function(value,row,index){return '<a target="new" href="praticaweb.php?pratica=' + value + '"><div class="ui-icon ui-icon-search"/></a>'}},
+        {title:'Tipo Pratica',field:'tipo_pratica',sortable:true,width:250},
+        //{title:'Categoria',sortable:true,field:'categoria',width:300},
+        {title:'Numero',field:'numero',sortable:true,width:100},   
+        {title:'Data Sorteggio',sortable:true,field:'data_sorteggio',width:100},
+        {title:'Data Avvio',sortable:true,field:'data_avvio',width:100},
+        {title:'Resp Proc',sortable:true,field:'resp_proc',width:200},
+        
+    ]],
     default_cols:[[
         {title:'',sortable:true,field:'',width:100},
     ]]

@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("login.php");
 include "./lib/tabella_v.class.php";
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
@@ -8,7 +8,7 @@ $titolo=$_SESSION["TITOLO_$idpratica"];
 ?>
 <html>
 <head>
-<title>Agibilità  - <?=$titolo?></title>
+<title>Verifiche - <?=$titolo?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
@@ -27,7 +27,7 @@ else
 <body>
 <?php
 	if (($modo=="edit") or ($modo=="new")){
-		$tabella=new tabella_v("$tabpath/abitabi.tab",$modo);
+		$tabella=new tabella_v("$tabpath/verifiche.tab",$modo);
 		unset($_SESSION["ADD_NEW"]);
 		$tabella->set_errors($errors);
 		include "./inc/inc.page_header.php";
@@ -40,7 +40,7 @@ else
 		  <tr> 
 			<td> 
 			<!-- intestazione-->
-				<H2 class="blueBanner">Certificato di Agibilità </H2>
+				<H2 class="blueBanner">Verifiche </H2>
 			<!-- fine intestazione-->
 			</td>
 		  </tr>
@@ -57,20 +57,23 @@ else
 		  </tr>
 
 		</TABLE>
-
-		<input name="active_form" type="hidden" value="pe.abitabi.php">
+                <input name="pratica" type="hidden" value="<?=$idpratica?>">
+		<input name="active_form" type="hidden" value="pe.verifiche.php">
 		<input name="mode" type="hidden" value="<?=$modo?>">
 	</form>
 
-<?}else{
+<?php
+
+        }else{
 		//-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
-?>	<H2 class="blueBanner">Elenco Agibilità </H2>
+?>	<H2 class="blueBanner">Elenco Verifiche </H2>
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">
 		  <TR> 
 			<TD> 
 			<!-- contenuto-->
-				<?$tabella=new tabella_v("$tabpath/abitabi");
-				$tabella->set_titolo("Certificato rilasciato","modifica",array("id"=>""));
+				<?php
+                                $tabella=new tabella_v("$tabpath/verifiche.tab");
+				$tabella->set_titolo("Verifiche","modifica",array("id"=>""));
 				$tabella->set_dati("pratica=$idpratica");
 				$tabella->elenco();?>
 			<!-- fine contenuto-->
@@ -79,11 +82,9 @@ else
 		  <TR> 
 			<TD> 
 			<!-- tabella nuovo inserimento-->
-				<?
-				$tabella->set_titolo("Aggiungi un nuovo certificato","nuovo");
+				<?php
+				$tabella->set_titolo("Aggiungi una nuova verifica","nuovo");
 				$tabella->get_titolo();
-				print("<br>");
-				if ($tabella->editable) print($tabella->elenco_stampe());
 				?>
 			<!-- fine tabella nuovo inserimento-->
 			</TD>

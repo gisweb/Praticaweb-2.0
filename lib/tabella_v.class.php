@@ -720,9 +720,8 @@ function elenco_selectdb($tabella,$selezionato,$filtro=''){
 		$sql.=" where $filtro";
 
 	}
-	if ($this->debug) 
-        echo("sql=$sql");
-	print_debug($sql,NULL,"tabella");
+	
+	utils::debug(DEBUG_DIR.'selectdb.debug',$sql);
 	$result = $this->db->sql_query ($sql);
 	if (!$result){
 		return;
