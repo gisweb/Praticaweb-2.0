@@ -1,4 +1,4 @@
-<?
+<?php
 //Inserimento automatico delle date di scadenza lavori quando viene inserita la data di notifica.
 $azione=$_POST["azione"];
 if (($azione=="Salva") || ($azione=="Elimina") ){
@@ -22,9 +22,9 @@ if (($azione=="Salva") || ($azione=="Elimina") ){
 	if ($azione=='Salva' && $data){
 		if ($_REQUEST['mode']=='new') {	//SALVATAGGIO NUOVO RECORD
 			$pr->nuovoTitolo($data);								//SETTO NUOVO NUMERO DI TITOLO
-			appUtils::addTransition($idpratica,Array("codice"=>"rt","data"=>$data,"utente_in"=>$resp,"utente_fi"=>$dirigente));   // TITOLO RILASCIATO
-			appUtils::addTransition($idpratica,Array("codice"=>"art","data"=>$data,"utente_in"=>$resp,"utente_fi"=>$dirigente));  // IN ATTESA DI RITIRO TITOLO
-			$pr->setDateLavori($data);								//SETTO DATE LAVORI
+			//appUtils::addTransition($idpratica,Array("codice"=>"rt","data"=>$data,"utente_in"=>$resp,"utente_fi"=>$dirigente));   // TITOLO RILASCIATO
+			//appUtils::addTransition($idpratica,Array("codice"=>"art","data"=>$data,"utente_in"=>$resp,"utente_fi"=>$dirigente));  // IN ATTESA DI RITIRO TITOLO
+			//$pr->setDateLavori($data);								//SETTO DATE LAVORI
 			//$pr->setDateRateCM($data);								//SETTO SCADENZE RATE CORRISPETTIVO MONETARIO
 			$pr->setDateRateOC($data);								//SETTO SCADENZE RATE ONERI CONCESSORI
 
