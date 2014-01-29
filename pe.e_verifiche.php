@@ -111,24 +111,29 @@ utils::writeCSS();
             var tipo_draw=$('#tipo').val();
             var tipo_text=$("#tipo option:selected").text();
             var r = checkDraw(tipo_draw);
-            if (r) {
-                if (!$.messager.confirm('Attenzione', sprintf(pwMessage['raffled'],{testo:tipo_text}))) return;
-            }
             if (!tipo_draw) {
                 alert_message('no_drawtype_selected');
                 return;
             }
-            $.ajax({
-                url:serverUrl,
-                method:'POST',
-                data:{action:'draw',tipo:tipo_draw},
-                dataType:'JSON',
-                success:function(data){
-                    //alert_message('draw_done',data[])
-                    loadDatagrid();
-                   
-                }
-            });
+            if (r) {
+                $.messager.confirm('Attenzione', sprintf(pwMessage['raffled'],{testo:tipo_text}),function(resp){
+                    if (resp){
+                        $.ajax({
+                            url:serverUrl,
+                            method:'POST',
+                            data:{action:'draw',tipo:tipo_draw},
+                            dataType:'JSON',
+                            success:function(data){
+                                //alert_message('draw_done',data[])
+                                loadDatagrid();
+                            }
+                        });
+                    }
+                });
+
+            }
+            
+            
         });
         loadDatagrid();
     });
