@@ -53,7 +53,7 @@ foreach($res as $val){
 		  <tr> 
 			<td> 
 				<H2 class="blueBanner"><?=$intestazione?></H2>
-				<?
+				<?php
 				if(isset($Errors) && $Errors){
 					$tabella->set_errors($Errors);
 					$tabella->set_dati($_POST);

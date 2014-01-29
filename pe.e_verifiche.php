@@ -34,9 +34,10 @@ utils::writeCSS();
 
 <script language="javascript">
     function alert_message(m){
+        //if (!obj) obj={};
         $.messager.show({
                 title:'Attenzione',
-                msg:pwMessage[m],
+                msg:sprintf(pwMessage[m]),
                 showType:'show',
                 style:{
                     right:'',
@@ -123,6 +124,7 @@ utils::writeCSS();
                 data:{action:'draw',tipo:tipo_draw},
                 dataType:'JSON',
                 success:function(data){
+                    //alert_message('draw_done',data[])
                     loadDatagrid();
                    
                 }
