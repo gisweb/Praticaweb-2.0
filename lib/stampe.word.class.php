@@ -191,6 +191,7 @@ class wordDoc {
                 "single_parere_commissione"=>"SELECT * FROM stp.single_parere_commissione WHERE pratica=?;",
                 "single_agibilita"=>"SELECT * FROM stp.single_agibilita WHERE pratica=?;",
                 "single_oneri"=>"SELECT * FROM stp.single_oneri WHERE pratica=?;",
+                "single_rate_oneri"=>"SELECT * FROM stp.single_rate_oneri WHERE pratica=?;",
                 "single_elenco_esecutori"=>"SELECT * FROM stp.single_elenco_esecutori WHERE pratica=?;",
                 "single_elenco_direttori"=>"SELECT * FROM stp.single_elenco_direttori WHERE pratica=?;"
             ),
