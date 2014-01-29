@@ -181,6 +181,7 @@ class wordDoc {
                 "single_progetto"=>"SELECT * FROM stp.single_progetto WHERE pratica=?;",
                 "single_pratica"=>"SELECT * FROM stp.single_pratica WHERE pratica=?;",
                 "single_titolo"=>"SELECT * FROM stp.single_titolo WHERE pratica=?;",
+                "single_fidi_oneri"=>"SELECT * FROM stp.single_fidi_oneri WHERE pratica=?;",
                 "single_parere_vf"=>"SELECT * FROM stp.single_parere_vf WHERE pratica=?;",
                 "single_parere_clp"=>"SELECT * FROM stp.single_parere_clp WHERE pratica=?;",
                 "single_parere_ce"=>"SELECT * FROM stp.single_parere_ce WHERE pratica=?;",
