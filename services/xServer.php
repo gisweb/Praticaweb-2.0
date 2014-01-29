@@ -23,12 +23,13 @@ switch($action) {
                     $sql="SELECT pratica FROM pe.abitabi WHERE autocertificata=1 AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche WHERE id = (SELECT id FROM pe.e_verifiche WHERE codice = 'agibi'));";
                     $perc=0.1;
                     $res=$db->fetchAll($sql);
-                    $tot=(int)(count($res)*$perc);
+                    $tot=ceil(count($res)*$perc);
                     shuffle($res);
                     $result=array_slice($res,0,$tot);
                     $success=1;
                     for($i=0;$i<count($result);$i++){
                         $sql=sprintf("INSERT INTO pe.verifiche(pratica, tipo, uidins, tmsins, data_sorteggio) VALUES (%s, %s, %s, %s, %s);",$result[$i]["pratica"],$idTipo,$_SESSION["USER_ID"],time(),CURRENT_DATE);
+                        utils::debug(DEBUG_DIR.'draw.debug', $sql);
                         if(!$db->executeQuery($sql)) {
                             $success=0;
                             $message="Si è verificato un problema nell'estrazione dei certificati";
