@@ -19,7 +19,10 @@ $(document).ready(function(){
        
        $(v).bind('click',function(event){
            event.preventDefault();
-           window.open(window.parent.url_documenti+$(this).text(),'stampe');
+           var d=$(this).data();
+           var url=d['url'];
+           console.log(d);
+           window.open(window.parent.url_documenti+url,'stampe');
        });
    });
 });
