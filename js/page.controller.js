@@ -21,7 +21,6 @@ $(document).ready(function(){
            event.preventDefault();
            var d=$(this).data();
            var url=d['url'];
-           console.log(d);
            window.open(window.parent.url_documenti+url,'stampe');
        });
    });
