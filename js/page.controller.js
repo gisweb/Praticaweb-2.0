@@ -19,7 +19,9 @@ $(document).ready(function(){
        
        $(v).bind('click',function(event){
            event.preventDefault();
-           window.open(window.parent.url_documenti+$(this).text(),'stampe');
+           var d=$(this).data();
+           var url=d['url'];
+           window.open(window.parent.url_documenti+url,'stampe');
        });
    });
    $(".textbox").bind("keyup",function(event){

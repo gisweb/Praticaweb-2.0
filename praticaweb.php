@@ -7,7 +7,7 @@ unset($is_commissione_paesaggio);
 unset($is_cdu);
 //unset($is_condono);
 
-//print_r($_REQUEST);
+//print_array($_REQUEST);
 
 //$is_commissione=isset($_REQUEST["comm"])?($_REQUEST["comm"]):(0);
 //$is_commissione_paesaggio=isset($_REQUEST["comm_paesaggio"])?($_REQUEST["comm_paesaggio"]):(0);
@@ -152,11 +152,11 @@ $_SESSION["TITOLO_".$idpratica]=  appUtils::titoloPratica($_REQUEST);
 					<td align="left"><P style="MARGIN-TOP: 0.3em; FONT-SIZE: 11px; MARGIN-BOTTOM: 0.8em; COLOR: black; LINE-HEIGHT: 1.4em; FONT-FAMILY: Verdana, Geneva, Arial, sans-serif;paddding-bottom: .1em;color:red"><b>
 					</b></P></td>
 					<td align="right">
-						<P class=footerlinks>
+						<!--<P class=footerlinks>
 							 &nbsp; &nbsp;			
 							<A  href="#">Norme di Attuazione</A> &nbsp; &nbsp;
 							<A href="#">Leggi e riferimenti</A> &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						</P>
+						</P>-->
 					</td>
 				</tr>
 			</table>
