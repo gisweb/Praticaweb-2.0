@@ -74,10 +74,10 @@ switch($action){
         }
         $sql=sprintf($searchQuery,$f1,$filter);
 
-        utils::debug(DEBUG_DIR."search.debug",$sql);
+        //utils::debug(DEBUG_DIR."search.debug",$sql);
         $res=$db->fetchAll($sql);
         $result=appUtils::groupData($groupBy,$res);
-        utils::debug(DEBUG_DIR."groupby.debug",$result);
+        //utils::debug(DEBUG_DIR."groupby.debug",$result);
         break;
     default:
         foreach($data as $key=>$value){

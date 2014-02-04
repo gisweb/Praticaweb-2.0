@@ -40,7 +40,7 @@ if($_POST["azione"])
                 title:'Elenco dei modelli di stampa',
                 data:modelli,
                 formatter:function(node){
-                    console.log(node);
+                    //console.log(node);
                     if (node.children)
                         return sprintf('<b>%(text)s</b>',node);
                         

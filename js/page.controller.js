@@ -22,5 +22,10 @@ $(document).ready(function(){
            window.open(window.parent.url_documenti+$(this).text(),'stampe');
        });
    });
+   $(".textbox").bind("keyup",function(event){
+            if(event.keyCode == 13){
+                $("#azione-salva").click();
+            }
+        });
 });
 

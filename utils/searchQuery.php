@@ -104,4 +104,14 @@ admin.users D ON(A.resp_proc=D.userid) LEFT JOIN
 WHERE pratica IN (%s) 
 %s %s LIMIT %s OFFSET %s     
 EOT;
+$query["pratiche-civico"]=<<<EOT
+SELECT A.pratica,A.numero,B.nome as tipo,C.nome as categoria,coalesce(data_presentazione,data_prot) as data,oggetto,richiedente,via,civico,interno
+FROM pe.avvioproc A LEFT JOIN 
+pe.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN
+pe.e_categoriapratica C ON(A.categoria=C.id) LEFT JOIN 
+(SELECT pratica,trim(array_to_string(array_agg(coalesce(app||' ','')||coalesce(' '||nome,'')||coalesce(' '||cognome)||coalesce(' - '||ragsoc,'')),',')) as richiedente FROM pe.soggetti WHERE richiedente=1 AND voltura=0 GROUP BY pratica) E USING(pratica) LEFT JOIN
+(SELECT pratica,trim(array_to_string(array_agg(coalesce(app||' ','')||coalesce(' '||nome,'')||coalesce(' '||cognome)||coalesce(' - '||ragsoc,'')),',')) as progettista FROM pe.soggetti WHERE progettista=1 AND voltura=0 GROUP BY pratica) F USING(pratica) INNER JOIN
+(SELECT DISTINCT pratica, coalesce(via,'') as via, coalesce(civico,'s.c.') as civico,coalesce(interno,'') as interno FROM pe.indirizzi WHERE %s) I USING(pratica)
+ORDER BY via,civico,interno,data_prot DESC               
+EOT;
 ?>
