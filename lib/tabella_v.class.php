@@ -86,6 +86,12 @@ function get_controllo($label,$tipo,$w,$campo,$html5Attr,$frozen=0){
 
             $retval="<INPUT class=\"$class\" type=\"file\" maxLength=\"$w\" size=\"$size\" name=\"$campo\" id=\"$campo\" value=\"$testo\" $html5Attr $disabilitato>$help";
             break;
+		case "ui-button":
+			$size=explode("x",$w);
+			$jsfunction=$size[1];
+			$width=$size[0];
+			$retval="<button style=\"width:".$width."px\" id=\"$campo\">$label</button>";
+			break;
 		case "pratica":
 		case "text":			
 		case "textkey":
@@ -93,6 +99,24 @@ function get_controllo($label,$tipo,$w,$campo,$html5Attr,$frozen=0){
 			$testo=stripslashes($dato);
 			$retval="<INPUT class=\"$class\" maxLength=\"$w\" size=\"$size\" name=\"$campo\" id=\"$campo\" value=\"$testo\" $html5Attr $disabilitato>$help";
 			break;
+                case "combosuggest":
+                        $prms=explode('#',$w);
+			if (count($prms)>1)
+				list($size,$selectFN)=$prms;
+			else{
+				list($size)=$prms;
+				$selectFN='setDatiAutoSuggest';
+			}
+			if (!$selectFN) $selectFN='setDatiAutoSuggest';
+			$prms=array_slice($prms,2);
+			for($i=0;$i<count($prms);$i++) $prms[$i]="'$prms[$i]'";
+			$params=implode(',',$prms);
+			$size=intval($size+($size/5));
+			$testo=stripslashes($dato);
+                        $retval=<<<EOT
+<INPUT class="$class" maxLength="$w" size="$size" name="$campo" id="$campo" value="$testo" $title $html5Attr $disabilitato>$help
+EOT;
+                    break;
 		case "autosuggest":
 			$prms=explode('#',$w);
 			if (count($prms)>1)

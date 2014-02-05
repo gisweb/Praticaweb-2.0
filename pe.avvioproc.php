@@ -23,9 +23,11 @@ foreach($res as $val){
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
-    utils::writeCSS();
     utils::writeJS();
+    utils::writeCSS();
+
 ?>
+
     <script>
     var selectdb = new Object;
     selectdb['categoria'] = <?php print json_encode($categoria)?>;
@@ -69,14 +71,12 @@ foreach($res as $val){
 <input name="active_form" type="hidden" value="pe.avvioproc.php">				
 <input name="refpratica" type="hidden" value="<?=$_POST["refpratica"]?>">
 <input name="riferimento" type="hidden" value="<?=$_POST["riferimento"]?>">				
-<input name="via" type="hidden" value="<?=$_POST["via"]?>">
-<input name="civico" type="hidden" value="<?=$_POST["civico"]?>">
-<input name="ctsezione" type="hidden" value="<?=$_POST["ctsezione"]?>">
-<input name="ctfoglio" type="hidden" value="<?=$_POST["ctfoglio"]?>">
-<input name="ctmappale" type="hidden" value="<?=$_POST["ctmappale"]?>">
 <input name="oldtipo" type="hidden" value="<?=$tabella->get_campo("tipo")?>">
+
 <input name="mode" type="hidden" id="mode" value="<?=$modo?>">
 </FORM>
+<div id="result" style="width:800px;height:600px;display:none;"></div>
+<div id="waiting"></div>
 <?//include "./inc/inc.window.php"; // contiene la gesione della finestra popup
 }else{
 ?>

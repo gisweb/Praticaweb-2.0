@@ -187,11 +187,7 @@ function selectZona(obj){
 
 
 function closeWindow(){
-	firstWin.focus();
-        if(window.name=='indexPraticaweb')
-            window.close();
-        else
-            firstWin.windows[window.name].close();
+    window.close();   
 }
 
 function NewWindow(url, winname, winwidth, winheight, scroll) {

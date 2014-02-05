@@ -29,5 +29,32 @@ $(document).ready(function(){
                 $("#azione-salva").click();
             }
         });
+	$("#btn_elenco_pratiche_indirizzi").button({
+        icons: {
+            primary: "ui-icon-gear"
+        }
+   }).bind('click',function(event){
+       
+		var baseURL='/elencopratiche_indirizzo.php'
+		event.preventDefault();
+		var via=$("#via").val();
+		var civico=$("#civico").val();
+		var interno=$("#interno").val();
+		var url=baseURL + '?via='+encodeURIComponent(via)+'&civico='+encodeURIComponent(civico)+'&interno='+encodeURIComponent(interno);
+		if (via){
+			$('#waiting').dialog({
+				width:400,
+				height:200,
+				title:'Messaggio'
+			}).text('Attendere prego, caricamento dei dati in corso....');
+			$('#result').html('<iframe frameBorder=0 style="width:99%;height:99%;OVERFLOW: visible;" marginWidth=0  marginHeight=0 src="' + url + '"></iframe>');
+		}
+		else
+			$('<div>Selezionare una via</div>').dialog({
+				width:300,
+				height:200,
+				title:'Attenzione'
+			})
+	});
 });
 

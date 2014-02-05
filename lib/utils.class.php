@@ -15,8 +15,8 @@ class utils {
     const jsLocalURL = "/js/local";
     const cssURL="/css";
     const cssLocalURL="/css/local";
-    public static $js = Array('jquery-1.9.1','jquery-ui-1.10.2.min','jquery.ui.datepicker-it','jquery.dataTables.min','dataTables.date.order','window','praticaweb','page.controller','sprintf');
-    public static $css = Array('praticaweb/jquery-ui-1.9.1.custom','styles','TableTools','TableTools_JUI','demo_page','demo_table_jui','tabella_v','menu');
+    public static $js = Array('jquery-1.9.1','jquery-ui-1.10.2.min','jquery.ui.datepicker-it','jquery.dataTables.min','dataTables.date.order','window','praticaweb','page.controller','sprintf','select2.min','select2_locale_it');
+    public static $css = Array('praticaweb/jquery-ui-1.9.1.custom','styles','tabella_v','menu','select2');
     
     static function mergeParams($prms=Array(),$defaultParams=Array()){
         foreach($defaultParams as $key=>$val){
@@ -62,26 +62,61 @@ class utils {
         return $exists;
     }
     
-    static function writeJS($f=Array()){
-        $jsList=($f)?($f):(self::$js);
-        foreach($jsList as $js){
-            $jsLocalURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],self::jsLocalURL,$js);
-            $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],self::jsURL,$js);
-            if (self::url_exists($jsLocalURL))
-                $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsLocalURL);
-            elseif(self::url_exists($jsURL))
-                $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsURL);
-            else
-                $tag="";
-            echo $tag;
-        } 
-    }
-    static function writeCSS(){
-        foreach(self::$css as $css){
-           $tag=sprintf("\n\t\t<LINK media=\"screen\" href=\"%s/%s.css\" type=\"text/css\" rel=\"stylesheet\"></link>",self::cssURL,$css);
-           echo $tag;
+    static function writeJS($f=Array(),$default=1){
+        if($default){
+            foreach(self::$js as $js){
+                $jsLocalURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],self::jsLocalURL,$js);
+                $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],self::jsURL,$js);
+                if (self::url_exists($jsLocalURL))
+                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsLocalURL);
+                elseif(self::url_exists($jsURL))
+                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsURL);
+                else
+                    $tag="";
+                echo $tag;
+            }
         }
-        
+        if (is_array($f) && count($f)){
+            foreach($f as $js){
+                $jsLocalURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],self::jsLocalURL,$js);
+                $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],self::jsURL,$js);
+                if (self::url_exists($jsLocalURL))
+                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsLocalURL);
+                elseif(self::url_exists($jsURL))
+                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsURL);
+                else
+                    $tag="";
+                echo $tag;
+            } 
+        }
+    }
+    static function writeCSS($f=Array(),$default=1){
+        if($default){
+            foreach(self::$css as $css){
+                $cssLocalURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],self::cssLocalURL,$css);
+                $cssURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],self::cssURL,$css);
+                if (self::url_exists($cssLocalURL))
+                    $tag=sprintf("\n\t\t<LINK media=\"screen\" href=\"%s\" type=\"text/css\" rel=\"stylesheet\"></link>",$cssLocalURL);
+                elseif(self::url_exists($jsURL))
+                    $tag=sprintf("\n\t\t<LINK media=\"screen\" href=\"%s\" type=\"text/css\" rel=\"stylesheet\"></link>",$cssURL);
+                else
+                    $tag="";
+                echo $tag;
+            } 
+        }
+        if (is_array($f) && count($f)){
+            foreach($f as $css){
+                $cssLocalURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],self::cssLocalURL,$css);
+                $cssURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],self::cssURL,$css);
+                if (self::url_exists($cssLocalURL))
+                    $tag=sprintf("\n\t\t<LINK media=\"screen\" href=\"%s\" type=\"text/css\" rel=\"stylesheet\"></link>",$cssLocalURL);
+                elseif(self::url_exists($jsURL))
+                    $tag=sprintf("\n\t\t<LINK media=\"screen\" href=\"%s\" type=\"text/css\" rel=\"stylesheet\"></link>",$cssURL);
+                else
+                    $tag="";
+                echo $tag;
+            }
+        }
     }
     static function rand_str($length = 8, $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'){
         // Length of character list

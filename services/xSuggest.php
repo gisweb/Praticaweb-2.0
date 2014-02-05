@@ -6,7 +6,7 @@ $db=$dbconn;
 //if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
 $result=Array();
 $field=$_REQUEST['field'];
-$value=addslashes($_REQUEST['term']);
+$value=($_REQUEST['term'])?(addslashes($_REQUEST['term'])):(addslashes($_REQUEST['q']));
 switch($field) {
 	case 'tavola':
 		$sql="SELECT nome_tavola as id,coalesce(descrizione,nome_tavola) as opzione FROM vincoli.tavola WHERE nome_vincolo='$value' or nome_vincolo is null order by ordine,2;";

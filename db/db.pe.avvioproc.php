@@ -27,7 +27,7 @@
 	$d_respIT=($_REQUEST['data_resp_it'])?($_REQUEST['data_resp_it']):("now");
 	$d_respIA=($_REQUEST['data_resp_ia'])?($_REQUEST['data_resp_ia']):("now");
 	
-	if ($_POST["mode"]=="new"){
+	if ($_REQUEST["mode"]=="new"){
             $idpratica=$_SESSION["ADD_NEW"];
 
             $pr=new pratica($idpratica);
@@ -44,27 +44,20 @@
 		
 		
 		//Inserisco le scadenze per inizio lavori DIA
-		if ($_POST["tipo"]>=10000 && $_POST["tipo"]<11000){
+		/*if ($_POST["tipo"]>=10000 && $_POST["tipo"]<11000){
 			$data_prot=$_POST["data_prot"];
 			$pr->setDateLavori($data_prot);
-		}
+		}*/
 
 		//inserisco i dati relativi ai riferimenti:
-            if ($_POST["rif_aut_amb"]){
-                $ref_amb=$_POST["rif_aut_amb"];
-                $sql="UPDATE pe.avvioproc SET aut_amb=(SELECT pratica FROM pe.avvioproc WHERE numero='$ref_amb') WHERE pratica=$idpratica";
-                $db->sql_query($sql); 
-                $ref=$ref_amb;
-                $sql="SELECT pratica FROM pe.avvioproc WHERE numero='$ref'";
-                $db->sql_query($sql);
-                $refid=$db->sql_fetchfield('pratica');
-			include ("db.pe.importa_pratica.php");
+            /*if ($_POST["rif_pratica"]){
+                include ("db.pe.importa_pratica.php");
             }
             else{
 		$sql="UPDATE pe.avvioproc SET aut_amb=null WHERE pratica=$idpratica";
                 $db->sql_query($sql);   
-            }
-            if ($_POST["rif_pratica"]){
+            }*/
+            /*if ($_POST["rif_pratica"]){
                 //esiste la pratica di riferimento importo tutti i dati della pratica di riferimento
                 $ref=$_POST["rif_pratica"];
                 $sql="SELECT pratica FROM pe.avvioproc WHERE numero='$ref'";
@@ -107,7 +100,7 @@
 				//if(DEBUG) echo $sql;
 				$db->sql_query($sql);
 			}
-		}
+		}*/
 	}//fine sezione nuova pratica
 	
 	//aggiorno una pratica esistente
@@ -119,15 +112,7 @@
             if ($tipo!=$oldtipo)
                     $menu->change_menu($idpratica,$oldtipo,$tipo);
             $menu->add_menu($idpratica,60);
-            if ($_POST["rif_aut_amb"]){
-                $ref_amb=$_POST["rif_aut_amb"];
-                $sql="UPDATE pe.avvioproc SET aut_amb=(SELECT pratica FROM pe.avvioproc WHERE numero='$ref_amb')  WHERE pratica=$idpratica";
-                $db->sql_query($sql);   
-            }
-            else{
-		$sql="UPDATE pe.avvioproc SET aut_amb=null  WHERE pratica=$idpratica$";
-                $db->sql_query($sql);   
-            }
+            
 		
             if($pratPrec['resp_proc']!=$pr->info["resp_proc"]) 
                     $pr->addTransition(Array('codice'=>'rardp',"utente_fi"=>$pr->info["resp_proc"],"data"=>$d_resp));	

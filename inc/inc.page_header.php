@@ -41,8 +41,3 @@
 		</div>
 	</div>
 <!-- ### STANDARD  PAGE  HEADER  FINE ##################################################### -->
-<SCRIPT language="javascript" >
-    if (window.name!='indexPraticaweb')
-        var firstWin = window.opener.firstWin;
-    
-</SCRIPT>

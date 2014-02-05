@@ -113,7 +113,7 @@ function get_cella($row,$col){
                     $retval="";
                     if ($this->editable){
                         $retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
-                        $retval.="<a href='javascript:linkToEdit(\"$destination.php\",$obj)'><img title=\"Modifica\" src=\"images/edit.png\" border=\"0\"></a>";
+                        $retval.="<a href='javascript:linkToEdit(\"$destination\",$obj)'><img title=\"Modifica\" src=\"images/edit.png\" border=\"0\"></a>";
                         $retval.="</td>\n";
                     }
                     break;
