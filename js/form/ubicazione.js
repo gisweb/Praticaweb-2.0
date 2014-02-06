@@ -1,6 +1,6 @@
 $(document).ready(function(){
     $('#via').select2({
-        placeholder: "Search for a movie",
+        placeholder: "Seleziona una via",
         minimumInputLength: 1,
         ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
             url: "http://api.rottentomatoes.com/api/public/v1.0/movies.json",
