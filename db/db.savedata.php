@@ -324,24 +324,29 @@ function valida_campi($arr){
 		}
 		//echo "<p>$sql</p>";
 		print_debug($sql,null,'savedata');
-		$result = $db->sql_query ($sql);
+		/*$result = $db->sql_query ($sql);
 		$retval="";
 		$elenco = $db->sql_fetchrowset();
-		$nrighe=$db->sql_numrows();
-
-		if (!$result){
+		$nrighe=$db->sql_numrows();*/
+                $dbh=utils::getDb();
+                $sth = $dbh->prepare($sql);
+                $sth->execute();
+                $arr = $sth->errorInfo();
+                //print_r($arr);
+		/*if (!$result){
+                        print_array($db->sql_error());
 			echo ("ERRORE NEL SALVATAGGIO<p>$sql</p>");
 			return;
 		}
-		
+		*/
 		//se ho inserito un nuovo valore ricavo l'ultimo id
 		if ($_POST["mode"]=="new") {
             
 			$sql=($tb->table_list)?("SELECT max(id) FROM $ref_table"):("select currval ('".trim($ref_table)."_id_seq')");
 			//echo "<p>$sql</p>";
-			$db->sql_query ($sql);
-			$row=$db->sql_fetchrow();
-			$lastid=$row[0];
+			$sth=$dbh->prepare ($sql);
+			$sth->execute();
+			$lastid=$sth->fetchColumn();
 			 $_SESSION["ADD_NEW"]=$lastid;		
 			//print_debug("sessione ho $lastid");
 		}

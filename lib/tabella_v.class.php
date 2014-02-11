@@ -114,7 +114,7 @@ function get_controllo($label,$tipo,$w,$campo,$html5Attr,$frozen=0){
 			$size=intval($size+($size/5));
 			$testo=stripslashes($dato);
                         $retval=<<<EOT
-<INPUT class="$class" maxLength="$w" size="$size" name="$campo" id="$campo" value="$testo" $title $html5Attr $disabilitato>$help
+<select class="$class" name="$campo" id="$campo" $title $html5Attr $disabilitato></select>$help
 EOT;
                     break;
 		case "autosuggest":

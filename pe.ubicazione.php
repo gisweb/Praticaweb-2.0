@@ -19,8 +19,9 @@ $tabpath="pe";
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
 <?php
-    utils::writeJS(Array('jquery.easyui.min','form/ubicazione'));
-    utils::writeCSS(Array('default/easyui','icon'));
+    utils::writeJS(Array('form/ubicazione'));
+    utils::writeCSS();
+
 ?>
 </head>
 
