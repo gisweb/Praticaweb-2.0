@@ -41,7 +41,10 @@ $config_file=$tabpath."/".$config_file;
 <title><?=$ruolo?> - <?=$_SESSION["TITOLO_".$idpratica]?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 
 <script LANGUAGE="JavaScript">
 
@@ -128,7 +131,7 @@ switch ($modo) {
 		  <tr> 
 			<td> 
 				<!-- contenuto-->
-				<?
+				<?php
 				// riempo i campi della tabella con i dati immessi per la ricerca e visualizzo l'elenco dei risultati della ricerca
 				//$trovati=1;
 				$tabella->set_dati($_POST);

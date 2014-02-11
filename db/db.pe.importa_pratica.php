@@ -1,4 +1,4 @@
-<?
+<?php
 //importo i dati da pratica esistente che ha come id refid
 //print_r($_POST);
 

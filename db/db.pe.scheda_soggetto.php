@@ -1,4 +1,4 @@
-<?
+<?php
 //la variabile ruolo contiene il ruolo corrente per il nominativo
 
 

@@ -32,7 +32,10 @@ $tit="$nomeScadenza - Dati sui Tipi di Pratica ";
 <head>
     <title>Elenco Scadenze</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+    <?php
+	utils::loadJS();
+	utils::loadCss();
+?>
     <SCRIPT language="javascript" type="text/javascript">
         $(document).ready(function(){
             $('#azione-chiudi').bind('click',function(event){

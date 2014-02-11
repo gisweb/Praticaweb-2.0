@@ -1,4 +1,4 @@
-<?
+<?php
 include "login.php";
 include("./src/fckeditor/fckeditor.php") ;
 
@@ -60,7 +60,7 @@ $testo="<html><head></head><body>$testo</body></html>";
 			<tr>
 				<td valign="top" width="60%">
 				
-					<?
+					<?php
 						$oFCKeditor = new FCKeditor('testo');
 						$oFCKeditor->BasePath = 'src/fckeditor/';
 						$oFCKeditor->Value = $testo;

@@ -20,7 +20,10 @@ $last_change=shell_exec("git log -1 --pretty=format:'%ci'");
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <SCRIPT language="javascript" >
     window.name='indexPraticaweb';
     var firstWin = window;
@@ -69,14 +72,14 @@ $last_change=shell_exec("git log -1 --pretty=format:'%ci'");
 		<LI>		
 			<a href="javascript:<?=$js?>(<?=$param?>)"><?=$link?></A> - <?=utf8_decode($text)?>
 		</LI>
-	<?
+	<?php
 				}
 				else{
 	?>
 		<LI>		
 			<a href="#"><?=$link?></A> - <?=$text?>
 		</LI>
-	<?
+	<?php
 				}
 			}
 		}

@@ -29,7 +29,10 @@ switch ($modo) {
 <head>
     <title>Elenco Enti</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+    <?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 
     </head>
     <body>

@@ -1,4 +1,4 @@
-<?
+<?php
 //Inserimento automatico delle date di scadenza lavori quando viene inserita la data di notifica.
 
 if (($_POST["azione"]=="Salva") || ($_POST["azione"]=="Elimina") ){

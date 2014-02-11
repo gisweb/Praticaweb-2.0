@@ -1,4 +1,4 @@
-<?
+<?php
 include_once ("login.php");
 include "./lib/tabella_v.class.php";
 include "./lib/tabella_h.class.php";
@@ -27,7 +27,10 @@ elseif($_REQUEST["azione"]=='Annulla'){
 <title>Fogli di stile </title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <SCRIPT language=javascript src="src/x_core.js" type="text/javascript"></SCRIPT>
 <SCRIPT language=javascript>
 function link(i){
@@ -45,7 +48,7 @@ function preview(fName){
 }
 </SCRIPT>
 </head>
-<?
+<?php
 include "./inc/inc.page_header.php";
 if (($modo=="edit") or ($modo=="new")) {
 	$size_opt=array('A4'=>'a4','A3'=>'a3','A2'=>'a2','A1'=>'a1','A0'=>'a0');

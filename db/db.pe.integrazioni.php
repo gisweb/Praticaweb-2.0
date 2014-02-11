@@ -1,4 +1,4 @@
-<?
+<?php
 include "./db/db.savedata.php";
 $modo=(isset($_REQUEST["mode"]) && $_REQUEST["mode"])?($_REQUEST["mode"]):('view');
 if($_REQUEST['azione']=='Salva'){

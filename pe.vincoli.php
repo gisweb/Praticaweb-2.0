@@ -31,7 +31,10 @@ $sqlElencoVincoli="SELECT DISTINCT vincolo.nome_vincolo, COALESCE(vincolo.descri
 <title>Vincoli - <?=$_SESSION[$idpratica]["TITOLO"]?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <SCRIPT language="javascript" src="src/http_request.js" type="text/javascript"></SCRIPT>
 <SCRIPT language="javascript" src="src/x_core.js" type="text/javascript"></SCRIPT>
 <script language="javascript">

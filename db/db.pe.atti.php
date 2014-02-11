@@ -1,4 +1,4 @@
-<?
+<?php
 
 $azione=$_POST["azione"];
 if (($_POST["azione"]=="Salva") || ($_POST["azione"]=="Elimina") ){

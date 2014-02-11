@@ -1,4 +1,4 @@
-<?
+<?php
 $id=$_SESSION["USER_ID"];
 $pwd =(isset($_POST['pwd']))?($_POST['pwd']):(null);
 $enc_pwd=md5($pwd);

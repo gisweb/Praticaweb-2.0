@@ -103,7 +103,7 @@ function setdata(valore)
 <body >
 
 <FONT Verdana, Geneva, Arial, sans-serif size="-1">
-<?
+<?php
 for($i=0;$i<$nrec;$i++){
 	$valore= htmlentities($elenco[$i]["valore"]);
 	$jsvalore=str_replace("'","\'",$valore);

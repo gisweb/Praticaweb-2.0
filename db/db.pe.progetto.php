@@ -1,4 +1,4 @@
-<?
+<?php
 $azione=$_POST["azione"];
 $modo=$_REQUEST['mode'];
 $prm=(isset($_POST['parametri']))?($_POST['parametri']):(0);

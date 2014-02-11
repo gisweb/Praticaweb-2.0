@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("login.php");
 
 $db = new sql_db(DB_HOST,DB_USER,DB_PWD,DB_NAME, false);
@@ -52,7 +52,7 @@ myw=window.open("/pmapper/map.phtml?startmapsize=" + mapw + "," + maph + "&langu
 
 <a href="javascript:openPmapper(980, 700, 2, '&start=1&project=ceriale&theme=completatoctree&objlayer=particelle&objid=<?=$objid?>&zoomextent=<?=$ext2?>')"><p>Apri in Praticaweb Navigator</p></a>
 
-<?
+<?php
 	
 }
 else{

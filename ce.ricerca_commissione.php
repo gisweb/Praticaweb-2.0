@@ -62,7 +62,10 @@ if ($_POST["pag"]){
 <title>Risultato Ricerca</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <script language="javascript">
 function paginasucc(pg){
 	document.result.pag.value=pg
@@ -110,7 +113,7 @@ function paginasucc(pg){
 
 </body></html>
 
-<?
+<?php
 		
 		exit;
 	}
@@ -126,7 +129,10 @@ function paginasucc(pg){
 <title>Ricerca Commissioni</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 </head>
 <body>
 <?php
@@ -148,7 +154,7 @@ function paginasucc(pg){
 		  <tr> 
 			<td> 			
 				<!-- ricerca base pratica -->
-				<?
+				<?php
 				if ($notfound) echo("<p><b>La ricerca non ha dato alcun risultato</b></p>");
 				$tabella=new tabella_v("$tabpath/ricerca_commissioni",'new');
 				//$tabella_avanzata=new tabella_v("ricerca_avanzata.tab");

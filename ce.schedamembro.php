@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("login.php");
 include_once "./lib/tabella_v.class.php";
 //print_r($_GET);
@@ -17,11 +17,14 @@ else if ($_REQUEST["comm_paesaggio"]==1) $commissione="comm_paesaggio"
 <title>Scheda Informativa </title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 
 </head>
 <body>
-<?
+<?php
 	include_once "./inc/inc.page_header.php";
 	echo "<br>";
 	$tabella=new Tabella_v("$tabpath/schedamembro",'edit');
@@ -30,7 +33,7 @@ else if ($_REQUEST["comm_paesaggio"]==1) $commissione="comm_paesaggio"
 	$tabella->get_titolo();
 ?>
 	<FORM name="commissione" method="post" action="praticaweb.php">
-	<?
+	<?php
 		$tabella->edita();
 ?>
 	<input type="hidden" name="mode" value="<?=$modo?>">

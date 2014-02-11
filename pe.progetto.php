@@ -32,7 +32,10 @@ unset($_SESSION["ADD_NEW"]);*/
 <title>Parametri progetto - <?=$_SESSION["TITOLO_".$idpratica]?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <SCRIPT language=javascript src="src/window.js" type=text/javascript>
 </SCRIPT>
 <script language=javascript>
@@ -119,7 +122,7 @@ function elimina(id){
 		  <tr> 
 			<td> 
 				<!-- contenuto-->
-				<?
+				<?php
 				if($Errors){
 					$tabella->set_errors($Errors);
 					$tabella->set_dati($_POST);

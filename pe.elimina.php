@@ -9,7 +9,10 @@ $titolo=$_SESSION["TITOLO_$idpratica"];
 <title>Elimina - <?=$titolo?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <script LANGUAGE="JavaScript">
 function confirmSubmit()
 {
@@ -25,7 +28,7 @@ else
 
 </head>
 <body>
-<?
+<?php
 		$tabella=new tabella_v("$tabpath/elimina.tab");
 		include "./inc/inc.page_header.php";?>	
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">		
@@ -40,7 +43,7 @@ else
 		  <tr> 
 			<td> 
 				<!-- contenuto-->
-				<?
+				<?php
 				if ($_POST["azione"]) include "./db/db.pe.elimina.php";
 				$tabella->edita();?>
 				<!-- fine contenuto-->

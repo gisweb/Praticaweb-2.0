@@ -1,6 +1,9 @@
 <html>
 <head>
-   <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+    utils::loadJS();
+    utils::loadCss();
+?>
 </head>
 <body style="background-color:#FFFFFF">
 <?$menu=0;include ("./inc/inc.page_header.php")?>

@@ -1,4 +1,4 @@
-<?
+<?php
 session_start();
 include_once "login.php";
 
@@ -16,7 +16,7 @@ alert(window.opener.name);
 }
 
 </script>
-<?
+<?php
 //Pagina di caricamento dei modelli di stampa
 $idpratica=$_GET['pratica'];
 $form=$_GET['form'];
@@ -87,7 +87,7 @@ $upfile=$_FILES['myfile']['name'];
 				</tr>
 			</table>
 		</tr>
-	</table><?
+	</table><?php
 	$tmp="\t<input type=hidden name=\"pratica\" value=\"$idpratica\">
 	<input type=hidden name=\"form\" value=\"vigilanza\">
 	<input type=hidden name=\"id_sopralluoghi\" value=\"$soprall\">

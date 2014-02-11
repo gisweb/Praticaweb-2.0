@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("login.php");
 //se annullo torno all'inizio
 $tabpath="pe";
@@ -97,7 +97,7 @@ if(isset($step)){
 	<H2 class=blueBanner>Elenco dei riferimenti</H2>
 	<TABLE border=0 cellpadding=2 width="90%">
 	<form name="main" target="_parent" action="pe.riferimenti.php" method="POST">
-	<?
+	<?php
 	if ($nrif){
 		for($i=0;$i<$nrif;$i++){
 			if ($riferimenti[$i]["pratica"]==$pratica) $numero=$riferimenti[$i]["numero"];
@@ -152,7 +152,7 @@ if(isset($step)){
 	</TABLE>
 	</body>
 	</html>
-	<?
+	<?php
 	exit;}
 	elseif ($step==1){
 		if($riferimenti){//elenco dei riferimenti trovati
@@ -261,7 +261,10 @@ if(isset($step)){
 <title>Nuova pratica</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <SCRIPT language="javascript" src="src/window.js" type="text/javascript">
 </SCRIPT>
 </head>
@@ -280,7 +283,7 @@ if(isset($step)){
 		<TR>
 			<TD> 
 			<!-- contenuto-->
-			<?
+			<?php
 				$tabella=new tabella_v($filetab);
 				$tabella->set_dati($_POST);
 				$tabella->edita();?>

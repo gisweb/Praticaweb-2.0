@@ -1,4 +1,4 @@
-<?
+<?php
 	//se ho passato una pratica da elenco ho finito
 	if (isset($_POST["refpratica"])){
 		$flagOK=1;

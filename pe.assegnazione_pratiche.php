@@ -1,4 +1,4 @@
-<?
+<?php
 //Stesso codice che utilizzo in ubicazione.php, progetto.php, asservimento.php
 include_once("login.php");
 $tabpath="pe";
@@ -30,7 +30,10 @@ if ($azione){
 <title>Comunicazione Pratica ad altri uffici</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <script language=javascript>
 function confirmSubmit()
 {
@@ -52,7 +55,7 @@ function elimina(id){
 
 <body>
 
-<?
+<?php
 if (($modo=="edit") or ($modo=="new")){
 		$tab_new="pe/".$_POST["tab_new"].".tab";
 		$tab_edit="pe/".$_POST["tab_edit"].".tab";
@@ -81,7 +84,7 @@ if (($modo=="edit") or ($modo=="new")){
 				<input type="hidden" name="tab_new" value=<?=$_POST["tab_new"]?>>
 				<input type="hidden" name="tab_edit" value=<?=$_POST["tab_edit"]?>>
 				<input type="hidden" name="titolo" value=<?=$_POST["titolo"]?>>
-				<?
+				<?php
 				
 				
 				if($Errors){
@@ -111,7 +114,7 @@ if (($modo=="edit") or ($modo=="new")){
 		  <tr> 
 			<td> 
 			<!--  intestazione-->
-			<?
+			<?php
 				$file_tab="assegnazione";
 				$titolo="Comunicazione";
 				$tabella=new tabella_h('pe/'.$file_tab,'view');

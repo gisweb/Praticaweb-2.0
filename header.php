@@ -1,4 +1,4 @@
-<?
+<?php
 include "login.php";
 $url="stampe/";
 $nome_file="anagrafe_tributaria.txt";

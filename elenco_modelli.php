@@ -11,7 +11,10 @@ $form=$_REQUEST["form"];
 ?>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <script language="javascript">
 function check_radio(form,nome,azione){
 	f=document.getElementById(form);
@@ -46,7 +49,7 @@ function check_radio(form,nome,azione){
 <TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="480">
 	<TR>
 		<TD colspan="4">
-		<?
+		<?php
 		$tabella=new Tabella_h($file_tab,'list');
 		$tabella->set_titolo($titolo);
 		$tabella->set_tag($param);
@@ -62,7 +65,7 @@ function check_radio(form,nome,azione){
 		?>
 		</TD>
 	</TR>
-	<?
+	<?php
 	
 		//echo "ERRORI PASSO $i : ".count($tab_err[$i])."<br>";
 		for($j=0;$j<count($tab_err[$i]);$j++) {

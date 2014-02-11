@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("./login.php");
 
 if ($_SESSION["PERMESSI"] > 2){ 
@@ -38,7 +38,10 @@ switch ($modo) {
 <title>Gestione Gruppi di Utenti di PraticaWeb</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 
 <SCRIPT language=javascript>
 function link(i){
@@ -52,7 +55,7 @@ function link(i){
 
 <?php include "./inc/inc.page_header.php";?>
 <H2 class="blueBanner"><?=$tit?></H2>
-<?
+<?php
 	if (($modo=="edit") or ($modo=="new")){
 		$tabella=new tabella_v("$tabpath/$file_config.tab",$modo);
 		unset($_SESSION["ADD_NEW"]);
@@ -83,7 +86,7 @@ function link(i){
 		</FORM>		
 
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
-<?
+<?php
 }elseif($modo=="view") {
 	
 	$tabella=new tabella_v("$tabpath/$file_config",$modo);
@@ -120,7 +123,7 @@ function link(i){
 				$tabella->set_dati("true");
 				?>
 				<form name="invia" action="<?php echo $formaction ?>" method="POST">
-				<?
+				<?php
 				$tabella->elenco();?>
 			<!-- fine contenuto-->
 					<input type="hidden" name="id" value="">

@@ -1,4 +1,4 @@
-<?
+<?php
 include_once ("login.php");
 include_once "./lib/tabella_v.class.php";
 if ($_POST["azione"]=="Elimina") include "./db/db.pe.eliminapratica.php";
@@ -9,11 +9,14 @@ if ($_POST["azione"]=="Elimina") include "./db/db.pe.eliminapratica.php";
 	<TITLE>Elimina Pratica Esistente</TITLE>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 </head>
 <body>
 
-<?
+<?php
 include "./inc/inc.page_header.php";	
 if ($_REQUEST["ricerca"]){
 	$tabella=new tabella_v("pe/eliminapratica_ric.tab",'new');
@@ -32,7 +35,7 @@ if ($_REQUEST["ricerca"]){
 		  </tr>
 		<tr><TD colspan="2" width="90%">
 		
-		<?
+		<?php
 		$tabella->print_titolo();
 		$tabella->edita();
 		?>
@@ -77,7 +80,7 @@ else{
 		  </tr>
 		<tr><TD colspan="2" width="90%">
 		
-		<?
+		<?php
 		$tabella_v->print_titolo();
 		if ($numrows>0){			 
 			 $tabella_v->edita();

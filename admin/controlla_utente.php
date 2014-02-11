@@ -1,4 +1,4 @@
-<?
+<?php
 $indirizzoip=getenv("REMOTE_ADDR");
 // Cripto la password 
 $pwd=$password;

@@ -1,4 +1,4 @@
-<?
+<?php
 //Nota conservo il tipo per poter verificere se Ãš cambiato
 include_once("login.php");
 $tabpath="pe";
@@ -23,7 +23,10 @@ include "./lib/tabella_v.class.php";?>
     <title>Avvio Procedimento - <?=$_SESSION[$idpratica]["TITOLO"]?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 </head>
 
 <?if (($modo=="edit") or ($modo=="new")) {
@@ -39,7 +42,7 @@ include "./lib/tabella_v.class.php";?>
 		  <tr> 
 			<td> 
 				<H2 class="blueBanner"><?=$intestazione?></H2>
-				<?
+				<?php
 				if($Errors){
 					$tabella->set_errors($Errors);
 					$tabella->set_dati($_POST);

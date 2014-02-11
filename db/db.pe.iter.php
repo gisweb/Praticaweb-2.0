@@ -1,4 +1,4 @@
-<?
+<?php
 
 if ($_POST["azione"]=="Chiudi")
 	$active_form="pe.iter.php?pratica=$idpratica";

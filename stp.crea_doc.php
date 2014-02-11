@@ -1,5 +1,5 @@
 
-<?
+<?php
 function rmdirr($dirname) {
     if (!file_exists($dirname)) {
         return false;

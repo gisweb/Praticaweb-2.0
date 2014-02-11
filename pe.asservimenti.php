@@ -1,4 +1,4 @@
-<?
+<?php
 //Stesso codice che utilizzo in ubicazione.php, progetto.php, asservimento.php
 include_once ("login.php");
 $tabpath="pe";
@@ -29,7 +29,10 @@ if ($_POST["azione"]){
 <title>Asservimento - <?=$titolo?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <script language="javascript">
 function confirmSubmit()
 {
@@ -82,7 +85,7 @@ function link(id){
 				<input name="active_form" type="hidden" value="pe.asservimenti.php">
 				<input type="hidden" name="mode" value="new">
 				<input type="hidden" name="mappali" value="1">
-				<?
+				<?php
 				if($Errors){
 					$tabellav->set_errors($Errors);
 					$tabellav->set_dati($_POST);
@@ -121,7 +124,7 @@ function link(id){
 			<tr> 
 				<td> 
 	<!-- contenuto-->
-	<?
+	<?php
 	if($Errors){
 		$tabella_asservimento->set_errors($Errors);
 		$tabella_asservimento->set_dati($_POST);
@@ -151,7 +154,7 @@ else{
 		  <TR> 
 			<TD> 
 			<!-- contenuto-->
-				<?
+				<?php
 				$tabella_asservimento=new tabella_v("$tabpath/asservimenti");
 		        $nrec=$tabella_asservimento->set_dati("pratica = $idpratica order by data_reg");	
 

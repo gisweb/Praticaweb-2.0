@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("login.php");
 include "./lib/tabella_v.class.php";
 $tabpath="pe";
@@ -10,7 +10,10 @@ $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 <title>Pareri - <?=$_SESSION["TITOLO_".$idpratica]?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <SCRIPT language="javascript" src="src/http_request.js" type="text/javascript"></SCRIPT>
 
 <script LANGUAGE="JavaScript">
@@ -26,7 +29,7 @@ else
 </script>
 </head>
 <body  background="">
-<?
+<?php
 
 $form="pareri";
 if (($modo=="edit") or ($modo=="new")){
@@ -58,7 +61,7 @@ if (($modo=="edit") or ($modo=="new")){
 		  <TR> 
 			<TR> 
 				<!-- contenuto-->
-				<?
+				<?php
 				if($modo=="edit") $tabella->set_dati($filtro);
 				  $tabella->edita();?>
 				<!-- fine contenuto-->

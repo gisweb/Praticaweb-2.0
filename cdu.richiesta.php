@@ -1,4 +1,4 @@
-<?
+<?php
 //Stesso codice che utilizzo in ubicazione.php, progetto.php, asservimento.php
 include_once ("login.php");
 $tabpath="cdu";
@@ -37,7 +37,10 @@ if ($_POST["azione"]){
 <title>CDU - <?=$titolo?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+    utils::loadJS();
+    utils::loadCss();
+?>
 <script language="javascript">
 function confirmSubmit()
 {
@@ -119,7 +122,7 @@ function link(id){
 				<input type="hidden" name="mode" value="new">
 				<input type="hidden" name="mappali" value="1">
 				<input name="cdu" type="hidden" value="1">
-				<?
+				<?php
 				if($Errors){
 					$tabellav->set_errors($Errors);
 					$tabellav->set_dati($_POST);
@@ -153,7 +156,7 @@ function link(id){
 		  <tr> 
 			<td> 
 				<!-- contenuto-->
-				<?
+				<?php
 				if($Errors){
 					$tabella_richiesta->set_errors($Errors);
 					$tabella_richiesta->set_dati($_POST);

@@ -1,4 +1,4 @@
-<?
+<?php
 session_start();
 include_once "login.php";
 $idpratica=$_REQUEST['pratica'];
@@ -15,7 +15,10 @@ if ($_POST["azione"])
 </head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <script language="JavaScript">
 function get_parent(){
 alert(window.opener.name);

@@ -1,4 +1,4 @@
-<?
+<?php
 session_start();
 if (!isset($_SESSION["PROPR_PRATICA_$idpratica"])){
 	$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);

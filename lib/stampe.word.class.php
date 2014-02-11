@@ -89,7 +89,7 @@ class wordDoc {
                 
                 //print_debug($this->data,null,"STAMPE-PRE");
 		$customData=$this->data;
-                
+                $pratica=$this->pratica;
 		switch($this->type){
 			case 1:
 				if(file_exists(LOCAL_INCLUDE."cdu.php")){

@@ -1,4 +1,4 @@
-<?
+<?php
 include_once ("login.php");
 if ($_SESSION["PERMESSI"]>2){
 	include_once HOME;
@@ -13,7 +13,10 @@ $file_config="$tabpath/elenco_tariffe";
 <title>Aggiornamento tariffe Oneri</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <script>
 	function link(id){
 		var frm = document.getElementById("frm_anno");
@@ -23,7 +26,7 @@ $file_config="$tabpath/elenco_tariffe";
 </script>
 </head>
 <body>
-<?
+<?php
 include "./inc/inc.page_header.php";
 $tabella=new Tabella_h($file_config);
 $tabella->set_titolo("Elenco Tariffe Oneri","Nuovo");

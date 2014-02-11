@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("./login.php");
 
 if ($_SESSION["PERMESSI"] > 2){ 
@@ -34,8 +34,10 @@ switch ($modo) {
 <title>Gestione Utenti di PraticaWeb</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
-
+<?php
+    utils::loadJS();
+    utils::loadCss();
+?>
 <SCRIPT language=javascript>
 function link(i){
 	document.invia.id.value=i;
@@ -48,7 +50,7 @@ function link(i){
 
 <?include "./inc/inc.page_header.php";?>
 <H2 class="blueBanner"><?=$tit?></H2>
-<?
+<?php
    
 	if (($modo=="edit") or ($modo=="new")){
 		$tabella=new tabella_v("$tabpath/$file_config.tab",$modo);
@@ -85,7 +87,7 @@ function link(i){
    </FORM>
 
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
-<?
+<?php
 }elseif($modo=="view") {
 	$tabella=new tabella_v("$tabpath/$file_config.tab");
 	
@@ -117,7 +119,7 @@ function link(i){
 	  <TR> 
 			<TD> 
 	  <!-- contenuto-->
-		  <?
+		  <?php
           $tabella=new tabella_h("$tabpath/$file_config",'list');
 		  $tabella->set_titolo("Elenco degli Utenti","nuovo",array("id"=>""));
 		  $tabella->get_titolo();

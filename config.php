@@ -1,4 +1,4 @@
-<?
+<?php
 define('NOME_COMUNE','Comune di .. Demo PraticaWeb');//nome completo del comune che compare nell'intestazione
 
 define('DEBUG', 1); // Debugging 0 off 1 on

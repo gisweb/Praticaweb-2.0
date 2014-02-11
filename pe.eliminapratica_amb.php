@@ -1,4 +1,4 @@
-<?
+<?php
 include_once ("login.php");
 include_once "./lib/tabella_v.class.php";
 if ($_POST["azione"]=="Elimina") include "./db/db.pe.eliminapratica.php";
@@ -13,7 +13,7 @@ if ($_POST["azione"]=="Elimina") include "./db/db.pe.eliminapratica.php";
 </head>
 <body>
 
-<?
+<?php
 include "./inc/inc.page_header.php";	
 if ($_REQUEST["ricerca"]){
 	$tabella=new tabella_v("pe/eliminapratica_ric.tab");
@@ -32,7 +32,7 @@ if ($_REQUEST["ricerca"]){
 		  </tr>
 		<tr><TD colspan="2" width="90%">
 		
-		<?
+		<?php
 		$tabella->get_titolo();
 		$tabella->edita();
 		?>
@@ -77,7 +77,7 @@ else{
 		  </tr>
 		<tr><TD colspan="2" width="90%">
 		
-		<?
+		<?php
 		$tabella_v->get_titolo();
 		if ($numrows>0){			 
 			 $tabella_v->edita();

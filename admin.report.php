@@ -1,4 +1,4 @@
-<?
+<?php
 include "login.php";
 if ($_SESSION["PERMESSI"] > 3){ 
    include_once HOME;
@@ -129,7 +129,7 @@ foreach($tipo_pratica as $val){
 				<td width="250" bgColor="#728bb8"><font color="#ffffff"><b>Tipo di Pratica</b></TD>
 				<td colspan="2" align="right" valign="bottom">
 					<select class="stiletabella" name="tipo_pratica">
-						<?
+						<?php
 						echo $sel_tipo_pratica;
 						
 						?>

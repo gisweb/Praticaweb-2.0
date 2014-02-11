@@ -18,7 +18,10 @@ $data=$doc->viewFieldList();
     <title>ELENCO MODELLI DI STAMPA</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+    <?php
+	utils::loadJS();
+	utils::loadCss();
+?>
     <script src="/js/jquery.cookie.js" type="text/javascript"></script>
 
     <link href="/css/ui.dynatree.css" rel="stylesheet" type="text/css">

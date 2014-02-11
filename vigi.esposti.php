@@ -11,7 +11,10 @@ include "./lib/tabella_v.class.php";
 <title>Esposti</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <SCRIPT language="javascript">
 function aggiungi_riferimento(id,pratica){
 	parent.window.document.location="vigi.esposti.php?mode=new&rif="+id+"&pratica="+pratica;
@@ -43,7 +46,7 @@ function aggiungi_riferimento(id,pratica){
 			<tr> 
 				<td> 
 				<!-- contenuto-->
-				<?
+				<?php
 				if($Errors){
 					$tabella->set_errors($Errors);
 					$tabella->set_dati($_POST);
@@ -74,7 +77,7 @@ function aggiungi_riferimento(id,pratica){
 		  <TR> 
 			<TD> 
 			<!-- contenuto-->
-				<?
+				<?php
 				$tabella->set_dati("pratica=$idpratica");
 				$tabella->set_titolo("Esposto","modifica",array("id"=>$id));
 				$tabella->elenco();?>

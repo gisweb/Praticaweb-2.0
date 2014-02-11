@@ -1,4 +1,4 @@
-<?
+<?php
 include "login.php";
 //include("./src/fckeditor/fckeditor.php") ;
 
@@ -131,7 +131,7 @@ $testo="<html><head></head><body>$testo</body></html>";
 					<textarea id="elm1" name="testo" rows="40" cols="150" style="width: 90%" class="tinymce">
 						<?php echo $testo;?>
 					</textarea>
-					<?
+					<?php
 						//$oFCKeditor = new FCKeditor('testo');
 						//$oFCKeditor->BasePath = 'src/fckeditor/';
 						//$oFCKeditor->Value = $testo;

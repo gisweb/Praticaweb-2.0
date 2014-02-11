@@ -4,12 +4,15 @@
 <title>Pratiche recenti</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 </head>
 <body link="#0000FF" vlink="#0000FF" alink="#0000FF">
 <?include "./inc/inc.page_header.php";?>
 <H2 class=blueBanner>Ultime pratiche aperte</H2>
-<?
+<?php
 $userid=$_SESSION["USER_ID"];
 $db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
 if(!$db->db_connect_id)  die( "Impossibile connettersi al dadabase");

@@ -1,4 +1,4 @@
-<?
+<?php
 
 require_once("login.php");
 //print_r($_POST);
@@ -27,7 +27,10 @@ if ($_POST["azione"]){
 <title>ELENCO MODELLI DI STAMPA</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <script language="javascript">
 <?if ($tipo=="html"){?>
 function link(id,pratica){
@@ -49,7 +52,7 @@ function elimina(id){
 </script>
 </head>
 <body  background="" leftMargin="0" topMargin="0" marginheight="0" marginwidth="0">
-<?
+<?php
 $tabella_modelli=new Tabella_h("$tabpath/modelli_$tipo",'list');
 $db=$tabella_modelli->get_db();
 $sql="select distinct opzione,form,stampa from stp.e_form order by stampa;";

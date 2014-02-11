@@ -11,7 +11,10 @@ $titolo=$_SESSION["TITOLO_$idpratica"];
 <title>Allegati - <?=$titolo?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <style>
     .ui-state-hover,.ui-state-active,.ui-state-focus{
         background:url("css/start/images/ui-bg_glass_45_0078ae_1x400.png");

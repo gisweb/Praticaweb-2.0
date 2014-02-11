@@ -1,4 +1,4 @@
-<?
+<?php
 include_once ("login.php");
 $mode=$_REQUEST["mode"];
 $db=new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME,false);
@@ -243,7 +243,7 @@ else{		//MODALITA DI VISTA RISULTATI
 	<input type="hidden" value="<?=$totali_pr?>" name="totali_pr" id="totali_pr">
 </form>
 
-<?
+<?php
 }
 ?>
 </BODY>

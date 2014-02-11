@@ -1,4 +1,4 @@
-<?
+<?php
 //Gestione dell'elenco delle pratiche recenti 
 //quando apro una nuova pratica aggiorno la tabella
 //già che ci sono metto in sessione l'informazione legata a titolo della pagina (numero pratica .. del ...)

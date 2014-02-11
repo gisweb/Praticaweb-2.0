@@ -57,7 +57,7 @@ function setdata(zona)
 <body >
 
 <FONT Verdana, Geneva, Arial, sans-serif size="-1">
-<?
+<?php
 for($i=0;$i<$nrec;$i++){
 	$desc= htmlentities($elenco[$i]["descrizione"]);
 	$zona= htmlentities($elenco[$i]["zona"]);

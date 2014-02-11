@@ -1,4 +1,4 @@
-<?
+<?php
 /*Costruzione del Filtro di ricerca*/
 if ($ricerca["data_ins"]["data"]) $arr_cond[]="tmsins<$tmsmax and tmsins>$tmsmin";
 if ($ricerca["data_pres_in"]["data"]){

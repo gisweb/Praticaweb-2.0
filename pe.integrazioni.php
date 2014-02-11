@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("login.php");
 include "./lib/tabella_v.class.php";
 include "./lib/tabella_h.class.php";
@@ -15,10 +15,13 @@ $form="integrazioni";
 <title>Integrazione - <?=$_SESSION["TITOLO_".$idpratica]?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 </head>
 <body  background="" leftMargin="0" topMargin="0" marginheight="0" marginwidth="0">
-<?
+<?php
 if (($modo=="edit") or ($modo=="new")) {
 	$_SESSION["ADD_NEW"]=0;
 	$id_integrazione=(isset($_POST["id"]) && $_POST["id"])?($_POST["id"]):(null);
@@ -84,7 +87,7 @@ $elenco_iter = $db->sql_fetchrowset();?>
 <TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
  <tr> 
   <td> 
-<?
+<?php
 $flag=0;
 foreach ($elenco_iter as $row){
 	$iter=$row["id"];
@@ -117,7 +120,7 @@ if (!$flag) echo "<p><b>Nessun documento da integrare</b></p>";?>
   </td>
  </tr>
 </TABLE>
-<?
+<?php
 print $tabella_integrazione->elenco_stampe();
 }//end if?>
 </body>

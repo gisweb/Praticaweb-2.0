@@ -29,7 +29,10 @@ switch ($modo) {
 <head>
     <title>Elenco Documenti - <?=$titolo?></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+    <?php
+	utils::loadJS();
+	utils::loadCss();
+?>
     <SCRIPT language="javascript" type="text/javascript">
         function link(id){
             window.location="pe.documenti.php?id="+id+"&mode=view";
@@ -45,7 +48,7 @@ switch ($modo) {
 include "./inc/inc.page_header.php";
 ?>
 <H2 class="blueBanner"><?php echo "$tit";?></H2>
-<?
+<?php
 	if (($modo=="edit") or ($modo=="new")){
 		$tabella=new tabella_v("$tabpath/$file_config",$modo);
 		unset($_SESSION["ADD_NEW"]);
@@ -76,7 +79,7 @@ include "./inc/inc.page_header.php";
 		</FORM>		
 
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
-<?
+<?php
 }elseif($modo=="view") {
 		$tabella=new Tabella_v("$tabpath/$file_config");?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
@@ -121,7 +124,7 @@ else {
 		 window.close();
 	  });
    </script>
-	<?
+	<?php
 	}?>
 	
 </body>

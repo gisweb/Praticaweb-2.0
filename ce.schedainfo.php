@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("login.php");
 include_once "./lib/tabella_v.class.php";
 //print_r($_GET);
@@ -9,11 +9,14 @@ $id=$_GET["id_persona"];
 <title>Scheda Informativa </title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 
 </head>
 <body bgcolor="">
-<?
+<?php
 	//echo "$id<br>";
 	echo "\n<b>\n";
 	$tabella=new Tabella_v("ce/schedainfo");

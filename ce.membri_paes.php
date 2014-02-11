@@ -1,4 +1,4 @@
-<?
+<?php
 include_once ("login.php");
 include "./lib/tabella_v.class.php";
 include "./lib/tabella_h.class.php";
@@ -26,7 +26,10 @@ elseif ($_POST["azione"]=="Annulla") $modo="view";
 <title>Membri della Commissione Locale per il Paesaggio </title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <SCRIPT language=javascript>
 function link(i){
 	document.membri_v.mode.value="view";
@@ -35,7 +38,7 @@ function link(i){
 }
 </SCRIPT>
 </head>
-<?
+<?php
 include "./inc/inc.page_header.php";
 if (($modo=="edit") or ($modo=="new")) {
 
@@ -49,7 +52,7 @@ if (($modo=="edit") or ($modo=="new")) {
 			<tr> 
 				<td> 
 				<H2 class="blueBanner">Inserimento o modifica di un membro</H2>
-				<?
+				<?php
 				if($Errors){
 					$tabella->set_errors($Errors);
 					$tabella->set_dati($_POST);
@@ -113,7 +116,7 @@ if (($modo=="edit") or ($modo=="new")) {
 
 <!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 
-<?
+<?php
 } else {
 	
 	$tabella=new Tabella_v($file_config,$modo);					
@@ -122,7 +125,7 @@ if (($modo=="edit") or ($modo=="new")) {
 	<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">
 		<TR>
 			<TD>
-			<?
+			<?php
 				$tabella->set_titolo("Membro della Commissione Locale per il Paesaggio","modifica",array("id"=>$id));
 				$tabella->set_dati("id=$id");
 				$tabella->get_titolo();

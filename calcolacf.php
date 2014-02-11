@@ -18,7 +18,7 @@ function loaddata(cf)
 </script>
 
 <FONT Verdana, Geneva, Arial, sans-serif size="-1">
-<?
+<?php
 require_once("calcolacodicefiscale.php");
 
 $cognome=$_GET['cognome'];

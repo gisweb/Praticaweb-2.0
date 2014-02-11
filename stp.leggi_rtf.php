@@ -1,4 +1,4 @@
-<?
+<?php
 include_once "./login.php";
 //Converte i Caratteri accentati
 function conv($str){

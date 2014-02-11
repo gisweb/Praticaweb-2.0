@@ -1,4 +1,4 @@
-<?
+<?php
 function gw_date_format($stringa_data){
 	$sep=(strpos($stringa_data,'-'))?('-'):('/');
 	if ($stringa_data){

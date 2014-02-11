@@ -1,4 +1,4 @@
-<?
+<?php
 if ($_POST["azione"]=="Chiudi") $active_form="clp.iter.php?comm_paesaggio=1&pratica=$idpratica";
 elseif($_POST["azione"]=="Elimina"){
 	$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);

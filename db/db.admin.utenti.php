@@ -1,4 +1,4 @@
-<?
+<?php
 $pwd =(isset($_POST['pwd']))?($_POST['pwd']):(null);
 $pwd1 =(isset($_POST['pwd1']))?($_POST['pwd1']):(null);
 $attivato= (isset($_POST["attivato"]) && $_POST["attivato"]=="on")?(1):(0);

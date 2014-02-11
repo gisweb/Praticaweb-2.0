@@ -1,4 +1,4 @@
-<?
+<?php
 include_once "./lib/date_format.php";
 for($i=$offset;$i<$prat_max;$i++){
 	$idpratica=$elenco_pratiche[$i];//['pratica'];

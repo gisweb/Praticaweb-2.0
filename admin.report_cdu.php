@@ -1,4 +1,4 @@
-<?
+<?php
 include "login.php";
 if ($_SESSION["PERMESSI"] > 3){ 
    include_once HOME;

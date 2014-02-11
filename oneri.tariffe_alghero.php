@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("login.php");
 include_once "./lib/tabella_v.class.php";
 include_once "./lib/tabella_h.class.php";
@@ -16,7 +16,10 @@ if (in_array($_POST["azione"],Array("Salva","Annulla"))) {
 <title>Rate - <?=$titolo?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <script LANGUAGE="JavaScript">
 function confirmSubmit()
 {
@@ -30,7 +33,7 @@ else
 </script>
 </head>
 <body  background="">
-<?
+<?php
 include "./inc/inc.page_header.php";
 if (in_array($modo,Array("edit","new"))){
 		
@@ -73,7 +76,7 @@ elseif($modo=="view"){?>
     <TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">
 		<TR>
 			<TD>
-			<?
+			<?php
                 $tabella=new tabella_v("$tabpath/tariffe_alghero",$modo);
 				$tabella->set_titolo("Tariffe Oneri",'modifica',Array("mode"=>"edit"));
 				$tabella->set_dati("id=$_REQUEST[id]");

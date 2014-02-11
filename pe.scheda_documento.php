@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("login.php");
 include_once "./lib/tabella_v.class.php";
 $tabpath="pe";
@@ -21,7 +21,10 @@ if(is_uploaded_file($_FILES['myfile']['tmp_name'])){//operazione di upload
 <title>Scheda - <?=$_SESSION["TITOLO_".$idpratica]?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <script language=javascript>
 
 function elimina(id){
@@ -35,7 +38,7 @@ function elimina(id){
 
 </head>
 <body  background="">
-<?
+<?php
 if ($modo=="edit") { 
 		include "./inc/inc.page_header.php";
 		$tabella=new tabella_v("$tabpath/doc_dettaglio",$modo);
@@ -70,7 +73,7 @@ $tabella->edita();
 				<td width="600"> 
 			   <br><b>  Elenco file allegati:</b>
        <table class="stiletabella" width=100% border="0" cellpadding=1 cellspacing=0>
-	   <?
+	   <?php
 	   //Elenco degli allegati o come icona o come tumbnail
 		   if(!isset($db))
 				$db=$tabella->get_db();
@@ -154,7 +157,7 @@ $tabella->edita();
 			</script>
 </div>
 </form>
-<?
+<?php
 }else{		
 //<<<<<<<<<<<<<<<<<<<<<   MODALITA' VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->	
 		$tabella=new tabella_v("$tabpath/doc_dettaglio");

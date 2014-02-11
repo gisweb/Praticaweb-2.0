@@ -1,4 +1,4 @@
-<?
+<?php
 
 $idpratica=$_POST["pratica"]; 
 if ($_POST["azione"]=="Salva"){

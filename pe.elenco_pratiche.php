@@ -1,4 +1,4 @@
-<?
+<?php
 include_once "./lib/date_format.php";
 $nomi_richiedenti='';
 $nomi_progettisti='';

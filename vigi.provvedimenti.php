@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("login.php");
 
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
@@ -20,7 +20,10 @@ include_once "./lib/tabella_v.class.php";
 <title>Provvedimenti</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <SCRIPT language="JavaScript">
 	function elimina(id){
 		invia.azione.value="Elimina";
@@ -71,7 +74,7 @@ if ($modo=="edit" or $modo=="new"){
 		  <tr> 
 			<td> 
 				<!-- contenuto-->
-				<?
+				<?php
 				if($Errors){
 					$tabella->set_errors($Errors);
 					$tabella->set_dati($_POST);
@@ -100,7 +103,7 @@ if ($modo=="edit" or $modo=="new"){
 		  <TR> 
 			<TD> 
 			<!-- contenuto-->
-				<?
+				<?php
 				
 				$tabella_sanzioni=new tabella_v("$tabpath/sanzioni",$modo);
 				$tabella_ord_sospensione=new tabella_v("$tabpath/ord_sospensione",$modo);

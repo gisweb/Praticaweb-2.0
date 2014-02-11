@@ -1,4 +1,4 @@
-<?
+<?php
 //print_r($_REQUEST);
 include_once("login.php");
 $tabpath="ce";
@@ -18,7 +18,10 @@ include_once "./lib/tabella_v.class.php";
 <title>Ordine del Giorno - <?=$titolo?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <SCRIPT language="javascript" src="src/iframe.js" type="text/javascript"></SCRIPT>
 <SCRIPT language=javascript>
 function elimina(pratica){
@@ -38,7 +41,7 @@ function show(id){
 </SCRIPT>
 </head>
 <body>
-<?
+<?php
 	if ($modo=="edit"){
 		include "./inc/inc.page_header.php";
 		// Pagina dei risulatati della ricerca
@@ -126,7 +129,7 @@ function show(id){
 		<img src="images/gray_light.gif" height="2" width="90%">
 		
 		
-	<?
+	<?php
 	
 //include "./inc/inc.messaggi.php";
 }
@@ -141,7 +144,7 @@ else{
 	<H2 class="blueBanner">Ordine del giorno</H2>
 		
 			<!-- contenuto-->
-<?
+<?php
 		//include "./inc/page_header.inc";
 
 		$tabella->set_titolo("Dati della commissione");

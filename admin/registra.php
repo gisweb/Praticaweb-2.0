@@ -1,4 +1,4 @@
-<?
+<?php
 //include "./config/config.php";
 //print_r($_POST);
 

@@ -132,7 +132,7 @@ EOT;
 			$size=intval($size+($size/5));
 			$testo=stripslashes($dato);		
 			$retval=<<<EOT
-<INPUT class=\"$class\" maxLength="$w" size="$size" name="$campo" id="$campo" value="$testo" $title $html5Attr $disabilitato>$help			
+<INPUT class="$class" maxLength="$w" size="$size" name="$campo" id="$campo" value="$testo" $title $html5Attr $disabilitato>$help			
 <button id="toggle_$campo" class="select_all"></button>				
 <script>
 

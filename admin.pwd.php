@@ -23,7 +23,10 @@ switch ($modo) {
 <title>Gestione Password di PraticaWeb</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+    utils::loadJS();
+    utils::loadCss();
+?>
 
 
 </head>
@@ -31,7 +34,7 @@ switch ($modo) {
 
 <?include "./inc/inc.page_header.php";?>
 <H2 class="blueBanner"><?=$tit?></H2>
-<?
+<?php
    
 	if ($modo=="edit"){
 		$tabella=new tabella_v("$tabpath/$file_config.tab",$modo);
@@ -67,7 +70,7 @@ switch ($modo) {
    </FORM>
 
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
-<?
+<?php
 }
 elseif($modo=="view") {
 	$tabella=new tabella_v("$tabpath/$file_config.tab");
@@ -78,7 +81,7 @@ elseif($modo=="view") {
 		 <tr> 
 			<td> 
 				<!-- contenuto-->
-			<?					
+			<?php					
 				$tabella->set_titolo("Modifica Password dell'Utente ".$_SESSION["NOMINATIVO"],"modifica",array("id"=>$id));
 				$tabella->get_titolo();
 				$tabella->set_dati(Array("nominativo"=>$_SESSION["NOMINATIVO"]));
@@ -101,6 +104,8 @@ elseif($modo=="view") {
 	  });
    </script>
    
-<?php }?>
+<?php
+}
+?>
 </body>
 </html>

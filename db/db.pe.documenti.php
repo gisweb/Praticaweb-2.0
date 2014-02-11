@@ -1,4 +1,4 @@
-<?
+<?php
 if (isset($_POST["azione"]) && (($_POST["azione"]=="Salva") || ($_POST["azione"]=="Elimina")) ){
 	$azione=$_POST["azione"];
     $active_form="pe.documenti.php";

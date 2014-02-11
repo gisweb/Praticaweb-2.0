@@ -1,4 +1,4 @@
-<?
+<?php
 
 $testo=stripslashes(htmlentities($_POST["testo"]));
 $testo=preg_replace('|<head>(.+)</head>|Umi',"",$testo);

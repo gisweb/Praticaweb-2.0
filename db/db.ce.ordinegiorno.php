@@ -1,4 +1,4 @@
-<?
+<?php
 $db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
 if(!$db->db_connect_id)  die( "Impossibile connettersi al database");	
 

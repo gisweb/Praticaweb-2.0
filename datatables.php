@@ -27,7 +27,10 @@ $tabellav->set_titolo('Ricerca Pratiche');
       width:100% !important;
     }
   </style>
-  <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+  <?php
+	utils::loadJS();
+	utils::loadCss();
+?>
   <script src="js/init.search.dataTables.js"></script>
 </head>
 <body>

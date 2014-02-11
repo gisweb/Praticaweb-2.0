@@ -1,4 +1,4 @@
-<?
+<?php
 //print_r($_REQUEST);
 include_once ("login.php");
 if ($_SESSION["PERMESSI"]>2){
@@ -27,9 +27,12 @@ if ($_POST["azione"]=="Salva") {
 <title>Aggiornamento tariffe Oneri</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 </head>
-<?
+<?php
 include "./inc/inc.page_header.php";
 if ($modo=="new") {
 
@@ -43,7 +46,7 @@ if ($modo=="new") {
 			<tr> 
 				<td> 
 				<H2 class="blueBanner">Inserimento nuove tariffe degli oneri</H2>
-				<?
+				<?php
 				if($Errors){
 					$tabella->set_errors($Errors);
 					$tabella->set_dati($_POST);
@@ -69,7 +72,7 @@ if ($modo=="new") {
 </BODY>
 <!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 
-<?
+<?php
 include "./inc/inc.window.php";
 } elseif ($modo=="view") {
 	
@@ -79,7 +82,7 @@ include "./inc/inc.window.php";
 	<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">
 		<TR>
 			<TD>
-			<?
+			<?php
 				$tabella->set_titolo("Tariffe Oneri per l'anno ".$anno,'modifica',Array("mode"=>"edit","anno"=>$anno));
 				$tabella->set_dati("anno=$anno");
 				$tabella->get_titolo();
@@ -145,7 +148,7 @@ $a=$db->sql_fetchlist('a');
 </body>	
 	
 
-<?
+<?php
 
 
 }

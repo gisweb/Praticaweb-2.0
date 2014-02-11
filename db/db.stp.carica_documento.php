@@ -1,4 +1,4 @@
-<?
+<?php
 include_once "login.php";
 
 //print_array($_REQUEST);

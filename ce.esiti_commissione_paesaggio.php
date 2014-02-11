@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("login.php");
 include "./lib/tabella_h.class.php";
 include_once "./lib/tabella_v.class.php";
@@ -35,7 +35,10 @@ $tornaacasa="
 <title>Pareri della commissione - <?=$titolo?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <SCRIPT>
 	function link(id,prat){
 		loc="ce.esiti_commissione_paesaggio.php?mode=view&pratica=<?=$idcomm?>&id_pratica="+prat+"&id_parere="+id+"&comm_paesaggio=1";
@@ -45,7 +48,7 @@ $tornaacasa="
 </SCRIPT>
 </head>
 <body>
-<?
+<?php
 
 	if ($modo=="edit" or $modo=="new"){
 		

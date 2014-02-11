@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("login.php");
 include "./lib/tabella_v.class.php";
 $tabpath="pe";
@@ -10,11 +10,14 @@ $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 <title>Titolo - <?=$_SESSION["TITOLO_".$idpratica]?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 </head>
 <body  background="">
 
-<?
+<?php
 
 $tab=$_POST["tabella"];
 if (($modo=="edit") || ($modo=="new")) {
@@ -51,7 +54,7 @@ if (($modo=="edit") || ($modo=="new")) {
 		  <tr> 
 			<td> 
 				<!-- contenuto-->
-				<?
+				<?php
 				if($Errors){
 					$tabella->set_errors($Errors);
 					$tabella->set_dati($_POST);
@@ -88,7 +91,7 @@ if (($modo=="edit") || ($modo=="new")) {
 		  <TR> 
 			<TD> 
 			<!-- contenuto-->
-			<?
+			<?php
 			$array_file_tab=array("grigliatura","disoleatura","denitrificazione","vasca");
 		    $array_titolo=array("Grigliatura/Dissabiatura","Disoleatura","Denitrificazione","Vasca raccolta acque");
 			for($i=0;$i<4;$i++){

@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("login.php");
 $tabpath="ce";
 //$form="commissione";
@@ -23,8 +23,10 @@ include "./lib/tabella_h.class.php";
 <title>Convocazione Commmissione- <?=$titolo?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
-
+<?php
+    utils::loadJS();
+    utils::loadCss();
+?>
 <SCRIPT language=javascript>
 function link(id){
 	loc="ce.schedamembro.php?mode=view&comm=1&pratica=<?=$idcomm?>&id_persona="+id;

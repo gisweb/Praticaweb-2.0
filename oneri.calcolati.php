@@ -68,7 +68,10 @@ foreach($res as $val){
 <title>Calcolo Oneri - <?php echo $titolo?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <!--<SCRIPT language="javascript" src="src/rpc.oneri_calcolati.js" type="text/javascript"></SCRIPT>
 <SCRIPT language="javascript" src="src/http_request.js" type="text/javascript"></SCRIPT>-->
 
@@ -183,7 +186,7 @@ else{
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
 		<TR>
 			<TD>
-				<?
+				<?php
 				$tabella=new tabella_v("$tabpath/calcolati");
 				$nrec=$tabella->set_dati("pratica=$idpratica");
 				if($nrec>0){

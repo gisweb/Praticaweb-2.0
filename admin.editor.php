@@ -1,4 +1,4 @@
-<?
+<?php
 include "login.php";
 $imm="cipressa.png";
 $db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
@@ -96,7 +96,10 @@ if ($_POST["azione"]=="Salva"){
 <title>editor</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <script language="JavaScript">
 var bHtmlMode = false;
 var str_iFrameDoc = (document.all)? "document.frames(\"Composition\").document\;": "document.getElementById(\"Composition\").contentDocument\;";

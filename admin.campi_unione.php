@@ -1,4 +1,4 @@
-<?
+<?php
 include "login.php";
 $db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
 if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
@@ -17,7 +17,10 @@ for($i=0;$i<count($ris);$i++){
 <title>Pagina di Informazione sui campi per i modelli di stampa</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+    utils::loadJS();
+    utils::loadCss();
+?>
 <script language="JavaScript">
 	function show(i){
 		

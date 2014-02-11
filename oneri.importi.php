@@ -1,4 +1,4 @@
-<?
+<?php
 /*se il record corrente da editare Ãš stato generato con il calcolo automatico rendo editabile solo i valori di scomputo e nascondo il pulsante 
 Elimina in quanto l'eliminazione degli importi calcolati va fatta dai singoli calcoli 
 se invece il record Ãš stato inserito manualmente posso editare tutto ed eliminare il record*/
@@ -31,7 +31,10 @@ elseif ($tab=="monetizzazione"){
 <title>Oneri - <?=$titolo." - ".$titpag?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 </SCRIPT>
 </head>
 <script language=javascript>
@@ -74,7 +77,7 @@ function link(id){
 	<input name="mode" type="hidden" value="<?=$modo?>">
 	<input name="tabella" type="hidden" value="<?=$tab?>">
 </FORM>	
-<?
+<?php
 }else{
 //           <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 ?>

@@ -1,4 +1,4 @@
-<?
+<?php
 if($_POST["numero"]){
 
 	$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);

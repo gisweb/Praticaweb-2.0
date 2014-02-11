@@ -214,7 +214,8 @@ function valida_campi($arr){
 
 
 //MODULO COMUNE PER IL SAVATAGGIO DEI DATI
-	if ($azione=="Annulla")	return;
+    $azione=$_REQUEST["azione"];
+    if ($azione=="Annulla")	return;
 	
 	$config_file=$_POST["config_file"];
 	$modo=$_REQUEST['mode'];
@@ -229,19 +230,12 @@ function valida_campi($arr){
         $ref_table=$tb->tabella_ref_db;
 	$campi_obbl=$tb->campi_obbl;
 	$array_config=$tb->tab_config;
-	//print_array($tb);
-	//$array_config=file($_SESSION["USER_DATA"]."/praticaweb/tab/$config_file");
-	//
-	////sulla prima riga ho:nome della tabella o vista, campo obbligatorio, campo obbligatorio, campo obbligatorio.............................
-	//$datidb=explode(',',$array_config[0]);
-	//$tabelladb=$datidb[0];
-	//$campi_obbl=array_slice($datidb,1);
 	
 	$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
 	if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
 	$idrow=$_POST["id"];
 	if (!$idrow) $idrow=$_POST["idriga"]; //utilizzato solo per eliminare dall'iter, da togliere dopo modifica a pe.iter 
-	$azione=$_POST["azione"];	
+		
 	
 	if ($azione=="Elimina"){
 		$sql="delete from $tabelladb where id=$idrow;";
@@ -268,7 +262,7 @@ function valida_campi($arr){
 		
 		
 		//I dati sono stati validati costruisco le query di inserimento/aggiornamento
-		if ($_POST["mode"]=="edit"){
+	if ($_POST["mode"]=="edit"){
 		//controllo che un altro utente non abbia modificato il record
 		//DA SOSTITUIRE CON UN TRIGGER???????
             if (!$tb->table_list){
@@ -330,15 +324,11 @@ function valida_campi($arr){
 		$nrighe=$db->sql_numrows();*/
                 $dbh=utils::getDb();
                 $sth = $dbh->prepare($sql);
-                $sth->execute();
-                $arr = $sth->errorInfo();
-                //print_r($arr);
-		/*if (!$result){
-                        print_array($db->sql_error());
-			echo ("ERRORE NEL SALVATAGGIO<p>$sql</p>");
-			return;
-		}
-		*/
+                if(!$sth->execute()){
+                    $arr = $sth->errorInfo();
+                    echo ("ERRORE NEL SALVATAGGIO<p>$sql</p>");
+                    return;
+                }
 		//se ho inserito un nuovo valore ricavo l'ultimo id
 		if ($_POST["mode"]=="new") {
             

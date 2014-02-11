@@ -29,7 +29,10 @@ switch ($modo) {
 <head>
     <title>Elenco Scadenze</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+    <?php
+	utils::loadJS();
+	utils::loadCss();
+?>
     <SCRIPT language="javascript" type="text/javascript">
         function confirmSubmit(){
             return confirm('Sei sicuro di voler eliminare questo stato?');
@@ -42,7 +45,7 @@ switch ($modo) {
 include "./inc/inc.page_header.php";
 ?>
 <H2 class="blueBanner"><?php echo "$tit";?></H2>
-<?
+<?php
 	if (($modo=="edit") or ($modo=="new")){
 		$tabella=new tabella_v("$tabpath/$file_config",$modo);
 		unset($_SESSION["ADD_NEW"]);
@@ -75,7 +78,7 @@ include "./inc/inc.page_header.php";
 		</FORM>		
 
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
-<?
+<?php
 }elseif($modo=="view") {
 		$tabella=new Tabella_v("$tabpath/$file_config",$modo);
 		
@@ -105,7 +108,7 @@ include "./inc/inc.page_header.php";
 			</TR>
 		</TABLE>
 		
-<?
+<?php
 print "<input id='codice' type='hidden' value='".$tabella->array_dati[0]["codice"]."'/>";
 }
 else {
@@ -136,7 +139,7 @@ else {
 		 window.close();
 	  });
    </script>
-	<?
+	<?php
 	}?>
 	
 </body>

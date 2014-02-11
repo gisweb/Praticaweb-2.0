@@ -1,4 +1,4 @@
-<?
+<?php
 //DA VEDERE SE SOSTITUIRE TUTTO CON UN A QUERY DI UNIONE
 
 		$sql="select * from pe.elenco_pratiche where pratica=$idpratica";

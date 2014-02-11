@@ -21,7 +21,10 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
     <title>ELENCO MODELLI DI STAMPA</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+    <?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 	<script>
     $.widget( "custom.catcomplete", $.ui.autocomplete, {
         _renderMenu: function( ul, items ) {
@@ -85,7 +88,7 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
 		  <tr> 
 			<td> 
 				<H2 class="blueBanner"><?=$intestazione?></H2>
-				<?
+				<?php
 				$tabella->edita();?>			  
 			</td>
 		  </tr>
@@ -95,7 +98,7 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
         <input name="mode" type="hidden" value="<?=$modo?>">
         <input name="id" type="hidden" value="<?=$id?>">
     </FORM>
-<?
+<?php
 }
 elseif($modo=="view"){
 ?>
@@ -229,7 +232,7 @@ else{
                   <br>
                   </td>
                 </tr>
-<?
+<?php
     }
 ?>
                 <tr>

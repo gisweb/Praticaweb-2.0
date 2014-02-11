@@ -19,7 +19,7 @@ $tabpath="pe";
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
 <?php
-    utils::writeJS(Array('form/ubicazione'));
+    utils::writeJS();
     utils::writeCSS();
 
 ?>

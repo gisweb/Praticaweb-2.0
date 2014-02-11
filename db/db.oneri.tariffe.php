@@ -1,4 +1,4 @@
-<?
+<?php
 $base=$_POST["base"];
 $inc=$_POST["inc"];
 $anno=$_POST["anno"];

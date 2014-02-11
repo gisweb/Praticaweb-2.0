@@ -1,4 +1,4 @@
-<?
+<?php
 include_once ("login.php");
 $tabpath="pe";
 $titolo=$_SESSION["TITOLO_$idpratica"];
@@ -48,7 +48,10 @@ $parametri=$db->sql_fetchrowset();
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <title>Raffronto<?=$_SESSION[$idpratica]["TITOLO"]?></title>
 </head>
 <body>

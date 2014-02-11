@@ -1,4 +1,4 @@
-<?
+<?php
 include_once ("login.php");
 $titolo=$_SESSION["TITOLO_$idpratica"];
 $idpratica=$_REQUEST["pratica"];
@@ -37,7 +37,10 @@ if ($_POST["azione"]){
 <title>Vincoli - <?=$titolo?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+    utils::loadJS();
+    utils::loadCss();
+?>
 <SCRIPT language="javascript" src="src/http_request.js" type="text/javascript"></SCRIPT>
 <SCRIPT language="javascript" src="src/x_core.js" type="text/javascript"></SCRIPT>
 <script language=javascript>
@@ -104,7 +107,7 @@ function is_array(obj){
 </script>
 </head>
 <body  background="" leftMargin="0" topMargin="0" marginheight="0" marginwidth="0">
-<?
+<?php
 if (($modo=="edit") or ($modo=="new")){
 	include_once "./lib/tabella_h.class.php";
 	include_once "./lib/tabella_v.class.php";
@@ -137,7 +140,7 @@ if (($modo=="edit") or ($modo=="new")){
 				<input name="cdu" type="hidden" value="1"></td>
 				<input type="hidden" name="mode" value="new">
 
-				<?
+				<?php
 				if($Errors){
 					$tabellav->set_errors($Errors);
 					$tabellav->set_dati($_POST);
@@ -162,7 +165,7 @@ if (($modo=="edit") or ($modo=="new")){
 		?>
 		  <TR> 
 			<td> 
-			<?
+			<?php
 				if ($num_zone) {
 					print ("<b>$nome_vincolo</b>");
 					$tabellah->elenco();
@@ -262,7 +265,10 @@ $req="mode=edit&pratica=$idpratica";
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+    utils::loadJS();
+    utils::loadCss();
+?>
 <title>Raffronto<?=$titolo?></title>
 <style>
 
@@ -358,7 +364,7 @@ foreach($tavole as $vkey=>$tav){
 </table>
 </FORM>		
 			
-<?
+<?php
 /*********************************************************************************************************/    
 //                              FINE MODIFICA
 /*********************************************************************************************************/
@@ -439,7 +445,7 @@ for($i=0;$i<count($array_mappali);$i++){
 </table>
 </FORM>		
 			
-<?
+<?php
 }
 	include_once "./lib/tabella_v.class.php";
 	$tabellav=new tabella_v("$tabpath/stampa.tab");

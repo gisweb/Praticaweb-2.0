@@ -1,4 +1,4 @@
-<?
+<?php
 //Parte da sostituire con include del Login
 include "login.php";
 

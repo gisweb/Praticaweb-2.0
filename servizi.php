@@ -1,4 +1,4 @@
-<?
+<?php
 //VERIFICARE IN BASE AL TIPO DI UTENTE I SERVIZI DISPONIBILI
 //se passo un idpratica punto alla pratica 
 include_once ("login.php");
@@ -11,7 +11,10 @@ include_once ("login.php");
 <title>PraticaWeb: Servizi</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 
 </head>
 <body onload = "javascript: window.name='indexPraticaweb'	;if (parseInt(navigator.appVersion) >= 4) { 
@@ -135,7 +138,7 @@ include_once ("login.php");
         <LI><A href="#">Elenco delle pratiche ricevute</A>
 		 - Mostra l'elenco delle pratiche inviate all'ufficio urbanistica da professionisti esterni.
         <LI><A href="#">Apri pratica esistente</A>
-		 - ModalitÃ¯Â¿Ådi ricerca semplice di una pratica archiviata.
+		 - Modalità di ricerca semplice di una pratica archiviata.
         <LI><A href="#">Ricerca Avanzata</A>
 		 - Accesso alla ricerca.............. 
         <LI><A href="#">Elimina Pratica</A> 
@@ -197,7 +200,7 @@ include_once ("login.php");
 		 - Inserisce un nuovo utente e assegna il profilo.
         <LI><A href="#" onclick="window.open('utenti.php?mode=update')">Modifica Profilo</A>
 		 - Modifica un profilo utente.
-        <LI><A href=""#" onclick="window.open('utenti.php?mode=delete')">Rimuovi</A>
+        <LI><A href="#" onclick="window.open('utenti.php?mode=delete')">Rimuovi</A>
 		 - Elimina un Utente.
 		</UL>
 	 <table width="95%" border="0">

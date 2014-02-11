@@ -1,4 +1,4 @@
-<?
+<?php
 $err_CF_PI=Array(
 	"1"=>"La lunghezza del codice fiscale non &egrave;\ncorretta: il codice fiscale dovrebbe essere lungo\nesattamente 16 caratteri.",
 	"2"=>"Il codice fiscale contiene dei caratteri non validi:\ni soli caratteri validi sono le lettere e le cifre.",

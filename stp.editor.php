@@ -1,4 +1,4 @@
-<?
+<?php
 include "login.php";
 include("./src/fckeditor/fckeditor.php") ;
 
@@ -95,7 +95,7 @@ else{
 <script language="javascript" type="text/javascript" src="./js/LoadLibs.js"></script>
 <script language="javascript" type="text/javascript">
 
-<?
+<?php
 if($css_modello) $messaggio=$mess_css;
 else $messaggio=$css_desc[0];
 
@@ -135,7 +135,7 @@ function response_preview(obj){
 
 </script>
 
-<?
+<?php
 if ($cols) foreach($cols as $key=>$value){
 	$colonne.="Array(";
 	for($j=0;$j<count($value);$j++)

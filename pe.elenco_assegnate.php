@@ -35,7 +35,10 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
 <title>Risultato Ricerca</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <script language="javascript">
 function paginasucc(pg){
 	document.result.pag.value=pg
@@ -48,7 +51,7 @@ function paginasucc(pg){
 <H2 class=blueBanner>Esito della ricerca&nbsp;&nbsp;<font size=-1 color=#000000>Risultati <b><?=$offset+1?></b> - <b><?=$prat_max?></b> su <?=$totrec?> <b></b></font></H2>
 <p><font size="-2"><b>criteri di ricerca:</b> <?=$criterio?></font></p>
 
-<?
+<?php
 if ($elenco_pratiche){
 		$totrec=count($elenco_pratiche);		
 		if ($totrec==1){
@@ -75,7 +78,7 @@ if ($elenco_pratiche){
 	 <table border=0 cellpadding=0 width=1% cellspacing=4 align=center>
 	<tr>
 	<td valign="bottom" nowrap class="selezione">Pagina dei risultati:&nbsp;<td>
-	<?
+	<?php
 	
 	for ($i=1;$i<$pages+1;$i++){
 		if ($i==$pagenum)
@@ -93,7 +96,7 @@ if ($elenco_pratiche){
 
 
 
-<?
+<?php
 		exit;
 	}
 	else{

@@ -87,7 +87,7 @@ foreach($res as $val){
 		  <TR> 
 			<TD> 
 			<!-- contenuto-->
-				<?
+				<?php
                 $pr=new pratica($idpratica);
                 $tabella=new tabella_v($file_config,"view");
 				$tabella->set_titolo("Dati della pratica","modifica");

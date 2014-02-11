@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("./login.php");
 include_once "./lib/tabella_h.class.php";
 

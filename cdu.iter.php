@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("login.php");
 include "./lib/tabella_h.class.php";
 $tabpath="cdu";
@@ -31,7 +31,10 @@ $titolo="Iter della pratica";
 <title>Iter - <?=$titolo?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+    utils::loadJS();
+    utils::loadCss();
+?>
 <script language="javascript">
 function confirmSubmit()
 {
@@ -110,7 +113,7 @@ function elimina(id){
 		  <tr> 
 			<td> 
 				<!-- contenuto-->
-				<?
+				<?php
 				$numrows=$tabella->set_dati("pratica=$idpratica");
 				if ($numrows){
 					$tabella->set_titolo("Eventi");
@@ -142,7 +145,7 @@ function elimina(id){
 		   
 		</TABLE>
 	</form>		
-	<?
+	<?php
 }	
 else{
 	//-<<<<<<<<<<<<<<<<<<<<<< VISUALIZZA ITER >>>>>>>>>>>>>>>>>>>>>>>>>>>----------------------->	
@@ -154,7 +157,7 @@ else{
 		  <TR> 
 			<TD> 
 			<!-- contenuto-->
-				<?
+				<?php
 					$tabella->set_titolo($titolo,"modifica");
 					$tabella->get_titolo();
 					if ($nrec)	

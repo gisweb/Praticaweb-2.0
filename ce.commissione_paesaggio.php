@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("login.php");
 $tabpath="ce";
 //print_r($_REQUEST);
@@ -25,7 +25,10 @@ include "./lib/tabella_h.class.php";
 <title>Convocazione Commmissione- <?=$titolo?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+    utils::loadJS();
+    utils::loadCss();
+?>
 <SCRIPT language=javascript>
 function link(id){
 	loc="ce.schedamembro.php?mode=view&comm_paesaggio=1&pratica=<?=$idcomm?>&id_persona="+id;
@@ -53,7 +56,7 @@ $_SESSION["ADD_NEW"]=0;
 			<!-- fine intestazione-->
 
 				<!-- contenuto-->
-				<?
+				<?php
 				$tabella=new Tabella_v($file_config.",$modo);
 				if ($modo=="edit") {
 					$tabella->set_dati("id=$idcomm");
@@ -75,7 +78,7 @@ $_SESSION["ADD_NEW"]=0;
 
 	<FORM name="commissione" method="post" action="praticaweb.php">
       
-				<?
+				<?php
 				$tabella->edita();
 				echo "\n<H2 class=\"blueBanner\">Soggetti partecipanti</H2>\n";
 				$tabella_partecipanti->elenco();

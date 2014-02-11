@@ -82,10 +82,12 @@ $_SESSION["TITOLO_".$idpratica]=  appUtils::titoloPratica($_REQUEST);
 		<TITLE><?=$_SESSION["TITOLO_".$idpratica]?></TITLE>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+		<?php
+                utils::writeJS();
+                utils::writeCSS();
+                ?>
 
 		<SCRIPT language=javascript src="src/iframe.js" type="text/javascript"></SCRIPT>
-              <SCRIPT language="javascript" src="/gisclient-2.1/public/jslib/GisClient.js" type="text/javascript"></SCRIPT>		
 
 </HEAD>
 <BODY >
@@ -110,7 +112,7 @@ $_SESSION["TITOLO_".$idpratica]=  appUtils::titoloPratica($_REQUEST);
 		   <!--<img src="images/pixel.gif" alt="" width="1" height="4" border="0">
 		   <IMG height=1 alt="" src="images/white.gif" width=160 align=bottom border=0>-->
 		   <!--*** elenco menu *** -->
-			<?
+			<?php
 			/*if ($is_commissione) 
 				$menu->get_list($idpratica);
 			else*/

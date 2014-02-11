@@ -14,7 +14,10 @@ include "./lib/tabella_h.class.php";
 <title>Sopralluogo</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <script language=javascript>
 function link(file){
 	window.open("foto/"+file,'new',"HEIGHT=400,WIDTH=500,menubar=false,toolbar=false,scrollbars=false,title=false");

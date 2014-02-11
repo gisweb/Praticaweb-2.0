@@ -1,4 +1,4 @@
-<?
+<?php
 include_once("login.php");
 include_once "./lib/tabella_v.class.php";
 $tabpath="pe";
@@ -14,7 +14,10 @@ $form=$_POST["form"];
 <title>Scheda - <?=$_SESSION["TITOLO_".$idpratica]?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<SCRIPT language="javascript" src="js/LoadLibs.js" type="text/javascript"></SCRIPT>
+<?php
+	utils::loadJS();
+	utils::loadCss();
+?>
 <script language=javascript>
 
 function elimina(id){
@@ -28,7 +31,7 @@ function elimina(id){
 
 </head>
 <body  background="">
-<?
+<?php
 if ($modo=="edit") { 
 		include "./inc/page_header.inc";	
 		$tabella=new tabella_v("$tabpath/doc_dettaglio",$modo);
@@ -46,7 +49,7 @@ if ($modo=="edit") {
 		  <tr> 
 			<td> 
 				<!-- contenuto-->
-				<?
+				<?php
 				$tabella->set_dati("id=$idallegato");
 				$tabella->edita();
 				?>
@@ -70,7 +73,7 @@ if ($modo=="edit") {
 				<td valign="bottom"><input name="azione" type="submit" class="hexfield" tabindex="14" value="Annulla"></td>				  </FORM>	
 			</tr>
 		</table>			
-<?
+<?php
 }else{		
 //<<<<<<<<<<<<<<<<<<<<<   MODALITA' VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->	
 		$tabella=new tabella_v("$tabpath/doc_dettaglio");
