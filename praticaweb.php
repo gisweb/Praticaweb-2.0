@@ -83,8 +83,8 @@ $_SESSION["TITOLO_".$idpratica]=  appUtils::titoloPratica($_REQUEST);
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<?php
-                utils::writeJS();
-                utils::writeCSS();
+                utils::loadJS();
+                utils::loadCss();
                 ?>
 
 		<SCRIPT language=javascript src="src/iframe.js" type="text/javascript"></SCRIPT>

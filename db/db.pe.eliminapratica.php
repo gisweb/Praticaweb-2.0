@@ -1,4 +1,4 @@
-<?php
+ <?php
 include("login.php");
 
 $prat=$_REQUEST['pratica'];

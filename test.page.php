@@ -3,12 +3,10 @@
 //$_SESSION['USER_ID']=1;
 require_once "login.php";
 $pratica=22444;
-$Errors=Array();
-$customData=Array();
+$sql="SELECT * FROM stp.e_modelli;";
+$dbh = utils::getDb();
+$sth=$dbh->prepare($sql);
+$sth->execute();
+$modelli=$sth->fetchAll();
 
-require_once LOCAL_LIB."../include/stampe.php";
-
-if ($Errors)
-    print_array($Errors);
-print_array($customData);
 ?>

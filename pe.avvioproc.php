@@ -23,8 +23,8 @@ foreach($res as $val){
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
-    utils::writeJS();
-    utils::writeCSS();
+    utils::loadJS();
+    utils::loadCss();
 
 ?>
 
@@ -77,7 +77,8 @@ foreach($res as $val){
 </FORM>
 <div id="result" style="width:800px;height:600px;display:none;"></div>
 <div id="waiting"></div>
-<?//include "./inc/inc.window.php"; // contiene la gesione della finestra popup
+<?php
+//include "./inc/inc.window.php"; // contiene la gesione della finestra popup
 }else{
 ?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->

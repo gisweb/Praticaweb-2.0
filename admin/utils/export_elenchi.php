@@ -20,8 +20,8 @@ $exportDir=DATA_DIR.implode(DIRECTORY_SEPARATOR,$localDir).DIRECTORY_SEPARATOR;
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <?php
-        utils::writeJS();
-        utils::writeCSS();
+        utils::loadJS();
+        utils::loadCss();
         ?>
         <script language="javascript">
             $(document).ready(function(){

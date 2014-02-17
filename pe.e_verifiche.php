@@ -17,9 +17,9 @@ $select='<select id="tipo" class="textbox">'.implode('',$options).'</select>';
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
-utils::writeJS();
-utils::writeJS(Array("jquery.easyui.min","locale/easyui-lang-it","searchResultView","init.search","message"));
-utils::writeCSS();
+utils::loadJS();
+utils::loadJS(Array("jquery.easyui.min","locale/easyui-lang-it","searchResultView","init.search","message"));
+utils::loadCss();
 ?>
 <link rel="stylesheet" type="text/css" href="/css/default/easyui.css">
 <link rel="stylesheet" type="text/css" href="/css/icon.css">

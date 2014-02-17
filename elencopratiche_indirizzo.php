@@ -11,9 +11,9 @@ $db=appUtils::getDb();
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
-    utils::writeJS();
-    utils::writeCSS();
-    utils::writeJS(Array('jquery.easyui.min','easyui-lang-it'));
+
+    utils::loadJS(Array('jquery.easyui.min','easyui-lang-it'));
+    utils::loadCSS(Array('default/easyui','icon'));
     $filtro=implode(' AND ',$filter);
     $q=$query["pratiche-civico"];
 	
@@ -22,46 +22,44 @@ $db=appUtils::getDb();
     $res=$db->fetchAll($sql);
     $result=appUtils::groupData('pratiche-civici',$res);
 ?>
-<link rel="stylesheet" type="text/css" href="/css/default/easyui.css">
-<link rel="stylesheet" type="text/css" href="/css/icon.css">
 <script>
     var pratiche=<?php echo json_encode($result);?>;
     
     $(document).ready(function(){
         if (pratiche.length>0){
-			$('#result-civici').tree({
-					title:'Elenco dei modelli di stampa',
-					data:pratiche,
-					formatter:function(node){
-						
-						if (node.children)
-							return sprintf('<b>%(text)s</b>',node);
-							
-						else
-							return sprintf('<input type="radio" value="%(numero)s" data-interno="%(interno)s" data-civico="%(civico)s" name="id" class="stiletabella" style="padding:10px;">%(text)s</input>',node);
-					},
-					onLoadSuccess:function(){
-						window.parent.$('#waiting').dialog('close');
-						window.parent.$('#result').dialog({
-							width:800,
-							height:600,
-							title:'Cartellina dell\'indirizzo'
-						});
-					}
-				});
-		}
-		else{
-			window.parent.$('#waiting').dialog('close');
-			$('#container-civici').html('<b>Nessuna pratica trovata </b>');
-			$('#seleziona').text('Chiudi');
-			window.parent.$('#result').dialog({
-					width:800,
-					height:600,
-					title:'Cartellina dell\'indirizzo'
-				});
-			
-			
-		}
+                    $('#result-civici').tree({
+                                    title:'Elenco dei modelli di stampa',
+                                    data:pratiche,
+                                    formatter:function(node){
+
+                                            if (node.children)
+                                                    return sprintf('<b>%(text)s</b>',node);
+
+                                            else
+                                                    return sprintf('<input type="radio" value="%(numero)s" data-interno="%(interno)s" data-civico="%(civico)s" name="id" class="stiletabella" style="padding:10px;">%(text)s</input>',node);
+                                    },
+                                    onLoadSuccess:function(){
+                                            window.parent.$('#waiting').dialog('close');
+                                            window.parent.$('#result').dialog({
+                                                    width:800,
+                                                    height:600,
+                                                    title:'Cartellina dell\'indirizzo'
+                                            });
+                                    }
+                            });
+            }
+            else{
+                    window.parent.$('#waiting').dialog('close');
+                    $('#container-civici').html('<b>Nessuna pratica trovata </b>');
+                    $('#seleziona').text('Chiudi');
+                    window.parent.$('#result').dialog({
+                                    width:800,
+                                    height:600,
+                                    title:'Cartellina dell\'indirizzo'
+                            });
+
+
+            }
         $('#seleziona').button().bind('click',function(event){
             event.preventDefault();
             var id=$("input[name='id']:checked").val();

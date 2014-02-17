@@ -11,7 +11,7 @@
         }
     };
     error_reporting(E_ERROR);
-    //error_reporting(E_ALL);
+
 	if (!session_id())
 		session_start();
 	$hostname=$_SERVER["HTTP_HOST"];

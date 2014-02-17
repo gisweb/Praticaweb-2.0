@@ -82,7 +82,7 @@ switch($action) {
 	case "printFieldsList":
 		$customData=Array();
 		if(file_exists(APPS_DIR."lib".DIRECTORY_SEPARATOR."print.fields.php")){
-			error_reporting(E_ALL);
+			//error_reporting(E_ALL);
 			include_once APPS_DIR."lib".DIRECTORY_SEPARATOR."print.fields.php";
 		}
 		$result=$customData;

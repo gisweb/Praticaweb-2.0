@@ -5,8 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
     require_once "login.php";
-    utils::writeCSS();
-    utils::writeJS();
+    utils::loadCss();
+    utils::loadJS();
 ?>
     <link rel="stylesheet" type="text/css" href="/css/default/easyui.css">
     <link rel="stylesheet" type="text/css" href="/css/icon.css">

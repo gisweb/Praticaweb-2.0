@@ -31,8 +31,8 @@ if ($azione){
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
-    utils::writeCSS();
-    utils::writeJS();
+    utils::loadCss();
+    utils::loadJS();
 ?>
 <script language=javascript>
 function confirmSubmit()

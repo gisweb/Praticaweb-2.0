@@ -12,22 +12,21 @@ include_once "lib/stampe.word.class.php";
 
 $doc=new wordDoc(0,0);
 $data=$doc->viewFieldList();
+//$data=  appUtils::groupData("print-field",$data);
 ?>
 <html>
 <head>
     <title>ELENCO MODELLI DI STAMPA</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <?php
-	utils::loadJS();
-	utils::loadCss();
+ <?php
+    utils::loadJS(Array('jquery.easyui.min','easyui-lang-it'));
+    utils::loadCSS(Array('default/easyui','icon'));
+    print_array($data1);
 ?>
-    <script src="/js/jquery.cookie.js" type="text/javascript"></script>
-
-    <link href="/css/ui.dynatree.css" rel="stylesheet" type="text/css">
-    <script src="/js/jquery.dynatree.js" type="text/javascript"></script>
+    
     <script>
-        var jsonDataArr = <?php echo $data?>;
+        var jsonDataArr = <?php echo json_encode($data);?>;
         
           $(document).ready(function(){
             $("#btn_close").button({
@@ -37,17 +36,18 @@ $data=$doc->viewFieldList();
                 event.preventDefault();
                 window.close();
             });
-            $("#tree").dynatree({
-                //title : 'Elenco dei campi unione',
-                children: jsonDataArr,
-                imagePath: "../images/"
+            $('#tree').tree({
+                data:jsonDataArr,
+                animate:true
             });
           });
     </script>
 </head>
 <body>
-<?include "./inc/inc.page_header.php";	?>
+<?php 
+include "./inc/inc.page_header.php";	
+?>
 <h2 class="blueBanner">Elenco dei campi unione dei modelli di stampa</h2>
-<div id="tree" style="margin-bottom: 10px;padding:10px;"></div>
+<ul id="tree" style="margin-bottom: 10px;padding:10px;"></ul>
 <div id="btn_close" style="margin-left:5px;margin-bottom: 20px;"/>
 </body>

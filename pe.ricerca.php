@@ -10,9 +10,9 @@ require_once APPS_DIR.'lib/tabella_v.class.php';
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
 <?php
-utils::writeJS();
-utils::writeJS(Array("jquery.easyui.min","locale/easyui-lang-it","searchResultView","init.search"));
-utils::writeCSS();
+utils::loadJS();
+utils::loadJS(Array("jquery.easyui.min","locale/easyui-lang-it","searchResultView","init.search"));
+utils::loadCss();
 ?>
 <link rel="stylesheet" type="text/css" href="/css/default/easyui.css">
 <link rel="stylesheet" type="text/css" href="/css/icon.css">

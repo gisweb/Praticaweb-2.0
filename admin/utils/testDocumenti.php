@@ -1,6 +1,6 @@
 <?php
 require_once '../../login.php';
-error_reporting(E_ALL);
+//error_reporting(E_ALL);
 $offset=($_REQUEST["offset"])?($_REQUEST["offset"]):('0');
 $sql="SELECT id FROM stp.e_modelli WHERE form='pe.avvioproc' AND id >199 ORDER BY nome LIMIT 10 OFFSET $offset;";
 $dbconn->sql_query($sql);

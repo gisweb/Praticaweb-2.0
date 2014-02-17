@@ -26,21 +26,7 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
 	utils::loadCss();
 ?>
 	<script>
-    $.widget( "custom.catcomplete", $.ui.autocomplete, {
-        _renderMenu: function( ul, items ) {
-          var that = this,
-            currentCategory = "";
-          
-          $.each( items, function( index, item ) {
-            if ( item.category != currentCategory ) {
-              ul.append( "<li class='ui-autocomplete-category'>" + item.category + "</li>" );
-              currentCategory = item.category;
-            }
-            that._renderItemData( ul, item );
-          });
-        }
-      });
-		$(document).ready(function(){
+    		$(document).ready(function(){
 			
 			$('#btn-print-fields').button({
 				icons:{primary:'ui-icon-info'},
@@ -123,14 +109,7 @@ elseif($modo=="view"){
       </TR>
     </TABLE>
 	
-    <style>
-    .ui-autocomplete-category {
-        font-weight: bold;
-        padding: .2em .4em;
-        margin: .8em 0 .2em;
-        line-height: 1.5;
-    }
-    </style>
+
     <div id="divPreview" style="display:none;">
         <fieldset>
             <legend>Numero Pratica</legend>
@@ -144,10 +123,9 @@ elseif($modo=="view"){
     </div>
 	
     <script>
-        
         $( "#numero" ).catcomplete({
-            minLength: 1,
-            //source : data,
+            minLength: 2,
+            
             source:function( request, response ) {
                 $.ajax({
                     url:'./services/xSuggest.php',
@@ -155,15 +133,17 @@ elseif($modo=="view"){
                     type:'POST',
                     data:{field:'numero-pratica',term:request.term},
                     success:function (data) {
+                        
                         response($.map(data, function (item) {
+                            
                             return {
                                 label: item.label,
                                 value: item.value,
                                 category: item.category // <-----
                             };
-                        }))
+                        }));
                     }
-                })
+                });
             },
             select:function(event,ui){
                 $('#numero').val(ui.item.value);

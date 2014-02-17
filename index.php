@@ -43,7 +43,8 @@ $last_change=shell_exec("git log -1 --pretty=format:'%ci'");
     <td width="768" height="30" valign="top">
     <H2 class=blueBanner>Sportello unico dell'Edilizia</H2>
 	
-<?/*INIZIO MODIFICHE*/
+<?php
+/*INIZIO MODIFICHE*/
 
 	if (file_exists($file)){
 		$rows=file($file);
@@ -61,7 +62,7 @@ $last_change=shell_exec("git log -1 --pretty=format:'%ci'");
 		</tr>
 	</table>
 	<UL>
-	<?			}
+	<?php			}
 			}
 		else{
 			list($permessi,$js,$param,$link,$text)=explode("@",$rows[$i]);

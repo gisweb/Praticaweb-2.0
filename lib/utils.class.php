@@ -16,7 +16,7 @@ class utils {
     const cssURL="/css";
     const cssLocalURL="/css/local";
     public static $js = Array('jquery-1.9.1','jquery-ui-1.10.2.min','jquery.ui.datepicker-it','jquery.dataTables.min','dataTables.date.order','window','praticaweb','page.controller','sprintf','jq.ui-extension');
-    public static $css = Array('praticaweb/jquery-ui-1.9.1.custom','styles','tabella_v','menu','jq.ui-extension');
+    public static $css = Array('praticaweb-1.10.4/jquery-ui.custom.min','styles','tabella_v','menu','jq.ui-extension');
     
     static function mergeParams($prms=Array(),$defaultParams=Array()){
         foreach($defaultParams as $key=>$val){
@@ -117,62 +117,7 @@ class utils {
             }
         }
     }
-    static function writeJS($f=Array(),$default=1){
-        if($default){
-            foreach(self::$js as $js){
-                $jsLocalURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],self::jsLocalURL,$js);
-                $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],self::jsURL,$js);
-                if (self::url_exists($jsLocalURL))
-                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsLocalURL);
-                elseif(self::url_exists($jsURL))
-                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsURL);
-                else
-                    $tag="";
-                echo $tag;
-            }
-        }
-        if (is_array($f) && count($f)){
-            foreach($f as $js){
-                $jsLocalURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],self::jsLocalURL,$js);
-                $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],self::jsURL,$js);
-                if (self::url_exists($jsLocalURL))
-                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsLocalURL);
-                elseif(self::url_exists($jsURL))
-                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsURL);
-                else
-                    $tag="";
-                echo $tag;
-            } 
-        }
-    }
-    static function writeCSS($f=Array(),$default=1){
-        if($default){
-            foreach(self::$css as $css){
-                $cssLocalURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],self::cssLocalURL,$css);
-                $cssURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],self::cssURL,$css);
-                if (self::url_exists($cssLocalURL))
-                    $tag=sprintf("\n\t\t<LINK media=\"screen\" href=\"%s\" type=\"text/css\" rel=\"stylesheet\"></link>",$cssLocalURL);
-                elseif(self::url_exists($jsURL))
-                    $tag=sprintf("\n\t\t<LINK media=\"screen\" href=\"%s\" type=\"text/css\" rel=\"stylesheet\"></link>",$cssURL);
-                else
-                    $tag="";
-                echo $tag;
-            } 
-        }
-        if (is_array($f) && count($f)){
-            foreach($f as $css){
-                $cssLocalURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],self::cssLocalURL,$css);
-                $cssURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],self::cssURL,$css);
-                if (self::url_exists($cssLocalURL))
-                    $tag=sprintf("\n\t\t<LINK media=\"screen\" href=\"%s\" type=\"text/css\" rel=\"stylesheet\"></link>",$cssLocalURL);
-                elseif(self::url_exists($jsURL))
-                    $tag=sprintf("\n\t\t<LINK media=\"screen\" href=\"%s\" type=\"text/css\" rel=\"stylesheet\"></link>",$cssURL);
-                else
-                    $tag="";
-                echo $tag;
-            }
-        }
-    }
+    
     static function rand_str($length = 8, $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'){
         // Length of character list
         $chars_length = (strlen($chars) - 1);
@@ -229,16 +174,7 @@ class utils {
         curl_close($ch);
         return $result;
     }
-    static function groupData($data=Array(),$groupField=Array(),$infoFields=Array()){
-        $result = Array();
-        for($j=0;$j<count($data);$j++){
-            $row=$data[$j];
-            for($i=0;$i<count($groupField);$i++){
-                $key=$groupField[$i];
-                
-            }
-        }
-    }
+    
     static function arrayGroupBy(array $arr, callable $key_selector) {
         $result = array();
         foreach ($arr as $i) {

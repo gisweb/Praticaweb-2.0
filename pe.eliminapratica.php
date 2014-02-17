@@ -51,7 +51,8 @@ if ($_REQUEST["ricerca"]){
 	</table>
 	</form>
 	
-<?}
+<?php
+}
 else{
 	include_once "./lib/tabella_h.class.php";
 	
@@ -110,6 +111,8 @@ else{
 		
 	</table>
 	</form>
-<?}?>
+<?php
+}
+?>
 </body>
 </html>

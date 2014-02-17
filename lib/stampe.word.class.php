@@ -112,17 +112,15 @@ class wordDoc {
         private function getFields(){
 		$db=$this->db;
                 $result=Array();
-                $result=$db->fetchAll("SELECT colonna||coalesce(' : '||descrizione,'') as title FROM stp.descrizioni_colonne_di_stampa WHERE tabella=? AND colonna <> 'pratica' ORDER BY 1;",Array(""));
-		/*foreach($this->query['single'] as $key=>$sql){
-                    $res=parse_query($sql);
-                    $result=array_merge($res,$result);
-                }*/
+                $result=$db->fetchAll("SELECT colonna as id,colonna||coalesce(' : '||descrizione,'') as text,'open' as state FROM stp.descrizioni_colonne_di_stampa WHERE tabella='' AND colonna <> 'pratica' ORDER BY 1;",Array());
+		
                 $views=$db->fetchAll("SELECT DISTINCT tabella FROM stp.descrizioni_colonne_di_stampa WHERE length(tabella)>0 ORDER BY 1");
                 foreach($views as $v){
                         $view=$v["tabella"];
-                        $ris=$db->fetchAll("SELECT colonna||coalesce(' : '||descrizione,'') as title FROM stp.descrizioni_colonne_di_stampa WHERE tabella=? AND colonna <> 'pratica' ORDER BY 1;",Array($view));
-                        $result[$view]=Array("title"=>$view,"isFolder"=>"true","key"=>$view,"children"=>$ris);
-                }       
+                        $ris=$db->fetchAll("SELECT colonna as id,colonna||coalesce(' : '||descrizione,'') as text,'open' as state FROM stp.descrizioni_colonne_di_stampa WHERE tabella=? AND colonna <> 'pratica' ORDER BY 1;",Array($view));
+                        $result[$view]=Array("id"=>$view,"text"=>$view,"state"=>"closed","key"=>$view,"children"=>$ris);
+                }
+                
 		$customFields=$result;
                 
                 /*if(file_exists(LOCAL_INCLUDE."cdu.php")){
@@ -139,7 +137,7 @@ class wordDoc {
 		$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
 
 		$this->getData();
-		$TBS->LoadTemplate($this->modelliDir.$this->modello);	
+		$TBS->LoadTemplate($this->modelliDir.$this->modello,OPENTBS_ALREADY_UTF8);	
 		$TBS->SetOption('noerr',true);
 		//$template = $PHPWord->loadTemplate($this->modelliDir.$this->modello);
 		foreach($this->data as $tb=>$data){
@@ -150,6 +148,18 @@ class wordDoc {
 
 		}
 		$TBS->MergeField("data", date("d/m/Y"));
+                /*Check if exists header and footer */
+                if($TBS->Plugin(OPENTBS_FILEEXISTS, "styles.xml")){
+                    $TBS->LoadTemplate("#styles.xml");
+                    foreach($this->data as $tb=>$data){
+			if (is_array($data))
+				$TBS->MergeBlock($tb, $data);
+			else
+				$TBS->MergeField($tb,$data);
+
+                    }
+                    $TBS->MergeField("data", date("d/m/Y"));
+                }
 		$pr=new pratica($this->pratica,$this->type);
 		if ($test==1){
 			$TBS->Show(TBS_OUTPUT);
@@ -166,7 +176,7 @@ class wordDoc {
             $data=$this->fields;
             asort($data);
             $data=array_values($data);
-            return json_encode($data);
+            return $data;
         }
         function setQuery(){
             

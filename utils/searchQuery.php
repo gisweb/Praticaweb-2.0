@@ -105,7 +105,7 @@ WHERE pratica IN (%s)
 %s %s LIMIT %s OFFSET %s     
 EOT;
 $query["pratiche-civico"]=<<<EOT
-SELECT A.pratica,A.numero,B.nome as tipo,C.nome as categoria,coalesce(data_presentazione,data_prot) as data,oggetto,richiedente,via,civico,interno
+SELECT A.pratica,A.numero,B.nome as tipo,C.nome as categoria,coalesce(data_presentazione,data_prot) as data,oggetto,richiedente,via,civico,interno,coalesce(cartella,A.pratica::varchar) as cartella
 FROM pe.avvioproc A LEFT JOIN 
 pe.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN
 pe.e_categoriapratica C ON(A.categoria=C.id) LEFT JOIN 

@@ -33,11 +33,12 @@ function readZippedXML($archiveFile, $dataFile) {
     return "";
 }
 
+$ext=($_REQUEST["ext"])?($_REQUEST["ext"]):('docx');
 $localDir=Array("praticaweb","modelli");
 $directory = DATA_DIR.implode(DIRECTORY_SEPARATOR,$localDir).DIRECTORY_SEPARATOR;
-echo "<p>Scanning Directory $directory</p>";
-//get all text files with a .txt extension.
-$files = glob($directory . "*.docx");
+echo "<p>Scanning Directory $directory for $ext extension</p>";
+//get all text files with a .docx extension.
+$files = glob($directory . "*.$ext");
 
 $substitutions=Array(
 "«NUMERO_PRATICA»"=>"[numero]",
