@@ -1,5 +1,6 @@
 <?php	
-if (($_POST["azione"]=="Salva") || ($_POST["azione"]=="Elimina") ){
+if (($_REQUEST["azione"]=="Salva") || ($_REQUEST["azione"]=="Elimina") ){
+    
 	include_once "./db/db.savedata.php"; 
 	if($_POST["mode"]=="new"){
 		$sql="update pe.esposti set termine_verifica=data_presentazione + INTERVAL '30 days'  where id=$lastid and termine_verifica is null;";

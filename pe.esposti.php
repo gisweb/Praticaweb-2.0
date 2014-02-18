@@ -47,6 +47,7 @@ function aggiungi_riferimento(id,pratica){
 				<td> 
 				<!-- contenuto-->
 				<?php
+                                print_array($Errors);
 				if($Errors){
 					$tabella->set_errors($Errors);
 					$tabella->set_dati($_POST);
