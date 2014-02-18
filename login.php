@@ -45,7 +45,7 @@
 		define('APPS_DIR',DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR,Array("apps",'praticaweb-2.0')).DIRECTORY_SEPARATOR);
 	}
 	
-	
+	//echo DATA_DIR.'config.php';
 	include_once DATA_DIR.'config.php';
         loadLibs();
 	/*require_once DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."lib".DIRECTORY_SEPARATOR."pratica.class.php";

@@ -1,9 +1,7 @@
 <html>
 <head>
-<?php
-    utils::loadJS();
-    utils::loadCss();
-?>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="/css/tabella_v.css" media="screen">
 </head>
 <body style="background-color:#FFFFFF">
 <?$menu=0;include ("./inc/inc.page_header.php")?>
