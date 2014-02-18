@@ -19,7 +19,7 @@ $tabpath="pe";
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
 <?php
-    utils::loadJS();
+    utils::loadJS(Array('init'));
     utils::loadCss();
 
 ?>
