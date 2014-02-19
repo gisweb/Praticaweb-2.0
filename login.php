@@ -13,50 +13,16 @@
     error_reporting(E_ERROR);
 
 	if (!session_id())
-		session_start();
-	$hostname=$_SERVER["HTTP_HOST"];
-	$tmp=explode(".",$hostname);
+	session_start();
+        $appsDir=  getcwd().DIRECTORY_SEPARATOR;
+        $dataDir=  getenv('PWDataDir');
+        if (!$dataDir) die("Manca la variabile d'ambiente PWDataDir nel file di configurazione di Apache.");
+        define('DATA_DIR',$dataDir);
+        define('APPS_DIR',$appsDir);
 
-	$user_data=$tmp[0];
-	if($user_data=='mappe') $user_data='savona';
-	$user_domain=$tmp[1];
-    
-	if (stristr(PHP_OS, 'WIN')){
-		if(in_array('castor',$tmp)){
-			define('DATA_DIR',implode(DIRECTORY_SEPARATOR,Array("E:","Dati",$user_data,"pe")).DIRECTORY_SEPARATOR);
-			define('APPS_DIR',implode(DIRECTORY_SEPARATOR,Array("E:","Applicazioni","praticaweb-2.0")).DIRECTORY_SEPARATOR);
-		}
-		elseif(in_array('becrux',$tmp)){
-			define('DATA_DIR',implode(DIRECTORY_SEPARATOR,Array("D:","ms4w",'data',$user_data,"pe")).DIRECTORY_SEPARATOR);
-			define('APPS_DIR',implode(DIRECTORY_SEPARATOR,Array("D:","ms4w","praticaweb-2.0")).DIRECTORY_SEPARATOR);
-		}
-		elseif(in_array('deneb',$tmp)){
-			define('DATA_DIR',implode(DIRECTORY_SEPARATOR,Array("D:","Applicazioni",'data',$user_data,"pe")).DIRECTORY_SEPARATOR);
-			define('APPS_DIR',implode(DIRECTORY_SEPARATOR,Array("D:","Applicazioni","apps","praticaweb-2.0")).DIRECTORY_SEPARATOR);
-		}
-		else{
-			//TODO
-		}
-		
-	}
-	else{
-            if ($hostname=='10.129.67.229' || $hostname=='vm-svsit') $user_data='savona';
-		define('DATA_DIR',DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR,Array("data",$user_data,"pe")).DIRECTORY_SEPARATOR);
-		define('APPS_DIR',DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR,Array("apps",'praticaweb-2.0')).DIRECTORY_SEPARATOR);
-	}
-	
-	//echo DATA_DIR.'config.php';
 	include_once DATA_DIR.'config.php';
         loadLibs();
-	/*require_once DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."lib".DIRECTORY_SEPARATOR."pratica.class.php";
-        if (file_exists(DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."lib".DIRECTORY_SEPARATOR."app.utils.class.php")){
-            require_once DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."lib".DIRECTORY_SEPARATOR."app.utils.class.php";
-        }
-        else {
-            require_once APPS_DIR."lib".DIRECTORY_SEPARATOR."app.utils.class.php";
-        }
-        require_once DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."lib".DIRECTORY_SEPARATOR."utils.class.php";
-	require_once APPS_DIR."lib".DIRECTORY_SEPARATOR."menu.class.php";*/
+
 	
 	//per il debug
 	$dbconn=new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
