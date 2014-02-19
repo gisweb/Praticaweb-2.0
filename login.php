@@ -14,9 +14,10 @@
 
 	if (!session_id())
 	session_start();
-        $appsDir=  getcwd().DIRECTORY_SEPARATOR;
+        $appsDir=  getenv('PWAppsDir');
         $dataDir=  getenv('PWDataDir');
         if (!$dataDir) die("Manca la variabile d'ambiente PWDataDir nel file di configurazione di Apache.");
+        if (!$appsDir) die("Manca la variabile d'ambiente PWAppsDir nel file di configurazione di Apache.");
         define('DATA_DIR',$dataDir);
         define('APPS_DIR',$appsDir);
 
