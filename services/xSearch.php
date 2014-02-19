@@ -4,7 +4,7 @@ include_once "../login.php";
 
 $query=Array();
 require_once APPS_DIR.'utils/searchQuery.php';
-error_reporting(E_ALL);
+error_reporting(E_ERROR);
 
 
 
