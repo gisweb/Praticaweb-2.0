@@ -59,7 +59,7 @@
             this.close();
         }
     });
-    $.widget( "custom.combobox", {
+    /*$.widget( "custom.combobox", {
       _create: function() {
         this.wrapper = $( "<span>" )
           .addClass( "custom-combobox" )
@@ -185,7 +185,7 @@
         this.wrapper.remove();
         this.element.show();
       }
-    });
+    });*/
   })( jQuery );
   
   $.widget( "custom.catcomplete", $.ui.autocomplete, {

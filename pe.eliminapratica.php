@@ -10,8 +10,17 @@ include_once "./lib/tabella_v.class.php";
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
-    utils::loadJS(Array("jquery.easyui.min","locale/easyui-lang-it","searchResultView","init.search","form/eliminapratica"));
+    utils::loadJS(Array('easyloader','init.search'));
     utils::loadCss(Array("default/easyui","icon"));
+?>
+<script>
+        easyloader.base='./js/';
+        easyloader.css=false;
+        easyloader.load('datagrid');
+        easyloader.locale='it';     
+</script>
+<?php
+    utils::loadJS(Array('form/eliminapratica'));
 ?>
 </head>
 <body>
@@ -42,7 +51,9 @@ include "./inc/inc.page_header.php";
         </table>
         <div style="margin-top:20px;">
             <button id="btn-back">Torna alla Ricerca</button>
+            <button id="btn-delete">Elimina Pratica</button>
         </div>
+        <div id="delete-dialog"></div>
     </div>
 </body>
 </html>

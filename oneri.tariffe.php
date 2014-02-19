@@ -1,10 +1,6 @@
 <?php
 //print_r($_REQUEST);
 include_once ("login.php");
-if ($_SESSION["PERMESSI"]>2){
-	include_once HOME;
-	exit;
-}
 include "./lib/tabella_v.class.php";
 include "./lib/tabella_h.class.php";
 $tabpath="oneri";
@@ -24,7 +20,7 @@ if ($_POST["azione"]=="Salva") {
 ?>
 <html>
 <head>
-<title>Aggiornamento tariffe Oneri</title>
+<title>Tariffe Oneri</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
@@ -74,11 +70,11 @@ if ($modo=="new") {
 
 <?php
 include "./inc/inc.window.php";
-} elseif ($modo=="view") {
+} elseif ($modo=="edit") {
 	
 	$tabella=new Tabella_h($file_config);					
-	unset($_SESSION["ADD_NEW"]);?>
-<body>
+	unset($_SESSION["ADD_NEW"]);
+?>
 	<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">
 		<TR>
 			<TD>

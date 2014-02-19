@@ -15,7 +15,7 @@ class utils {
     const jsLocalURL = "/js/local";
     const cssURL="/css";
     const cssLocalURL="/css/local";
-    public static $js = Array('jquery-1.9.1','jquery-ui-1.10.2.min','jquery.ui.datepicker-it','jquery.dataTables.min','dataTables.date.order','window','praticaweb','page.controller','sprintf','jq.ui-extension');
+    public static $js = Array('jquery-1.9.1','jquery-ui-1.10.2.min','jquery.ui.datepicker-it','jquery.dataTables.min','dataTables.date.order','window','praticaweb','page.controller','sprintf','jq.ui-extension','message');
     public static $css = Array('praticaweb-1.10.4/jquery-ui.custom.min','styles','tabella_v','menu','jq.ui-extension');
     
     static function mergeParams($prms=Array(),$defaultParams=Array()){

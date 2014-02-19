@@ -107,6 +107,10 @@ switch($action) {
                 $result[]=$sql;
             }
             break;
+        case "delete-pratica":
+            if($_REQUEST["pratica"])
+                $db->delete('pe.avvioproc',Array("pratica"=>$_REQUEST["pratica"]));
+            break;
 	default:
 		break;
 }

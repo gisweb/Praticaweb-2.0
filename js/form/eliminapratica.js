@@ -1,3 +1,4 @@
+
     $(document).ready(function(){
         $(".textbox").bind("keyup",function(event){
             if(event.keyCode == 13){
@@ -5,14 +6,41 @@
             }
         });
         $( "#result-container" ).hide();
-        $('#btn-report').button({
-            icons:{primary:'ui-icon-document'}
+        $('#btn-delete').button({
+            icons:{primary:'ui-icon-trash'},
+            disabled: true
         }).bind('click',function(event){
             event.preventDefault();
-            $('#frm-report').remove();
-            $('body').append('<form id="frm-report" action="./services/xReport.php" method="POST" target="reportPraticaweb"><input type="hidden" value="" name="elenco" id="elencopratiche"/></form>')
-            $('#elencopratiche').val($('#elenco').val())
-            $('#frm-report').submit();
+            var d = $("input[type=radio]:checked").data();
+            var pr = $("input[type=radio]:checked").attr('id');
+            var t = sprintf(pwMessage['delete_pratica'],d);
+            $("#delete-dialog").html(t);
+            $("#delete-dialog").dialog({
+                title:"Conferma la cancellazione",
+                resizable: false,
+                width:600,
+                height:200,
+                modal: true,
+                buttons: {
+                    Elimina: function() {
+                      var pr = $("input[type=radio]:checked").attr('id');
+                        $.ajax({
+                            url:serverUrl,
+                            type    : 'POST',
+                            data    : {action:'delete-pratica',pratica:pr},
+                            dataType:'json',
+                            success : function(data, textStatus, jqXHR){
+                                $('#result-table').datagrid('reload');
+                                $("#delete-dialog").dialog('close');
+                            }
+                        });
+                    },
+                    Annulla: function() {
+                      $( this ).dialog( "close" );
+                    }
+                }
+            });
+            
         });
         $('#btn-back').button({
             icons:{primary:'ui-icon-arrowreturnthick-1-w'}
@@ -42,18 +70,23 @@
                 url:searchUrl,
                 method:'post',
                 nowrap:false,
-                //columns:colsDef['pratica'],
+                columns:colsDef['delete'],
                 fitColumns:false,
                 pagination:true,
                 autoRowHeight:true,
 
                 queryParams:{data:dataPost,action:'search',op:oper},
-                view: myview,
-                /*detailFormatter:function(index,row){
+                /*view: myview,
+                detailFormatter:function(index,row){
                     return '<div class="ddv" style="padding:5px 0;background-color:#EEF7FF"></div>';
                 },*/
                 onLoadSuccess:function(data){
-                    $('#elenco').val(data['elenco_id']);
+                    $('#btn-delete').button('disable');
+                    $(".delete-radio").bind('change',function(event){
+                        $('#btn-delete').button('enable');
+                        $('#btn-delete').attr('data-testo',$(this).attr('data-testo'));
+                        $('#btn-delete').attr('data-id',$(this).attr('id'));
+                    });
                 }
                 
             });
