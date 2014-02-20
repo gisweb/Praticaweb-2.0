@@ -10,7 +10,7 @@ require_once APPS_DIR.'lib/tabella_v.class.php';
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
 <?php
-utils::loadJS(Array("jquery.easyui.min","locale/easyui-lang-it","searchResultView","init.search"));
+utils::loadJS(Array("jquery.easyui.min","locale/easyui-lang-it","searchResultView","init.search","form/ricerca"));
 utils::loadCss(Array("default/easyui","icon"));
 ?>
 
@@ -23,70 +23,7 @@ utils::loadCss(Array("default/easyui","icon"));
 </style>
 
 <script language="javascript">
-    $(document).ready(function(){
-        $(".textbox").bind("keyup",function(event){
-            if(event.keyCode == 13){
-                $("#avvia-ricerca").click();
-            }
-        });
-        $( "#result-container" ).hide();
-        $('#btn-report').button({
-            icons:{primary:'ui-icon-document'}
-        }).bind('click',function(event){
-            event.preventDefault();
-            $('#frm-report').remove();
-            $('body').append('<form id="frm-report" action="./services/xReport.php" method="POST" target="reportPraticaweb"><input type="hidden" value="" name="elenco" id="elencopratiche"/></form>')
-            $('#elencopratiche').val($('#elenco').val())
-            $('#frm-report').submit();
-        });
-        $('#btn-back').button({
-            icons:{primary:'ui-icon-arrowreturnthick-1-w'}
-        }).bind('click',function(event){
-            event.preventDefault();
-            $( "#result-container" ).hide( 'slide', 500 );
-            $( "#ricerca" ).show( 'slide', 500 );
-        });
-        $('#btn-close').button({
-            icons:{primary:'ui-icon-circle-close'}
-        }).bind('click',function(event){
-            event.preventDefault();
-            closeWindow();
-        });
-        
-        $('#avvia-ricerca').button({
-            icons:{primary:'ui-icon-search'}
-        }).bind('click',function(event){
-
-            event.preventDefault();
-            var oper=$('#op').val();
-            dataPost=getSearchFilter();
-            $('#ricerca').hide('slide',500);
-            $('#result-container').show('slide',500);
-            $('#result-table').datagrid({
-                title:'Risultato della ricerca',
-                url:searchUrl,
-                method:'post',
-                nowrap:false,
-                //columns:colsDef['pratica'],
-                fitColumns:false,
-                pagination:true,
-                autoRowHeight:true,
-
-                queryParams:{data:dataPost,action:'search',op:oper},
-                view: myview,
-                /*detailFormatter:function(index,row){
-                    return '<div class="ddv" style="padding:5px 0;background-color:#EEF7FF"></div>';
-                },*/
-                onLoadSuccess:function(data){
-                    $('#elenco').val(data['elenco_id']);
-                }
-                
-            });
-        });
-    });
-    var result={};
-
-var dataPost={};
+    
 </script>
 </head>
 <body>
@@ -104,13 +41,26 @@ var dataPost={};
 		  <tr> 
 			<td> 			
 				<!-- ricerca base pratica -->
-                            <?php
-                            
-                            $tabella=new tabella_v("pe/ricerca.tab",'standard');
-                            $tabella->edita();?>
-				<!-- ricerca avanzata pratica -->
+<?php
 
+$tabella=new tabella_v("pe/ricerca.tab",'standard');
+$tabella->edita();
+    /*Ricerca Avanza*/
 
+if (file_exists(TAB."pe/ricerca_avanzata.tab")){
+    $tabella_avanzata=new tabella_v("pe/ricerca_avanzata.tab",'standard');
+    ob_start();
+    $tabella_avanzata->edita();
+    $table=ob_get_contents();
+    ob_end_clean();
+    echo <<<EOT
+    <input type="checkbox" class="textbox" id="chk-avanzata">Ricerca Avanzata</input> 
+    <div id="ricerca-avanzata" style="display:none;">
+        $table
+    </div>
+EOT;
+}
+?>
 			</td>
 		  </tr>
 		  <tr> 
