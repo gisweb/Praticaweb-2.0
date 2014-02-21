@@ -22,7 +22,7 @@ elseif ($azione=="Elimina"){
 	include_once "./db/db.savedata.php";
 }
 
-$sqlElencoVincoli="SELECT DISTINCT vincolo.nome_vincolo, COALESCE(vincolo.descrizione, vincolo.nome_vincolo) AS descrizione, vincolo.ordine FROM vincoli.vincolo INNER JOIN vincoli.tavola USING (nome_vincolo) WHERE tavola.pe = 1 ORDER BY vincolo.ordine";
+$sqlElencoVincoli="SELECT DISTINCT vincolo.nome_vincolo, COALESCE(vincolo.descrizione, vincolo.nome_vincolo) AS descrizione, vincolo.ordine FROM vincoli.vincolo INNER JOIN vincoli.tavola USING (nome_vincolo)  WHERE tavola.pe = 1 ORDER BY vincolo.ordine";
 
 ?>
 <html>
@@ -32,11 +32,11 @@ $sqlElencoVincoli="SELECT DISTINCT vincolo.nome_vincolo, COALESCE(vincolo.descri
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
-	utils::loadJS();
+	utils::loadJS(Array("form/vincoli"));
 	utils::loadCss();
 ?>
-<SCRIPT language="javascript" src="src/http_request.js" type="text/javascript"></SCRIPT>
-<SCRIPT language="javascript" src="src/x_core.js" type="text/javascript"></SCRIPT>
+<!--<SCRIPT language="javascript" src="src/http_request.js" type="text/javascript"></SCRIPT>
+<SCRIPT language="javascript" src="src/x_core.js" type="text/javascript"></SCRIPT>-->
 <script language="javascript">
 
 function confirmSubmit()
@@ -151,7 +151,8 @@ foreach($elenco_vincoli as $row){
 		  <TR> 
 			<TD> 
 			<!--  intestazione-->
-				<?//$tabella_zone->get_titolo();
+				<?php
+                                //$tabella_zone->get_titolo();
 				print ("<b>$nome_vincolo</b>");
 				if ($num_zone) 
 						$tabella_zone->elenco();
@@ -161,7 +162,10 @@ foreach($elenco_vincoli as $row){
 			</TD>
 		  </TR>
 <?php }// end for
-echo "</TABLE>";
+echo <<<EOT
+              </TABLE>
+              <INPUT TYPE="hidden" id="mode" value="$modo"/>
+EOT;
 }//end if
 ?>
 </body>

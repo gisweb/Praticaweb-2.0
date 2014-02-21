@@ -33,6 +33,7 @@ function get_cella($row,$col){
 	$w=$this->def_col[$col][2];//larghezza del campo
 	$tipo=trim($this->def_col[$col][3]);//tipo del campo
         $classe=($this->array_dati[$row]["row_class"])?(' class="'.$this->array_dati[$row]["row_class"].'"'):("");
+        $dati=$this->array_dati[$row];
 	//echo "<p>Riga $row $nome : $valore</p>";
 	switch ($tipo){//tipo campo in configfile
 		case "idriga":
@@ -319,6 +320,26 @@ function get_cella($row,$col){
 			$size=explode("x",$w);
 			$retval="<td$classe valign=\"middle\" width=\"$size[0]\">".$this->get_selectdb_value($valore,"id",$size[1],"opzione")."</td>";
 			break;	
+                case "folder":
+                    $campo=$nome;
+                    $prms=explode('#',$w);
+                    $size=array_shift($prms);
+                    $class=array_shift($prms);
+                    $testo=array_shift($prms);
+                    for($i=0;$i<count($prms);$i++){
+                        $tmp=explode(":",$prms[$i]);
+                        $params[]=(count($tmp)==2)?("data-$tmp[0]=\"$tmp[1]\""):("data-$prms[$i]=\"".$dati[$prms[$i]]."\"");
+                    }
+
+                    $h=implode(" ",$params);
+
+                    if (isset($this->params))
+                        foreach($this->params as $k=>$v){
+                            $params[$k]=$v;
+                        }
+                    $obj=json_encode($params);
+                    $retval=($dati[$campo])?("<td$classe valign=\"middle\" width=\"$size[0]\"><a href=\"#\" id=\"$campo\" style=\"text-decoration:none;\" $h>$testo &nbsp;<span style=\"display:inline-block\" class=\"ui-icon $class\"></a></td>"):('<td>&nbsp;</td>');
+                    break;
 	}
 	return $retval;
 }	
