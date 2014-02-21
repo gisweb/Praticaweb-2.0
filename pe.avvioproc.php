@@ -10,10 +10,11 @@ $file_config="$tabpath/avvio_procedimento";
 $intestazione='Avvio del procedimento e comunicazione responsabile';
 include "./lib/tabella_v.class.php";
 $db=appUtils::getDB();
-$sql="SELECT A.id,B.id as tipo,A.nome FROM pe.e_categoriapratica A inner join pe.e_tipopratica B ON(tipo=tipologia) WHERE A.enabled=1 AND B.enabled=1;";
+$sql="SELECT A.id,B.id as tipo,A.nome,B.nome as tipopratica FROM pe.e_categoriapratica A inner join pe.e_tipopratica B ON(tipo=tipologia) WHERE A.enabled=1 AND B.enabled=1;";
 $res=$db->fetchAll($sql);
 foreach($res as $val){
     $categoria[$val["tipo"]][]=Array("id"=>$val["id"],"opzione"=>$val["nome"]);
+    $tipopratica[$val["tipo"]]=$val["tipopratica"];
 }
 
 ?>
@@ -22,20 +23,18 @@ foreach($res as $val){
     <title>Avvio Procedimento - <?=$_SESSION["TITOLO_".$idpratica]?></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <script>
+        var selectdb = new Object;
+        selectdb['categoria'] = <?php print json_encode($categoria)?>;
+        selectdb['tipo'] = <?php print json_encode($tipopratica)?>;
+    </script>
 <?php
-    utils::loadJS();
+    utils::loadJS(Array('form/avvioproc'));
     utils::loadCss();
 
 ?>
 
-    <script>
-    var selectdb = new Object;
-    selectdb['categoria'] = <?php print json_encode($categoria)?>;
-    $(document).ready(function(){
-        if ($('#mode').val()=='new') $('#tipo').trigger('change');
-        
-    });
-    </script>
+    
 </head>
 
 <body>
@@ -99,6 +98,7 @@ foreach($res as $val){
 			 </TD>
 	      </TR>
 		</TABLE>
+                <input name="mode" type="hidden" id="mode" value="<?=$modo?>">
 <?php
 }
 ?>

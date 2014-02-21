@@ -537,6 +537,25 @@ function get_dato($tipo,$w,$campo){
             $obj=json_encode($params);
             $retval=($dati[$campo])?("<a href='javascript:goToPratica(\"$form.php\",$obj)'><img title=\"Visualizza la pratica\" src=\"images/view.png\" border=\"0\"></a>"):('');
             break;
+            case "folder":
+                $prms=explode('#',$w);
+                $size=array_shift($prms);
+                $class=array_shift($prms);
+                $testo=array_shift($prms);
+                for($i=0;$i<count($prms);$i++){
+                    $tmp=explode(":",$prms[$i]);
+                    $params[]=(count($tmp)==2)?("data-$tmp[0]=\"$tmp[1]\""):("data-$prms[$i]=\"".$dati[$prms[$i]]."\"");
+                }
+                
+                $h=implode(" ",$params);
+                
+                if (isset($this->params))
+                    foreach($this->params as $k=>$v){
+                        $params[$k]=$v;
+                    }
+                $obj=json_encode($params);
+                $retval=($dati[$campo])?("<a href=\"#\" id=\"$campo\" style=\"text-decoration:none;\" $h>$testo &nbsp;<span style=\"display:inline-block\" class=\"ui-icon $class\"></a>"):('');
+                break;
 			
 	}
 	return $retval;

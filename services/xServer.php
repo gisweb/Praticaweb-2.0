@@ -6,6 +6,11 @@ $db=  appUtils::getDB();
 $result=Array();
 $action=(isset($_REQUEST["action"]) && $_REQUEST["action"])?($_REQUEST["action"]):("");
 switch($action) {
+        case "list-pratiche-folder":
+            $sql="SELECT pratica,B.nome as tipo,A.numero,coalesce(data_presentazione,data_prot) as data FROM pe.avvioproc A INNER JOIN pe.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN pe.e_categoriapratica C ON (coalesce(A.categoria,0)=C.id)  WHERE cartella=? AND pratica <> ? ORDER BY data_presentazione DESC;";
+            $result=$db->fetchAll($sql,Array($_REQUEST["value"],$_REQUEST["pratica"]));
+            
+            break;
         case "check-draw":
             $tipo=$_REQUEST["tipo"];
             $sql="SELECT id FROM pe.e_verifiche WHERE codice=?";
