@@ -138,7 +138,7 @@ if ($_POST["azione"]!="Elimina"){
 	$B2=$B2*$sup;
 	
 	$sql="update oneri.calcolati set cc=$CC,b1=$B1,b2=$B2 where id=$id;"; 
-        echo "<p>$sql</p>";
+        //echo "<p>$sql</p>";
 	$db->sql_query($sql);
 	print_debug($sql);
 }
