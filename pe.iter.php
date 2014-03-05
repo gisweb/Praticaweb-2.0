@@ -6,7 +6,7 @@ $tabpath="pe";
 $idpratica=$_REQUEST["pratica"];
 $modo=(isset($_REQUEST["mode"]) && $_REQUEST["mode"])?($_REQUEST["mode"]):('view');
 $today=date('j-m-y'); 
-
+$titolo="Iter - ".$_SESSION["TITOLO_".$idpratica];
 $pr=new pratica($idpratica);
 $pr->createStructure();
 
@@ -150,7 +150,7 @@ else{
 			<TD> 
 			<!-- contenuto-->
 				<?php
-					$tabella->set_titolo($titolo,"modifica");
+					$tabella->set_titolo($titolo);
 					$tabella->get_titolo();
 					if ($nrec)	
 						$tabella->elenco();
