@@ -36,71 +36,11 @@
             //numerazione automatica
             $data_presentazione=$_POST["data_presentazione"];
             $tipo_pratica=$_POST["tipo"];
-            $resp_proc=$_POST['resp_proc'];
-            //$pr->addScadenze($tipo_pratica);
-        //$numero=preg_replace("|([^A-z0-9\-]+)|",'',str_replace('/','-',str_replace('\\','-',$numero)));
-		//Aggiungo il menù della nuova pratica alla tabella menu	
-		$menu->list_menu($idpratica,$_POST["tipo"]);
+            $resp_proc=$_POST['resp_proc'];	
+            $menu->list_menu($idpratica,$_POST["tipo"]);
 		
 		
-		//Inserisco le scadenze per inizio lavori DIA
-		/*if ($_POST["tipo"]>=10000 && $_POST["tipo"]<11000){
-			$data_prot=$_POST["data_prot"];
-			$pr->setDateLavori($data_prot);
-		}*/
-
-		//inserisco i dati relativi ai riferimenti:
-            /*if ($_POST["rif_pratica"]){
-                include ("db.pe.importa_pratica.php");
-            }
-            else{
-		$sql="UPDATE pe.avvioproc SET aut_amb=null WHERE pratica=$idpratica";
-                $db->sql_query($sql);   
-            }*/
-            /*if ($_POST["rif_pratica"]){
-                //esiste la pratica di riferimento importo tutti i dati della pratica di riferimento
-                $ref=$_POST["rif_pratica"];
-                $sql="SELECT pratica FROM pe.avvioproc WHERE numero='$ref'";
-                $db->sql_query($sql);
-                $refid=$db->sql_fetchfield('pratica');
-                include ("db.pe.importa_pratica.php");
-            }
-            elseif ($_POST["riferimento"]){
-                $newref=$_POST["riferimento"];
-                $newref=addslashes($newref);
-                //aggiungo il riferimento e lo assegno alla pratica
-                $db->sql_query ("insert into pe.riferimenti (descrizione) values ('$newref')");
-                $idref=$db->sql_nextid();
-                $db->sql_query ("update pe.avvioproc set riferimento=$idref where pratica=$idpratica");
-                //aggiungo i riferimenti territoriali inseriti: via e civico
-                if($_POST["via"]){
-                        $sqlcampi="via";
-                        $sqlvalori="'".htmlentities(addslashes($_POST["via"]))."'";
-                        if($_POST["civico"]){
-                                $sqlcampi.=",civico";
-                                $sqlvalori.=",'".htmlentities(addslashes($_POST["civico"]))."'";
-                        }
-                        $sql="insert into pe.indirizzi (pratica,$sqlcampi,uidins,tmsins) values ($idpratica,$sqlvalori,".$_SESSION["USER_ID"].",".time().")"; 
-                        //if(DEBUG) echo $sql;
-                        $db->sql_query($sql);
-                }
-			//aggiungo i riferimenti territoriali inseriti: catasto terreni
-			if($_POST["ctfoglio"]){
-				$sqlcampi="foglio";
-				$sqlvalori="'".htmlentities(addslashes($_POST["ctfoglio"]))."'";
-				if($_POST["ctsezione"]){
-					$sqlcampi.=",sezione";
-					$sqlvalori.=",'".htmlentities(addslashes($_POST["ctsezione"]))."'";
-				}
-				if($_POST["ctmappale"]){
-					$sqlcampi.=",mappale";
-					$sqlvalori.=",'".htmlentities(addslashes($_POST["ctmappale"]))."'";					
-				}
-				$sql="insert into pe.cterreni (pratica,$sqlcampi,uidins,tmsins) values ($idpratica,$sqlvalori,".$_SESSION["USER_ID"].",".time().")"; 
-				//if(DEBUG) echo $sql;
-				$db->sql_query($sql);
-			}
-		}*/
+		
 	}//fine sezione nuova pratica
 	
 	//aggiorno una pratica esistente

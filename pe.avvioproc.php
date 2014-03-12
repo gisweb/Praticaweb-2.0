@@ -68,8 +68,6 @@ foreach($res as $val){
 
 		</TABLE>
 <input name="active_form" type="hidden" value="pe.avvioproc.php">				
-<input name="refpratica" type="hidden" value="<?=$_POST["refpratica"]?>">
-<input name="riferimento" type="hidden" value="<?=$_POST["riferimento"]?>">				
 <input name="oldtipo" type="hidden" value="<?=$tabella->get_campo("tipo")?>">
 
 <input name="mode" type="hidden" id="mode" value="<?=$modo?>">

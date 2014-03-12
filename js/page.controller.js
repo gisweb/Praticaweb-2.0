@@ -56,5 +56,14 @@ $(document).ready(function(){
 				title:'Attenzione'
 			})
 	});
+        $(document).keypress(function(event){
+            console.log($(document.activeElement));
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if(keycode == '13'){
+                    alert('You pressed a "enter" key in somewhere');	
+            }
+
+        });
+        $('textarea').off('keypress');
 });
 
