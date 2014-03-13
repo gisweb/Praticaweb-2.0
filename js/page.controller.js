@@ -24,16 +24,12 @@ $(document).ready(function(){
            window.open(window.parent.url_documenti+url,'stampe');
        });
    });
-   $(".textbox").bind("keyup",function(event){
-            if(event.keyCode == 13){
-                $("#azione-salva").click();
-            }
-        });
-	$("#btn_elenco_pratiche_indirizzi").button({
+
+    $("#btn_elenco_pratiche_indirizzi").button({
         icons: {
             primary: "ui-icon-gear"
         }
-   }).bind('click',function(event){
+    }).bind('click',function(event){
        
 		var baseURL='/elencopratiche_indirizzo.php'
 		event.preventDefault();
@@ -60,10 +56,17 @@ $(document).ready(function(){
             console.log($(document.activeElement));
             var keycode = (event.keyCode ? event.keyCode : event.which);
             if(keycode == '13'){
-                    alert('You pressed a "enter" key in somewhere');	
+                if (!$(document.activeElement).is('textarea')){
+                    event.preventDefault();
+                    if ($("#azione-salva"))  $("#azione-salva").click(); 
+                    else if ($("#print_btn")) $("#print_btn").click();
+                    else if ($("#avvia-ricerca")) $("#avvia-ricerca").click();
+                    else if ($("#print_btn")) $("#print_btn").click();
+                    
+                }
             }
 
         });
-        $('textarea').off('keypress');
+        
 });
 
