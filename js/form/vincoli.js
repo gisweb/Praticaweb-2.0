@@ -6,9 +6,9 @@ $(document).ready(function(){
             var url=sprintf('%(dir)s%(file)s',d); 
             $(v).bind('click',function(event){
                 event.preventDefault();
-                
-                window.open(url);
-                
+                /*$("#normativa-div").dialog({modal:true,width:800,height:600});
+                $('#norma-frame').attr('url',url);*/
+                window.open(url,'normativa','',true);
             });
         });
     }
