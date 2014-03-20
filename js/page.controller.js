@@ -1,4 +1,10 @@
 $(document).ready(function(){
+    function getkeys(foo){
+        var keys = $.map(foo, function(item, key) {
+            return key;
+        }); 
+        return keys;
+    }
    $.each($('.textbox-date'),function(k,v){
        $(v).datepicker({
             dateFormat:'dd-mm-yy',
@@ -67,6 +73,27 @@ $(document).ready(function(){
             }
 
         });
-        
+        $("[data-plugins='open-page']").bind('click',function(event){
+            var prms=$(this).data();
+            var form='<form action="'+prms['action']+'" method="POST" id="submitFrm"></form>';
+            delete prms['plugins'];
+            delete prms['action'];
+            if (!window.parent){
+                $(form).appendTo('body');
+                $.each(prms,function(k,v){
+                    $('<input type="hidden" name="'+k+'" value="'+v+'">').appendTo($('#submitFrm'));
+                });
+                 $('#submitFrm').submit();
+            }
+            else{
+                $(form).appendTo($('body',window.parent.document));
+                $.each(prms,function(k,v){
+                    $('<input type="hidden" name="'+k+'" value="'+v+'">').appendTo($('#submitFrm',window.parent.document));
+                });
+                $('#submitFrm',window.parent.document).submit();
+            }
+            
+            
+        });
 });
 

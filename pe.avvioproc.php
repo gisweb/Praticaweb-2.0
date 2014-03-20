@@ -40,6 +40,15 @@ foreach($res as $val){
 <body>
 <?php
  if (($modo=="edit") or ($modo=="new")) {
+        if ($_REQUEST["dati_chiusura"]){
+            $file_config="$tabpath/chiusura";
+            $intestazione='Dati di chiusura del procedimento';            
+        }
+        else{
+           
+             $file_config="$tabpath/avvio_procedimento";
+            $intestazione='Avvio del procedimento e comunicazione responsabile';
+        }
 
 	$tabella=new Tabella_v($file_config,$modo);					
 	unset($_SESSION["ADD_NEW"]);	
@@ -88,10 +97,17 @@ foreach($res as $val){
 				<?php
                 $pr=new pratica($idpratica);
                 $tabella=new tabella_v($file_config,"view");
-				$tabella->set_titolo("Dati della pratica","modifica");
-				$nrec=$tabella->set_dati("pratica=$idpratica");
-				$tabella->elenco();
-				$tabella->close_db();?>
+                $tabella->set_titolo("Dati della pratica","modifica");
+                $nrec=$tabella->set_dati("pratica=$idpratica");
+                $tabella->elenco();
+                $tabella->close_db();
+                if (file_exists(TAB."$tabpath/chiusura.tab")){
+                    $tabella=new tabella_v("$tabpath/chiusura","view");
+                    $tabella->set_titolo("Dati di chiusura della pratica","modifica",Array("dati_chiusura"=>1));
+                    $nrec=$tabella->set_dati("pratica=$idpratica");
+                    $tabella->elenco();
+                }
+                ?>
 			<!-- fine contenuto-->
 			 </TD>
 	      </TR>
