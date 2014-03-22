@@ -14,6 +14,7 @@
 
 	if (!session_id())
 	session_start();
+        
         $appsDir=  getenv('PWAppsDir');
         $dataDir=  getenv('PWDataDir');
         if (!$dataDir) die("Manca la variabile d'ambiente PWDataDir nel file di configurazione di Apache.");

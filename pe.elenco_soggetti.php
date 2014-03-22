@@ -27,7 +27,8 @@ function link(id,ruolo){
 <H2 class=blueBanner>Elenco dei soggetti interessati</H2>
 <TABLE cellPadding=0 cellspacing=0 border=0 class="stiletabella" width="100%">		
 
-<?$i=0;
+<?php
+$i=0;
 $db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
 if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
 $db->sql_query ("select * from pe.e_ruoli order by ordine;");
