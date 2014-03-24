@@ -18,12 +18,15 @@ $nextMonth = date("d/m/Y", $currentDate+30 * 24 * 3600);
     <link rel="stylesheet" type="text/css" href="/css/icon.css">
     <script type="text/javascript" src="/js/jquery.easyui.min.js"></script>
     <script type="text/javascript" src="/js/locale/easyui-lang-it.js"></script>
+    <script type="text/javascript" src="/js/datagrid-filter.js"></script>
+    
     <script type="text/javascript" src="/js/init.search.js"></script>
     <script>
         $(document).ready(function(){
             <?php
-                print "var data_start='".$today."';";
-                print "var data_end='".$nextMonth."';";
+                print "var data_start='".$today."';\n\t\t";
+                print "var data_end='".$nextMonth."';\n\t\t";
+                printf("var tipo_scadenze=%s;\n\t\t",utils::getDbDataToJson("SELECT value,text FROM ((SELECT '' as value,'Tutte' as text,-1 as ordine) UNION ALL (SELECT codice as value,nome as text,ordine FROM pe.e_scadenze WHERE enabled=1) order by 3,2) A", $conn));
             ?>
             $('#op_pe-scadenze-scadenza').val('between');
             $('#1_pe-scadenze-scadenza').val(data_start);
@@ -56,7 +59,7 @@ $nextMonth = date("d/m/Y", $currentDate+30 * 24 * 3600);
                 dataPost=getSearchFilter();
                 $('#ricerca').hide('slide',500);
                 $('#result-container').show('slide',500);
-                $('#result-table').datagrid({
+                var dg=$('#result-table').datagrid({
                     title:'Risultato della ricerca',
                     url:searchUrl,
                     method:'post',
@@ -69,8 +72,36 @@ $nextMonth = date("d/m/Y", $currentDate+30 * 24 * 3600);
                     queryParams:{data:dataPost,action:'scadenze'},
                     onLoadSuccess:function(data){
                     $('#elenco').val(data['elenco_id']);
+                    /*$.each($('tr.datagrid-filter-row td'),function(k,v){
+                        if($(v).attr('field')!='cod_scadenza') $(v).hide();
+                        //console.log(v);
+                    });*/
                 }
             });
+            
+            //dg.datagrid('removeFilterRule');
+            /*dg.datagrid('enableFilter',[{
+                field:'cod_scadenza',
+                type:'combobox',
+                options:{
+                        panelHeight:'auto',
+                        data:tipo_scadenze,
+                        onChange:function(value){
+                                if (value == ''){
+                                        dg.datagrid('removeFilterRule', 'cod_scadenze');
+                                } else {
+                                        dg.datagrid('removeFilterRule', 'cod_scadenze');
+                                        dg.datagrid('addFilterRule', {
+                                                field: 'cod_scadenza',
+                                                op: 'equal',
+                                                value: value
+                                        });
+                                }
+                                dg.datagrid('doFilter');
+                        }
+                }
+            
+            }]);*/
         });
     });
     </script>
@@ -111,6 +142,7 @@ $nextMonth = date("d/m/Y", $currentDate+30 * 24 * 3600);
         </div> 
     </form>    
     <div id="result-container" >
+        <div style="display:inline;width:300px;margin-right:10px;"></div>
         <table id="result-table" width="100%">
         </table>
         <div style="margin-top:20px;">
