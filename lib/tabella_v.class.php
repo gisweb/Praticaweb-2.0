@@ -420,20 +420,28 @@ EOT;
 EOT;
 			break;
 		case "search_list":
-
                     list($schema,$table,$campo)=explode('.',$campo);
                     $id=sprintf("%s-%s-%s",$schema,$table,$campo);
                     $size=explode("x",$w);
                     $opzioni=$this->elenco_selectdb($size[1],Array($dati[$campo]),isset($size[2])?($size[2]):(null));
                     //$retval="<select style=\"width:$size[0]px\" $class  name=\"$campo\"  id=\"$campo\" onmousewheel=\"return false\" $onChange $disabilitato>$opzioni</select>$help";
                     $retval=<<<EOT
-<!--<select style="width:200px" class="textbox search text"  name="$campo"  id="op_$id" datatable="$schema.$table">
-	<option value="">Seleziona =====></option>
-	<option value="equal">Uguale a</option>
-</select>-->
-                            
 <input type="hidden" value="equal" name="$campo" class="textbox search text" id="op_$id" datatable="$schema.$table"/>                           
-select style="width:$size[0]px" class="textbox search"  name="$campo"  id="1_$id">$opzioni</select>
+<select style="width:$size[0]px" class="textbox search"  name="$campo"  id="1_$id">$opzioni</select>
+<script>
+
+</script>
+EOT;
+		break;
+            case "search_multilist":
+                    list($schema,$table,$campo)=explode('.',$campo);
+                    $id=sprintf("%s-%s-%s",$schema,$table,$campo);
+                    $size=explode("x",$w);
+                    $opzioni=$this->elenco_selectdb($size[2],Array($dati[$campo]),isset($size[3])?($size[3]):(null));
+                    //$retval="<select style=\"width:$size[0]px\" $class  name=\"$campo\"  id=\"$campo\" onmousewheel=\"return false\" $onChange $disabilitato>$opzioni</select>$help";
+                    $retval=<<<EOT
+<input type="hidden" value="in" name="$campo" class="textbox search text" id="op_$id" datatable="$schema.$table"/>                           
+<select style="width:$size[0]px;height:$size[1]px" class="textbox search"  name="$campo"  id="1_$id" multiple>$opzioni</select>
 <script>
 
 </script>

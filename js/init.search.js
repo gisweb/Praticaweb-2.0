@@ -9,8 +9,9 @@ var colsDef={
         {title:'GG. alla Scadenza',field:'diff',sortable:true,width:100},
         {title:'Scadenza',field:'testo',sortable:true,width:400},
         {title:'',field:'pratica',sortable:false,width:300,formatter: function(value,row,index){return '<a target="new" href="praticaweb.php?pratica=' + value + '">' + row['tipo_pratica'] + ' n° ' + row['numero'] + ' del ' + row['data_presentazione'] + '</a>'}},
-        {title:'',hidden:true,field:'tipo_pratica',sortable:true,width:150},
-        {title:'',hidden:true,field:'numero',sortable:true,width:100}
+        {title:'',hidden:true,field:'tipo_pratica',sortable:true},
+        {title:'Tipo Scadenza',hidden:true,field:'cod_scadenza',sortable:true,width:200},
+        {title:'',hidden:true,field:'numero',sortable:true}
     ]],
     pratica:[[
         {title:'',field:'pratica',sortable:false,width:20,formatter: function(value,row,index){return '<a target="new" href="praticaweb.php?pratica=' + value + '"><div class="ui-icon ui-icon-search"/></a>'}},

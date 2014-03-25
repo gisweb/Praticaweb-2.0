@@ -183,5 +183,14 @@ class utils {
         }  
         return $result;
     }
+    static function getDbDataToJson($sql,$conn){
+        if (!$conn){
+            $conn=self::getDb();
+        }
+        $sth=$conn->prepare($sql);
+        $sth->execute();
+        $result=$sth->fetchAll(PDO::FETCH_ASSOC);
+        return json_encode($result);
+    }
 }
 ?>

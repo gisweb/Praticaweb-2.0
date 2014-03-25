@@ -320,6 +320,14 @@ function selectOneriIntervento(){
             else if(opValue == 'endswith'){
                  filter=name+" ilike '%"+$('#1_'+id).val()+"'";
             }
+            else if(opValue == 'in'){
+                var res = [];
+                $('#1_'+ id + ' :selected').each(function(i,selected){
+                    res.push("'" + $(selected).val() + "'"); 
+                })
+                filter=name+" IN ("+res.join(",")+")";
+                
+            }
             if (filter) {
                 var table=$(this).attr('datatable');
                 if (searchFilter[table]) searchFilter[table].push(filter);
