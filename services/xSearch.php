@@ -93,7 +93,7 @@ switch($action){
         }
         $total=count($listId);
         $sql=sprintf($query["default"],$filter,$order,$orderType,$rows,$offset);
-        utils::debug("search",$sql);
+        utils::debug(DEBUG_DIR."search.debug",$sql);
         $res=$db->fetchAll($sql);
         $result=Array("total"=>$total,"rows"=>$res,"filter"=>$filter,"elenco_id"=>$listId);
         break;
