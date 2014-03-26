@@ -12,7 +12,7 @@ $codice=$_REQUEST["codice"];
 $JOIN = ($modo=='list')?('INNER'):('LEFT');
 include "db/db.pe.e_tipopratica_scadenze.php";
 $sql="SELECT 
-A.id as id_scadenza ,B.id ,B.nome,A.tabella,coalesce(A.codice,'$codice') as codice,A.scadenza,C.nome as nome_scadenza,tipologia
+A.id as id_scadenza ,B.id ,B.nome,A.tabella,A.campo,coalesce(A.codice,'$codice') as codice,A.scadenza,C.nome as nome_scadenza,tipologia
 FROM pe.e_tipopratica B LEFT JOIN 
 (SELECT * FROM pe.e_tipopratica_scadenze WHERE codice='$codice') A ON(A.tipo_pratica=B.id) 
 $JOIN JOIN pe.e_scadenze C USING(codice)    
@@ -33,7 +33,7 @@ $tit="$nomeScadenza - Dati sui Tipi di Pratica ";
     <title>Elenco Scadenze</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <?php
-	utils::loadJS();
+	utils::loadJS('form/e_tipopratica_scadenze');
 	utils::loadCss();
 ?>
     <SCRIPT language="javascript" type="text/javascript">
