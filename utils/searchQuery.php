@@ -88,12 +88,12 @@ pe.e_intervento C ON (A.intervento=C.id) LEFT JOIN
 admin.users D ON(A.resp_proc=D.userid) LEFT JOIN 
 (SELECT pratica,trim(array_to_string(array_agg(coalesce(app||' ','')||coalesce(' '||nome,'')||coalesce(' '||cognome)||coalesce(' - '||ragsoc,'')),',')) as richiedente FROM pe.soggetti WHERE richiedente=1 AND voltura=0 GROUP BY pratica) E USING(pratica) LEFT JOIN
 (SELECT pratica,trim(array_to_string(array_agg(coalesce(app||' ','')||coalesce(' '||nome,'')||coalesce(' '||cognome)||coalesce(' - '||ragsoc,'')),',')) as progettista FROM pe.soggetti WHERE progettista=1 AND voltura=0 GROUP BY pratica) F USING(pratica) LEFT JOIN
-(SELECT a.id, a.pratica,a.codice as cod_scadenza, a.scadenza, aaa.nome, COALESCE(b.nome, ''::character varying)::text || COALESCE(' - '::text || a.note, ''::text) AS testo, a.uidins,(a.scadenza-CURRENT_DATE) as diff
+(SELECT a.id, a.pratica,a.completata,a.codice as cod_scadenza, a.scadenza, aaa.nome, COALESCE(b.nome, ''::character varying)::text || COALESCE(' - '::text || a.note, ''::text) AS testo, a.uidins,(a.scadenza-CURRENT_DATE) as diff
     FROM pe.scadenze a
     LEFT JOIN admin.users aaa ON aaa.userid = COALESCE(a.uidins, a.uidupd)
     LEFT JOIN pe.e_scadenze b USING (codice) WHERE (%s)
 ) G USING (pratica)    
-WHERE pratica IN (%s) 
+WHERE completata=0 AND pratica IN (%s) 
 %s %s LIMIT %s OFFSET %s     
 EOT;
 $query["pratiche-civico"]=<<<EOT
