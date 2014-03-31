@@ -63,29 +63,29 @@ function get_controllo($label,$tipo,$w,$campo,$html5Attr,$frozen=0){
 				$dato="0";
 			$retval="<INPUT class=\"$class\" maxLength=\"$w\" size=\"$w\" name=\"$campo\" id=\"$campo\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
 			break;
-       case "intero":
-			if ($dato) 
-				$dato=number_format($dato,0, ',', '');			
-			else
-				$dato="0";
-			$retval="<INPUT class=\"$class\" maxLength=\"$w\" size=\"$w\"  name=\"$campo\" id=\"numero\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
-			break;
+                case "intero":
+                                 if ($dato) 
+                                         $dato=number_format($dato,0, ',', '');			
+                                 else
+                                         $dato="0";
+                                 $retval="<INPUT class=\"$class\" maxLength=\"$w\" size=\"$w\"  name=\"$campo\" id=\"numero\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
+                                 break;
             
-        case "valuta":
-		case "volume":
-		case "superficie":
-			if ($dato)
-				$dato=number_format($dato,2, ',','.');
-			else
-				$dato="0,00";
-			$retval="<INPUT class=\"$class\" maxLength=\"$w\" size=\"$w\" name=\"$campo\" id=\"$campo\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
-			break;
-        case "upload":
-            $size=intval($w+($w/5));
-			$testo=stripslashes($dato);
+                case "valuta":
+                case "volume":
+                case "superficie":
+                        if ($dato)
+                                $dato=number_format($dato,2, ',','.');
+                        else
+                                $dato="0,00";
+                        $retval="<INPUT class=\"$class\" maxLength=\"$w\" size=\"$w\" name=\"$campo\" id=\"$campo\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
+                    break;
+                case "upload":
+                    $size=intval($w+($w/5));
+                                $testo=stripslashes($dato);
 
-            $retval="<INPUT class=\"$class\" type=\"file\" maxLength=\"$w\" size=\"$size\" name=\"$campo\" id=\"$campo\" value=\"$testo\" $html5Attr $disabilitato>$help";
-            break;
+                    $retval="<INPUT class=\"$class\" type=\"file\" maxLength=\"$w\" size=\"$size\" name=\"$campo\" id=\"$campo\" value=\"$testo\" $html5Attr $disabilitato>$help";
+                    break;
 		case "ui-button":
 			$size=explode("x",$w);
 			$jsfunction=$size[1];
@@ -458,92 +458,92 @@ function get_dato($tipo,$w,$campo){
 
 	switch ($tipo) {
 		
-		case "idriga":
-			$retval="";
-			break;
-		case "pratica":
-		case "text":
-		case "string":
-			if(isset($dati[$campo]))
-				$retval=$dati[$campo];
-			else
-				$retval='';//'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-			break;
-			
-		case "data":
-			$retval=$data=$this->date_format($dati[$campo]);
-			break;
-		case "ora":
-			$retval=number_format($dati[$campo],2, ':', '');
-			break;
-		case "percentuale":
-			$retval=number_format($dati[$campo],2, ',', '.')." %";
-			break;
-		case "numero":
-			$retval=number_format($dati[$campo],4, ',', '.');
-			break;
-		case "intero":
-			$retval=number_format($dati[$campo],0, '', '');
-			break;
-		case "valuta":
-		//setto la valuta aggiungendo il metodo setvaluta alla classe tabella e poi la uso qui
-    //echo("<br>Formatto valuta : ".$dati[$campo]."<br>");
-			$retval=number_format($dati[$campo],2, ',', '.')." &euro;";;
-			break;		
-		case "superficie":	
-			$retval=number_format($dati[$campo],2, ',', '.')." mq";
-			break;
-		case "volume":	
-			$retval=number_format($dati[$campo],2, ',', '.')." mc";
-			break;
-		case "yesno": 
-			if ($dati[$campo]==0) $retval="NO";
-			if ($dati[$campo]==1) $retval="SI";
-			break;			
-			
-		case "textarea":
-			$retval=str_replace("\n","<br>",$dati[$campo]);
-			break;
-		case "chiave_esterna":		//Restituisce il campo descrittivo di un elenco 
-			$retval=$this->get_chiave_esterna($campo,$w);
+            case "idriga":
+                    $retval="";
+                    break;
+            case "pratica":
+            case "text":
+            case "string":
+                    if(isset($dati[$campo]))
+                            $retval=$dati[$campo];
+                    else
+                            $retval='';//'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                    break;
+
+            case "data":
+                    $retval=$data=$this->date_format($dati[$campo]);
+                    break;
+            case "ora":
+                    $retval=number_format($dati[$campo],2, ':', '');
+                    break;
+            case "percentuale":
+                    $retval=number_format($dati[$campo],2, ',', '.')." %";
+                    break;
+            case "numero":
+                    $retval=number_format($dati[$campo],4, ',', '.');
+                    break;
+            case "intero":
+                    $retval=number_format($dati[$campo],0, '', '');
+                    break;
+            case "valuta":
+            //setto la valuta aggiungendo il metodo setvaluta alla classe tabella e poi la uso qui
+//echo("<br>Formatto valuta : ".$dati[$campo]."<br>");
+                    $retval=number_format($dati[$campo],2, ',', '.')." &euro;";;
+                    break;		
+            case "superficie":	
+                    $retval=number_format($dati[$campo],2, ',', '.')." mq";
+                    break;
+            case "volume":	
+                    $retval=number_format($dati[$campo],2, ',', '.')." mc";
+                    break;
+            case "yesno": 
+                    if ($dati[$campo]==0) $retval="NO";
+                    if ($dati[$campo]==1) $retval="SI";
+                    break;			
+
+            case "textarea":
+                    $retval=str_replace("\n","<br>",$dati[$campo]);
+                    break;
+            case "chiave_esterna":		//Restituisce il campo descrittivo di un elenco 
+                    $retval=$this->get_chiave_esterna($campo,$w);
             break;
-		case "stampa":
-			//uso w per il nome del form
-			/*if ($_SESSION["PERMESSI"]<3 || ($_SESSION["PERMESSI"]==3 && $_SESSION["PROPR_PRATICA_$pr"]=='SI')){
-				$retval="";
-			}
-			else*/
-			$retval=$this->editable?$this->elenco_stampe($w):'';
-			break;		
-		case "elenco":
-			$retval=$this->get_dato_elenco($campo);
-		case "button_view":
-			$size=explode("x",$w);
-			if ($dati[$campo]==$dati["id"]) $retval="<b>Aggiungi nuova segnalazione</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name=\"".$dati[$campo]."\"  id=\"$campo\"  src=\"icons/answer.gif\" type=\"image\"  onclick=\"$w('".$dati[$campo]."','".$dati["pratica"]."')\" >";
-			break;
-		case "selectdb":		//Restituisce il campo descrittivo di un elenco 
-			$size=explode("x",$w);
-			$retval=$this->get_selectdb_value($dati[$campo],"id",$size[1],"opzione");
-			break;
-		case "multiselectdb":
-			$size=explode("x",$w);
-			$retval=$this->get_multiselectdb_value($dati[$campo],"id",$size[1],"opzione");
-			break;
-        case "riferimento":
-            $prms=explode('#',$w);
-            $size=array_shift($prms);
-            $form=array_shift($prms);
-            for($i=0;$i<count($prms);$i++){
-                $params[$prms[$i]]=$this->array_dati[$row][$prms[$i]];
-            }
-            $params['pratica']=$dati[$campo];
-            if (isset($this->params))
-                foreach($this->params as $k=>$v){
-                    $params[$k]=$v;
+            case "stampa":
+                    //uso w per il nome del form
+                    /*if ($_SESSION["PERMESSI"]<3 || ($_SESSION["PERMESSI"]==3 && $_SESSION["PROPR_PRATICA_$pr"]=='SI')){
+                            $retval="";
+                    }
+                    else*/
+                    $retval=$this->editable?$this->elenco_stampe($w):'';
+                    break;		
+            case "elenco":
+                    $retval=$this->get_dato_elenco($campo);
+            case "button_view":
+                    $size=explode("x",$w);
+                    if ($dati[$campo]==$dati["id"]) $retval="<b>Aggiungi nuova segnalazione</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name=\"".$dati[$campo]."\"  id=\"$campo\"  src=\"icons/answer.gif\" type=\"image\"  onclick=\"$w('".$dati[$campo]."','".$dati["pratica"]."')\" >";
+                    break;
+            case "selectdb":		//Restituisce il campo descrittivo di un elenco 
+                    $size=explode("x",$w);
+                    $retval=$this->get_selectdb_value($dati[$campo],"id",$size[1],"opzione");
+                    break;
+            case "multiselectdb":
+                    $size=explode("x",$w);
+                    $retval=$this->get_multiselectdb_value($dati[$campo],"id",$size[1],"opzione");
+                    break;
+            case "riferimento":
+                $prms=explode('#',$w);
+                $size=array_shift($prms);
+                $form=array_shift($prms);
+                for($i=0;$i<count($prms);$i++){
+                    $params[$prms[$i]]=$this->array_dati[$row][$prms[$i]];
                 }
-            $obj=json_encode($params);
-            $retval=($dati[$campo])?("<a href='javascript:goToPratica(\"$form.php\",$obj)'><img title=\"Visualizza la pratica\" src=\"images/view.png\" border=\"0\"></a>"):('');
-            break;
+                $params['pratica']=$dati[$campo];
+                if (isset($this->params))
+                    foreach($this->params as $k=>$v){
+                        $params[$k]=$v;
+                    }
+                $obj=json_encode($params);
+                $retval=($dati[$campo])?("<a href='javascript:goToPratica(\"$form.php\",$obj)'><img title=\"Visualizza la pratica\" src=\"images/view.png\" border=\"0\"></a>"):('');
+                break;
             case "folder":
                 $prms=explode('#',$w);
                 $size=array_shift($prms);
@@ -585,26 +585,32 @@ function get_riga_edit($nriga,$frozen_cols=Array()){
 	$riga=$this->tab_config[$nriga];
 	$lbl="";
 	for ($i=0;$i<count($riga);$i++){
-		list($label,$campo,$w,$tipo,$html5Data)=explode(';',$riga[$i]);
-        $html5Attr=Array();
-        if ($html5Data){
-            $d=explode('#',$html5Data);
-            //$d=(is_array($d))?($d):(Array($d));
-            for($k=0;$k<count($d);$k++){
-                list($key,$v)=explode('=',$d[$k]);
-                
-                $html5Attr[]="$key=\"$v\"";
+            list($label,$campo,$w,$tipo,$html5Data)=explode(';',$riga[$i]);
+            $html5Attr=Array();
+            //Raccolgo gli HTML5 Attributes (sono nella forma data1=val1#data2=val2....)
+            if ($html5Data){
+                $d=explode('#',$html5Data);
+                //$d=(is_array($d))?($d):(Array($d));
+                for($k=0;$k<count($d);$k++){
+                    list($key,$v)=explode('=',$d[$k]);
+                    if(strpos($v, '@')===0){
+                        $html5Attr[]=sprintf('%s="%s"',$key,$this->array_dati[$nriga][str_replace('@', '', $v)]);
+                    }
+                    else{
+                        $html5Attr[]=sprintf('%s="%s"',$key,$v);
+                    }
+                    
+                }
+                $html5Attr=implode(" ",$html5Attr);
             }
-            $html5Attr=implode(" ",$html5Attr);
-        }
-		$tipo=trim($tipo);
-		if(($tipo!="button") and ($tipo!="submit"))
-			($lbl)?(($label)?($lbl.=" -  ".$label):($lbl)):($lbl=$label);
-		//MODIFICA LOCK STATI CONTROLLO SE QUESTO CAMPO E' TRA QUELLI CONGELATI NEL CASO GLI PASSO UN PARAMETRO ADDIZIONALE
-		if ($frozen_cols && in_array($campo,$frozen_cols))
-			$ctr.=$this->get_controllo($label,$tipo,$w,$campo,$html5Attr,1)."&nbsp;&nbsp;";
-		else
-			$ctr.=$this->get_controllo($label,$tipo,$w,$campo,$html5Attr)."&nbsp;&nbsp;";
+            $tipo=trim($tipo);
+            if(($tipo!="button") and ($tipo!="submit"))
+                    ($lbl)?(($label)?($lbl.=" -  ".$label):($lbl)):($lbl=$label);
+            //MODIFICA LOCK STATI CONTROLLO SE QUESTO CAMPO E' TRA QUELLI CONGELATI NEL CASO GLI PASSO UN PARAMETRO ADDIZIONALE
+            if ($frozen_cols && in_array($campo,$frozen_cols))
+                    $ctr.=$this->get_controllo($label,$tipo,$w,$campo,$html5Attr,1)."&nbsp;&nbsp;";
+            else
+                    $ctr.=$this->get_controllo($label,$tipo,$w,$campo,$html5Attr)."&nbsp;&nbsp;";
 	}
 
 	return array($lbl,$ctr);

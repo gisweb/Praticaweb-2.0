@@ -59,7 +59,7 @@ $(document).ready(function(){
 			})
 	});
         $(document).keypress(function(event){
-            console.log($(document.activeElement));
+            
             var keycode = (event.keyCode ? event.keyCode : event.which);
             if(keycode == '13'){
                 if (!$(document.activeElement).is('textarea')){
@@ -95,5 +95,33 @@ $(document).ready(function(){
             
             
         });
+        $("[data-plugins='field-disabled']").each(function(k,v){
+            var params=$(v).data();
+            var id = 'edit-' + $(v).attr('id');
+            var icon = 'icon-' + $(v).attr('id');
+            $(v).attr('disabled','disabled');
+            if ('editable' in params && params['editable']=='1'){
+                $(v).parent().append('<a title="Abilita/Disabilita" href="#" id="' + id + '" data-toggle="1" style="display:inline-block;"><span id="' + icon +'" class="ui-icon ui-icon-pencil"/></a>');
+                $('#'+id).bind('click',function(event){
+                    event.preventDefault();
+                    if ($(v).attr('disabled')=='disabled') {
+                        $(v).removeAttr('disabled');
+                        $('#'+icon).removeClass('ui-icon-pencil');
+                        $('#'+icon).addClass('ui-icon-cancel');
+                    }
+                    else{
+                        $(v).attr('disabled','disabled');
+                        $('#'+icon).removeClass('ui-icon-cancel');
+                        $('#'+icon).addClass('ui-icon-pencil');
+                    }
+                });
+                
+            }
+            
+            
+        });
+            
+            
+
 });
 
