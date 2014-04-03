@@ -25,7 +25,7 @@
 	include_once DATA_DIR.'config.php';
         loadLibs();
 
-	if ((defined('UPDATE_SW') && UPDATE_SW==1)){
+	if ((defined('UPDATE_SW') && UPDATE_SW==1 && $_SESSION["USER_ID"]>4)){
             require_once "aggiornamento.php";
             exit;
         }
