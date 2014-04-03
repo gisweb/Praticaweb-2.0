@@ -13,16 +13,17 @@ switch($action) {
             break;
         case "check-draw":
             $tipo=$_REQUEST["tipo"];
-            $sql="SELECT id FROM pe.e_verifiche WHERE codice=?";
+            $sql="SELECT id,tipi_pratica FROM pe.e_verifiche WHERE codice=?";
             $idTipo=$db->fetchColumn($sql,Array($tipo),0);
-            $sql="SELECT count(*) as sorteggiato FROM pe.verifiche WHERE tipo=? and date_part('month',data_sorteggio)=date_part('month',CURRENT_DATE) AND date_part('year',data_sorteggio)=date_part('year',CURRENT_DATE);";
-            $sorteggiato=(int)(bool)$db->fetchColumn($sql,Array($idTipo),0);
+            $sql=sprintf("SELECT count(*) as sorteggiato FROM pe.verifiche WHERE tipo IN (%s) and date_part('month',data_sorteggio)=date_part('month',CURRENT_DATE) AND date_part('year',data_sorteggio)=date_part('year',CURRENT_DATE);",$idTipo);
+            $sorteggiato=(int)(bool)$db->fetchColumn($sql,Array(),0);
             $result=Array("sorteggiato"=>$sorteggiato);
             break;
         case "draw":
             $tipo=$_REQUEST["tipo"];
-            $sql="SELECT id FROM pe.e_verifiche WHERE codice=?";
+            $sql="SELECT id,tipi_pratica FROM pe.e_verifiche WHERE codice=?";
             $idTipo=$db->fetchColumn($sql,Array($tipo),0);
+            $listTipi=$db->fetchColumn($sql,Array($tipo),1);
             switch($tipo){
                 case "agibi":
                     $sql="SELECT pratica FROM pe.abitabi WHERE autocertificata=1 AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche WHERE id = (SELECT id FROM pe.e_verifiche WHERE codice = 'agibi'));";
@@ -42,8 +43,26 @@ switch($action) {
                     }
                     $result=Array("success"=>$success,"message"=>$message);
                     break;
+                case "dia":
+                case "scia":    
                 case "pratica":
-                    $result=Array("message"=>"Not yet implemented");
+                    $sql=sprintf("SELECT pratica FROM pe.avvioproc WHERE tipo in (%s) AND  date_part('year',coalesce(data_prot,data_presentazione))=date_part('year',CURRENT_DATE) and  date_part('month',coalesce(data_prot,data_presentazione))=(date_part('month',CURRENT_DATE)-1) AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche WHERE tipo = %s);",$listTipi,$idTipo);
+                    utils::debug(DEBUG_DIR.$_SESSION["USER_ID"]."_draw.debug",$sql);
+                    $res=$db->fetchAll($sql);
+                    $tot=10;
+                    shuffle($res);
+                    $result=array_slice($res,0,$tot);
+                    $success=1;
+                    for($i=0;$i<count($result);$i++){
+                        $sql=sprintf("INSERT INTO pe.verifiche(pratica, tipo, uidins, tmsins, data_sorteggio) VALUES (%s, %s, %s, %s, %s);",$result[$i]["pratica"],$idTipo,$_SESSION["USER_ID"],time(),CURRENT_DATE);
+                        utils::debug(DEBUG_DIR.'draw.debug', $sql);
+                        if(!$db->executeQuery($sql)) {
+                            $success=0;
+                            $message="Si è verificato un problema nell'estrazione dei certificati";
+                        }
+                    }
+                    $result=Array("success"=>$success,"message"=>$message);
+                    break;
             }
             
             break;

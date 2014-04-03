@@ -114,6 +114,7 @@ utils::loadCss();
                 alert_message('no_drawtype_selected');
                 return;
             }
+            console.log(r);
             if (r) {
                 $.messager.confirm('Attenzione', sprintf(pwMessage['raffled'],{testo:tipo_text}),function(resp){
                     if (resp){
@@ -130,6 +131,18 @@ utils::loadCss();
                     }
                 });
 
+            }
+            else{
+                $.ajax({
+                    url:serverUrl,
+                    method:'POST',
+                    data:{action:'draw',tipo:tipo_draw},
+                    dataType:'JSON',
+                    success:function(data){
+                        //alert_message('draw_done',data[])
+                        loadDatagrid();
+                    }
+                });
             }
             
             
