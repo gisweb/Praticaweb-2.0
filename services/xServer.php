@@ -49,7 +49,7 @@ switch($action) {
                     $sql=sprintf("SELECT pratica FROM pe.avvioproc WHERE tipo in (%s) AND  date_part('year',coalesce(data_prot,data_presentazione))=date_part('year',CURRENT_DATE) and  date_part('month',coalesce(data_prot,data_presentazione))=(date_part('month',CURRENT_DATE)-1) AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche WHERE tipo = %s);",$listTipi,$idTipo);
                     utils::debug(DEBUG_DIR.$_SESSION["USER_ID"]."_draw.debug",$sql);
                     $res=$db->fetchAll($sql);
-                    $tot=10;
+                    $tot=(defined('DRAW_PRATICHE'))?(DRAW_PRATICHE):(2);
                     shuffle($res);
                     $result=array_slice($res,0,$tot);
                     $success=1;
