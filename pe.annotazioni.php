@@ -48,6 +48,7 @@ if (($modo=="edit") or ($modo=="new")){
     }
     else{  
             $titolo="Inserisci nuova Nota";
+            $tabella->set_dati($_POST);
     }
 
 		
@@ -90,7 +91,7 @@ if (($modo=="edit") or ($modo=="new")){
             <TD> 
 			<!-- tabella nuovo inserimento-->
 <?php
-        $tabella->set_titolo("Aggiungi una nuova Nota","nuovo");
+        $tabella->set_titolo("Aggiungi una nuova Nota","nuovo",Array("utente"=>$_SESSION["USER_ID"]));
         $tabella->get_titolo();
         if ($tabella->num_record) 
             $tabella->elenco();
