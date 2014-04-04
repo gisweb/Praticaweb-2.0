@@ -5,7 +5,11 @@ $tabpath="pe";
 $idpratica=$_REQUEST["pratica"];
 $titolo=$_SESSION["TITOLO_$idpratica"];
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
-//print_array($_REQUEST);
+if (file_exists(DATA_DIR."praticaweb/include/init.pe.titolo.php")){
+    $oggetto="";
+    require_once DATA_DIR."praticaweb/include/init.pe.titolo.php";
+}
+
 ?>
 <html>
 <head>
@@ -14,7 +18,7 @@ $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
     utils::loadCss();
-    utils::loadJS();
+    utils::loadJS(Array('form/titolo'));
 ?>
 </head>
 <body  background="">
@@ -37,6 +41,7 @@ if (($modo=="edit") || ($modo=="new")) {
 	include "./inc/inc.page_header.php";
 	?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN EDITING  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
+        <input type="hidden" id="hidden-oggetto" value="<?php echo $oggetto;?>">
 	<FORM id="" name="" method="post" action="praticaweb.php">
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">		
 				  
@@ -64,7 +69,7 @@ if (($modo=="edit") || ($modo=="new")) {
 		</TABLE>
 
 		<input name="active_form" type="hidden" value="pe.titolo.php">
-		<input name="mode" type="hidden" value="<?=$modo?>">
+		<input id="mode" name="mode" type="hidden" value="<?=$modo?>">
 		<input name="tabella" type="hidden" value="<?=$tab?>">
 	</FORM>	
 <?php
