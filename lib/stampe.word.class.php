@@ -137,10 +137,11 @@ class wordDoc {
 		$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
 
 		$this->getData();
-                if($this->type){
+                if($this->type==1){
                     $TBS->LoadTemplate($this->modelliDir.$this->modello,OPENTBS_ALREADY_UTF8);	
                 }
                 else{
+                    utils::debug(DEBUG_DIR.$_SESSION["USER_ID"]."_PRINT_CDU.debug",$this);
                     $TBS->LoadTemplate($this->modelliDir.$this->modello,OPENTBS_ALREADY_XML);
                 }
 		$TBS->SetOption('noerr',true);
