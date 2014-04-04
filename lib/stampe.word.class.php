@@ -138,7 +138,7 @@ class wordDoc {
 
 		$this->getData();
                 if($this->type==1){
-                    $TBS->LoadTemplate($this->modelliDir.$this->modello,OPENTBS_ALREADY_UTF8);	
+                    $TBS->LoadTemplate($this->modelliDir.$this->modello,OPENTBS_ALREADY_XML);	
                 }
                 else{
                     utils::debug(DEBUG_DIR.$_SESSION["USER_ID"]."_PRINT_CDU.debug",$this);
