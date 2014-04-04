@@ -137,7 +137,12 @@ class wordDoc {
 		$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
 
 		$this->getData();
-		$TBS->LoadTemplate($this->modelliDir.$this->modello,OPENTBS_ALREADY_UTF8);	
+                if($this->type){
+                    $TBS->LoadTemplate($this->modelliDir.$this->modello,OPENTBS_ALREADY_UTF8);	
+                }
+                else{
+                    $TBS->LoadTemplate($this->modelliDir.$this->modello,OPENTBS_ALREADY_XML);
+                }
 		$TBS->SetOption('noerr',true);
 		//$template = $PHPWord->loadTemplate($this->modelliDir.$this->modello);
 		foreach($this->data as $tb=>$data){
