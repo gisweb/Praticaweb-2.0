@@ -29,7 +29,7 @@ foreach($res as $val){
         selectdb['tipo'] = <?php print json_encode($tipopratica)?>;
     </script>
 <?php
-    utils::loadJS(Array('form/avvioproc'));
+    utils::loadJS(Array('form/pe.avvioproc'));
     utils::loadCss();
 
 ?>
@@ -57,7 +57,7 @@ foreach($res as $val){
 	
 
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN EDITING  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
-		<FORM id="" name="avvioproc" method="post" action="praticaweb.php">
+		<FORM id="form-avvioproc" name="avvioproc" method="post" action="praticaweb.php">
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">		
 				  
 		  <tr> 
