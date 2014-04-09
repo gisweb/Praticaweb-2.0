@@ -13,8 +13,7 @@ $tab=(isset($_POST["tabella"]))?($_POST["tabella"]):(null);
 $titpag=$_SESSION["TITOLO_$idpratica"];
 $Errors=$array_dati["errors"];
 $tabpath="oneri";
-
-
+ 
 if($tab=='oneri'|| !$tab){
 	$titolo="Costo di Costruzione e Oneri di Urbanizzazione";
 	$file_conf="$tabpath/totali";
@@ -22,9 +21,8 @@ if($tab=='oneri'|| !$tab){
 elseif ($tab=="monetizzazione"){	
 	$titolo="Monetizzazione aree verdi e parcheggi";
 	$file_conf="$tabpath/monetizzazione.tab";
+       
 }
-	
-//	print_array($_REQUEST);
 ?>
 <html>
 <head>
@@ -32,16 +30,16 @@ elseif ($tab=="monetizzazione"){
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
-	utils::loadJS();
+	utils::loadJS(Array('form/oneri.monetizzazione'));
 	utils::loadCss();
 ?>
-</SCRIPT>
-</head>
-<script language=javascript>
+<SCRIPT language=javascript>
+    
 function link(id){
 	window.location="oneri.calcolati.php?pratica=<?=$idpratica?>";
 }
-</script>
+</SCRIPT>
+</HEAD>
 <body  background="">
 
 <?php

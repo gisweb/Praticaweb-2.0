@@ -18,7 +18,7 @@ if (file_exists(DATA_DIR."praticaweb/include/init.pe.titolo.php")){
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
     utils::loadCss();
-    utils::loadJS(Array('form/titolo'));
+    utils::loadJS(Array('form/pe.titolo'));
 ?>
 </head>
 <body  background="">
