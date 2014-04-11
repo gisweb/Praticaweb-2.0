@@ -426,11 +426,10 @@ EOT;
                     $opzioni=$this->elenco_selectdb($size[1],Array($dati[$campo]),isset($size[2])?($size[2]):(null));
                     //$retval="<select style=\"width:$size[0]px\" $class  name=\"$campo\"  id=\"$campo\" onmousewheel=\"return false\" $onChange $disabilitato>$opzioni</select>$help";
                     $retval=<<<EOT
-<input type="hidden" value="equal" name="$campo" class="textbox search text" id="op_$id" datatable="$schema.$table"/>                           
-<select style="width:$size[0]px" class="textbox search"  name="$campo"  id="1_$id">$opzioni</select>
-<script>
-
-</script>
+<input type="hidden" value="equal" name="$campo" class="textbox search text" id="op_$id" datatable="$schema.$table"/>                      
+<select style="width:$size[0]px" class="textbox search"  name="$campo"  id="1_$id">
+     $opzioni
+</select>
 EOT;
 		break;
             case "search_multilist":

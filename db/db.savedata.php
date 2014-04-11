@@ -17,12 +17,6 @@ function valida_dati($array_config,$campi_obbligatori){
 			}
 		}
 	}
-	
-	//for ($i=1;$i<count($array_config);$i++){
-	//	$row_config=explode('|',$array_config[$i]);
-	//	foreach($row_config as  $r)
-	//		$array_def[]=explode(';',$r);
-	//}
 	for ($i=0;$i<count($array_config);$i++){
 		$row_config=$array_config[$i];
 		foreach($row_config as  $r)
@@ -32,8 +26,6 @@ function valida_dati($array_config,$campi_obbligatori){
 		$campo=$def[1];
 		$tipo=trim($def[3]);
 		$val=(trim($def[3])!='multiselectdb')?(trim($_POST[$campo])):($_REQUEST[$campo]);
-		
-		//echo "Sto Validando $campo : $tipo con valore ".$val."<br>";
 		switch ($tipo) {
 			case "idriga":	
 				$val=''; //inutile metterlo nella query
@@ -60,13 +52,9 @@ function valida_dati($array_config,$campi_obbligatori){
 			case "autosuggest":
 				if (strlen($val)>0){
 					if (get_magic_quotes_runtime() or get_magic_quotes_gpc()) {
-						//$val="'".htmlentities($val)."'";
 						$val="'".addslashes($val)."'";
-
-						//$val="'".$val."'";
 					}
 					else{
-						//$val="'".htmlentities(addslashes($val),ENT_QUOTES)."'";
 						$val="'".addslashes($val)."'";
 					}
 
