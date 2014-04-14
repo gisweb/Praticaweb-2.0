@@ -35,7 +35,8 @@ switch($action){
         utils::debug("scadenze",$query["scadenze"]);
         foreach($data as $key=>$value){
             $q[]="(SELECT DISTINCT pratica FROM $key WHERE ".implode(" $op ",$value).")";
-            $f1=implode(" $op ",$value);
+            if($key=='pe.scadenze')
+                $f1=implode(" $op ",$value);
         }
         $listId=Array();
         $filter=implode(" $queryOP ",$q);
