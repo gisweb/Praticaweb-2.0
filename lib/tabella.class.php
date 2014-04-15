@@ -83,7 +83,7 @@ class Tabella{
                             list($label,$campo,$prms,$tipo)=explode(';',$row[$i][$j]);
                             $tipo=trim($tipo);
                             
-                            if (!in_array($tipo,Array("id","pratica","submit","ui-button","button","upload"))){
+                            if (!in_array($tipo,Array("id","pratica","submit","ui-button","button","upload","stampa"))){
                                 $campi[]=$campo;
                             }
                     }
