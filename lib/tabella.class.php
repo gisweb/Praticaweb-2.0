@@ -82,11 +82,13 @@ class Tabella{
                     for ($j=0;$j<count($row[$i]);$j++){ //ogni elemento puÃ² avere un numero di elementi arbitrario
                             list($label,$campo,$prms,$tipo)=explode(';',$row[$i][$j]);
                             $tipo=trim($tipo);
-                            if (($campo!="id") and ($campo!="pratica") and ($tipo!="submit") and ($tipo!="button") and ($tipo!="upload"))
-                                    ($campi)?(($campo)?($campi.=",".$campo):($campi)):($campi=$campo);
-
+                            
+                            if (!in_array($tipo,Array("id","pratica","submit","ui-button","button","upload"))){
+                                $campi[]=$campo;
+                            }
                     }
             }
+            $campi=implode(',',$campi);
             if (isset($lay['button']) && $lay['button']){
                     $btn=explode('|',$lay['button']);
                     for($i=0;$i<count($btn);$i++){
@@ -148,7 +150,7 @@ class Tabella{
 		$this->elenco_campi=$campi;
 		$this->tab_config=$row;
 		$this->config_file=$config_file;
-        $this->idtabella=$id;
+                $this->idtabella=$id;
 		$this->idpratica=($pratica)?($pratica):((isset($_REQUEST["pratica"]))?($_REQUEST["pratica"]):(null));
 		$this->current_user=$_SESSION["USERNAME"];
 		$this->current_groups=$_SESSION["GROUPS"];
@@ -281,7 +283,7 @@ EOT;
 					$sql=($this->table_list)?("select $this->elenco_campi,id from $this->tabelladb $data $ord"):("select $this->elenco_campi,id,pratica,chk from $this->tabelladb $data $ord");	//aggiungo sempre il campo chk per il controllo della concorrenza
 			//echo("<p>$sql</p>");
 			//print_debug($this->config_file."\n".$sql,NULL,"tabella");
-                        utils::debug(DEBUG_DIR.$_SESSION["USER_ID"].DIRECTORY_SEPARATOR.'tabella.debug', $sql);
+                        utils::debug(DEBUG_DIR.$_SESSION["USER_ID"]."_".'tabella.debug', $sql);
 			if ($this->db->sql_query(trim($sql))){
 				$this->array_dati=$this->db->sql_fetchrowset();
 				$this->num_record=$this->db->sql_numrows();
