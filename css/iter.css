@@ -1,8 +1,12 @@
+/*Stampe*/
+
 .stampe{
     cursor: pointer;
     cursor: hand;
     text-decoration: underline;
 }
+
+/*Scadenze*/
 .scadenze{
     //color:orange;
     font-weight:bold !important; 
@@ -24,4 +28,17 @@
 .scaduta{
     //color:green;
     font-weight:bold !important; 
+}
+.completata{
+
+}
+
+/*Annotazioni*/
+.note{
+
+}
+
+/*Pareri*/
+.pareri{
+
 }

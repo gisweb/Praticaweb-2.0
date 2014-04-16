@@ -35,7 +35,7 @@ if (isset($_POST["azione"]) && $_POST["azione"]){
 
 <?php
 	utils::loadJS();
-	utils::loadCss();
+	utils::loadCss(Array('iter'));
 ?>
 <script language="javascript">
 function confirmSubmit()

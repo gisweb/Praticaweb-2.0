@@ -5,7 +5,7 @@ $Errors=null;
 include "./lib/tabella_v.class.php";
 include "./lib/tabella_h.class.php";
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
-$id=(isset($_REQUEST["id"]))?($_REQUEST["id"]):('');
+$idpratica=(isset($_REQUEST["id"]))?($_REQUEST["id"]):('');
 $tabpath="pe";
 $formaction="pe.e_enti.php";
 include "db/db.pe.e_enti.php";
@@ -53,13 +53,13 @@ include "./inc/inc.page_header.php";
 			<td> 
 				<!-- contenuto-->
 				<?php
-                  
-				  if ($id)	{
-                     
-					 if ($Errors)
+                  		  
+				  if ($idpratica){
+                     			
+					 if (is_array($Errors) && count($Errors))
 						$tabella->set_errors($Errors);
 					 else
-                                             $tabella->set_dati("id=$id");
+                                             $tabella->set_dati("id=$idpratica");
 					 
 				}
 				$tabella->edita();?>
@@ -69,7 +69,7 @@ include "./inc/inc.page_header.php";
 		</TABLE>
 		<input name="active_form" type="hidden" value="pe.e_enti.php">
         <input name="mode" type="hidden" value="<?=$_POST["mode"]?>">
-        <input name="id" type="hidden" value="<?=$id?>">
+        <input name="id" type="hidden" value="<?=$idpratica?>">
 		</FORM>		
 
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
@@ -82,8 +82,8 @@ elseif($modo=="view") {
 			<TR> 
 				<TD> 
 				<!-- contenuto-->
-			  <?$tabella->set_titolo("Ente","modifica",Array("id"=>$id));
-				$tabella->set_dati("id=".$id);
+			  <?$tabella->set_titolo("Ente","modifica",Array("id"=>$idpratica));
+				$tabella->set_dati("id=".$idpratica);
 				$tabella->get_titolo();				
 				$tabella->tabella();
 			  ?>			

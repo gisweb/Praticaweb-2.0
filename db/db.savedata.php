@@ -31,6 +31,7 @@ function valida_dati($array_config,$campi_obbligatori){
 				$val=''; //inutile metterlo nella query
 				break;
 			case "pratica":
+			case "numero_pratica":
 				if (strlen(trim($val))>0){
 					$sql="SELECT pratica FROM pe.avvioproc WHERE numero='$val'";
 					if($db->sql_query($sql)){

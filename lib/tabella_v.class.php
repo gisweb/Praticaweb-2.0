@@ -95,6 +95,7 @@ function get_controllo($label,$tipo,$w,$campo,$html5Attr,$frozen=0){
 		case "pratica":
 		case "text":			
 		case "textkey":
+		case "numero_pratica":
 			$size=intval($w+($w/5));
 			$testo=stripslashes($dato);
 			$retval="<INPUT class=\"$class\" maxLength=\"$w\" size=\"$size\" name=\"$campo\" id=\"$campo\" value=\"$testo\" $html5Attr $disabilitato>$help";
