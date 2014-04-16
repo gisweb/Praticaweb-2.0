@@ -294,6 +294,9 @@ function selectOneriIntervento(){
                 else{
                     filter=name+" = "+$('#1_'+id).val();
                 }
+                if (!$('#1_'+id).val()){
+                    filter='';
+                }
             }
             else if(opValue == 'great'){
                 if(t=='date'){
