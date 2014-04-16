@@ -90,7 +90,7 @@ function get_controllo($label,$tipo,$w,$campo,$html5Attr,$frozen=0){
 			$size=explode("x",$w);
 			$jsfunction=$size[1];
 			$width=$size[0];
-			$retval="<button style=\"width:".$width."px\" id=\"$campo\">$label</button>";
+			$retval="<button style=\"width:".$width."px\" tabindex='-1' id=\"$campo\">$label</button>";
 			break;
 		case "pratica":
 		case "text":			
@@ -133,7 +133,7 @@ EOT;
 			$testo=stripslashes($dato);		
 			$retval=<<<EOT
 <INPUT class="$class" maxLength="$w" size="$size" name="$campo" id="$campo" value="$testo" $title $html5Attr $disabilitato>$help			
-<button id="toggle_$campo" class="select_all"></button>				
+<button tabindex='-1' id="toggle_$campo" class="select_all"></button>				
 <script>
 
 	var data_$campo=new Object();
@@ -286,11 +286,11 @@ EOT;*/
 			$size=explode("x",$w);
 			$jsfunction=$size[1];
 			$width=$size[0];
-			$retval="<input class=\"hexfield1\" style=\"width:".$width."px\" type=\"button\" value=\"$label\" onclick=\"$jsfunction('$campo')\" >";
+			$retval="<input class=\"hexfield1\" style=\"width:".$width."px\" tabindex='-1' type=\"button\" value=\"$label\" onclick=\"$jsfunction('$campo')\" >";
 			break;
 			
 		case "submit":
-			$retval="<input  name=\"$campo\"  id=\"$campo\" class=\"hexfield1\" style=\"width:".$w."px\" type=\"submit\" value=\"$label\" onclick=\"return confirmSubmit()\" >";
+			$retval="<input tabindex='-1' name=\"$campo\"  id=\"$campo\" class=\"hexfield1\" style=\"width:".$w."px\" type=\"submit\" value=\"$label\" onclick=\"return confirmSubmit()\" >";
 			break;
 			
 		case "yesno":
