@@ -20,7 +20,7 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <?php
 	utils::loadJS();
-	utils::loadCss();
+	utils::loadCss(Array('iter'));
 ?>
 	
 </head>
