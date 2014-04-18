@@ -31,7 +31,7 @@ switch ($modo) {
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <?php
 	utils::loadJS();
-	utils::loadCss();
+	utils::loadCss(Array('iter'));
 ?>
     <SCRIPT language="javascript" type="text/javascript">
         function link(id){
