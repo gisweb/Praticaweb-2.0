@@ -8,7 +8,7 @@ if ($mode=="view"){			//MODALITA' DI RICERCA
 	$_SESSION["tot_pagine"]=0;
 	$sel_size="widt:150px;";
 	
-	$sql="SELECT DISTINCT date_part('year',data_presentazione) as anno FROM pe.avvioproc WHERE date_part('year',data_presentazione)>=2005;";
+	$sql="SELECT DISTINCT date_part('year',data_presentazione) as anno FROM pe.avvioproc WHERE date_part('year',data_presentazione)>=2005 ORDER BY 1;";
 	$db->sql_query($sql);
 	$anni=$db->sql_fetchlist("anno");
 	foreach($anni as $val)
@@ -102,9 +102,10 @@ else{
 			}
 			$fld=implode(",",array_keys($intestazioni[$v["nome"]]));
 			$arr_sql[$v["nome"]]="SELECT $fld FROM anagrafe_tributaria.".$v["funzione"]."($pratica);";
+                        
 		}		
 		foreach($arr_sql as $key=>$sql){
-			if (!$db->sql_query($sql)) print_debug($key."  ===> \n\t\t\t".$sql);
+			if (!$db->sql_query($sql)) utils::debug(DEBUG_DIR."anagrafe.debug",$key."  ===> \n\t\t\t".$sql,'w+');
 			//if($_SESSION["USER_ID"]<5) echo "<p>$sql</p>";
 			$r[$key]=$db->sql_fetchrowset();
 		}
@@ -138,15 +139,14 @@ else{
 
 ?>
 <HTML>
-	<HEAD>
-		<TITLE><?=$titolo?></TITLE>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<LINK media="screen" href="src/styles.css" type="text/css" rel="stylesheet">
-		<LINK media="screen" href="src/anagrafe.css" type="text/css" rel="stylesheet">
-		<LINK media="print" href="src/styles_print.css" type="text/css" rel="stylesheet">
-		<SCRIPT language="javascript" src="src/window.js" type="text/javascript"></SCRIPT>
-		<SCRIPT language=javascript src="src/iframe.js" type="text/javascript"></SCRIPT>		
+<HEAD>
+    <TITLE><?=$titolo?></TITLE>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <?php
+	utils::loadJS();
+	utils::loadCss(Array('anagrafe'));
+    ?>		
 
 </HEAD>
 <BODY >
@@ -212,7 +212,8 @@ else{
 	<input type="hidden" value="0" name="offset">
 </table>
 </form>
-<?}
+<?php
+}
 else{		//MODALITA DI VISTA RISULTATI
 	$btn="<p><input type=\"button\" class=\"hexfield\" value=\"Indietro\" style=\"margin-top:10px;margin-left:10px;\" onclick=\"javascript:window.location='anag_trib.ricerca.php?mode=view'\"></p>";
 	if($num_err){
