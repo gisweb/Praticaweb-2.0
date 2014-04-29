@@ -49,6 +49,12 @@ $res=$db->fetchAll($sql);
 foreach($res as $val){
     $c4[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
 }
+$sql="SELECT * FROM oneri.e_c5 order by tabella,descrizione";
+$res=$db->fetchAll($sql);
+foreach($res as $val){
+    $c5[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
+}
+
 $sql="SELECT * FROM oneri.e_d1 order by tabella,descrizione";
 $res=$db->fetchAll($sql);
 
@@ -83,9 +89,10 @@ foreach($res as $val){
     selectdb['c2'] = <?php print json_encode($c2)?>;
     selectdb['c3'] = <?php print json_encode($c3)?>;
     selectdb['c4'] = <?php print json_encode($c4)?>;
+    selectdb['c5'] = <?php print json_encode($c5)?>;
     selectdb['d1'] = <?php print json_encode($d1)?>;
     selectdb['d2'] = <?php print json_encode($d2)?>;
-    
+    console.log(selectdb);
     function set_perc(){
         if (($('#intervento').val()>0) || $('#intervento').val()=='')
             $('#perc').hide();

@@ -38,14 +38,16 @@ if ($_POST["azione"]!="Elimina"){
 	$C2=$_POST["c2"];
 	$C3=$_POST["c3"];
 	$C4=$_POST["c4"];
+        $C5=$_POST["c5"];
 	$D1=$_POST["d1"];
 	$D2=$_POST["d2"];
 	$n=$_POST["n"];
-    $n1=$_POST["n1"];
-    $nn=(($n1-$n)/$n);
+        $n1=$_POST["n1"];
+        $nn=(($n1-$n)/$n);
 
 	$K = $tariffa["k"];
 	$A = $tariffa["a"];
+        $tariffa["tr"]=($C5>0)?($tariffa["tr"]*$C5/100):($tariffa["tr"]);
 	$B = $tariffa["tr"]-$A;
 	$IE= $tariffa["ie"];
 	$B1=$B*$IE/100;
@@ -58,7 +60,7 @@ if ($_POST["azione"]!="Elimina"){
 		$B1=($B1*90)/100;
 		$B2=($B2*90)/100;
 	}
-
+        
        ///moltiplico per 2 se in sanatoria (utilizzato da Vezzano)
 	if($_POST["sanatoria"]==1){
 		$A=$A*2;

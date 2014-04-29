@@ -186,7 +186,9 @@ class wordDoc {
         }
         function setQuery(){
             
-	
+            if (file_exists(DATA_DIR."praticaweb/db/db.pe.avvioproc.php")){
+                require_once DATA_DIR."praticaweb/db/db.pe.avvioproc.php";
+            }
 
             return Array(
             "single"=>Array(
