@@ -930,11 +930,11 @@ function get_multiselectdb_value($val,$fld,$tab,$campo){
 
 // >>>>>>>>>>>>>>>>>>>>>>> FUNZIONI DI RICERCA NUOVO NOMINATIVO (da vedere)<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-function set_elenco_trovati($sql,$schema="pe"){
+function set_elenco_trovati($sql='true',$schema="pe"){
 
        $sql="SELECT * FROM (SELECT DISTINCT ON (coalesce(soggetti.codfis,soggetti.ragsoc) ) id,coalesce(soggetti.codfis,'') as codfis , coalesce(soggetti.ragsoc,'') as ragsoc,coalesce(datanato::varchar,'') as datanato,coalesce(soggetti.piva,'') as piva,cognome,nome,coalesce(comunato,'') as comunato,
 ((((COALESCE(soggetti.cognome, ''::character varying)::text || COALESCE(' '::text || soggetti.nome::text, ''::text)) ||coalesce(' C.F. '||codfis,'')|| COALESCE(' '::text || soggetti.titolo::text, ''::text)) || COALESCE(' '::text || soggetti.ragsoc::text, ''::text)) || coalesce(' P.I. '||piva,'') || COALESCE(' '::text || soggetti.indirizzo::text, ''::text)) || COALESCE((' ('::text || soggetti.prov::text) || ')'::text, ''::text) AS soggetto
-	FROM $schema.soggetti where $sql ORDER BY coalesce(soggetti.codfis,ragsoc),id DESC ) X  ORDER BY lower(cognome),lower(nome);";
+	FROM $schema.soggetti where $sql ORDER BY coalesce(soggetti.codfis,ragsoc),id DESC ) X WHERE coalesce(coalesce(codfis,piva),'')<>'' ORDER BY lower(cognome),lower(nome),datanato,lower(ragsoc);";
 	//echo($sql);
 	if (!isset($this->db)) $this->connettidb();
 	$result = $this->db->sql_query($sql);
