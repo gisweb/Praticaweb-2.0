@@ -169,9 +169,20 @@ function get_cella($row,$col){
             break;
         case "btn_modelli":
             $prms=$this->getParams($row,$w);
+            $prms['params']["random_value"]=rand();
+            $obj=json_encode($prms['params']);
+            
+            $destination="/modelli/$valore";
+            $retval="";
+            if ($this->editable){
+                $retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
+                $retval.="<a href='javascript:linkToEdit(\"$destination\",$obj)'><span class='ui-icon ui-icon-document' title='Visualizza il modello di stampa'/></a>";
+                $retval.="</td>\n";
+            }
+            /*$prms=$this->getParams($row,$w);
             $obj=json_encode($prms['params']);
             $retval="<td align=\"center\" valign=\"middle\"  class=\"printhide\">";
-            $retval.="<a target='modelli' href='/modelli/".$valore."'><span class='ui-icon ui-icon-document' title='Visualizza il modello di stampa'/></a>";
+            $retval.="<a target='modelli' href='/modelli/".$valore."'></a>";*/
             
             $retval.="</td>\n";
             break;
