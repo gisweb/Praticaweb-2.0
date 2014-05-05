@@ -932,8 +932,9 @@ function get_multiselectdb_value($val,$fld,$tab,$campo){
 
 function set_elenco_trovati($sql,$schema="pe"){
 
-       $sql="SELECT DISTINCT ON (coalesce(soggetti.codfis,''),coalesce(soggetti.ragsoc,'') ) id,coalesce(soggetti.codfis,'') as codfis , coalesce(soggetti.ragsoc,'') as ragsoc,coalesce(datanato::varchar,'') as datanato,coalesce(comunato,'') as comunato,((((COALESCE(soggetti.cognome, ''::character varying)::text || COALESCE(' '::text || soggetti.nome::text, ''::text)) || COALESCE(' '::text || soggetti.titolo::text, ''::text)) || COALESCE(' '::text || soggetti.ragsoc::text, ''::text)) || COALESCE(' '::text || soggetti.indirizzo::text, ''::text)) || COALESCE((' ('::text || soggetti.prov::text) || ')'::text, ''::text) AS soggetto
-	FROM $schema.soggetti where $sql ORDER BY coalesce(soggetti.codfis,''),coalesce(ragsoc,''),id DESC ;";
+       $sql="SELECT * FROM (SELECT DISTINCT ON (coalesce(soggetti.codfis,soggetti.ragsoc) ) id,coalesce(soggetti.codfis,'') as codfis , coalesce(soggetti.ragsoc,'') as ragsoc,coalesce(datanato::varchar,'') as datanato,coalesce(soggetti.piva,'') as piva,cognome,nome,coalesce(comunato,'') as comunato,
+((((COALESCE(soggetti.cognome, ''::character varying)::text || COALESCE(' '::text || soggetti.nome::text, ''::text)) ||coalesce(' C.F. '||codfis,'')|| COALESCE(' '::text || soggetti.titolo::text, ''::text)) || COALESCE(' '::text || soggetti.ragsoc::text, ''::text)) || coalesce(' P.I. '||piva,'') || COALESCE(' '::text || soggetti.indirizzo::text, ''::text)) || COALESCE((' ('::text || soggetti.prov::text) || ')'::text, ''::text) AS soggetto
+	FROM $schema.soggetti where $sql ORDER BY coalesce(soggetti.codfis,ragsoc),id DESC ) X  ORDER BY lower(cognome),lower(nome);";
 	//echo($sql);
 	if (!isset($this->db)) $this->connettidb();
 	$result = $this->db->sql_query($sql);
@@ -952,7 +953,7 @@ function elenco_trovati($pratica,$schema="pe"){
 	print "
 	<tr height=10>
 		<td width=40><a href=$schema.scheda_soggetto.php?mode=new&pratica=$pratica&id=$ardati[id]><img src=\"images/left.gif\" border=0></a></td>
-		<td width=100%>$ardati[soggetto] nato a $ardati[comunato] il $ardati[datanato]</td>
+		<td width=100%>$ardati[soggetto], nato a $ardati[comunato] il $ardati[datanato]</td>
 	</tr>
 	<tr>
 		<td colspan=2><img src=\"images/gray_light.gif\" height=\"1\" width=\"100%\"></td>
