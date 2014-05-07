@@ -64,7 +64,7 @@ $db=appUtils::getDb();
             event.preventDefault();
             var id=$("input[name='id']:checked").val();
 			if (id){
-				var d = $("input[name='id']:checked").data();console.log(d);
+				var d = $("input[name='id']:checked").data();
 				var i = d["interno"].toString().replace('n.i.','');
 				var c = d["civico"].toString().replace('n.c.','');
 				window.parent.$('#rif_pratica').val(id);

@@ -114,7 +114,6 @@ utils::loadCss();
                 alert_message('no_drawtype_selected');
                 return;
             }
-            console.log(r);
             if (r) {
                 $.messager.confirm('Attenzione', sprintf(pwMessage['raffled'],{testo:tipo_text}),function(resp){
                     if (resp){

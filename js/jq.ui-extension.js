@@ -190,7 +190,7 @@
   
   $.widget( "custom.catcomplete", $.ui.autocomplete, {
     _renderMenu: function( ul, items ) {
-       console.log(ul);  
+       
       var that = this,
         currentCategory = "";
       $.each( items, function( index, item ) {

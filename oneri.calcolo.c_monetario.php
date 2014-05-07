@@ -260,7 +260,7 @@ function calc(){
 	$('#con_1').val(controllo1) ;
 	$('#cess2').val(cess2);
 	$('#corr').val(corrispettivo);
-	//console.log(rata);
+	
 	$('#rata').val(rata) ;
 }
 

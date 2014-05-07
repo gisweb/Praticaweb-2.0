@@ -74,7 +74,6 @@ $nextMonth = date("d/m/Y", $currentDate+30 * 24 * 3600);
                     $('#elenco').val(data['elenco_id']);
                     /*$.each($('tr.datagrid-filter-row td'),function(k,v){
                         if($(v).attr('field')!='cod_scadenza') $(v).hide();
-                        //console.log(v);
                     });*/
                 }
             });

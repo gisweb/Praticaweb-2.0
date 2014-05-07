@@ -34,14 +34,13 @@ $exportDir=DATA_DIR.implode(DIRECTORY_SEPARATOR,$localDir).DIRECTORY_SEPARATOR;
                     $('.export-table:checked').each(function(k,v){
                         d['tabella'].push($(v).val());
                     });
-                    console.log(d);
                     $.ajax({
                        url:searchUrl,
                        data:d,
                        type:'JSON',
                        method:'POST',
                        success:function(data){
-                           console.log(data);
+                           
                        }
                     });
                 });

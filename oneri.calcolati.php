@@ -92,7 +92,7 @@ foreach($res as $val){
     selectdb['c5'] = <?php print json_encode($c5)?>;
     selectdb['d1'] = <?php print json_encode($d1)?>;
     selectdb['d2'] = <?php print json_encode($d2)?>;
-    console.log(selectdb);
+    
     function set_perc(){
         if (($('#intervento').val()>0) || $('#intervento').val()=='')
             $('#perc').hide();
