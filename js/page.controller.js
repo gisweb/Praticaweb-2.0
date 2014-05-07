@@ -120,8 +120,6 @@ $(document).ready(function(){
             
             
         });
-            
-            
-
+        $("form").find('input[type=text],textarea').filter(':visible:first').focus();
 });
 

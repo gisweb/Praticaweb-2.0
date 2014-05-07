@@ -54,21 +54,21 @@ function get_controllo($label,$tipo,$w,$campo,$html5Attr,$frozen=0){
 		
 		case "ora":	
 			if ($dato) 	$dato=number_format($dato,2, ':', '');			
-			$retval="<INPUT class=\"$class\" maxLength=\"$w\" size=\"$w\" name=\"$campo\" id=\"$campo\" value=\"$dato\" $title $html5Attr $disabilitato >$help";
+			$retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$w\" name=\"$campo\" id=\"$campo\" value=\"$dato\" $title $html5Attr $disabilitato >$help";
 			break;
 		case "numero":
 			if ($dato) 
 				$dato=number_format($dato,4, ',', '.');			
 			else
 				$dato="0";
-			$retval="<INPUT class=\"$class\" maxLength=\"$w\" size=\"$w\" name=\"$campo\" id=\"$campo\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
+			$retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$w\" name=\"$campo\" id=\"$campo\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
 			break;
                 case "intero":
                                  if ($dato) 
                                          $dato=number_format($dato,0, ',', '');			
                                  else
                                          $dato="0";
-                                 $retval="<INPUT class=\"$class\" maxLength=\"$w\" size=\"$w\"  name=\"$campo\" id=\"numero\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
+                                 $retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$w\"  name=\"$campo\" id=\"numero\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
                                  break;
             
                 case "valuta":
@@ -78,7 +78,7 @@ function get_controllo($label,$tipo,$w,$campo,$html5Attr,$frozen=0){
                                 $dato=number_format($dato,2, ',','.');
                         else
                                 $dato="0,00";
-                        $retval="<INPUT class=\"$class\" maxLength=\"$w\" size=\"$w\" name=\"$campo\" id=\"$campo\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
+                        $retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$w\" name=\"$campo\" id=\"$campo\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
                     break;
                 case "upload":
                     $size=intval($w+($w/5));
@@ -98,7 +98,7 @@ function get_controllo($label,$tipo,$w,$campo,$html5Attr,$frozen=0){
 		case "numero_pratica":
 			$size=intval($w+($w/5));
 			$testo=stripslashes($dato);
-			$retval="<INPUT class=\"$class\" maxLength=\"$w\" size=\"$size\" name=\"$campo\" id=\"$campo\" value=\"$testo\" $html5Attr $disabilitato>$help";
+			$retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$size\" name=\"$campo\" id=\"$campo\" value=\"$testo\" $html5Attr $disabilitato>$help";
 			break;
                 case "combosuggest":
                         $prms=explode('#',$w);
@@ -133,7 +133,7 @@ EOT;
 			$size=intval($size+($size/5));
 			$testo=stripslashes($dato);		
 			$retval=<<<EOT
-<INPUT class="$class" maxLength="$w" size="$size" name="$campo" id="$campo" value="$testo" $title $html5Attr $disabilitato>$help			
+<INPUT type=\"text\" class="$class" maxLength="$w" size="$size" name="$campo" id="$campo" value="$testo" $title $html5Attr $disabilitato>$help			
 <button tabindex='-1' id="toggle_$campo" class="select_all"></button>				
 <script>
 
@@ -184,7 +184,7 @@ EOT;
                         
 			$data=$this->date_format(stripslashes($dato));
                         //$html5Attr="data-defaultDate=\"$defaultDate\" data-yearRange=\"$range\"";
-			$retval="<INPUT class=\"$class textbox-date\" maxLength=\"$size\" size=\"$size\" name=\"$campo\" id=\"$campo\" value=\"$data\" $title $html5Attr $disabilitato>$help";
+			$retval="<INPUT type=\"text\" class=\"$class textbox-date\" maxLength=\"$size\" size=\"$size\" name=\"$campo\" id=\"$campo\" value=\"$data\" $title $html5Attr $disabilitato>$help";
 			/*$retval.=<<<EOT
 <script>
 	$(document).ready(function (){
