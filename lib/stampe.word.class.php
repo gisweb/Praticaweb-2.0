@@ -53,7 +53,7 @@ class wordDoc {
 	}
 	private function getData(){
 		$db=$this->db;
-		for($i=0;$i<count($this->viste);$i++){
+		/*for($i=0;$i<count($this->viste);$i++){
 			$vista=$this->viste[$i];
 			if ($vista){
 				$sql="SELECT * FROM ".$this->schema.".$vista WHERE pratica=?";
@@ -75,7 +75,7 @@ class wordDoc {
 				$this->data[$funzione]=$ris;
 			}
 		}
-                
+                */
                 foreach($this->query["single"] as $sql){
                     $ris=$db->fetchAssoc($sql,Array($this->pratica));
                     $this->data=(!$ris)?($this->data):(array_merge($this->data,$ris));
@@ -91,19 +91,16 @@ class wordDoc {
 		$customData=$this->data;
                 $pratica=$this->pratica;
 		switch($this->type){
-			case 1:
-				if(file_exists(LOCAL_INCLUDE."cdu.php")){
-					include_once LOCAL_INCLUDE."cdu.php";
-				}
-				
-				break;
-			default:
-				if(file_exists(LOCAL_INCLUDE."stampe.php")){
-					include_once LOCAL_INCLUDE."stampe.php";
-                                        //print_debug($this->data,null,'STAMPE_LOCAL');
-
-				}
-				break;
+                    case 1:
+                        if(file_exists(LOCAL_INCLUDE."cdu.php")){
+                                include_once LOCAL_INCLUDE."cdu.php";
+                        }
+                        break;
+                    default:
+                        if(file_exists(LOCAL_INCLUDE."stampe.php")){
+                            include_once LOCAL_INCLUDE."stampe.php";
+                         }
+                        break;
 		}
                 array_walk_recursive($customData, 'decode');
 		$this->data=$customData;
@@ -141,7 +138,6 @@ class wordDoc {
                     $TBS->LoadTemplate($this->modelliDir.$this->modello,OPENTBS_ALREADY_XML);	
                 }
                 else{
-                    utils::debug(DEBUG_DIR.$_SESSION["USER_ID"]."_PRINT_CDU.debug",$this);
                     $TBS->LoadTemplate($this->modelliDir.$this->modello,OPENTBS_ALREADY_XML);
                 }
 		$TBS->SetOption('noerr',true);
@@ -185,56 +181,34 @@ class wordDoc {
             return $data;
         }
         function setQuery(){
-            
-            if (file_exists(DATA_DIR."praticaweb/db/db.pe.avvioproc.php")){
-                require_once DATA_DIR."praticaweb/db/db.pe.avvioproc.php";
+            $this->db=appUtils::getDb();
+            $db=$this->db;
+            $result=Array("single"=>Array("data_odierna"=>"SELECT CURRENT_DATE as oggi;"),"multiple"=>Array());
+            $sql="SELECT table_name as name FROM information_schema.views WHERE table_schema='stp' AND table_name ILIKE 'single_%' ORDER BY 1;";
+            $ris=$db->fetchAll($sql);
+            for($i=0;$i<count($ris);$i++){
+                $view=$ris[$i]["name"];
+                $result["single"][$view]="SELECT * FROM stp.$view WHERE pratica=?;";
             }
-
-            return Array(
-            "single"=>Array(
-                "data_odierna"=>    "SELECT CURRENT_DATE as oggi;",
-                "single_dirigente"=>"SELECT * FROM stp.single_dirigente WHERE pratica=?;",
-                "single_ubicazione"=>"SELECT * FROM stp.single_ubicazione WHERE pratica=?;",
-                "single_lavori"=>"SELECT * FROM stp.single_lavori WHERE pratica=?;",
-                "single_progetto"=>"SELECT * FROM stp.single_progetto WHERE pratica=?;",
-                "single_pratica"=>"SELECT * FROM stp.single_pratica WHERE pratica=?;",
-                "single_titolo"=>"SELECT * FROM stp.single_titolo WHERE pratica=?;",
-                "single_fidi_oneri"=>"SELECT * FROM stp.single_fidi_oneri WHERE pratica=?;",
-                "single_parere_vf"=>"SELECT * FROM stp.single_parere_vf WHERE pratica=?;",
-                "single_parere_clp"=>"SELECT * FROM stp.single_parere_clp WHERE pratica=?;",
-                "single_parere_ce"=>"SELECT * FROM stp.single_parere_ce WHERE pratica=?;",
-                "single_parere_asl"=>"SELECT * FROM stp.single_parere_asl WHERE pratica=?;",
-                "single_parere_sopr_arch"=>"SELECT * FROM stp.single_parere_sopr_arch WHERE pratica=?;",
-                "single_elenco_richiedenti"=>"SELECT * FROM stp.single_elenco_richiedenti WHERE pratica=?;",
-                "single_elenco_concessionari"=>"SELECT * FROM stp.single_elenco_concessionari WHERE pratica=?;",
-                "single_elenco_progettisti"=>"SELECT * FROM stp.single_elenco_progettisti WHERE pratica=?;",
-                "single_elenco_cu"=>"SELECT * FROM stp.single_elenco_cu WHERE pratica=?;",
-                "single_elenco_ct"=>"SELECT * FROM stp.single_elenco_ct WHERE pratica=?;",
-                "single_parere_commissione"=>"SELECT * FROM stp.single_parere_commissione WHERE pratica=?;",
-                "single_agibilita"=>"SELECT * FROM stp.single_agibilita WHERE pratica=?;",
-                "single_oneri"=>"SELECT * FROM stp.single_oneri WHERE pratica=?;",
-                "single_rate_oneri"=>"SELECT * FROM stp.single_rate_oneri WHERE pratica=?;",
-                "single_rate_in_scadenza"=>"SELECT * FROM stp.single_rate_in_scadenza WHERE pratica=?;",
-                "single_elenco_esecutori"=>"SELECT * FROM stp.single_elenco_esecutori WHERE pratica=?;",
-                "single_elenco_direttori"=>"SELECT * FROM stp.single_elenco_direttori WHERE pratica=?;"
-            ),
-            "multiple"=>Array(
-                "soggetti"=>"SELECT * FROM stp.multiple_soggetti WHERE pratica=?;",
-                "richiedenti"=>"SELECT * FROM stp.multiple_richiedenti WHERE pratica=?;",
-                "concessionari"=>"SELECT * FROM stp.multiple_concessionari WHERE pratica=?;",
-                "progettisti"=>"SELECT * FROM stp.multiple_progettisti WHERE pratica=?;",
-                "particelle_cu"=>"SELECT * FROM stp.multiple_particelle_cu WHERE pratica=?;",
-                "particelle_ct"=>"SELECT * FROM stp.multiple_particelle_ct WHERE pratica=?;",
-                "pareri"=>"SELECT * FROM stp.multiple_pareri WHERE pratica=?;",
-                "oneri_calcolati"=>"SELECT * FROM stp.multiple_oneri_calcolati WHERE pratica=?;",
-                "indirizzi"=>"SELECT * FROM stp.multiple_indirizzi WHERE pratica=?;",
-                "documenti_mancanti"=>"SELECT * FROM stp.multiple_allegati_mancanti WHERE pratica=?;",
-                "allegati"=>"SELECT * FROM stp.multiple_allegati WHERE pratica=?;",
-                "oneri_dettaglio"=>"SELECT * FROM stp.multiple_oneri_dettaglio WHERE pratica=?;",
-                "esecutore"=>"SELECT * FROM stp.multiple_esecutori WHERE pratica=?;",
-                "direttore"=>"SELECT * FROM stp.multiple_direttori WHERE pratica=?;"
-            )
-        );
+            $sql="SELECT table_name as name FROM information_schema.views WHERE table_schema='stp' AND table_name ILIKE 'multiple_%' ORDER BY 1;";
+            $ris=$db->fetchAll($sql);
+            for($i=0;$i<count($ris);$i++){
+                $view=$ris[$i]["name"];
+                $result["multiple"][str_replace('multiple_','',$view)]="SELECT * FROM stp.$view WHERE pratica=?;";
+            }
+            /*switch($this->type){
+                case 1:
+                    if(file_exists(LOCAL_INCLUDE."cdu.php")){
+                            include_once LOCAL_INCLUDE."cdu.php";
+                    }
+                    break;
+                default:
+                    if(file_exists(LOCAL_INCLUDE."stampe.php")){
+                        include_once LOCAL_INCLUDE."stampe.php";
+                     }
+                    break;
+            }*/
+            return $result;
     }
 }
 
