@@ -188,13 +188,13 @@ class wordDoc {
             $ris=$db->fetchAll($sql);
             for($i=0;$i<count($ris);$i++){
                 $view=$ris[$i]["name"];
-                $result["single"][$view]="SELECT * FROM stp.$view WHERE pratica=?;";
+                $result["single"][$view]="SELECT B.* FROM pe.avvioproc A LEFT JOIN stp.$view B USING(pratica) WHERE A.pratica=?;";
             }
             $sql="SELECT table_name as name FROM information_schema.views WHERE table_schema='stp' AND table_name ILIKE 'multiple_%' ORDER BY 1;";
             $ris=$db->fetchAll($sql);
             for($i=0;$i<count($ris);$i++){
                 $view=$ris[$i]["name"];
-                $result["multiple"][str_replace('multiple_','',$view)]="SELECT * FROM stp.$view WHERE pratica=?;";
+                $result["multiple"][str_replace('multiple_','',$view)]="SELECT B.* FROM pe.avvioproc A LEFT JOIN stp.$view B USING(pratica) WHERE A.pratica=?;";
             }
             /*switch($this->type){
                 case 1:
