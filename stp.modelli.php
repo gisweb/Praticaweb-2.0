@@ -113,50 +113,50 @@ elseif($modo=="view"){
     <div id="divPreview" style="display:none;">
         <fieldset>
             <legend>Numero Pratica</legend>
-            <input type="text" id="numero" style="width:200px;"/>
+            <input type="text" id="numero" style="width:200px;" value=""/>
             <input type="hidden" id="n-pratica" value="">
             <input type="hidden" id="modello" value="<?php echo $id;?>">
         </fieldset>
         <hr>
+        <div id="message" style="display:none;margin: 10px;"></div>
+        <div id="btn-preview"></div>
+                
         
-		<div id="btn-preview"/>
     </div>
 	
-    <script>
-        $( "#numero" ).catcomplete({
-            minLength: 2,
-            
-            source:function( request, response ) {
-                $.ajax({
-                    url:'./services/xSuggest.php',
-                    dataType:'JSON',
-                    type:'POST',
-                    data:{field:'numero-pratica',term:request.term},
-                    success:function (data) {
-                        
-                        response($.map(data, function (item) {
-                            
-                            return {
-                                label: item.label,
-                                value: item.value,
-                                category: item.category // <-----
-                            };
-                        }));
-                    }
-                });
-            },
-            select:function(event,ui){
-                $('#numero').val(ui.item.value);
-                $('#n-pratica').val(ui.item.id);
-            }
-        });
-        
-		
+    <script>	
         $('#btn-preview').button({
             icons:{primary:'ui-icon-print'},
             label:'Apri documento'
         }).bind('click',function(event){
             event.preventDefault();
+            $("#message").html("").hide();
+            $('#n-pratica').val('');
+            var num = $('#numero').val();
+            $.ajax({
+                url:'./services/xSuggest.php',
+                dataType:'JSON',
+                type:'POST',
+                async:false,
+                data:{field:'numero-pratica','term':num},
+                success:function (data,textStatus,jqXHR) {
+                    if (data.length==0 || !data[0]['id']){
+                        var message=sprintf("<b>La pratica n° %s non esiste<b/>",num);
+                        
+                        $("#message").html(message).show();
+                        
+                    }
+                    else if(data && data.length==1){
+                        $('#n-pratica').val(data[0]['id']);
+                    }
+                    else{
+                        var message=sprintf("<b>Molteplici pratiche relative al n° %s<b/>",num);
+                        $("#message").html(message).show();
+                    }
+                    
+                }
+            });
+            
             var pratica = $('#n-pratica').val();
             var modello = $('#modello').val();
             
@@ -165,8 +165,7 @@ elseif($modo=="view"){
                 $('#frm-preview').submit();
                 $('#frm-preview').remove();
             }   
-            else
-                alert('Selezionare una pratica');
+            
         });
     </script>
 <?php
