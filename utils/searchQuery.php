@@ -13,8 +13,9 @@ admin.users D ON(A.resp_proc=D.userid) LEFT JOIN
 (SELECT * FROM pe.grp_particelle_cu) H USING(pratica) LEFT JOIN
 (SELECT indirizzi.pratica, array_to_string(array_agg((COALESCE(indirizzi.via, ''::character varying)::text || COALESCE(' '::text || indirizzi.civico::text)) || COALESCE(' int.'::text || indirizzi.interno::text, ''::text)), ', '::text) AS ubicazione
    FROM pe.indirizzi
-  GROUP BY indirizzi.pratica) I USING(pratica)
-WHERE pratica IN (%s) 
+  GROUP BY indirizzi.pratica) I USING(pratica) LEFT JOIN
+(SELECT pratica,titolo,data_rilascio FROM pe.titolo) M USING(pratica)
+WHERE pratica IN (%s)
 %s %s LIMIT %s OFFSET %s                 
 EOT;
 /*QUERY per la ricerca e il raggruppamento dei civici*/

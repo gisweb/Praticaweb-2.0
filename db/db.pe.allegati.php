@@ -1,4 +1,5 @@
-<?//GESTIONE salvataggio form allegati
+<?php
+//GESTIONE salvataggio form allegati
 
 $db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
 if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
@@ -27,7 +28,6 @@ if (isset($_POST["azione"]) && $_POST["azione"]=="Salva"){
 			elseif($value=="id")
 				$sql="delete from pe.allegati where id=$id";
 			$db->sql_query ($sql);
-			//echo "<p>$sql</p>"
 		}
 		elseif ($tab=="doc"){			
 			$insert=1;

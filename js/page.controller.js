@@ -30,7 +30,15 @@ $(document).ready(function(){
            window.open(window.parent.url_documenti+url,'stampe');
        });
    });
-
+   $.each($('.allegati'),function(k,v){
+       var rnd = Math.random().toString(36).substring(7);
+       $(v).bind('click',function(event){
+           event.preventDefault();
+           var d=$(this).data();
+           var url=d['url']+'?random='+rnd;
+           window.open(window.parent.url_allegati+url,'stampe');
+       });
+   });
     $("#btn_elenco_pratiche_indirizzi").button({
         icons: {
             primary: "ui-icon-gear"

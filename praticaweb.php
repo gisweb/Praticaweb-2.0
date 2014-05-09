@@ -94,6 +94,7 @@ $_SESSION["TITOLO_".$idpratica]=  appUtils::titoloPratica($_REQUEST);
 <script language="javascript">
 	window.name='praticaweb';
         var url_documenti='<?php echo $pr->url_documenti;?>';
+        var url_allegati='<?php echo $pr->url_allegati;?>';
 </script>
 
 

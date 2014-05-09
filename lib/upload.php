@@ -40,7 +40,6 @@
 		$sql="insert into pe.file_allegati (pratica,allegato,nome_file,tipo_file,size_file,ordine,chk,uidins,tmsins,form) values ($idpratica,$idallegato,'$file_name','$file_type',$file_size,($sql),1,".$_SESSION["USER_ID"].",".time().",'$form');";
 	$db->sql_query ($sql);
 	$_SESSION["ADD_NEW"]=1;
-	if(DEBUG) echo $sql;
 	
 	//creo l'oggetto immagine se il file è  tipo immagine
 	 if (ereg("jpeg",$file_type)){
