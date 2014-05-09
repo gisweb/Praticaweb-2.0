@@ -184,18 +184,21 @@ class wordDoc {
             $this->db=appUtils::getDb();
             $db=$this->db;
             $result=Array("single"=>Array("data_odierna"=>"SELECT CURRENT_DATE as oggi;"),"multiple"=>Array());
-            $sql="SELECT table_name as name FROM information_schema.views WHERE table_schema='stp' AND table_name ILIKE 'single_%' ORDER BY 1;";
+            $sql="SELECT table_name as name,array_to_string(array_agg('B.'||column_name::varchar),',') as field_list FROM information_schema.views INNER JOIN information_schema.columns USING(table_name,table_schema) WHERE table_schema='stp' AND table_name ILIKE 'single_%' AND column_name NOT IN ('pratica') GROUP BY table_name ORDER BY 1;";
             $ris=$db->fetchAll($sql);
             for($i=0;$i<count($ris);$i++){
                 $view=$ris[$i]["name"];
-                $result["single"][$view]="SELECT B.* FROM pe.avvioproc A LEFT JOIN stp.$view B USING(pratica) WHERE A.pratica=?;";
+                $fieldList=$ris[$i]["field_list"];
+                $result["single"][$view]="SELECT A.pratica,$fieldList FROM pe.avvioproc A LEFT JOIN stp.$view B USING(pratica) WHERE A.pratica=?;";
             }
-            $sql="SELECT table_name as name FROM information_schema.views WHERE table_schema='stp' AND table_name ILIKE 'multiple_%' ORDER BY 1;";
+            $sql="SELECT table_name as name,array_to_string(array_agg('B.'||column_name::varchar),',') as field_list FROM information_schema.views INNER JOIN information_schema.columns USING(table_name,table_schema) WHERE table_schema='stp' AND table_name ILIKE 'multiple_%' AND column_name NOT IN ('pratica') GROUP BY table_name ORDER BY 1;";
             $ris=$db->fetchAll($sql);
             for($i=0;$i<count($ris);$i++){
                 $view=$ris[$i]["name"];
-                $result["multiple"][str_replace('multiple_','',$view)]="SELECT B.* FROM pe.avvioproc A LEFT JOIN stp.$view B USING(pratica) WHERE A.pratica=?;";
+                $fieldList=$ris[$i]["field_list"];
+                $result["multiple"][str_replace('multiple_','',$view)]="SELECT A.pratica,$fieldList FROM pe.avvioproc A LEFT JOIN stp.$view B USING(pratica) WHERE A.pratica=?;";
             }
+            utils::debug(DEBUG_DIR.'pippo.debug',$result);
             /*switch($this->type){
                 case 1:
                     if(file_exists(LOCAL_INCLUDE."cdu.php")){
