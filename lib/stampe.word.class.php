@@ -204,6 +204,7 @@ class wordDoc {
                 "single_parere_clp"=>"SELECT * FROM stp.single_parere_clp WHERE pratica=?;",
                 "single_parere_ce"=>"SELECT * FROM stp.single_parere_ce WHERE pratica=?;",
                 "single_parere_asl"=>"SELECT * FROM stp.single_parere_asl WHERE pratica=?;",
+                "single_parere_sopr_arch"=>"SELECT * FROM stp.single_parere_sopr_arch WHERE pratica=?;",
                 "single_elenco_richiedenti"=>"SELECT * FROM stp.single_elenco_richiedenti WHERE pratica=?;",
                 "single_elenco_concessionari"=>"SELECT * FROM stp.single_elenco_concessionari WHERE pratica=?;",
                 "single_elenco_progettisti"=>"SELECT * FROM stp.single_elenco_progettisti WHERE pratica=?;",
