@@ -17,7 +17,11 @@ if (in_array($azione, Array("salva","elimina"))){
     elseif ($_FILES['file']['tmp_name']){
         $fName=($_REQUEST['file_doc'])?($_REQUEST['file_doc']):($_FILES['file']['name']);
         $_POST['file_doc']=$fName;
-        
+        if(!pathinfo($fName,PATHINFO_EXTENSION)){
+            $ext=pathinfo($_FILES['file']['name'],PATHINFO_EXTENSION);
+            $fName.=".$ext";
+            $_POST['file_doc']=$fName;
+        }
         require_once 'db.savedata.php';
         if (file_exists($pr->documenti. $fName)){
             $r=unlink ($pr->documenti. $fName);
