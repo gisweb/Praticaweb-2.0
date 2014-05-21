@@ -49,8 +49,8 @@ switch($action){
         utils::debug(DEBUG_DIR."scadenze.debug",$sql);
         $res=$db->fetchAll($sql);
         $sql=sprintf($query["scadenze"],$f1,$filter,$order,$orderType,100000,0);
-        $res=$db->fetchAll($sql);
-        $total=count($res);
+        $r1=$db->fetchAll($sql);
+        $total=count($r1);
         $result=Array("total"=>$total,"rows"=>$res,"filter"=>$filter,"elenco_id"=>$listId);
         
         break;
