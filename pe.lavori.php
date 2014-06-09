@@ -24,14 +24,15 @@ $tab=$_POST["tabella"];
 $id=$_POST["id"];
 if (($modo=="edit") || ($modo=="new")) {
 	unset($_SESSION["ADD_NEW"]);
-	if ($tab=="lavori"){
-		$titolo_form="Scadenze Lavori";
-		$file_config="$tabpath/lavori";
-	}
-	elseif ($tab=="proroga"){
+	if ($tab=="proroga"){
 		$titolo_form="Proroga";
 		$file_config="$tabpath/proroga";
 	}
+        else{
+		$titolo_form="Scadenze Lavori";
+		$file_config="$tabpath/lavori";
+	}
+	
 	
 	$tabella=new Tabella_v($file_config,$modo);	
 	include "./inc/inc.page_header.php";?>
