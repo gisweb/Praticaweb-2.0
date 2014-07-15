@@ -28,18 +28,18 @@ else{
 
 	switch($tipo){
 		case 0:
-			$arr_filter_pc[]=($anno > 0)?("date_part('year',lavori.il)=$anno"):("date_part('year',lavori.il)>=2005 ");
-			$arr_filter_pc[]="avvioproc.tipo BETWEEN 11000 AND 11999";
-			$arr_filter_dia[]=($anno > 0)?("date_part('year',avvioproc.data_presentazione)=$anno"):("date_part('year',avvioproc.data_presentazione)>=2005 ");
-			$arr_filter_dia[]="avvioproc.tipo BETWEEN 10000 AND 10999";
+			$arr_filter_pc[]=($anno > 0)?("anno_riferimento=$anno"):("anno_riferimento>=2005 ");
+			$arr_filter_pc[]="tipo_richiesta=0";
+			$arr_filter_dia[]=($anno > 0)?("anno_riferimento=$anno"):("anno_riferimento>=2005 ");
+			$arr_filter_dia[]="tipo_richiesta=1";
 			break;
 		case 1:
-			$arr_filter_pc[]=($anno > 0)?("date_part('year',lavori.il)=$anno"):("date_part('year',lavori.il)>=1950 ");
-			$arr_filter_pc[]="avvioproc.tipo IN (SELECT DISTINCT id FROM pe.e_tipopratica WHERE tipologia IN ('pratica'))";
+			$arr_filter_pc[]=($anno > 0)?("anno_riferimento=$anno"):("anno_riferimento>=2005 ");
+			$arr_filter_pc[]="tipo_richiesta=0";
 			break;
 		case 2:
-			$arr_filter_dia[]=($anno > 0)?("date_part('year',avvioproc.data_presentazione)=$anno"):("date_part('year',avvioproc.data_presentazione)>=1950 ");
-			$arr_filter_dia[]="avvioproc.tipo IN (SELECT DISTINCT id FROM pe.e_tipopratica WHERE tipologia IN ('dia','scia'))";
+			$arr_filter_dia[]=($anno > 0)?("anno_riferimento=$anno"):("anno_riferimento>=2005 ");
+			$arr_filter_dia[]="tipo_richiesta=1";
 			break;
 		default:
 			break;
@@ -47,10 +47,10 @@ else{
 	$filter_pc=implode(" AND ",$arr_filter_pc);
 	if($filter_pc) $filter_pc = "AND $filter_pc";
 	$filter_dia=implode(" AND ",$arr_filter_dia);
-	if($filter_dia) $filter_dia = "AND $filter_dia";
+	if($tipo==0) $filter_dia = "AND $filter_dia";
 	//if (!$_SESSION["tot_pagine"]){
-        $sql_dia="SELECT count(*) as tot FROM pe.infodia right join pe.avvioproc on (infodia.pratica=avvioproc.pratica) WHERE coalesce(diniego,0)=0 $filter_dia ";
-        $sql_pc="SELECT count(*) as tot FROM pe.titolo left join pe.avvioproc on (titolo.pratica=avvioproc.pratica) left join pe.lavori on (lavori.pratica=avvioproc.pratica) WHERE NOT data_rilascio IS NULL $filter_pc ";
+        $sql_dia="SELECT count(*) as tot FROM anagrafe_tributaria.pratiche WHERE $filter_dia ";
+        $sql_pc="SELECT count(*) as tot FROM anagrafe_tributaria.pratiche WHERE $filter_pc ";
         $sql=($tipo==0)?($sql_dia." UNION ".$sql_pc):(($tipo==1)?($sql_pc):($sql_dia));
 		//if($_SESSION["USER_ID"]<4) echo "<p>$sql</p>";
         if(!$db->sql_query($sql)) print_debug($sql);
@@ -64,10 +64,10 @@ else{
 	//$sql="SELECT avvioproc.id,avvioproc.pratica,avvioproc.numero,avvioproc.data_presentazione FROM pe.titolo left join pe.avvioproc on (titolo.pratica=avvioproc.pratica) WHERE numero='027P006' LIMIT $limit OFFSET ".($offset*$limit).";";
 	//$sql_dia="SELECT avvioproc.id,avvioproc.pratica,avvioproc.numero,avvioproc.data_presentazione FROM pe.infodia left join pe.avvioproc on (infodia.pratica=avvioproc.pratica) WHERE diniego=0 AND sospesa=0 $filter_dia LIMIT $limit OFFSET ".($offset*$limit).";";
 	//$sql_pc="SELECT avvioproc.id,avvioproc.pratica,avvioproc.numero,avvioproc.data_presentazione FROM pe.titolo left join pe.avvioproc on (titolo.pratica=avvioproc.pratica) WHERE NOT data_rilascio IS NULL $filter_pc LIMIT $limit OFFSET ".($offset*$limit).";";
-	$sql_dia="(SELECT avvioproc.id,avvioproc.pratica,avvioproc.numero,avvioproc.data_presentazione FROM pe.infodia right join pe.avvioproc on (infodia.pratica=avvioproc.pratica) WHERE coalesce(diniego,0)=0  $filter_dia order by data_presentazione,id) LIMIT 200";
-	$sql_pc="(SELECT avvioproc.id,avvioproc.pratica,avvioproc.numero,avvioproc.data_presentazione FROM pe.titolo left join pe.avvioproc on (titolo.pratica=avvioproc.pratica) left join pe.lavori on (lavori.pratica=avvioproc.pratica) WHERE NOT data_rilascio IS NULL $filter_pc order by data_presentazione,id) LIMIT 200";
+	$sql_dia="(SELECT pratica,protocollo as numero,data_presentazione FROM anagrafe_tributaria.pratiche WHERE $filter_dia order by data_presentazione,pratica)";
+	$sql_pc="(SELECT pratica,protocollo as numero,data_presentazione FROM anagrafe_tributaria.pratiche WHERE $filter_pc order by data_presentazione,pratica)";
 	$sql=($tipo==0)?($sql_dia." UNION ".$sql_pc):(($tipo==1)?($sql_pc):($sql_dia));
-	if($_SESSION["USER_ID"]<4) echo "<p>$sql</p>";
+	if($_SESSION["USER_ID"]<2) echo "<p>$sql</p>";
         
 	if(!$db->sql_query($sql)) print_debug($sql);
 	
@@ -88,7 +88,7 @@ else{
 	fclose($handle);
 	
 	for($i=0;$i<count($ris);$i++){		//CICLO SU TUUTE LE PRATICHE TROVATE
-		list($id,$pratica,$num_pr,$data_pres)=array_values($ris[$i]);
+		list($pratica,$num_pr,$data_pres)=array_values($ris[$i]);
 		$sql="SELECT * FROM anagrafe_tributaria.e_record order by ordine;";
 		if (!$db->sql_query($sql)) print_debug($sql);
 		$rec=$db->sql_fetchrowset();
@@ -112,7 +112,7 @@ else{
 		$p=valida_recordset($r,$intestazioni,$pratica);
 		list($html_code,$errore)=array_values($p);
 		if($errore){
-			$result[]="<tr><td class=\"pratica\"><a class=\"pratica\" href=\"#\" onclick=\"javascript:NewWindow('praticaweb.php?pratica=$pratica','Praticaweb',0,0,'yes')\">".(($limit*$offset)+($i+1)).") Pratica nÂ° $num_pr del $data_pres</a></td></tr><tr><td width=\"100%\">$html_code</td></tr>";
+			$result[]="<tr><td class=\"pratica\"><a class=\"pratica\" href=\"#\" onclick=\"javascript:NewWindow('praticaweb.php?pratica=$pratica','Praticaweb',0,0,'yes')\">".(($limit*$offset)+($i+1)).") Pratica n° $num_pr del $data_pres</a></td></tr><tr><td width=\"100%\">$html_code</td></tr>";
 			$num_err++;
 			scrivi_file($r);
 		}
@@ -212,7 +212,7 @@ else{
 	<input type="hidden" value="0" name="offset">
 </table>
 </form>
-<?php
+<?php 
 }
 else{		//MODALITA DI VISTA RISULTATI
 	$btn="<p><input type=\"button\" class=\"hexfield\" value=\"Indietro\" style=\"margin-top:10px;margin-left:10px;\" onclick=\"javascript:window.location='anag_trib.ricerca.php?mode=view'\"></p>";
