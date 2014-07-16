@@ -24,7 +24,8 @@ else{
 	$tipo=$_POST["tipo_pratica"];
 	include_once "./lib/anagr_tributaria.php";
 	
-	
+	ini_set('max_execution_time',600);
+        ini_set("memory_limit","256M");
 
 	switch($tipo){
 		case 0:
@@ -222,7 +223,7 @@ else{		//MODALITA DI VISTA RISULTATI
 		
 	}
 	elseif(!$totali_pr){
-		echo "<p style=\"color:red\">Nessuna Pratica Trovata.<br>Se Permesso di Costruire Controllare la data di Rilascio Titolo, se D.I.A. controllare la data di inizio validitÃ </p>\n".$btn;
+		echo "<p style=\"color:red\">Nessuna Pratica Trovata.<br>Se Permesso di Costruire Controllare la data di Rilascio Titolo, se D.I.A. controllare la data di inizio validità </p>\n".$btn;
 	}
 	else {
 		echo "<p><a href=header.php target=\"new\">Download del file</a></p>\n$btn";
@@ -239,6 +240,7 @@ else{		//MODALITA DI VISTA RISULTATI
 	}
 	
 ?>
+
 <form name="frm_nav" id="frm_nav" method="POST" action="anag_trib.ricerca.php">
 	<input type="hidden" value="view" name="mode" id="mode">
 	<input type="hidden" value="<?=$totali_pr?>" name="totali_pr" id="totali_pr">
