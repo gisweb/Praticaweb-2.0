@@ -72,6 +72,9 @@ for($i=5;$i<=30;$i=$i+5)
 
     </DIV>
     <DIV id="message"></DIV>
-    <DIV id="result"></DIV>
+    <DIV id="result">
+        <table id="table_result" width="99%"></table>
+        
+    </DIV>
 </BODY>
 </HTML>    

@@ -8,7 +8,7 @@ $(document).ready(function(){
     $('#btn-search').button({
         icons:{primary:'ui-icon-search'}
     }).bind('click',function(event){
-        var step = 50;
+        var step = 10;
         event.preventDefault();
         var totali = data[$('#anno').val()][$('#tipo_pratica').val()];
         var cicli = Math.ceil(totali / step);
@@ -18,10 +18,14 @@ $(document).ready(function(){
             $.ajax({
                 url:'services/xAnagrafe.php',
                 async:false,
-                data:{offset:i*step,limit:step,anno_riferimento:anno,tipo_richiesta:tipo},
+                data:{mode:'dati',offset:i*step,limit:step,anno_riferimento:anno,tipo_richiesta:tipo,filename:'anagrafe_trib.txt'},
                 type:'POST',
                 success:function(data,textStatus,jqXHR){
-                    
+                    var testo = $('#table_result').html();
+                    if (data['errori']>0){
+                        testo+=data['html'];
+                        $('#table_result').html(testo);
+                    }
                 }
             });
         }    

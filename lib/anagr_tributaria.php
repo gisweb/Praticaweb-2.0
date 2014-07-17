@@ -326,11 +326,11 @@ function valida_dato($field,$value,$valid,$row,$tmp){
 	return $out;
 }
 
-function scrivi_file($arr,$dir=STAMPE_DIR){
+function scrivi_file($arr,$filename="anagrafe_tributaria.txt",$dir=STAMPE_DIR){
 $sep_record=Array("testa"=>"Record Testa\n","richiesta"=>"Record Richiesta\n","beneficiari"=>"Record Beneficiari\n","dati_catastali"=>"Record Dati Catastali\n","professionisti"=>"Record Professionisti\n","imprese"=>"Record Imprese\n","coda"=>"Record Coda\n");
 $app=Array("testa"=>Array("tipo_record","cod_ide_f","cod_num_f","cod_fiscale","cognome","nome","sesso","data_nascita","cod_cat_comune","denominazione","cod_cat_sede","anno_rif","filler","ctr_char","fine_riga"),"richiesta"=>Array("tipo_record","cod_fiscale","cognome","nome","sesso","data_nascita","cod_cat_comune","denominazione","cod_cat_sede","qualifica","tipo_richiesta","tipo_intervento","num_prot","tipologia_richiesta","data_presentazione","data_inizio_lavori","data_fine_lavori","indirizzo","filler","ctr_char","fine_riga"),"beneficiari"=>Array("tipo_record","cod_fiscale_rich","num_prot","cod_fiscale_bene","cognome","nome","sesso","data_nascita","cod_cat_comune","denominazione","cod_cat_sede","qualifica","filler","ctr_char","fine_riga"),"dati_catastali"=>Array("tipo_record","cod_fiscale_rich","num_prot","tipo_unita","sezione","foglio","particella","est_particella","tipo_particella","subalterno","filler","ctr_char","fine_riga"),"professionisti"=>Array("tipo_record","cod_fiscale_rich","num_prot","cod_fiscale_prof","albo","prov_albo","num_iscrizione","qualifica","filler","ctr_char","fine_riga"),"imprese"=>Array("tipo_record","cod_fiscale_rich","num_prot","piva_impresa","denominazione","cod_cat_sede","filler","ctr_char","fine_riga"),"coda"=>Array("tipo_record","cod_ide_f","cod_num_f","cod_fiscale","cognome","nome","sesso","data_nascita","cod_cat_comune","denominazione","cod_cat_sede","anno_rif","filler","ctr_char","fine_riga"));
 //echo "<p><pre>";print_r ($arr);echo "</pre></p><hr>";
-	$handle=fopen($dir."anagrafe_tributaria.txt",'a+');
+	$handle=fopen($dir.$filename,'a+');
 	if(!$handle) echo "Impossibile aprire il file ".$dir."ana_trib";
 	foreach($arr as $key=>$val){ //CICLO SUI TIPI DI RECORD (testa, richiesta, beneficiari, ecc)
 		if ($val){
