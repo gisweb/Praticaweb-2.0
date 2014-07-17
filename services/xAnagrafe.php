@@ -116,7 +116,7 @@ switch($mode){
         for($i=0;$i<count($res);$i++){		//CICLO SU TUUTE LE PRATICHE TROVATE
             
            list($pratica,$num_pr,$data_pres)=array_values($res[$i]);
-           
+           /*Per ogni tipo di record*/
             foreach($rec as $v){
                 $sql="SELECT * FROM anagrafe_tributaria.e_tipi_record WHERE record='".$v["tipo"]."' order by ordine;";
                 $stmt=$conn->prepare($sql);
@@ -139,16 +139,7 @@ switch($mode){
                             print json_encode($result);
                         }
                     }
-                    $p=valida_recordset($r,$intestazioni,$pratica);
-                    list($html_code,$errore)=array_values($p);
-                    if($errore){
-                        $riga[]="<tr><td class=\"pratica\"><a class=\"pratica\" href=\"#\" onclick=\"javascript:NewWindow('praticaweb.php?pratica=$pratica','Praticaweb',0,0,'yes')\">".(($limit*$offset)+($i+1)).") Pratica n° $num_pr del $data_pres</a></td></tr><tr><td width=\"100%\">$html_code</td></tr>";
-                        $num_err++;
-                        scrivi_file($r);
-                    }
-                    else
-                        scrivi_file($r);
-                    $r=Array();
+                    
                     
                 }
                 else {
@@ -159,6 +150,16 @@ switch($mode){
                 } 
 
              }
+             $p=valida_recordset($r,$intestazioni,$pratica);
+            list($html_code,$errore)=array_values($p);
+            if($errore){
+                $riga[]="<tr><td class=\"pratica\"><a class=\"pratica\" href=\"#\" onclick=\"javascript:NewWindow('praticaweb.php?pratica=$pratica','Praticaweb',0,0,'yes')\">".(($limit*$offset)+($i+1)).") Pratica n° $num_pr del $data_pres</a></td></tr><tr><td width=\"100%\">$html_code</td></tr>";
+                $num_err++;
+                scrivi_file($r);
+            }
+            else
+                scrivi_file($r);
+            $r=Array();
          }
         
         $result=Array("success"=>1,"html"=>implode("",$riga),"errori"=>$num_err);
