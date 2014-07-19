@@ -2,15 +2,22 @@
 require_once "../login.php";
 require_once LIB."anagr_tributaria.php";
 
+function getmicrotime(){ 
+    list($usec, $sec) = explode(" ",microtime()); 
+    return ((float)$usec + (float)$sec); 
+}
+
 $limit=$_REQUEST["limit"];
 $offset=$_REQUEST["offset"];
 $tipo=$_REQUEST["tipo_richiesta"];
 $anno=$_REQUEST["anno_riferimento"];
 $mode=$_REQUEST["mode"];
 $fileName=$_REQUEST["filename"];
+$processed=$_REQUEST["processed"];
+$rejected = $_REQUEST["discarded"];
 $filter["anno"]=($anno>0)?("anno_riferimento=$anno"):("true");
 $filter["tipo"]=($tipo>0)?("tipo_richiesta=".($tipo-1)):("true");
-
+$num_err=$_REQUEST["error"];
 $conn=utils::getDb();
 switch($mode){
     case "testa":
@@ -45,7 +52,10 @@ switch($mode){
             print json_encode($result);
             return;
         } 
-        
+        $result=Array("success"=>1,"message"=>"");
+        header('Content-Type: application/json; charset=utf-8');
+        print json_encode($result);
+        return;
         break;
     case "coda":
         $sql="SELECT * FROM anagrafe_tributaria.find_coda($anno);";
@@ -71,6 +81,10 @@ switch($mode){
             }
             
             fclose($handle);
+            $result=Array("success"=>1,"message"=>"");
+            header('Content-Type: application/json; charset=utf-8');
+            print json_encode($result);
+            return;
         }
         else {
             utils::debug(DEBUG_DIR."anagrafe.debug",$sql);
@@ -98,26 +112,32 @@ switch($mode){
         }
         else {
             utils::debug(DEBUG_DIR."anagrafe.debug",$sql);
-            $result=Array("success"=>0,"message"=>"Errore nell'esecuzione della query $sql");
+            $result=Array("success"=>0,"message"=>"Errore nell'esecuzione della query $sql","errori"=>$num_err,"processed"=>$processed);
             header('Content-Type: application/json; charset=utf-8');
             print json_encode($result);
+            return;
         } 
+
         /*Elenco delle pratiche*/
+
         $sql="SELECT pratica,protocollo as numero,data_presentazione FROM anagrafe_tributaria.pratiche WHERE ".implode(" AND ",$filter)." OFFSET $offset LIMIT $limit;";
         $stmt=$conn->prepare($sql);
         if ($stmt->execute()){
                $res=$stmt->fetchAll(PDO::FETCH_ASSOC);
         }
         else{
-            $result=Array("success"=>0,"message"=>"Errore nell'esecuzione della query $sql");
+            $result=Array("success"=>0,"message"=>"Errore nell'esecuzione della query $sql","errori"=>$num_err,"processed"=>$processed);
             header('Content-Type: application/json; charset=utf-8');
             print json_encode($result);
+            return;
         }
+
         for($i=0;$i<count($res);$i++){		//CICLO SU TUUTE LE PRATICHE TROVATE
-            
+           $discarded=0;
            list($pratica,$num_pr,$data_pres)=array_values($res[$i]);
            /*Per ogni tipo di record*/
-            foreach($rec as $v){
+            foreach($rec as $v){    
+                $t1=  getmicrotime();
                 $sql="SELECT * FROM anagrafe_tributaria.e_tipi_record WHERE record='".$v["tipo"]."' order by ordine;";
                 $stmt=$conn->prepare($sql);
                 if ($stmt->execute()){
@@ -127,42 +147,56 @@ switch($mode){
                     }
                     $fld=implode(",",array_keys($intestazioni[$v["nome"]]));
                     $arr_sql[$v["nome"]]="SELECT $fld FROM anagrafe_tributaria.".$v["funzione"]."($pratica);";
-                    foreach($arr_sql as $key=>$sql){
-                        $stmt=$conn->prepare($sql);
-                        if ($stmt->execute()){
-                            $r[$key]=$stmt->fetchAll(PDO::FETCH_ASSOC);
-                        }
-                        else {
-                            utils::debug(DEBUG_DIR."anagrafe.debug",$sql);
-                            $result=Array("success"=>0,"message"=>"Errore nell'esecuzione della query $sql");
-                            header('Content-Type: application/json; charset=utf-8');
-                            print json_encode($result);
-                        }
+                    //foreach($arr_sql as $key=>$sql){
+                    //$t2=  getmicrotime();
+                    $stmt=$conn->prepare($arr_sql[$v["nome"]]);
+                    if ($stmt->execute()){
+                        $r[$v["nome"]]=$stmt->fetchAll(PDO::FETCH_ASSOC);
                     }
+                    else {
+                        utils::debug(DEBUG_DIR."anagrafe.debug",$sql);
+                        $discarded=1;
+                        $message[]="Errore nell'esecuzione della query \"$sql\"";
+                    }
+                    /*$str=sprintf("%d) Query \"%s\" : %d ms",$i,$sql,(getmicrotime()-$t2)*1000);
+                    utils::debug(DEBUG_DIR."time-".(string)$offset.".debug",$str);*/
+                    //}
                     
                     
                 }
                 else {
                     utils::debug(DEBUG_DIR."anagrafe.debug",$sql);
-                    $result=Array("success"=>0,"message"=>"Errore nell'esecuzione della query $sql");
-                    header('Content-Type: application/json; charset=utf-8');
-                    print json_encode($result);
+                    $discarded=1;
+                    $message[]="Errore nell'esecuzione della query \"$sql\"";
+                    //header('Content-Type: application/json; charset=utf-8');
+                    //print json_encode($result);
                 } 
-
-             }
-             $p=valida_recordset($r,$intestazioni,$pratica);
-            list($html_code,$errore)=array_values($p);
-            if($errore){
-                $riga[]="<tr><td class=\"pratica\"><a class=\"pratica\" href=\"#\" onclick=\"javascript:NewWindow('praticaweb.php?pratica=$pratica','Praticaweb',0,0,'yes')\">".(($limit*$offset)+($i+1)).") Pratica n° $num_pr del $data_pres</a></td></tr><tr><td width=\"100%\">$html_code</td></tr>";
-                $num_err++;
-                scrivi_file($r);
+                /*$str=sprintf("%d) Ciclo sulle Pratiche - Record %s : %d ms",$i,$v["tipo"],(getmicrotime()-$t)*1000);
+                utils::debug(DEBUG_DIR."time-".(string)$offset.".debug",$str);*/
             }
-            else
-                scrivi_file($r);
-            $r=Array();
+            
+            $p=valida_recordset($r,$intestazioni,$pratica);
+            
+            list($html_code,$errore)=array_values($p);
+            if($discarded==1){
+                $rejected++;
+            }
+            else{
+                if($errore){
+                    $num_err++;
+                    $riga[]="<tr><td class=\"pratica\"><a class=\"pratica\" href=\"#\" onclick=\"javascript:NewWindow('praticaweb.php?pratica=$pratica','Praticaweb',0,0,'yes')\">$num_err) Pratica n° $num_pr del $data_pres</a></td></tr><tr><td width=\"100%\">$html_code</td></tr>";
+                    scrivi_file($r);
+                }
+                else
+                    scrivi_file($r);
+                $r=Array();
+                /*$str=sprintf("%d) Ciclo sulle Pratiche : %d ms",$i,(getmicrotime()-$t)*1000);
+                utils::debug(DEBUG_DIR."time-".(string)$offset.".debug",$str);*/
+                $processed++;
+                }
          }
         
-        $result=Array("success"=>1,"html"=>implode("",$riga),"errori"=>$num_err);
+        $result=Array("success"=>1,"html"=>implode("",$riga),"message"=>$message,"errori"=>$num_err,"processed"=>$processed,"discarded"=>$rejected);
 
                     
         

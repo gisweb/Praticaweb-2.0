@@ -37,6 +37,18 @@ for($i=5;$i<=30;$i=$i+5)
     <script>
         var data = <?php echo json_encode($totali);?>
     </script>
+    <style>
+  .ui-progressbar {
+    position: relative;
+  }
+  .progress-label {
+    position: absolute;
+    left: 50%;
+    top: 4px;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #fff;
+  }
+  </style>
 </HEAD>
 <BODY>
     <DIV id="search">
@@ -53,14 +65,22 @@ for($i=5;$i<=30;$i=$i+5)
                     </select>
                 </td>
                 <td rowspan="2" valign="top"><div>Totale Pratiche : <span id="counter"></span></div> </td>
-                 
+                <td width="15%" rowspan="2" valign="top">
+                    <DIV id="message">
+                        <div><label class="label" for="num-tot">Pratiche Totali : </label><span style="float:right;color:red;font-weight:bold;" id="num-tot" name="num-tot"></span></div>
+                        <div><label class="label" for="num-processed">Pratiche processate : </label><span style="float:right;color:red;font-weight:bold;" id="num-processed" name="num-processed"></span></div>
+                        <div><label class="label" for="num-error">Pratiche con errore : </label><span style="float:right;color:red;font-weight:bold;" id="num-error" name="num-error"></span></div>
+                        <div><label class="label" for="num-perc-error">Percentuale errore : </label><span style="float:right;color:red;font-weight:bold;" id="num-perc-error" name="num-perc-error"></span></div>
+                        <div><label class="label" for="num-discarded">Pratiche Scartate : </label><span style="float:right;color:red;font-weight:bold;" id="num-discarded" name="num-discarded"></span></div>
+                    </DIV>
+                </td> 
             </tr>
             <tr>
                 <td bgColor="#728bb8">Anno</td>
                 <td><?=$html["anno"];?></td>
             </tr>
             <tr>
-		<td colspan="3" style="padding-top:10px;"><hr>
+		<td colspan="4" style="padding-top:10px;"><hr>
                     <button style="margin-right:40px;" id="btn-close">Chiudi</button>
                     <!--<input type="submit" value="Avvia Ricerca" name="azione" class="hexfield" style="width:120px;" onclick="return valida();">-->
                     <button  id="btn-search">Avvia Ricerca</button>
@@ -71,7 +91,9 @@ for($i=5;$i<=30;$i=$i+5)
 	<input type="hidden" value="0" name="offset">
 
     </DIV>
-    <DIV id="message"></DIV>
+    <div id="dialog">
+        <div id="progressbar"><div class="progress-label">Loading...</div></div>
+    </div>
     <DIV id="result">
         <table id="table_result" width="99%"></table>
         
