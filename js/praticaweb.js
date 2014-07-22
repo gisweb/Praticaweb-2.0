@@ -4,23 +4,6 @@ var serverUrl='/services/xServer.php';
 var suggestUrl='/services/xSuggest.php';
 
 
-$.widget( "custom.catcomplete", $.ui.autocomplete, {
-        _renderMenu: function( ul, items ) {
-            var that = this,
-			
-            currentCategory = "";
-			
-            $.each( items, function( index, item ) {
-                if ( item.category != currentCategory ) {
-                    ul.append( "<li class='ui-autocomplete-category'>" + item.category + "</li>" );
-                    currentCategory = item.category;
-                }
-				
-                that._renderItemData( ul, item );
-            });
-        }
-    });
-
 function setDatiAutoSuggest(event,ui){
     if (typeof(ui.item.child)!='undefined'){
         $.each(ui.item.child,function(k,v){

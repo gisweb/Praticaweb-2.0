@@ -27,12 +27,13 @@ $(document).ready(function(){
     $('#btn-search').button({
         icons:{primary:'ui-icon-search'}
     }).bind('click',function(event){
-        var step = 10;
+        var step = 20;
         event.preventDefault();
         $(this).attr("disabled","disabled");
         $('#btn-close').attr("disabled","disabled");
         
         $('#table_result').html('');
+        $("#progressbar").progressbar( "value", 0 );
         var totali = data[$('#anno').val()][$('#tipo_pratica').val()];
         var cicli = Math.ceil(totali / step);
         var tipo = $('#tipo_pratica').val();

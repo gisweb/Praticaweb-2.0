@@ -63,7 +63,7 @@ switch($mode){
         if($stmt->execute()){
             $rows=$stmt->fetchAll(PDO::FETCH_ASSOC);	
             $testo=implode("",$rows[0]);
-            $handle=fopen(STAMPE.$fileName,'w');
+            $handle=fopen(STAMPE.$fileName,'a+');
             if(!$handle) {
                 $result=Array("success"=>0,"message"=>"Impossibile aprire il file $dir$fileName");
                 header('Content-Type: application/json; charset=utf-8');
@@ -120,7 +120,7 @@ switch($mode){
 
         /*Elenco delle pratiche*/
 
-        $sql="SELECT pratica,protocollo as numero,data_presentazione FROM anagrafe_tributaria.pratiche WHERE ".implode(" AND ",$filter)." OFFSET $offset LIMIT $limit;";
+        $sql="SELECT pratica,protocollo as numero,data_presentazione,nome_tipo FROM anagrafe_tributaria.pratiche WHERE ".implode(" AND ",$filter)." OFFSET $offset LIMIT $limit;";
         $stmt=$conn->prepare($sql);
         if ($stmt->execute()){
                $res=$stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -134,7 +134,7 @@ switch($mode){
 
         for($i=0;$i<count($res);$i++){		//CICLO SU TUUTE LE PRATICHE TROVATE
            $discarded=0;
-           list($pratica,$num_pr,$data_pres)=array_values($res[$i]);
+           list($pratica,$num_pr,$data_pres,$tipo)=array_values($res[$i]);
            /*Per ogni tipo di record*/
             foreach($rec as $v){    
                 $t1=  getmicrotime();
@@ -156,7 +156,7 @@ switch($mode){
                     else {
                         utils::debug(DEBUG_DIR."anagrafe.debug",$sql);
                         $discarded=1;
-                        $message[]="Errore nell'esecuzione della query \"$sql\"";
+                        $message[]="Errore nell'esecuzione della query \"".$arr_sql[$v["nome"]]."\"";
                     }
                     /*$str=sprintf("%d) Query \"%s\" : %d ms",$i,$sql,(getmicrotime()-$t2)*1000);
                     utils::debug(DEBUG_DIR."time-".(string)$offset.".debug",$str);*/
@@ -184,11 +184,11 @@ switch($mode){
             else{
                 if($errore){
                     $num_err++;
-                    $riga[]="<tr><td class=\"pratica\"><a class=\"pratica\" href=\"#\" onclick=\"javascript:NewWindow('praticaweb.php?pratica=$pratica','Praticaweb',0,0,'yes')\">$num_err) Pratica n° $num_pr del $data_pres</a></td></tr><tr><td width=\"100%\">$html_code</td></tr>";
-                    scrivi_file($r);
+                    $riga[]="<tr><td class=\"pratica\"><a class=\"pratica\" href=\"#\" onclick=\"javascript:NewWindow('praticaweb.php?pratica=$pratica','Praticaweb',0,0,'yes')\">$num_err) $tipo protocollo n° $num_pr del $data_pres</a></td></tr><tr><td width=\"100%\">$html_code</td></tr>";
+                    scrivi_file($r,$fileName);
                 }
                 else
-                    scrivi_file($r);
+                    scrivi_file($r,$fileName);
                 $r=Array();
                 /*$str=sprintf("%d) Ciclo sulle Pratiche : %d ms",$i,(getmicrotime()-$t)*1000);
                 utils::debug(DEBUG_DIR."time-".(string)$offset.".debug",$str);*/
