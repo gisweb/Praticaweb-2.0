@@ -1,4 +1,8 @@
 <?php
+
+function filler($s,$l,$pos='L',$filler=' '){
+    return str_pad($s,$l,$filler,(strtoupper($pos)=='L')?(STR_PAD_LEFT):(STR_PAD_RIGHT));
+}
 $err_CF_PI=Array(
 	"1"=>"La lunghezza del codice fiscale non &egrave;\ncorretta: il codice fiscale dovrebbe essere lungo\nesattamente 16 caratteri.",
 	"2"=>"Il codice fiscale contiene dei caratteri non validi:\ni soli caratteri validi sono le lettere e le cifre.",
@@ -8,6 +12,7 @@ $err_CF_PI=Array(
 	"6"=>"La partita IVA non &egrave; valida:\nil codice di controllo non corrisponde."
 );
 
+    
 function checkdata($data){	
 	if(!ereg("^[0-9]{8}$", $data)){
 		return false;
@@ -326,26 +331,149 @@ function valida_dato($field,$value,$valid,$row,$tmp){
 	return $out;
 }
 
-function scrivi_file($arr,$filename="anagrafe_tributaria.txt",$dir=STAMPE_DIR){
-$sep_record=Array("testa"=>"Record Testa\n","richiesta"=>"Record Richiesta\n","beneficiari"=>"Record Beneficiari\n","dati_catastali"=>"Record Dati Catastali\n","professionisti"=>"Record Professionisti\n","imprese"=>"Record Imprese\n","coda"=>"Record Coda\n");
-$app=Array("testa"=>Array("tipo_record","cod_ide_f","cod_num_f","cod_fiscale","cognome","nome","sesso","data_nascita","cod_cat_comune","denominazione","cod_cat_sede","anno_rif","filler","ctr_char","fine_riga"),"richiesta"=>Array("tipo_record","cod_fiscale","cognome","nome","sesso","data_nascita","cod_cat_comune","denominazione","cod_cat_sede","qualifica","tipo_richiesta","tipo_intervento","num_prot","tipologia_richiesta","data_presentazione","data_inizio_lavori","data_fine_lavori","indirizzo","filler","ctr_char","fine_riga"),"beneficiari"=>Array("tipo_record","cod_fiscale_rich","num_prot","cod_fiscale_bene","cognome","nome","sesso","data_nascita","cod_cat_comune","denominazione","cod_cat_sede","qualifica","filler","ctr_char","fine_riga"),"dati_catastali"=>Array("tipo_record","cod_fiscale_rich","num_prot","tipo_unita","sezione","foglio","particella","est_particella","tipo_particella","subalterno","filler","ctr_char","fine_riga"),"professionisti"=>Array("tipo_record","cod_fiscale_rich","num_prot","cod_fiscale_prof","albo","prov_albo","num_iscrizione","qualifica","filler","ctr_char","fine_riga"),"imprese"=>Array("tipo_record","cod_fiscale_rich","num_prot","piva_impresa","denominazione","cod_cat_sede","filler","ctr_char","fine_riga"),"coda"=>Array("tipo_record","cod_ide_f","cod_num_f","cod_fiscale","cognome","nome","sesso","data_nascita","cod_cat_comune","denominazione","cod_cat_sede","anno_rif","filler","ctr_char","fine_riga"));
-//echo "<p><pre>";print_r ($arr);echo "</pre></p><hr>";
-	$handle=fopen($dir.$filename,'a+');
-	if(!$handle) echo "Impossibile aprire il file ".$dir."ana_trib";
-	foreach($arr as $key=>$val){ //CICLO SUI TIPI DI RECORD (testa, richiesta, beneficiari, ecc)
-		if ($val){
-			$k=$app[$key];
-			for ($i=0;$i<count($val);$i++){
-					$v=$val[$i];
-				for($j=0;$j<count($k);$j++){
-					$tmp.=$v[$k[$j]];
-				}
-			}
-		}
-	}
-	fwrite($handle,$tmp);
-	fclose($handle);
-	return $error;
+function scrivi_file($arr,$filename="anagrafe_tributaria.txt",$dir=STAMPE){
+    $recDefinition=Array(
+        "testa"=>Array(
+            "tipo_record"=>Array("length"=>1,"filler"=>' ',"position"=>"R"),
+            "cod_ide_f"=>Array("length"=>5,"filler"=>' ',"position"=>"R"),
+            "cod_num_f"=>Array("length"=>2,"filler"=>' ',"position"=>"R"),
+            "cod_fiscale"=>Array("length"=>16,"filler"=>' ',"position"=>"L"),
+            "cognome"=>Array("length"=>26,"filler"=>' ',"position"=>"R"),
+            "nome"=>Array("length"=>25,"filler"=>' ',"position"=>"R"),
+            "sesso"=>Array("length"=>1,"filler"=>' ',"position"=>"R"),
+            "data_nascita"=>Array("length"=>8,"filler"=>' ',"position"=>"R"),
+            "cod_cat_comune"=>Array("length"=>4,"filler"=>' ',"position"=>"R"),
+            "denominazione"=>Array("length"=>60,"filler"=>' ',"position"=>"R"),
+            "cod_cat_sede"=>Array("length"=>4,"filler"=>' ',"position"=>"R"),
+            "anno_rif"=>Array("length"=>4,"filler"=>' ',"position"=>"R"),
+            "filler"=>Array("length"=>211,"filler"=>' ',"position"=>"R"),   
+            "ctr_char"=>Array("length"=>1,"filler"=>' ',"position"=>"R"),
+            "fine_riga"=>Array("length"=>2,"filler"=>' ',"position"=>"R")
+        ),
+        "richiesta"=>Array(
+            "tipo_record"=>Array("length"=>1,"filler"=>' ',"position"=>"R"),
+            "cod_fiscale"=>Array("length"=>16,"filler"=>' ',"position"=>"L"),
+            "cognome"=>Array("length"=>26,"filler"=>' ',"position"=>"R"),
+            "nome"=>Array("length"=>25,"filler"=>' ',"position"=>"R"),
+            "sesso"=>Array("length"=>1,"filler"=>' ',"position"=>"R"),
+            "data_nascita"=>Array("length"=>8,"filler"=>' ',"position"=>"R"),
+            "cod_cat_comune"=>Array("length"=>4,"filler"=>' ',"position"=>"R"),
+            "denominazione"=>Array("length"=>60,"filler"=>' ',"position"=>"R"),
+            "cod_cat_sede"=>Array("length"=>4,"filler"=>' ',"position"=>"R"),
+            "qualifica"=>Array("length"=>1,"filler"=>' ',"position"=>"R"),
+            "tipo_richiesta"=>Array("length"=>1,"filler"=>' ',"position"=>"R"),
+            "tipo_intervento"=>Array("length"=>1,"filler"=>' ',"position"=>"R"),
+            "num_prot"=>Array("length"=>20,"filler"=>' ',"position"=>"R"),
+            "tipologia_richiesta"=>Array("length"=>1,"filler"=>' ',"position"=>"R"),
+            "data_presentazione"=>Array("length"=>8,"filler"=>' ',"position"=>"R"),
+            "data_inizio_lavori"=>Array("length"=>8,"filler"=>' ',"position"=>"R"),
+            "data_fine_lavori"=>Array("length"=>8,"filler"=>' ',"position"=>"R"),
+            "indirizzo"=>Array("length"=>35,"filler"=>' ',"position"=>"R"),
+            "filler"=>Array("length"=>139,"filler"=>' ',"position"=>"R"),
+            "ctr_char"=>Array("length"=>1,"filler"=>' ',"position"=>"R"),
+            "fine_riga"=>Array("length"=>2,"filler"=>' ',"position"=>"R")
+        ),
+        "beneficiari"=>Array(
+            "tipo_record"=>Array("length"=>1,"filler"=>' ',"position"=>"R"),
+            "cod_fiscale_rich"=>Array("length"=>16,"filler"=>' ',"position"=>"L"),
+            "num_prot"=>Array("length"=>20,"filler"=>' ',"position"=>"R"),
+            "cod_fiscale_bene"=>Array("length"=>16,"filler"=>' ',"position"=>"L"),
+            "cognome"=>Array("length"=>26,"filler"=>' ',"position"=>"R"),
+            "nome"=>Array("length"=>25,"filler"=>' ',"position"=>"R"),
+            "sesso"=>Array("length"=>1,"filler"=>' ',"position"=>"R"),
+            "data_nascita"=>Array("length"=>8,"filler"=>' ',"position"=>"R"),
+            "cod_cat_comune"=>Array("length"=>4,"filler"=>' ',"position"=>"R"),
+            "denominazione"=>Array("length"=>60,"filler"=>' ',"position"=>"R"),
+            "cod_cat_sede"=>Array("length"=>4,"filler"=>' ',"position"=>"R"),
+            "qualifica"=>Array("length"=>1,"filler"=>' ',"position"=>"R"),
+            "filler"=>Array("length"=>185,"filler"=>' ',"position"=>"R"),
+            "ctr_char"=>Array("length"=>1,"filler"=>' ',"position"=>"R"),
+            "fine_riga"=>Array("length"=>2,"filler"=>' ',"position"=>"R")
+        ),
+        "dati_catastali"=>Array(
+            "tipo_record"=>Array("length"=>1,"filler"=>' ',"position"=>"R"),
+            "cod_fiscale_rich"=>Array("length"=>16,"filler"=>' ',"position"=>"L"),
+            "num_prot"=>Array("length"=>20,"filler"=>' ',"position"=>"R"),
+            "tipo_unita"=>Array("length"=>1,"filler"=>' ',"position"=>"R"),
+            "sezione"=>Array("length"=>3,"filler"=>' ',"position"=>"R"),
+            "foglio"=>Array("length"=>5,"filler"=>' ',"position"=>"R"),
+            "particella"=>Array("length"=>5,"filler"=>' ',"position"=>"R"),
+            "est_particella"=>Array("length"=>4,"filler"=>' ',"position"=>"R"),
+            "tipo_particella"=>Array("length"=>1,"filler"=>' ',"position"=>"R"),
+            "subalterno"=>Array("length"=>4,"filler"=>' ',"position"=>"R"),
+            "filler"=>Array("length"=>307,"filler"=>' ',"position"=>"R"),
+            "ctr_char"=>Array("length"=>1,"filler"=>' ',"position"=>"R"),
+            "fine_riga"=>Array("length"=>2,"filler"=>' ',"position"=>"R")
+        ),
+        "professionisti"=>Array(
+            "tipo_record"=>Array("length"=>1,"filler"=>' ',"position"=>"R"),
+            "cod_fiscale_rich"=>Array("length"=>16,"filler"=>' ',"position"=>"L"),
+            "num_prot"=>Array("length"=>20,"filler"=>' ',"position"=>"R"),
+            "cod_fiscale_prof"=>Array("length"=>16,"filler"=>' ',"position"=>"L"),
+            "albo"=>Array("length"=>1,"filler"=>' ',"position"=>"R"),
+            "prov_albo"=>Array("length"=>2,"filler"=>' ',"position"=>"R"),
+            "num_iscrizione"=>Array("length"=>10,"filler"=>' ',"position"=>"R"),
+            "qualifica"=>Array("length"=>1,"filler"=>' ',"position"=>"R"),
+            "filler"=>Array("length"=>300,"filler"=>' ',"position"=>"R"),
+            "ctr_char"=>Array("length"=>1,"filler"=>' ',"position"=>"R"),
+            "fine_riga"=>Array("length"=>2,"filler"=>' ',"position"=>"R")
+        ),
+        "imprese"=>Array(
+            "tipo_record"=>Array("length"=>1,"filler"=>' ',"position"=>"R"),
+            "cod_fiscale_rich"=>Array("length"=>16,"filler"=>' ',"position"=>"L"),
+            "num_prot"=>Array("length"=>20,"filler"=>' ',"position"=>"R"),
+            "piva_impresa"=>Array("length"=>11,"filler"=>' ',"position"=>"R"),
+            "denominazione"=>Array("length"=>50,"filler"=>' ',"position"=>"R"),
+            "cod_cat_sede"=>Array("length"=>4,"filler"=>' ',"position"=>"R"),
+            "filler"=>Array("length"=>265,"filler"=>' ',"position"=>"R"),
+            "ctr_char"=>Array("length"=>1,"filler"=>' ',"position"=>"R"),
+            "fine_riga"=>Array("length"=>2,"filler"=>' ',"position"=>"R")
+        ),
+        "coda"=>Array(
+            "tipo_record"=>Array("length"=>1,"filler"=>' ',"position"=>"R"),
+            "cod_ide_f"=>Array("length"=>5,"filler"=>' ',"position"=>"R"),
+            "cod_num_f"=>Array("length"=>2,"filler"=>' ',"position"=>"R"),
+            "cod_fiscale"=>Array("length"=>16,"filler"=>' ',"position"=>"L"),
+            "cognome"=>Array("length"=>26,"filler"=>' ',"position"=>"R"),
+            "nome"=>Array("length"=>25,"filler"=>' ',"position"=>"R"),
+            "sesso"=>Array("length"=>1,"filler"=>' ',"position"=>"R"),
+            "data_nascita"=>Array("length"=>8,"filler"=>' ',"position"=>"R"),
+            "cod_cat_comune"=>Array("length"=>4,"filler"=>' ',"position"=>"R"),
+            "denominazione"=>Array("length"=>60,"filler"=>' ',"position"=>"R"),
+            "cod_cat_sede"=>Array("length"=>4,"filler"=>' ',"position"=>"R"),
+            "anno_rif"=>Array("length"=>4,"filler"=>' ',"position"=>"R"),
+            "filler"=>Array("length"=>211,"filler"=>' ',"position"=>"R"),
+            "ctr_char"=>Array("length"=>1,"filler"=>' ',"position"=>"R"),
+            "fine_riga"=>Array("length"=>2,"filler"=>' ',"position"=>"R")
+        )
+    );
+    $sep_record=Array("testa"=>"Record Testa\n","richiesta"=>"Record Richiesta\n","beneficiari"=>"Record Beneficiari\n","dati_catastali"=>"Record Dati Catastali\n","professionisti"=>"Record Professionisti\n","imprese"=>"Record Imprese\n","coda"=>"Record Coda\n");
+    $handle=fopen($dir.$filename,'a+');
+    if(!$handle){
+        utils::debug(DEBUG_DIR."SCRIVI_FILE.txt", "Impossibile aprire il file ".$dir."ana_trib");
+        return -1;
+    }
+    //
+    foreach($arr as $key=>$val){ //CICLO SUI TIPI DI RECORD (testa, richiesta, beneficiari, ecc)
+        $tmp=Array();
+        if ($val){
+            
+            $k=$recDefinition[$key];
+            
+            for ($i=0;$i<count($val);$i++){ //CICLO SUI RECORD TROVATI DI QUEL TIPO
+                $v=$val[$i];
+                foreach($k as $intestazione=>$data){
+                    $tmp[]=filler($v[$intestazione],$data["length"],$data["position"],$data["filler"]);
+                }
+                
+            }
+            $rows[]=implode("",$tmp);
+        }
+    }
+    utils::debug(DEBUG_DIR."SCRIVI_FILE.txt", $rows);
+    fwrite($handle,implode("",$rows));
+    fclose($handle);
+    return $error;
 }
 function compara_file($filename1,$filename2) {
 	if(!file_exists($filename1)){

@@ -1,16 +1,10 @@
 <?php
 include_once ("login.php");
-//include ("./lib/menu.class.php");
-//include ("./lib/stati.class.php");
-unset($is_commissione);
-unset($is_commissione_paesaggio);
-unset($is_cdu);
+
 //unset($is_condono);
 
 //print_array($_REQUEST);
-
-//$is_commissione=isset($_REQUEST["comm"])?($_REQUEST["comm"]):(0);
-//$is_commissione_paesaggio=isset($_REQUEST["comm_paesaggio"])?($_REQUEST["comm_paesaggio"]):(0);
+unset($is_cdu);
 $is_cdu=isset($_REQUEST["cdu"])?($_REQUEST["cdu"]):(0);
 
 if($is_cdu==1){
@@ -61,11 +55,7 @@ elseif (isset($active_form) && $active_form){
 		$active_form.="?pratica=$idpratica";
 }
 else{
-	if($is_commissione) 
-		$active_form="ce.commissione.php?pratica=$idpratica&comm=1";
-       elseif($is_commissione_paesaggio) 
-			$active_form="ce.commissione_paesaggio.php?pratica=$idpratica&comm_paesaggio=1";
-	elseif($is_cdu) 
+	if($is_cdu) 
 		$active_form="cdu.richiesta.php?pratica=$idpratica";
 	else {
 		$active_form="pe.iter.php?pratica=$idpratica";
