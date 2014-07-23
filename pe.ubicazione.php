@@ -110,7 +110,7 @@ for($i=0;$i<3;$i++){
 $html=<<<EOT
     <tr> 
         <td>
-            <div class="avviso" style="margin-top:10px;">Per l'anagrafe tributaria è necessario inserire almeno un indirizzo e una particella catastale (terreni o urbano)</div> 
+            <div class="avviso" style="margin-top:10px;">Per la compilazione dell'anagrafe tributaria è necessario inserire almeno un indirizzo e una particella catastale (terreni o urbano)</div> 
         </td>
     </tr>
 </table>    
