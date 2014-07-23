@@ -57,6 +57,7 @@ $tabella_variati->set_color("#FFFFFF","#FF0000",0,0);
                     $tabella_attuali->get_titolo()?>
                 </td>
 	</tr>
+        
 	<tr> 
 		<td valign=top> 
 			<!-- contenuto-->
@@ -114,7 +115,16 @@ $tabella_variati->set_color("#FFFFFF","#FF0000",0,0);
 		</form>		
 		</td>
 	</tr>	
-	<?}?>
+	<?php
+            }
+        ?>
+        <tr>
+            <td colspan="2">
+                <div class="avviso" style="margin-top:10px;">
+                    Per la compilazione dell'anagrafe tributaria sono necessari almeno un richiedente, un concessionario (beneficiario), un tecnico (progettista/direttore lavori) e un esecutore dei lavori(se presente) 
+                </div>
+            </td>
+        </tr>
 </TABLE>
 </body>
 </html>
