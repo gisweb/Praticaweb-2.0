@@ -53,6 +53,11 @@ span.allegati{
     padding-left:5px;
     padding-right:5px;
 }
+
+div.avviso{
+    font-weight:bold;
+    color:red;
+}
 /*
 @-moz-keyframes blinker {  
     0% { opacity: 1.0; }

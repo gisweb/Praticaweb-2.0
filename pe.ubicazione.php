@@ -89,25 +89,33 @@ if (($modo=="edit") or ($modo=="new")){
 <?php
 $array_file_tab=array("indirizzi","catasto_terreni","catasto_urbano");
 $array_titolo=array("Indirizzi","Catasto Terreni","Catasto Urbano");
-    for($i=0;$i<3;$i++){
+for($i=0;$i<3;$i++){
 
-        $file_tab=$array_file_tab[$i];
-        $titolo=$array_titolo[$i];
-        print "<tr><td>";
-        $tabella=new Tabella_h("$tabpath/$file_tab");
-        
-        $tabella->set_titolo($titolo,"nuovo",array("titolo"=>$titolo,"tab"=>$file_tab));
+    $file_tab=$array_file_tab[$i];
+    $titolo=$array_titolo[$i];
+    print "<tr><td>";
+    $tabella=new Tabella_h("$tabpath/$file_tab");
 
-        $numrows=$tabella->set_dati("pratica=$idpratica;");
-        $tabella->get_titolo();
-                
-        if ($numrows)	
-            $tabella->elenco();
-        else
-            print ("<p><b>Elenco vuoto</b></p>");
-            print "<br/></td></tr>";
-    }
-print "</table>";
+    $tabella->set_titolo($titolo,"nuovo",array("titolo"=>$titolo,"tab"=>$file_tab));
+
+    $numrows=$tabella->set_dati("pratica=$idpratica;");
+    $tabella->get_titolo();
+
+    if ($numrows)	
+        $tabella->elenco();
+    else
+        print ("<p><b>Elenco vuoto</b></p>");
+        print "<br/></td></tr>";
+}
+$html=<<<EOT
+    <tr> 
+        <td>
+            <div class="avviso" style="margin-top:10px;">Per l'anagrafe tributaria è necessario inserire almeno un indirizzo e una particella catastale (terreni o urbano)</div> 
+        </td>
+    </tr>
+</table>    
+EOT;
+print $html;
 
 }
 ?>
