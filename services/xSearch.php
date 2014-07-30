@@ -25,9 +25,16 @@ $result=Array();
 $db=appUtils::getDB();
 switch($action){
     case "list-draw":
-        $sql="SELECT DISTINCT pratica,numero,data_sorteggio,data_avvio,F.nome as resp_proc,C.nome as tipo_pratica FROM pe.verifiche A INNER JOIN pe.avvioproc B USING(pratica) LEFT JOIN pe.e_verifiche E ON(A.tipo=E.id) INNER JOIN pe.e_tipopratica C ON (B.tipo=C.id) LEFT JOIN admin.users F ON (A.resp_proc_verifica=F.userid) LEFT JOIN pe.e_categoriapratica D ON(B.categoria=D.id) WHERE coalesce(B.data_chiusura::varchar,'')='' order by data_sorteggio DESC;";
+        $page = isset($_POST['page']) ? intval($_POST['page']) : 1;
+        $rows = isset($_POST['rows']) ? intval($_POST['rows']) : 10;
+        $offset = ($page-1)*$rows;
+        $order = isset($_POST['sort']) ? ("ORDER BY ".$_POST['sort']) : "ORDER BY data_sorteggio";
+        $orderType = isset($_POST['order']) ? ($_POST['order']) : "DESC";
+        $sql="SELECT count(*) as totali FROM pe.verifiche A INNER JOIN pe.avvioproc B USING(pratica) LEFT JOIN pe.e_verifiche E ON(A.tipo=E.id) INNER JOIN pe.e_tipopratica C ON (B.tipo=C.id) LEFT JOIN admin.users F ON (A.resp_proc_verifica=F.userid) LEFT JOIN pe.e_categoriapratica D ON(B.categoria=D.id) WHERE coalesce(B.data_chiusura::varchar,'')='';";
         $res=$db->fetchAll($sql);
-        $total=count($res);
+        $total=$res[0]["totali"];
+        $sql=sprintf("SELECT DISTINCT pratica,numero,data_sorteggio,data_avvio,F.nome as resp_proc,C.nome as tipo_pratica,E.nome as tipo FROM pe.verifiche A INNER JOIN pe.avvioproc B USING(pratica) LEFT JOIN pe.e_verifiche E ON(A.tipo=E.id) INNER JOIN pe.e_tipopratica C ON (B.tipo=C.id) LEFT JOIN admin.users F ON (A.resp_proc_verifica=F.userid) LEFT JOIN pe.e_categoriapratica D ON(B.categoria=D.id) WHERE coalesce(B.data_chiusura::varchar,'')='' %s %s LIMIT %s OFFSET %s;",$order,$orderType,$rows,$offset);
+        $res=$db->fetchAll($sql);
         utils::debug(DEBUG_DIR."draw.debug",$sql);
         $result=Array("total"=>$total,"rows"=>$res,"elenco_id"=>$listId);
         break;

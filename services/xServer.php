@@ -13,23 +13,46 @@ switch($action) {
             break;
         case "check-draw":
             $tipo=$_REQUEST["tipo"];
-            $sql="SELECT id,tipi_pratica FROM pe.e_verifiche WHERE codice=?";
+            $sql="SELECT id,tipi_pratica,tipo_sorteggio,totale_sorteggi,coalesce(filter,'true') as filter FROM pe.e_verifiche WHERE codice=?";
             $idTipo=$db->fetchColumn($sql,Array($tipo),0);
-            $sql=sprintf("SELECT count(*) as sorteggiato FROM pe.verifiche WHERE tipo IN (%s) and date_part('month',data_sorteggio)=date_part('month',CURRENT_DATE) AND date_part('year',data_sorteggio)=date_part('year',CURRENT_DATE);",$idTipo);
+            $listTipi=$db->fetchColumn($sql,Array($tipo),1);
+            $tipoSorteggio=$db->fetchColumn($sql,Array($tipo),2);
+            $totSorteggi=$db->fetchColumn($sql,Array($tipo),3);
+            $filter=$db->fetchColumn($sql,Array($tipo),4);
+            switch($tipo){
+                case "agibi":
+                    $sql=sprintf("SELECT count(*) as sorteggiato FROM pe.verifiche WHERE tipo IN (%s) and date_part('month',data_sorteggio)=date_part('month',CURRENT_DATE) AND date_part('year',data_sorteggio)=date_part('year',CURRENT_DATE);",$idTipo);
+                    break;
+                case "dia":
+                case "scia":    
+                case "pratica":
+                    $sql=sprintf("SELECT count(*) as sorteggiato FROM pe.verifiche WHERE tipo IN (%s) and date_part('month',data_sorteggio)=date_part('month',CURRENT_DATE) AND date_part('year',data_sorteggio)=date_part('year',CURRENT_DATE);",$idTipo);
+                    break;
+                case "durc":
+                    $sql=sprintf("SELECT count(*) as sorteggiato FROM pe.verifiche WHERE tipo IN (%s) and date_part('week',data_sorteggio)=date_part('week',CURRENT_DATE) AND date_part('year',data_sorteggio)=date_part('year',CURRENT_DATE);",$idTipo);
+                    break;
+            }
+            //$sql=sprintf("SELECT count(*) as sorteggiato FROM pe.verifiche WHERE tipo IN (%s) and date_part('month',data_sorteggio)=date_part('month',CURRENT_DATE) AND date_part('year',data_sorteggio)=date_part('year',CURRENT_DATE);",$idTipo);
             $sorteggiato=(int)(bool)$db->fetchColumn($sql,Array(),0);
+            //$sorteggiato=0;
             $result=Array("sorteggiato"=>$sorteggiato);
             break;
         case "draw":
             $tipo=$_REQUEST["tipo"];
-            $sql="SELECT id,tipi_pratica FROM pe.e_verifiche WHERE codice=?";
+            $sql="SELECT id,tipi_pratica,tipo_sorteggio,totale_sorteggi,coalesce(filter,'true') as filter FROM pe.e_verifiche WHERE codice=?";
             $idTipo=$db->fetchColumn($sql,Array($tipo),0);
             $listTipi=$db->fetchColumn($sql,Array($tipo),1);
+            $tipoSorteggio=$db->fetchColumn($sql,Array($tipo),2);
+            $totSorteggi=$db->fetchColumn($sql,Array($tipo),3);
+            $filter=$db->fetchColumn($sql,Array($tipo),4);
+            $filterTipi=($listTipi)?("tipo IN ($listTipi)"):('true');
+
             switch($tipo){
                 case "agibi":
-                    $sql="SELECT pratica FROM pe.abitabi WHERE autocertificata=1 AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche WHERE id = (SELECT id FROM pe.e_verifiche WHERE codice = 'agibi'));";
+                    $sql=sprintf("SELECT pratica FROM pe.abitabi WHERE pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche WHERE id = (SELECT id FROM pe.e_verifiche WHERE codice = '$tipo')) AND %s;",$filter);
                     $perc=0.1;
                     $res=$db->fetchAll($sql);
-                    $tot=ceil(count($res)*$perc);
+                    $tot=($tipoSorteggio=='Percentuale')?(ceil(count($res)*$totSorteggi)):($totSorteggi);
                     shuffle($res);
                     $result=array_slice($res,0,$tot);
                     $success=1;
@@ -46,10 +69,28 @@ switch($action) {
                 case "dia":
                 case "scia":    
                 case "pratica":
-                    $sql=sprintf("SELECT pratica FROM pe.avvioproc WHERE tipo in (%s) AND  date_part('year',coalesce(data_prot,data_presentazione))=date_part('year',CURRENT_DATE) and  date_part('month',coalesce(data_prot,data_presentazione))=(date_part('month',CURRENT_DATE)-1) AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche WHERE tipo = %s);",$listTipi,$idTipo);
+                    $sql=sprintf("SELECT pratica FROM pe.avvioproc WHERE pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche WHERE id = (SELECT id FROM pe.e_verifiche WHERE codice = '$tipo')) AND %s  AND %s;",$filterTipi,$filter);
                     utils::debug(DEBUG_DIR.$_SESSION["USER_ID"]."_draw.debug",$sql);
                     $res=$db->fetchAll($sql);
-                    $tot=(defined('DRAW_PRATICHE'))?(DRAW_PRATICHE):(2);
+                     $tot=($tipoSorteggio=='Percentuale')?(ceil(count($res)*$totSorteggi)):($totSorteggi);
+                    shuffle($res);
+                    $result=array_slice($res,0,$tot);
+                    $success=1;
+                    for($i=0;$i<count($result);$i++){
+                        $sql=sprintf("INSERT INTO pe.verifiche(pratica, tipo, uidins, tmsins, data_sorteggio) VALUES (%s, %s, %s, %s, %s);",$result[$i]["pratica"],$idTipo,$_SESSION["USER_ID"],time(),CURRENT_DATE);
+                        utils::debug(DEBUG_DIR.'draw.debug', $sql);
+                        if(!$db->executeQuery($sql)) {
+                            $success=0;
+                            $message="Si è verificato un problema nell'estrazione dei certificati";
+                        }
+                    }
+                    $result=Array("success"=>$success,"message"=>$message);
+                    break;
+                case "durc":
+                    $sql=sprintf("SELECT pratica FROM pe.avvioproc WHERE pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche WHERE id = (SELECT id FROM pe.e_verifiche WHERE codice = '$tipo')) AND %s AND  %s;",$filterTipi,$filter);
+                    utils::debug(DEBUG_DIR.$_SESSION["USER_ID"]."_draw.debug",$sql);
+                    $res=$db->fetchAll($sql);
+                     $tot=($tipoSorteggio=='Percentuale')?(ceil(count($res)*$totSorteggi)):($totSorteggi);
                     shuffle($res);
                     $result=array_slice($res,0,$tot);
                     $success=1;

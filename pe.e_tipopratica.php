@@ -1,39 +1,38 @@
 <?php
 include_once("login.php");
 
-$Errors=null;
+//$Errors=null;
 include "./lib/tabella_v.class.php";
 include "./lib/tabella_h.class.php";
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
-$id=(isset($_REQUEST["id"]))?($_REQUEST["id"]):('');
+$idpratica=(isset($_REQUEST["id"]))?($_REQUEST["id"]):('');
 $tabpath="pe";
-$formaction="pe.e_verifiche.php";
-include "db/db.pe.e_verifiche.php";
-$file_config="e_verifiche.tab";
+$formaction="pe.e_tipopratica.php";
+include "db/db.pe.e_tipopratica.php";
+$file_config="e_tipopratica.tab";
 switch ($modo) {
 	case "new" :
-		$tit="Inserimento nuova tipologia di verifica";
+		$tit="Inserimento nuova tipologia di pratica";
 		break;
 	case "edit" :
-		$tit="Modifica tipologia di verifica";
+		$tit="Modifica dati tipologia pratica";
 		break;
 	case "view" :
-		$tit="Dettagli sulla tipologia di verifica";
+		$tit="Dettagli sulla tipologia di pratica";
 		break;
 	default :
-		$tit="Elenco dele tipologie di verifica";
+		$tit="Elenco Tipologie pratica";
 		break;
 }
 ?>
 <html>
 <head>
-    <title>Elenco stati della pratica</title>
+    <title>Elenco Tipologie pratica</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <?php
 	utils::loadJS();
 	utils::loadCss();
 ?>
-    
 
     </head>
     <body>
@@ -54,28 +53,29 @@ include "./inc/inc.page_header.php";
 			<td> 
 				<!-- contenuto-->
 				<?php
-                  
-				  if ($id)	{
-                     //print_array($Errors);
-					 if ($Errors)
+                  		  
+				  if ($idpratica){
+                     			
+					 if (is_array($Errors) && count($Errors))
 						$tabella->set_errors($Errors);
-					 if (!count($Errors)) $tabella->set_dati("id=$id");
 					 else
-						$tabella->set_dati($_POST);
+                                             $tabella->set_dati("id=$idpratica");
+					 
 				}
 				$tabella->edita();?>
 				<!-- fine contenuto-->
 			</td>
 		  </tr> 
 		</TABLE>
-		<input name="active_form" type="hidden" value="<?php echo $formaction;?>">
+		<input name="active_form" type="hidden" value="pe.e_tipopratica.php">
         <input name="mode" type="hidden" value="<?=$_POST["mode"]?>">
-        <input name="id" type="hidden" value="<?=$id?>">
+        <input name="id" type="hidden" value="<?=$idpratica?>">
 		</FORM>		
 
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 <?php
-}elseif($modo=="view") {
+}
+elseif($modo=="view") {
 		$tabella=new Tabella_v("$tabpath/$file_config",$modo);?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
@@ -83,20 +83,20 @@ include "./inc/inc.page_header.php";
 				<TD> 
 				<!-- contenuto-->
 			  <?php
-                            $tabella->set_titolo("Tipologia di verifica","modifica",Array("id"=>$id));
-				$tabella->set_dati("id=".$id);
-				$tabella->get_titolo();				
-				$tabella->edita();
+                            $tabella->set_titolo("Tipologia di pratica","modifica",Array("id"=>$idpratica));
+                            $tabella->set_dati("id=".$idpratica);
+                            $tabella->get_titolo();				
+                            $tabella->tabella();
 			  ?>			
 				</TD>
 			</TR>
 		</TABLE>
-<?php
+<?php 
 
 }
 else {
 	$tabella=new Tabella_h("$tabpath/$file_config",'list');
-	$tabella->set_titolo("Elenco deglle tipologie di verifica","nuovo");
+	$tabella->set_titolo("Elenco delle tipologie di pratica","nuovo");
 	$tabella->set_dati();
 	
 	?>
@@ -110,7 +110,7 @@ else {
 			</TD>
 		</TR>
 	</TABLE>
-            <button id="btn_close" />
+   <button id="btn_close" />
    <script>
 	  $('#btn_close').button({
 		 icons:{

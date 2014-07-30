@@ -64,7 +64,10 @@ for($i=5;$i<=30;$i=$i+5)
                         <option value="2">D.I.A.</option>
                     </select>
                 </td>
-                <td rowspan="2" valign="top"><div>Totale Pratiche : <span id="counter"></span></div> </td>
+                <td rowspan="2" valign="top">
+                    <div><label class="label" for="tot">Totale Pratiche : </label><span id="counter"></span></div>
+                    <div ><label class="label" for="file">File da scaricare : </label><a id="file" href="" target="_new"></a></div>
+                </td>
                 <td width="15%" rowspan="2" valign="top">
                     <DIV id="message">
                         <div><label class="label" for="num-tot">Pratiche Totali : </label><span style="float:right;color:red;font-weight:bold;" id="num-tot" name="num-tot"></span></div>

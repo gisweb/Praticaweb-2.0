@@ -103,8 +103,10 @@ for($i=0;$i<3;$i++){
 
     if ($numrows)	
         $tabella->elenco();
-    else
+    else{
+        
         print ("<p><b>Elenco vuoto</b></p>");
+    }
         print "<br/></td></tr>";
 }
 $html=<<<EOT

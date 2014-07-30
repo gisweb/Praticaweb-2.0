@@ -53,6 +53,7 @@ $(document).ready(function(){
                 }
             }
         });
+        var filename = 'anagrafe_trib.txt';
         $( "#dialog" ).dialog( "open" );
         var err=0;
         var processed = 0;
@@ -61,7 +62,7 @@ $(document).ready(function(){
             $.ajax({
                 url:'services/xAnagrafe.php',
                 async:false,
-                data:{mode:'dati',offset:i*step,limit:step,anno_riferimento:anno,tipo_richiesta:tipo,filename:'anagrafe_trib.txt',error:err,processed:processed,discarded:discarded},
+                data:{mode:'dati',offset:i*step,limit:step,anno_riferimento:anno,tipo_richiesta:tipo,filename:filename,error:err,processed:processed,discarded:discarded},
                 type:'POST',
                 success:function(data,textStatus,jqXHR){
                     var testo = $('#table_result').html();
@@ -100,6 +101,7 @@ $(document).ready(function(){
         $(this).removeAttr('disabled');
         $('#btn-close').removeAttr('disabled');
         $( "#dialog" ).dialog( "close" );
+        $("#file").attr('href','/documenti/'+filename).html("File dell'Anagrafe Triburia");
     return;
         
     });

@@ -33,7 +33,8 @@ var colsDef={
         {title:'Richiedenti',sortable:true,field:'richiedente',width:350}
     ]],
     draw:[[
-        {title:'',field:'pratica',sortable:false,width:20,formatter: function(value,row,index){return '<a target="new" href="praticaweb.php?pratica=' + value + '"><div class="ui-icon ui-icon-search"/></a>'}},
+        {title:'',field:'pratica',sortable:false,width:40,formatter: function(value,row,index){return '<a target="new" href="praticaweb.php?pratica=' + value + '"><div class="ui-icon ui-icon-search"/></a>'}},
+        {title:'Tipologia Sorteggio',field:'tipo',sortable:true,width:250},
         {title:'Tipo Pratica',field:'tipo_pratica',sortable:true,width:250},
         //{title:'Categoria',sortable:true,field:'categoria',width:300},
         {title:'Numero',field:'numero',sortable:true,width:100},   
