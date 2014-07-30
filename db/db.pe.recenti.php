@@ -10,7 +10,7 @@
 	$db->sql_query ($sql);
 	$in_recenti=$db->sql_numrows();
 	if($in_recenti==0){// se sono minori di 10 aggiungo altimenti aggiorno
-		$sql="select pratica from pe.recenti where utente=$userid";
+		$sql="select pratica from pe.recenti where utente=$userid order by data ASC";
 		$db->sql_query ($sql);
 		$row =$db->sql_fetchrow();
 		$nrec=$db->sql_numrows();
