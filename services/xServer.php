@@ -61,7 +61,7 @@ switch($action) {
                         utils::debug(DEBUG_DIR.'draw.debug', $sql);
                         if(!$db->executeQuery($sql)) {
                             $success=0;
-                            $message="Si è verificato un problema nell'estrazione dei certificati";
+                            $message="no_draw_insert";
                         }
                     }
                     $result=Array("success"=>$success,"message"=>$message);
@@ -69,7 +69,7 @@ switch($action) {
                 case "dia":
                 case "scia":    
                 case "pratica":
-                    $sql=sprintf("SELECT pratica FROM pe.avvioproc WHERE pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche WHERE id = (SELECT id FROM pe.e_verifiche WHERE codice = '$tipo')) AND %s  AND %s;",$filterTipi,$filter);
+                    $sql=sprintf("SELECT pratica FROM pe.elenco_pratiche_sorteggi WHERE pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche WHERE id = (SELECT id FROM pe.e_verifiche WHERE codice = '$tipo')) AND %s  AND %s;",$filterTipi,$filter);
                     utils::debug(DEBUG_DIR.$_SESSION["USER_ID"]."_draw.debug",$sql);
                     $res=$db->fetchAll($sql);
                      $tot=($tipoSorteggio=='Percentuale')?(ceil(count($res)*$totSorteggi)):($totSorteggi);
@@ -81,28 +81,33 @@ switch($action) {
                         utils::debug(DEBUG_DIR.'draw.debug', $sql);
                         if(!$db->executeQuery($sql)) {
                             $success=0;
-                            $message="Si è verificato un problema nell'estrazione dei certificati";
+                            $message="no_draw_insert";
                         }
                     }
                     $result=Array("success"=>$success,"message"=>$message);
                     break;
                 case "durc":
-                    $sql=sprintf("SELECT pratica FROM pe.avvioproc WHERE pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche WHERE id = (SELECT id FROM pe.e_verifiche WHERE codice = '$tipo')) AND %s AND  %s;",$filterTipi,$filter);
+                    $sql=sprintf("SELECT pratica FROM pe.elenco_pratiche_sorteggi WHERE pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche WHERE id = (SELECT id FROM pe.e_verifiche WHERE codice = '$tipo')) AND %s AND  %s;",$filterTipi,$filter);
                     utils::debug(DEBUG_DIR.$_SESSION["USER_ID"]."_draw.debug",$sql);
                     $res=$db->fetchAll($sql);
-                     $tot=($tipoSorteggio=='Percentuale')?(ceil(count($res)*$totSorteggi)):($totSorteggi);
-                    shuffle($res);
-                    $result=array_slice($res,0,$tot);
-                    $success=1;
-                    for($i=0;$i<count($result);$i++){
-                        $sql=sprintf("INSERT INTO pe.verifiche(pratica, tipo, uidins, tmsins, data_sorteggio) VALUES (%s, %s, %s, %s, %s);",$result[$i]["pratica"],$idTipo,$_SESSION["USER_ID"],time(),CURRENT_DATE);
-                        utils::debug(DEBUG_DIR.'draw.debug', $sql);
-                        if(!$db->executeQuery($sql)) {
-                            $success=0;
-                            $message="Si è verificato un problema nell'estrazione dei certificati";
-                        }
+                    if (count($res)==0){
+                        $result=Array("success"=>0,"message"=>"no_draw_possible");
                     }
-                    $result=Array("success"=>$success,"message"=>$message);
+                    else{
+                        $tot=($tipoSorteggio=='Percentuale')?(ceil(count($res)*$totSorteggi)):($totSorteggi);
+                        shuffle($res);
+                        $result=array_slice($res,0,$tot);
+                        $success=1;
+                        for($i=0;$i<count($result);$i++){
+                            $sql=sprintf("INSERT INTO pe.verifiche(pratica, tipo, uidins, tmsins, data_sorteggio) VALUES (%s, %s, %s, %s, %s);",$result[$i]["pratica"],$idTipo,$_SESSION["USER_ID"],time(),CURRENT_DATE);
+                            utils::debug(DEBUG_DIR.'draw.debug', $sql);
+                            if(!$db->executeQuery($sql)) {
+                                $success=0;
+                                $message="no_draw_insert";
+                            }
+                        }
+                        $result=Array("success"=>$success,"message"=>$message);
+                    }
                     break;
             }
             
@@ -179,7 +184,7 @@ switch($action) {
 	default:
 		break;
 }
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 print json_encode($result);
 return;
 ?>

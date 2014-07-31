@@ -86,7 +86,7 @@ include "./inc/inc.page_header.php";
                             $tabella->set_titolo("Tipologia di verifica","modifica",Array("id"=>$id));
 				$tabella->set_dati("id=".$id);
 				$tabella->get_titolo();				
-				$tabella->edita();
+				$tabella->tabella();
 			  ?>			
 				</TD>
 			</TR>

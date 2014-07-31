@@ -138,8 +138,11 @@ utils::loadCss();
                     data:{action:'draw',tipo:tipo_draw},
                     dataType:'JSON',
                     success:function(data){
-                        //alert_message('draw_done',data[])
-                        loadDatagrid();
+                        if(data["success"]==1)
+                            loadDatagrid();
+                        else{
+                             alert_message(data["message"]);
+                        }
                     }
                 });
             }

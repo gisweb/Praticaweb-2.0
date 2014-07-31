@@ -233,7 +233,7 @@ EOT;*/
 		
 		case "multiselectdb":
 			$size=explode("x",$w);
-			$opzioni=$this->elenco_selectdb($size[1],explode(',',$dati[$campo]));
+			$opzioni=$this->elenco_selectdb($size[1],explode(',',$dati[$campo]),isset($size[2])?($size[2]):(null));
 			//$class=($err)?($class):("class=\"multi\"");
 			$retval="<select class=\"$class multi\" multiple=\"true\" style=\"width:$size[0]px\"  name=\"".$campo."[]\"  id=\"$campo\" $html5Attr $disabilitato>$opzioni</select>$help";
 			break;
@@ -776,7 +776,6 @@ function elenco_selectdb($tabella,$selezionato,$filtro=''){
 		$sql.=" where $filtro";
 
 	}
-	
 	utils::debug(DEBUG_DIR.'selectdb.debug',$sql);
 	$result = $this->db->sql_query ($sql);
 	if (!$result){
