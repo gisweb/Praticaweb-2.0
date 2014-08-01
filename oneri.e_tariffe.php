@@ -7,11 +7,8 @@ $file_config="$tabpath/tariffe";
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $anno=$_POST["anno"];
 
-if ($_POST["azione"]=="Salva") {
+if (in_array($_POST["azione"],Array("Salva","Elimina"))) {
 	include("./db/db.oneri.e_tariffe.php");
-	if (!$Errors) {
-		$modo="view";
-	}
 }
 
 $conn=utils::getDb();
@@ -36,7 +33,7 @@ $activeForm="oneri.e_tariffe.php";
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
-	utils::loadJS();
+	utils::loadJS(Array('form/oneri.e_tariffe'));
 	utils::loadCss();
 ?>
 </head>
@@ -44,38 +41,86 @@ $activeForm="oneri.e_tariffe.php";
 <?php   
 include "./inc/inc.page_header.php";
 if ($modo=="new" || $modo=="edit") {
-$row=<<<EOT
-        <tr>
-            <td><input type="text" name="%s[tr]" id="%s-tr" value="%s" class="textbox" size="20"/></td>
-            <td><input type="text" name="%s[a]" id="%s-a" value="%s" class="textbox" size="20"/></td>
-            <td><input type="text" name="%s[ie]" id="%s-ie" value="%s" class="textbox" size=""/></td>
-            <td><input type="text" name="%s[k]" id="%s-k" value="%s" class="textbox" size=""/></td>
+$anno=$_REQUEST["anno"];    
+$rows[]=<<<EOT
+        <tr bgcolor="#E7EFFF">
+            <th align='center' width="35%"><font size='1' face='Verdana' color='#415578'><b>Descrizione</b></font></th>
+            <th align='center' width="5%"><font size='1' face='Verdana' color='#415578'><b>TR</b></font></th>
+            <th align='center' width="5%"><font size='1' face='Verdana' color='#415578'><b>A</b></font></th>
+            <th align='center' width="5%"><font size='1' face='Verdana' color='#415578'><b>IE</b></font></th>
+            <th align='center' width="5%"><font size='1' face='Verdana' color='#415578'><b>K</b></font></th>
         </tr>
 EOT;
+$row=<<<EOT
+        <tr>
+            <td style="padding:5px;">
+                <input type="hidden" name="data[%s][funzione]" id="%s-funzione" value="%s"/>
+                <input type="hidden" name="data[%s][descrizione]" id="%s-descrizione" value="%s"/>
+                %s
+            </td>
+            <td style="padding:5px;"><input type="text" name="data[%s][tr]" id="%s-tr" value="%s" class="textbox" data-validation="number" size="15"/></td>
+            <td style="padding:5px;"><input type="text" name="data[%s][a]" id="%s-a" value="%s" class="textbox" data-validation="number" size="15"/></td>
+            <td style="padding:5px;"><input type="text" name="data[%s][ie]" id="%s-ie" value="%s" class="textbox" data-validation="number" size="5"/></td>
+            <td style="padding:5px;"><input type="text" name="data[%s][k]" id="%s-k" value="%s" class="textbox" data-validation="number" size="5"/></td>
+        </tr>
+EOT;
+    $d=($anno)?($data[$anno]):(end($data));
+
+    foreach($d as $val){
+        
+        if($modo=="new"){
+            $anno=$val["anno"]+1;
+            $riga=sprintf($row,$val["tabella"],$val["tabella"],$val["funzione"],$val["tabella"],$val["tabella"],$val["descrizione"],$val["descrizione"],$val["tabella"],$val["tabella"],"0",$val["tabella"],$val["tabella"],$val["a"],$val["tabella"],$val["tabella"],$val["ie"],$val["tabella"],$val["tabella"],$val["k"]);
+        }
+        else{
+            $riga=sprintf($row,$val["tabella"],$val["tabella"],$val["funzione"],$val["tabella"],$val["tabella"],$val["descrizione"],$val["descrizione"],$val["tabella"],$val["tabella"],$val["tr"],$val["tabella"],$val["tabella"],$val["a"],$val["tabella"],$val["tabella"],$val["ie"],$val["tabella"],$val["tabella"],$val["k"]);
+            $inizio=$val["valido_da"];
+            $fine=$val["valido_a"];
+        }
+        
+        $rows[]=$riga;
+    }
+
 	$title=($modo=="new")?("Inserimento nuove tariffe oneri"):("Tariffe Oneri dell'anno $anno");
 	unset($_SESSION["ADD_NEW"]);	
-?>
-    <FORM method="post" action="<?php echo $activeForm;?>">
-<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN EDITING  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
-	<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">		
-				  
-			
+
+$righe=implode("",$rows);    
+$tabella=<<<EOT
+    <FORM method="post" id="data-form" action="$activeForm">
+
+	<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">
+            $righe
+            <tr >
+                <td colspan="5" style="padding-top:20px;">
+                    <label for="anno"><b>Anno</b></label>
+                    <input type="text" class="textbox" id="anno" size="4" name="anno" value="$anno" style="margin-right:10px;" data-validation="number"/>
+                
+                    <label for="valido_da"><b>Inizio Validità</b></label>                    
+                    <input type="text" class="textbox textbox-data" size="10" id="valido_da" name="valido_da" value="$inizio" style="margin-right:10px; data-validation="date""/>
+                
+                     <label for="valido_a"><b>Fine Validità</b></label>
+                    <input type="text" class="textbox textbox-data" size="10" id="valido_a" name="valido_a" value="$fine" style="margin-right:10px; data-validation="date""/>
+                </td>
+            </tr>	
             <tr> 
                     <!-- riga finale -->
                     <td align="left"><img src="images/gray_light.gif" height="2" width="90%"></td>
             </tr>
             <tr>
                     <TD valign="bottom" height="50">
-                    <input name="azione" type="submit" class="hexfield" tabindex="14" value="Salva">
-                    <input name="azione" type="submit" class="hexfield" tabindex="14" value="Annulla">
+                        <span id="btn-annulla"></span>
+                        <span id="btn-elimina"></span>
+                        <span id="btn-salva"></span>
                     </TD>
             </tr>
-            <input type="hidden" name="mode" value="<?=$modo?>">
-			
+            <input type="hidden" name="mode" id="mode" value="$modo">
+            <input type="hidden" name="azione" id="azione" value="">
 		
         </TABLE>
     </FORM>
-
+EOT;
+print $tabella;
+?>
 <!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA LIST  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 
 <?php
@@ -108,17 +153,8 @@ EOT;
                     <form action="/$activeForm" id="new_form"  method="post">
                         <input type="hidden" value="new" name="mode">
                     </form>
-                    <button class="button_titolo ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" id="btn_25050" role="button" aria-disabled="false"><span class="ui-button-icon-primary ui-icon ui-icon-plusthick"></span><span class="ui-button-text">Nuovo</span></button>
-                    <script>
-                        jQuery('#btn_25050').button({
-                            icons:{
-                                primary:'ui-icon-plusthick'
-                            },
-                            label:'Nuovo'
-			}).click(function(){
-				$('#new_form').submit();
-			});
-                    </script>
+                    <span id="btn-nuovo"></span>
+
                  </td>
             </tr>
             <tr>

@@ -1,14 +1,15 @@
 <?php
 require_once 'login.php';
 require_once APPS_DIR.'lib/tabella_v.class.php';
-
+$now=date("d-m-Y");
 $db=appUtils::getDb();
-$sql="(SELECT null::varchar as codice,'Seleziona un tipo di verifica' as nome,-1 as ordine) UNION ALL (SELECT codice,nome,ordine FROM pe.e_verifiche WHERE sorteggio=1 and enabled=1) order by ordine,nome;";
+$sql="(SELECT null::varchar as codice,'Seleziona un tipo di verifica' as nome,-1 as ordine,'Nessuno' as tipo_sorteggio,null as totale_sorteggi) UNION ALL (SELECT codice,nome,ordine,tipo_sorteggio,totale_sorteggi FROM pe.e_verifiche WHERE sorteggio=1 and enabled=1) order by ordine,nome;";
 $result=$db->fetchAll($sql);
 for($i=0;$i<count($result);$i++){
     $options[]=sprintf('<option value="%s">%s</option>',$result[$i]["codice"],$result[$i]["nome"]);
+    $selectData[$result[$i]["codice"]]=($result[$i]["tipo_sorteggio"]=='Totali')?($result[$i]["totale_sorteggi"]." Pratiche"):(($result[$i]["totale_sorteggi"]*100)."% delle pratiche");
 }
-$select='<select id="tipo" class="textbox">'.implode('',$options).'</select>';
+$select=implode('',$options);
 ?>
 <html>
 <head>
@@ -17,8 +18,8 @@ $select='<select id="tipo" class="textbox">'.implode('',$options).'</select>';
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
-utils::loadJS();
-utils::loadJS(Array("jquery.easyui.min","locale/easyui-lang-it","searchResultView","init.search","message"));
+//utils::loadJS();
+utils::loadJS(Array("jquery.easyui.min","locale/easyui-lang-it","searchResultView","init.search","message","form/pe.sorteggi_verifiche"));
 utils::loadCss();
 ?>
 <link rel="stylesheet" type="text/css" href="/css/default/easyui.css">
@@ -30,132 +31,10 @@ utils::loadCss();
         font-weight: bold;
     }
 </style>
-
-<script language="javascript">
-    function alert_message(m){
-        //if (!obj) obj={};
-        $.messager.show({
-                title:'Attenzione',
-                msg:sprintf(pwMessage[m]),
-                showType:'show',
-                style:{
-                    right:'',
-                    bottom:''
-                }
-            });
-    }
-    function checkDraw(t){
-        var result;
-        $.ajax({
-            url:serverUrl,
-            async:false,
-            method:'POST',
-            data:{action:'check-draw',tipo:t},
-            dataType:'JSON',
-            success:function(data){
-                result=data['sorteggiato'];
-
-            }
-        });
-        return result;
-    }
-    function loadDatagrid(){
-        $('#result-table').datagrid({
-                title:'Elenco Pratiche Sorteggiate',
-                url:searchUrl,
-                method:'post',
-                nowrap:false,
-                columns:colsDef['draw'],
-                fitColumns:false,
-                pagination:true,
-                autoRowHeight:true,
-
-                queryParams:{data:{},action:'list-draw'},
-            });
-    }
-    $(document).ready(function(){
-        $(".textbox").bind("keyup",function(event){
-            if(event.keyCode == 13){
-                $("#avvia-ricerca").click();
-            }
-        });
-        //$( "#result-container" ).hide();
-        $('#btn-report').button({
-            icons:{primary:'ui-icon-document'}
-        }).bind('click',function(event){
-            event.preventDefault();
-            $('#frm-report').remove();
-            $('body').append('<form id="frm-report" action="./services/xReport.php" method="POST" target="reportPraticaweb"><input type="hidden" value="" name="elenco" id="elencopratiche"/></form>')
-            $('#elencopratiche').val($('#elenco').val())
-            $('#frm-report').submit();
-        });
-        $('#btn-back').button({
-            icons:{primary:'ui-icon-arrowreturnthick-1-w'}
-        }).bind('click',function(event){
-            event.preventDefault();
-            $( "#result-container" ).hide( 'slide', 500 );
-            $( "#ricerca" ).show( 'slide', 500 );
-        });
-        $('#btn-close').button({
-            icons:{primary:'ui-icon-circle-close'}
-        }).bind('click',function(event){
-            event.preventDefault();
-            closeWindow();
-        });
-        
-        $('#btn-draw').button({
-            icons:{primary:'ui-icon-search'}
-        }).bind('click',function(event){
-            event.preventDefault();
-            var tipo_draw=$('#tipo').val();
-            var tipo_text=$("#tipo option:selected").text();
-            var r = checkDraw(tipo_draw);
-            if (!tipo_draw) {
-                alert_message('no_drawtype_selected');
-                return;
-            }
-            if (r) {
-                $.messager.confirm('Attenzione', sprintf(pwMessage['raffled'],{testo:tipo_text}),function(resp){
-                    if (resp){
-                        $.ajax({
-                            url:serverUrl,
-                            method:'POST',
-                            data:{action:'draw',tipo:tipo_draw},
-                            dataType:'JSON',
-                            success:function(data){
-                                //alert_message('draw_done',data[])
-                                loadDatagrid();
-                            }
-                        });
-                    }
-                });
-
-            }
-            else{
-                $.ajax({
-                    url:serverUrl,
-                    method:'POST',
-                    data:{action:'draw',tipo:tipo_draw},
-                    dataType:'JSON',
-                    success:function(data){
-                        if(data["success"]==1)
-                            loadDatagrid();
-                        else{
-                             alert_message(data["message"]);
-                        }
-                    }
-                });
-            }
-            
-            
-        });
-        loadDatagrid();
-    });
-    var result={};
-
-var dataPost={};
-</script>
 </head>
+<script>
+var selectInfo=<?php echo json_encode($selectData);?>;
+</script>
 <body>
 <?php include "./inc/inc.page_header.php";?>
     
@@ -165,7 +44,18 @@ var dataPost={};
     <div style="margin-top:20px;">
         <button id="btn-close">Chiudi</button>
         <button id="btn-draw">Sorteggia Pratiche</button>
+        <select id="tipo" class="textbox">
         <?php echo $select;?>
+        </select>
+        <input type="text" size="10" class="textbox" value="<?php echo $now;?>" name="data_sorteggio" id="data_sorteggio"/>
+        <span style="margin-left:20px;">
+            <label for="sorteggiabili" style="color: #000066;font-family: Verdana,Geneva,Arial,sans-serif;font-size: 11px;"><b>Pratiche sorteggiabili : </b>
+            <span id="sorteggiabili" style="font-weight:bold;color:red;width:100px;"></span></label>
+        </span>
+        <span style="margin-left:20px;">
+            <label for="info-sorteggi" style="color: #000066;font-family: Verdana,Geneva,Arial,sans-serif;font-size: 11px;"><b>Modalità di sorteggio : </b>
+            <span id="info-sorteggi" style="font-weight:bold;color:red;"></span></label>
+        </span>
         <input type="hidden" id="elenco" value=""/>
     </div>
 </div>   
