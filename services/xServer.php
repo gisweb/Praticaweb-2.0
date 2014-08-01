@@ -42,16 +42,16 @@ switch($action) {
                     $sql=sprintf("SELECT count(*)  FROM pe.elenco_pratiche_sorteggi WHERE  date_part('month',data_agibilita)=date_part('month',$dataSorteggio)-1 AND date_part('year',data_agibilita)=date_part('year',$dataSorteggio) AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice='%s');",$tipo);
                     break;
                 case "com":
-                    $sql=sprintf("SELECT count(*)  FROM pe.elenco_pratiche_sorteggi WHERE tipologia ilike 'com%' AND  date_part('month',il)=date_part('month',$dataSorteggio)-1 AND date_part('year',il)=date_part('year',$dataSorteggio) AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice=%s);",$tipo);
+                    $sql=sprintf("SELECT count(*)  FROM pe.elenco_pratiche_sorteggi WHERE tipologia ilike 'com%' AND  date_part('month',il)=date_part('month',$dataSorteggio)-1 AND date_part('year',il)=date_part('year',$dataSorteggio) AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice='%s');",$tipo);
                     break;
                 case "dia":
-                    $sql=sprintf("SELECT count(*)  FROM pe.elenco_pratiche_sorteggi WHERE tipologia='dia' AND  date_part('month',il)=date_part('month',$dataSorteggio)-1 AND date_part('year',il)=date_part('year',$dataSorteggio) AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice=%s);",$tipo);
+                    $sql=sprintf("SELECT count(*)  FROM pe.elenco_pratiche_sorteggi WHERE tipologia='dia' AND  date_part('month',il)=date_part('month',$dataSorteggio)-1 AND date_part('year',il)=date_part('year',$dataSorteggio) AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice='%s');",$tipo);
                     break;
                 case "scia":
-                    $sql=sprintf("SELECT count(*)  FROM pe.elenco_pratiche_sorteggi WHERE tipologia='scia' AND  date_part('month',il)=date_part('month',$dataSorteggio)-1 AND date_part('year',il)=date_part('year',$dataSorteggio) AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice=%s);",$tipo);
+                    $sql=sprintf("SELECT count(*)  FROM pe.elenco_pratiche_sorteggi WHERE tipologia='scia' AND  date_part('month',il)=date_part('month',$dataSorteggio)-1 AND date_part('year',il)=date_part('year',$dataSorteggio) AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice='%s');",$tipo);
                     break;
                 case "pratica":
-                    $sql=sprintf("SELECT count(*)  FROM pe.elenco_pratiche_sorteggi WHERE tipologia='permessi' AND  date_part('month',il)=date_part('month',$dataSorteggio)-1 AND date_part('year',il)=date_part('year',$dataSorteggio) AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice=%s);",$tipo);
+                    $sql=sprintf("SELECT count(*)  FROM pe.elenco_pratiche_sorteggi WHERE tipologia='permessi' AND  date_part('month',il)=date_part('month',$dataSorteggio)-1 AND date_part('year',il)=date_part('year',$dataSorteggio) AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice='%s');",$tipo);
                     break;
                 case "durc":
                     $sql=sprintf("SELECT count(*) FROM pe.elenco_pratiche_sorteggi WHERE  date_part('week',il)=date_part('week',$dataSorteggio)-1 AND date_part('year',il)=date_part('year',$dataSorteggio) AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice='%s');",$tipo);
