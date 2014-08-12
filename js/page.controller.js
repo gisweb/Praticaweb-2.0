@@ -128,6 +128,48 @@ $(document).ready(function(){
             
             
         });
-        $("form").find('input[type=text],textarea').filter(':visible:first').focus();
+        // Plugin Autosuggest Pratica
+         $("[data-plugins='suggest-pratica']").each(function(k,v){
+            var params=$(v).data();
+            var data = new Object();
+            $(v).autocomplete({
+                    source: function( request, response ) {
+                            data.term = request.term;
+                            data.field = $(v).attr('name');
+                            /*var flds=[$params];
+                            if ($.isArray(flds)){
+                                $.each(flds,function(i,k){
+                                    var v=jQuery('[name=\''+k+'\']').val();
+                                    if (v){
+                                        data[k]=v;
+                                    }
+                                });
+                            }*/
+
+                            $.ajax({
+                                url:suggestUrl,
+                                dataType:'json',
+                                type:'POST',
+                                data:data,
+                                success:response
+                            });
+
+                        },
+                    /*select:$selectFN,*/
+                    minLength:1
+            });
+            /*jQuery('#toggle_$campo').button({
+                    icons: {
+                            primary: "ui-icon-circle-triangle-s"
+                    },
+                    text:false
+            }).click(function(){
+                    jQuery('#$campo').autocomplete('search');
+                    return false;
+            });*/
+        });
+        //Metto il focus sul primo input o textarea
+        $("form").find('input[type=text],textarea').not('.textbox-date').filter(':visible:first').focus();
+        
 });
 
