@@ -1,6 +1,6 @@
 <?php
 $utente = utils::getUser($_SESSION["USER_ID"]);
-$scadenze = json_encode(appUtils::getScadenze($_SESSION["USER_ID"]));
+/*$scadenze = json_encode(appUtils::getScadenze($_SESSION["USER_ID"]));
 $verifiche = json_encode(appUtils::getVerifiche($_SESSION["USER_ID"]));
 $annotazioni = appUtils::getAnnotazioni($_SESSION["USER_ID"]);
 $script = <<<EOT
@@ -12,6 +12,7 @@ $script = <<<EOT
 EOT;
 
 echo $script;
+*/
 ?>
 
 <!-- ### STANDARD  PAGE  HEADER  INIZIO ##################################################### -->
@@ -78,9 +79,9 @@ echo $script;
             <TABLE style="margin-left:40px;margin-right:50px;display:inline-block">
                 <TR>
                     <TD STYLE="width:200px" style="float:right;"><div id="msg-utente" class="message-div">Utente : <?php print $utente ?></div></TD>
-                    <TD STYLE="width:300px"><div id="msg-scadenze" class="scadenze-div message-div"></div></TD>
+                    <!--<TD STYLE="width:300px"><div id="msg-scadenze" class="scadenze-div message-div"></div></TD>
                     <TD STYLE="width:300px"><div id="msg-verifiche" class="message-div verifiche-div"></div></TD>
-                    <TD STYLE="width:300px"><div id="msg-note" class="message-div annotazioni-div"></div></TD>
+                    <TD STYLE="width:300px"><div id="msg-note" class="message-div annotazioni-div"></div></TD>-->
                     
                 </TR>
             </TABLE>
