@@ -41,7 +41,7 @@ class utils {
     }
     static function getDb($params=Array()){
         $dsn = sprintf('pgsql:dbname=%s;host=%s;port=%s',DB_NAME,DB_HOST,DB_PORT);
-		$conn = new PDO($dsn, DB_USER, DB_PWD);
+        $conn = new PDO($dsn, DB_USER, DB_PWD);
         return $conn;
     }
     
@@ -192,5 +192,17 @@ class utils {
         $result=$sth->fetchAll(PDO::FETCH_ASSOC);
         return json_encode($result);
     }
+    static function getUser($userId){
+        $conn=self::getDb();
+        //DETTAGLI SULL'UTENTE
+        $sql="SELECT nome FROM admin.users WHERE userid=?";
+
+        $stmt=$conn->prepare($sql);
+        if (!$stmt->execute(Array($userId))){
+            return "sconosciuto";
+        }
+        $utente=$stmt->fetchColumn(0);
+        return $utente;
+}
 }
 ?>
