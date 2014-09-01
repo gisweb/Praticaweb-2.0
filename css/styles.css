@@ -314,4 +314,9 @@ select.multi{
 	FONT-FAMILY: Verdana, Geneva, Arial, sans-serif;
 	HEIGHT:100px;
 }
+.underline-cursor{
+    cursor: pointer;
+    cursor: hand;
+    text-decoration: underline;
+}
 

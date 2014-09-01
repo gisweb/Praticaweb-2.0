@@ -120,9 +120,26 @@ $tabella_variati->set_color("#FFFFFF","#FF0000",0,0);
         ?>
         <tr>
             <td colspan="2">
-                <div class="avviso" style="margin-top:10px;">
-                    Per la compilazione dell'anagrafe tributaria sono necessari almeno un richiedente, un concessionario (beneficiario), un tecnico (progettista/direttore lavori) e un esecutore dei lavori(se presente) 
-                </div>
+<?php
+$sql="SELECT * FROM pe.conteggio_soggetti WHERE pratica=?;";
+$conn = utils::getDb();
+$stmt=$conn->prepare($sql);
+$stmt->execute(Array($idpratica));
+$res=$stmt->fetch(PDO::FETCH_ASSOC);
+$conc=($res["concessionario"])?(""):("un richiedente, un concessionario (beneficiario),");
+$prog=($res["progettisti"])?(""):("un tecnico (progettista/direttore lavori),");
+$esec=($res["esecutore"])?(""):("un esecutore dei lavori(se presente)");
+
+$msg=<<<EOT
+<div class="avviso" style="margin-top:10px;">
+    Per la compilazione dell'anagrafe tributaria sono necessari almeno $conc $prog $esec 
+</div>
+EOT;
+if ($conc || $prog || $esec){
+    echo $msg;
+}
+?>
+                
             </td>
         </tr>
 </TABLE>

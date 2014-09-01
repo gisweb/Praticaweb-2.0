@@ -109,15 +109,24 @@ for($i=0;$i<3;$i++){
     }
         print "<br/></td></tr>";
 }
-$html=<<<EOT
-    <tr> 
-        <td>
-            <div class="avviso" style="margin-top:10px;">Per la compilazione dell'anagrafe tributaria è necessario inserire almeno un indirizzo e una particella catastale (terreni o urbano)</div> 
-        </td>
-    </tr>
-</table>    
+print "</table>";
+$sql="SELECT * FROM pe.conteggio_ubicazioni WHERE pratica=?;";
+$conn = utils::getDb();
+$stmt=$conn->prepare($sql);
+$stmt->execute(Array($idpratica));
+$res=$stmt->fetch(PDO::FETCH_ASSOC);
+$ind=($res["indirizzi"])?(""):("un indirizzo,");
+$part=($res["particelle"])?(""):(" una particella catastale (terreni o urbano)");
+
+
+$msg=<<<EOT
+<div class="avviso" style="margin-top:10px;">
+    Per la compilazione dell'anagrafe tributaria sono necessari almeno $ind $part 
+</div>
 EOT;
-print $html;
+if ($ind || $part){
+    echo $msg;
+}
 
 }
 ?>

@@ -190,6 +190,14 @@ switch($action) {
             if($_REQUEST["pratica"])
                 $db->delete('pe.avvioproc',Array("pratica"=>$_REQUEST["pratica"]));
             break;
+        case "notify":
+            $userId = $_SESSION["USER_ID"];
+            $userId = 17;
+            $result["msg-scadenze"]=appUtils::getScadenze($userId);
+            $result["msg-verifiche"]=appUtils::getVerifiche($userId);
+            //DETTAGLI SULLE VERIFICHE
+            //$result["query"]=$sql;
+            break;
 	default:
 		break;
 }

@@ -29,7 +29,7 @@ function print_debug($t="",$db=NULL,$file=NULL){
 			}
 		/*}
 		else
-			 echo "<p>Impossibile scrivere messaggi. Non è stata definita nessuna directory di DEBUG </p>".DEBUG_DIR;*/
+			 echo "<p>Impossibile scrivere messaggi. Non ï¿½ stata definita nessuna directory di DEBUG </p>".DEBUG_DIR;*/
 	
 }
 
@@ -59,7 +59,7 @@ function trova_testo($testo,$dirname){
 		closedir($dir);
 	}
 	else
-		$ris[$dirname]="$dirname non è una directory";
+		$ris[$dirname]="$dirname non ï¿½ una directory";
 	print_r($ris);
 	echo "\n$ast$ast FINE RICERCA TESTO IN $dirname $ast$ast\n";
 	$output=ob_get_contents();

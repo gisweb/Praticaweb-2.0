@@ -37,7 +37,11 @@ function linkToList(url,prms){
 }
 
 function linkToView(url,prms){
-    var form='<form action="'+url+'" method="POST" id="submitFrm"></form>';
+    if('target' in prms){
+        var form = '<form action="'+url+'" method="POST" target="'+ prms['target']+'" id="submitFrm"></form>';
+    }
+    else
+        var form='<form action="'+url+'" method="POST" id="submitFrm"></form>';
     $(form).appendTo('body');
     prms['mode']='view';
     $.each(prms,function(k,v){
