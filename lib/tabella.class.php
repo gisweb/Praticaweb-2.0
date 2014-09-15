@@ -39,8 +39,8 @@ class Tabella{
 	var $db;//puntatore a connessione a db da vedere se usare classe di interfaccia.....
 	var $current_user;	//Utente attualmente connesso
 	var $current_groups;	//Gruppi ai quali appartiene l'utente corrente
-    var $button;
-    var $table_list=0;    //TABELLA DI ELENCO o NO
+        var $button;
+        var $table_list=0;    //TABELLA DI ELENCO o NO
 	function Tabella($config_file,$mode='view',$pratica=null,$id=null){
 	// ******LETTURA FILE DI CONFIGURAZIONE e impostazione layout della tabella
 		$campi=null;
@@ -59,7 +59,7 @@ class Tabella{
         else
             $lay=$cfg[$mode];
             $this->table_list=(isset($cfg['general']['table_list']) && $cfg['general']['table_list'])?(1):(0);
-			$this->printForm = (isset($cfg['general']['print_form']) && $cfg['general']['print_form'])?($cfg['general']['print_form']):(null);
+            $this->printForm = (isset($cfg['general']['print_form']) && $cfg['general']['print_form'])?($cfg['general']['print_form']):(null);
 
             $ncol=count($lay['data']);
             $this->mode=$mode;

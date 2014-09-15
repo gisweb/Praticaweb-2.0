@@ -329,3 +329,29 @@ function selectOneriIntervento(){
         });	
 	return searchFilter;
     }
+function verificaRuoloSoggetti(){
+    var checkedObj = {economia_diretta:false,ccia:false,inail:false,albo:false,cedile:false,cip:false};
+    var checked = $("[data-value='soggetto']:checked").length > 0;
+    if (checked){
+        checkedObj['economia_diretta'] = true;
+    }
+    checked = $("[data-value='tecnico']:checked").length > 0;
+    if (checked) {
+        checkedObj['ccia'] = true;
+        checkedObj['inail'] = true;
+        checkedObj['albo'] = true;
+    }
+    checked = $("[data-value='esecutore']:checked").length > 0;
+    if (checked) {
+        checkedObj['ccia'] = true;
+        checkedObj['inail'] = true;
+        checkedObj['cedile'] = true;
+        checkedObj['cip'] = true;
+    }
+    $.each(checkedObj,function(k,v){
+        console.log(sprintf('%s : %s',k,v));
+        if (v) $('#'+k).closest('tr').show();
+        else
+            $('#'+k).closest('tr').hide();
+    });
+}

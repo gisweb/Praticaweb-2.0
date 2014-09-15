@@ -99,7 +99,8 @@ include "./inc/inc.page_header.php";
 			<TR> 
 				<TD> 
 				<!-- contenuto-->
-			  <?$tabella->set_titolo("Scadenza","modifica",Array("id"=>$id));
+			  <?php
+                                $tabella->set_titolo("Scadenza","modifica",Array("id"=>$id));
 				$tabella->set_dati("id=".$id);
 				$tabella->get_titolo();				
 				$tabella->tabella();

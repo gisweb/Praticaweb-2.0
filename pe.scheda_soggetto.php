@@ -29,7 +29,7 @@ else{
 	$config_file="soggetto";
 	$ruolo="nuovo soggetto";
 }
-//$config_file="soggetto";
+$config_file="soggetto_completo";
 $config_file=$tabpath."/".$config_file;
 //$titolo=$_SESSION["TITOLO_$idpratica"];
 
@@ -42,25 +42,10 @@ $config_file=$tabpath."/".$config_file;
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
-	utils::loadJS();
+	utils::loadJS(Array('form/pe.scheda_soggetto'));
 	utils::loadCss();
 ?>
 
-<script LANGUAGE="JavaScript">
-
-function confirmSave()
-{
-	//if (!valida())
-	//	return false;
-	
-	var ischeck=((document.scheda.proprietario.checked)||(document.scheda.richiedente.checked)||(document.scheda.concessionario.checked)||(document.scheda.progettista.checked)||(document.scheda.direttore.checked)||(document.scheda.collaudatore.checked)||(document.scheda.sicurezza.checked)||(document.scheda.esecutore.checked));
-	//if (scheda.ruolo.value="nuovo soggetto") scheda.ruolo.value="richiedente";
-	if (!ischeck)
-		alert ('Attenzione occorre assegnare un ruolo al soggetto in fase di inserimento');
-	return ischeck;
-}
-
-</script>
 </head>
 <body  background="">
 <?php

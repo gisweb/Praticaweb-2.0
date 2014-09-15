@@ -228,7 +228,7 @@ EOT;*/
 			//echo $size;
 			$size=explode("x",$w);
 			$opzioni=$this->elenco_select($size[1],$dati[$campo]);
-			$retval="<select style=\"width:$size[0]px\" class=\"$class\" name=\"$campo\"  id=\"$campo\" onmousewheel=\"return false\" $disabilitato>$opzioni</select>$help";
+			$retval="<select style=\"width:$size[0]px\" class=\"$class\" name=\"$campo\"  id=\"$campo\" $html5Attr onmousewheel=\"return false\" $disabilitato>$opzioni</select>$help";
 			break;
 		
 		case "multiselectdb":

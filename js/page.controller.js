@@ -170,6 +170,9 @@ $(document).ready(function(){
         });
         //Metto il focus sul primo input o textarea
         $("form").find('input[type=text],textarea').not('.textbox-date').filter(':visible:first').focus();
+        $("[data-plugins='tipo_soggetto']").bind('change',function(event){
+            verificaRuoloSoggetti();
+        });
         
 });
 
