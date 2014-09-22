@@ -139,6 +139,9 @@ if ($_POST["azione"]!="Elimina"){
 	$B1=$B1*$sup;
 	$B2=$B2*$sup;
 	
+        //ESCLUSIONE COSTO DI COSTRUZIONE AI SENSI DEL DL 133/2014
+        if($_POST["dl133"]==1) $CC=0;
+        
 	$sql="update oneri.calcolati set cc=$CC,b1=$B1,b2=$B2 where id=$id;"; 
         //echo "<p>$sql</p>";
 	$db->sql_query($sql);
