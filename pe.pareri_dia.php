@@ -82,11 +82,11 @@ if (($modo=="edit") or ($modo=="new")){
 				<td valign="bottom"><input name="azione" type="submit" class="hexfield" tabindex="14" value="Annulla"></td>
 				<?if($modo=="edit"){?>
 					<td valign="bottom"><input name="azione" type="submit" class="hexfield" tabindex="14" value="Elimina" onClick="return confirmSubmit()"></td>
-				<?}?>
+				<?php }?>
 			</tr>
 		</table>	
 		</FORM>	
-	<?include "./inc/inc.window.php";
+	<?php include "./inc/inc.window.php";
 		
 	}else{
 		$tabella=new tabella_v("$tabpath/pareri");
@@ -120,7 +120,7 @@ if (($modo=="edit") or ($modo=="new")){
 			</TD>
 		  </TR>			  
 		</TABLE>
-<?}?>
+<?php }?>
 
 </body>
 </html>

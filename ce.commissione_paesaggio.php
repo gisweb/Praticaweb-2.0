@@ -94,7 +94,7 @@ $_SESSION["ADD_NEW"]=0;
 				<img onclick="invisibile(document.all.elenco,document.all.close,document.all.open)" src="images/top.gif" >Chiudi
 			</SPAN>
 					
-				<?}
+				<?php }
 				
 		   		//$tabella->edita_stampe($form)?>			  
 			<img src="images/gray_light.gif" height="2" width="90%"></td>
@@ -113,14 +113,14 @@ $_SESSION["ADD_NEW"]=0;
 				<td valign="bottom"><input name="azione" type="submit" class="hexfield" tabindex="14" value="Salva"></td>
 				<?if ($modo=="new"){?>
 				<td valign="bottom"><input name="close" type="button" class="hexfield" tabindex="14" value="Annulla" onclick="javascript:NewWindow('index.php','indexPraticaweb',0,0,'yes');window.close();"></td>
-				<?}else{?>
+				<?php }else{?>
 				<td valign="bottom"><input name="azione" type="submit" class="hexfield" tabindex="14" value="Annulla"></td>
-				<?}?>
+				<?php }?>
 			</tr>
 		
 		</table>	
 	</FORM>	
-<?include "./inc/inc.window.php"; // contiene la gestione della finestra popup
+<?php include "./inc/inc.window.php"; // contiene la gestione della finestra popup
 }else{
 		
 		unset($_SESSION["ADD_NEW"]);

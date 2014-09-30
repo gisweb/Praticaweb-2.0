@@ -151,7 +151,7 @@ else{
 
 </HEAD>
 <BODY >
-<?include "./inc/inc.page_header.php";?>
+<?php include "./inc/inc.page_header.php";?>
 <script language="javascript">
 	function chiudi(){
 		self.opener.focus();

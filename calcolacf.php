@@ -1,4 +1,4 @@
-<?include_once("login.php");?>
+<?php include_once("login.php");?>
 
 <html>
 <head>

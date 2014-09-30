@@ -211,7 +211,7 @@ $colonne=substr($colonne,0,-1);
 								<td width="50%"  colspan="1" rowspan="2"><div id="desc" class="descrizione"><?=$messaggio?></div></td>
 							</tr> 
 						</table>
-					</div><?}
+					</div><?php }
 						$oFCKeditor = new FCKeditor('testo');
 						$oFCKeditor->BasePath = 'src/fckeditor/';
 						$oFCKeditor->Value = $testo;
@@ -221,13 +221,13 @@ $colonne=substr($colonne,0,-1);
 					<hr>
 					<div style="margin-top:10px;">
 						<?if ($file){?><input type="submit" class="hexfield" style="background-color:rgb(204,204,204);margin:0px 0px 0px 10px;" name="azione" value="Salva" onclick="return confirm('Sei sicuro di voler sovrascrivere il modello corrente?')">
-						<?}
+						<?php }
 						else{?>
 						Nome del File <input type="hidden" name="file" value="<?=$file?>">  
 						<input type="text" class="stiletabella" style="border:1px solid rgb(204,204,204);margin:4px 0px 0px 10px;" name="file" size="40" id="" value="<?=$file?>">
 						<input type="submit" class="hexfield" style="background-color:rgb(204,204,204);margin:0px 0px 0px 10px;" name="azione" value="Salva">
-						<?}?>
-						<?if ($_REQUEST["id_modelli"]){?><input type="submit" name="azione" class="hexfield" style="background-color:rgb(204,204,204);margin:0px 0px 0px 10px;" value="Elimina" onclick="return confirm('Sei sicuro di voler eliminare il modello corrente?')"><?}?>
+						<?php }?>
+						<?if ($_REQUEST["id_modelli"]){?><input type="submit" name="azione" class="hexfield" style="background-color:rgb(204,204,204);margin:0px 0px 0px 10px;" value="Elimina" onclick="return confirm('Sei sicuro di voler eliminare il modello corrente?')"><?php }?>
 						<input type="button" class="hexfield" style="background-color:rgb(204,204,204);margin:0px 0px 0px 10px;" value="Chiudi" onclick="<?=$action?>">
 					</div>
 				</td>

@@ -184,6 +184,6 @@ function link(id){
 		</tr>
 	</table>
 			
-<?}?>
+<?php }?>
 </body>
 </html>

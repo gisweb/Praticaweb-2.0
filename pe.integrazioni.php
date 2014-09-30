@@ -73,7 +73,7 @@ if (($modo=="edit") or ($modo=="new")) {
 		<input name="mode" type="hidden" value="<?=$modo?>">	
 	</FORM>
 		
-<?}else{
+<?php }else{
 //   -- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 $tabella_integrazione=new tabella_v("$tabpath/integrazioni.tab");
 $tabella_integrati=new Tabella_h("$tabpath/doc_integrati.tab");

@@ -64,7 +64,7 @@ echo $script;
 				<a href="#">[Guida]</a>
 				<a href="javascript:window.print();">[Stampa]</a>
 				<a href="javascript:closeWindow()">[Chiudi]</a>
-				<?if ($_SESSION['USER_ID']){?><a href="./admin/logout.php">[Esci]</a><?}?>
+				<?php if ($_SESSION['USER_ID']){?><a href="./admin/logout.php">[Esci]</a><?php }?>
 			</div>
                      
 			<div style="font-family:arial; font-weight:bold; font-size:12px; color:#ff8000; margin-top:19px; height:19; width:100%;padding-bottom: 5px;">

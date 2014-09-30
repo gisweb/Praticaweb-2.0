@@ -102,28 +102,28 @@ foreach($tipo_pratica as $val){
 </head>
 <body onload="show('elab')">
 	<div id="elab" style="position:absolute;top:200px;left:200px;display:none"><img src="images/elabor.gif" border=1></img></div>
-	<?include "./inc/inc.page_header.php";?>
+	<?php include "./inc/inc.page_header.php";?>
 	<form name="" action="admin.report_pareri.php" method="POST">
 		<H2 class="bluebanner"> Ricerca pratiche </H2>
 		<table class="stiletabella">
 			<TR>
 				<td width="250" bgColor="#728bb8"><font color="#ffffff"><b>Data di presentazione - Dal - Al</b></TD>
-				<?if (!$ricerca["data_pres_in"]["errore"]){?><TD><input type="text" class="textbox" name="data_pres_in" align="right" value="<?=$_POST["data_pres_in"]?>"></TD><?}
+				<?if (!$ricerca["data_pres_in"]["errore"]){?><TD><input type="text" class="textbox" name="data_pres_in" align="right" value="<?=$_POST["data_pres_in"]?>"></TD><?php }
 				else{?>
 				<TD><input type="text" class="errors" name="data_pres_in" value="<?=$_POST["data_pres_in"]?>" align="right"><image src="images/small_help.gif" onclick="alert('<?=$ricerca["data_pres_in"]["errore"]?>')"></TD>
-				<?}
-				if (!$ricerca["data_pres_fi"]["errore"]){?><TD><input type="text" class="textbox" name="data_pres_fi" value="<?=$_POST["data_pres_fi"]?>" align="right"></TD><?}
+				<?php }
+				if (!$ricerca["data_pres_fi"]["errore"]){?><TD><input type="text" class="textbox" name="data_pres_fi" value="<?=$_POST["data_pres_fi"]?>" align="right"></TD><?php }
 				else{?>
 					<TD><input type="text" class="errors" name="data_pres_fi" value="<?=$_POST["data_pres_fi"]?>" align="right"><image src="images/small_help.gif" onclick="alert('<?=$ricerca["data_pres_fi"]["errore"]?>')"></TD>
-				<?}?>
+				<?php }?>
 			</TR>
 			<TR>
 				<td width="250" bgColor="#728bb8"><font color="#ffffff"><b>Data di inserimento</b></td>
 				<TD>&nbsp;</TD>
-				<?if (!$ricerca["data_ins"]["errore"]){?><TD><input type="text" class="textbox" name="data_ins" align="right" value="<?=$_POST["data_ins"]?>"></TD><?}
+				<?if (!$ricerca["data_ins"]["errore"]){?><TD><input type="text" class="textbox" name="data_ins" align="right" value="<?=$_POST["data_ins"]?>"></TD><?php }
 				else{?>
 					<TD><input type="text" class="errors" name="data_ins" value="<?=$_POST["data_ins"]?>" align="right"><image src="images/small_help.gif" onclick="alert('<?=$ricerca["data_ins"]["errore"]?>')"></TD>
-				<?}?>
+				<?php }?>
 			</TR>
 			<TR>
 				<td width="250" bgColor="#728bb8"><font color="#ffffff"><b>Tipo di Pratica</b></TD>

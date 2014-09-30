@@ -36,7 +36,7 @@ if ($_POST["azione"]){
 function link(id,pratica){
 	window.location="stp.editor.php?id_modelli="+id;
 }
-<?}else{?>
+<?php }else{?>
 function link(id,pratica){
 	window.open("modelli/"+id);
 }
@@ -48,7 +48,7 @@ function elimina(id){
 		document.modelli.submit();
 	}
 }
-<?}?>
+<?php }?>
 </script>
 </head>
 <body  background="" leftMargin="0" topMargin="0" marginheight="0" marginwidth="0">

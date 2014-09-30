@@ -8,7 +8,7 @@
 	<SCRIPT language="javascript" src="src/window.js" type="text/javascript"></SCRIPT>
 </head>
 <body>
-<?include "./inc/inc.page_header.php";?>
+<?php include "./inc/inc.page_header.php";?>
 	<H2 class="blueBanner">Nuovo modello di Stampa</H2>
 	<form name="" action="admin.modelli.php" method="POST">
 		<TABLE cellPadding=3  cellspacing=2 border=0 class="stiletabella" width="99%" align="center">

@@ -93,7 +93,7 @@ if ($modo=="edit" or $modo=="new"){
 		<input name="tipo" type="hidden" value="<?=$id_tipo?>">
 
 		</form>
-<?}else{
+<?php }else{
 		//$tabella=new tabella_v("provvedimenti_view.tab");
 		?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
@@ -160,7 +160,7 @@ if ($modo=="edit" or $modo=="new"){
 
 		  		  
 		</TABLE>
-<?}?>
+<?php }?>
 
 </body>
 </html>

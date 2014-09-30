@@ -1,4 +1,4 @@
-<?include_once("login.php");
+<?php include_once("login.php");
 include "./lib/tabella_v.class.php";
 $tabpath="pe";
 $idpratica=$_REQUEST["pratica"];

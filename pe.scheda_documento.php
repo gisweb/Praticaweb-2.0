@@ -118,7 +118,7 @@ $tabella->edita();
             <td height="20" colspan="2" valign="top" align="left"><textarea cols="55" rows="3" name="descrizione[<?=$elenco[$i]["id"]?>]" ><?=$elenco[$i]["note"]?></textarea></td>
           </tr>
 		 
-		<?}	?>	 	
+		<?php }	?>	 	
 	</table>
 
 		  </td>
@@ -214,7 +214,7 @@ $tabella->edita();
 				<td  width="134" align="center" valign="middle" height="120"><a target="_new"  href="<?=$pr->url_allegati. $elenco[$i]["nome_file"]?>"><img src="<?=$immagine?>" ></a></td>
 				<td valign="middle" align="left" colspan="2"><b>Descrizione: </b><br><?=$elenco[$i]["note"]?></td>
 			</tr>
-		<?}	
+		<?php }	
 		if(!$nfile)
 			print ("<tr><td>&nbsp;&nbsp;Nessun file allegato<p></p></td></tr>");
 		?>	 	

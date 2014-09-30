@@ -47,7 +47,7 @@ $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 
   </FORM>	
 
-<?}
+<?php }
 else{
 		$tabella=new tabella_v("$tabpath/infodia");
 		$tabella->set_errors($errors);
@@ -79,7 +79,7 @@ else{
 			 </TD>
 	      </TR>
 		</TABLE>
-<?}?>
+<?php }?>
 
 </body>
 </html>

@@ -1,4 +1,4 @@
-<?include_once("login.php");
+<?php include_once("login.php");
 $tabpath="cdu";
 //Attenzione funzione relazione tra il file elenco e 
 $pratichexpagina=5;
@@ -62,11 +62,11 @@ function paginasucc(pg){
 </script>
 </head>
 <body link="#0000FF" vlink="#0000FF" alink="#0000FF">
-<?include "./inc/inc.page_header.php";	?>
+<?php include "./inc/inc.page_header.php";	?>
 <H2 class=blueBanner>Esito della ricerca&nbsp;&nbsp;<font size=-1 color=#000000>Risultati <b><?=$offset+1?></b> - <b><?=$prat_max?></b> su <?=$totrec?> <b></b></font></H2>
 <p><font size="-2"><b>criteri di ricerca:</b> <?=$criterio?></font></p>
 
-<?include "cdu.elenco_richieste.php";?>
+<?php include "cdu.elenco_richieste.php";?>
 	<form name="result" method="post" action="cdu.ricerca.php">
 	  <input type="hidden" name="pag" value=""> 
 	  <input type="hidden" name="xpag" value="<?=$pratichexpagina?>">
@@ -82,7 +82,7 @@ function paginasucc(pg){
 			$numpag=$i;
 		?> 
 		<td><a href="javascript:paginasucc(<?=$i?>)"><br><?=$numpag?></a></td>
-		<?}?>
+		<?php }?>
 	</tr>
 	</table>
 	</form>
@@ -117,7 +117,7 @@ include "./lib/tabella_v.class.php";
 ?>
 </head>
 <body>
-<?include "./inc/inc.page_header.php";?>
+<?php include "./inc/inc.page_header.php";?>
     <FORM id="ricerca" name="ricerca" method="post" action="cdu.ricerca.php">
  	<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">		
 				  

@@ -1,4 +1,4 @@
-<?include_once("login.php");
+<?php include_once("login.php");
 $tabpath="pe";
 
 //Attenzione funzione relazione tra il file elenco e 
@@ -63,11 +63,11 @@ function paginasucc(pg){
 </script>
 </head>
 <body link="#0000FF" vlink="#0000FF" alink="#0000FF">
-<?include "./inc/inc.page_header.php";?>
+<?php include "./inc/inc.page_header.php";?>
 <H2 class=blueBanner>Esito della ricerca&nbsp;&nbsp;<font size=-1 color=#000000>Risultati <b><?=$offset+1?></b> - <b><?=$prat_max?></b> su <?=$totrec?> <b></b></font></H2>
 <p><font size="-2"><b>criteri di ricerca:</b> <?=$criterio?></font></p>
 
-<?include "pe.elenco_pratiche.php";?>
+<?php include "pe.elenco_pratiche.php";?>
 	<form name="result" method="post" action="pe.ricerca_amb.php">
 	  <input type="hidden" name="pag" value=""> 
 	  <input type="hidden" name="xpag" value="<?=$pratichexpagina?>">
@@ -83,7 +83,7 @@ function paginasucc(pg){
 			$numpag=$i;
 		?> 
 		<td><a href="javascript:paginasucc(<?=$i?>)"><br><?=$numpag?></a></td>
-		<?}?>
+		<?php }?>
 	</tr>
 	</table>
 	</form>
@@ -136,7 +136,7 @@ function test(){
 ?>
 </head>
 <body>
-<?include "./inc/inc.page_header.php";?>
+<?php include "./inc/inc.page_header.php";?>
  	<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">		
 		<FORM id="ricerca" name="ricerca" method="post" action="pe.ricerca_amb.php">		  
 		  <tr> 
@@ -207,7 +207,7 @@ function test(){
 			</tr>
 		</FORM>	
 		</table>	
-		<?include "./inc/inc.window.php"; // contiene la gesione della finestra popup
+		<?php include "./inc/inc.window.php"; // contiene la gesione della finestra popup
 		$db->sql_close();?>
 </body>
 </html>

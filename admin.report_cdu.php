@@ -78,20 +78,20 @@ if ($_POST["azione"]=="Avvia"){
 </head>
 <body onload="show('elab')">
 	<div id="elab" style="position:absolute;top:200px;left:200px;display:none"><img src="images/elabor.gif" border=1></img></div>
-	<?include "./inc/inc.page_header.php";?>
+	<?php include "./inc/inc.page_header.php";?>
 	<form name="" action="admin.report_cdu.php" method="POST">
 		<H2 class="bluebanner"> Ricerca cdu </H2>
 		<table class="stiletabella">
 			<TR>
 				<td width="250" bgColor="#728bb8"><font color="#ffffff"><b>Data di richiesta - Dal - Al</b></TD>
-				<?if (!$ricerca["data_in"]["errore"]){?><TD><input type="text" class="textbox" name="data_in" align="right" value="<?=$_POST["data_in"]?>"></TD><?}
+				<?if (!$ricerca["data_in"]["errore"]){?><TD><input type="text" class="textbox" name="data_in" align="right" value="<?=$_POST["data_in"]?>"></TD><?php }
 				else{?>
 				<TD><input type="text" class="errors" name="data_in" value="<?=$_POST["data_in"]?>" align="right"><image src="images/small_help.gif" onclick="alert('<?=$ricerca["data_in"]["errore"]?>')"></TD>
-				<?}
-				if (!$ricerca["data_fi"]["errore"]){?><TD><input type="text" class="textbox" name="data_fi" value="<?=$_POST["data_fi"]?>" align="right"></TD><?}
+				<?php }
+				if (!$ricerca["data_fi"]["errore"]){?><TD><input type="text" class="textbox" name="data_fi" value="<?=$_POST["data_fi"]?>" align="right"></TD><?php }
 				else{?>
 					<TD><input type="text" class="errors" name="data_fi" value="<?=$_POST["data_fi"]?>" align="right"><image src="images/small_help.gif" onclick="alert('<?=$ricerca["data_fi"]["errore"]?>')"></TD>
-				<?}?>
+				<?php }?>
 			</TR>
 			
 			<TR>

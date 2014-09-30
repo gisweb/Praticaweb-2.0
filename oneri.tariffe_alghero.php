@@ -71,7 +71,7 @@ if (in_array($modo,Array("edit","new"))){
 				
 		</FORM>			
 
-<?}
+<?php }
 elseif($modo=="view"){?>
     <TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">
 		<TR>
@@ -142,7 +142,7 @@ else{
               window.close();
            });
         </script>
-<?}?>
+<?php }?>
 
 </body>
 </html>

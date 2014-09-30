@@ -170,7 +170,7 @@ else{
 	      </TR>
 		</TABLE>
 	
-<?}?>		
+<?php }?>		
 
 </body>
 </html>

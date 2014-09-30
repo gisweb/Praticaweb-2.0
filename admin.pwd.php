@@ -32,7 +32,7 @@ switch ($modo) {
 </head>
 <body>
 
-<?include "./inc/inc.page_header.php";?>
+<?php include "./inc/inc.page_header.php";?>
 <H2 class="blueBanner"><?=$tit?></H2>
 <?php
    

@@ -95,7 +95,7 @@ include "./inc/inc.page_header.php";
 				</TD>
 			</TR>
 		</TABLE>
-<?}
+<?php }
 else {
 	$tabella=new Tabella_h("$tabpath/$file_config",'list');
 	$tabella->set_titolo("Elenco dei documenti","nuovo");

@@ -177,7 +177,7 @@ if(isset($step)){
 	</script>
 	</head>
 	<body  background="">
-	<?include "./inc/inc.page_header.php";?>
+	<?php include "./inc/inc.page_header.php";?>
 	<form method="post" action="pe.riferimenti.php"> 
 	<input name="mode" type="hidden" value="new">
 	<p><b>Selezionare la pratica di riferimento:</b></p>
@@ -269,7 +269,7 @@ if(isset($step)){
 </SCRIPT>
 </head>
 <body  background="">
-<?include "./inc/inc.page_header.php";?>
+<?php include "./inc/inc.page_header.php";?>
 
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 		<FORM name="riferimenti" action="pe.riferimenti.php" method="post">
@@ -306,7 +306,7 @@ if(isset($step)){
 		</tr>
 		</TABLE>		
 		</FORM>				
-<?include "./inc/inc.window.php"; // contiene la gesione della finestra popup?>
+<?php include "./inc/inc.window.php"; // contiene la gesione della finestra popup?>
 </body>
 </html>
 

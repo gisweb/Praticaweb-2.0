@@ -33,16 +33,16 @@ for($i=0;$i<count($ris);$i++){
 </head>
 
 <body>
-<?include "./inc/inc.page_header.php";?>
+<?php include "./inc/inc.page_header.php";?>
 <H2 class="bluebanner">ELENCO DELLE TABELLE</H2>
 	<table width="99%" class="stiletabella">
-	<?	$i=0;
+	<?php	$i=0;
 		foreach($tabella as $key=>$val){
 		$i++;
 		echo "\n\t\t<tr>
 			<td><a onclick=\"show($i)\" onmouseover=\"this.style.cursor='hand'\" onmouseout=\"this.style.cursor='pointer'\"><b>$key</b></a>";?>
 				<!-- ricerca avanzata pratica -->
-				<DIV id="info-<?=$i?>" style="DISPLAY: none">
+				<DIV id="info-<?php echo $i?>" style="DISPLAY: none">
 					<table cellPadding="1" border="1" class="stiletabella" width="100%">
 						<tr>
 							<td width="5%">&nbsp;</td>
@@ -50,17 +50,18 @@ for($i=0;$i<count($ris);$i++){
 							<td><b>DESCRIZIONE</b></td>
 							<td><b>TAG DI INSERIMENTO</b></td>
 						</tr>
-					<?foreach($val as $v) echo "\n\t\t\t\t\t\t<tr>
+					<?php
+                                            foreach($val as $v) echo "\n\t\t\t\t\t\t<tr>
 							<td width=\"5%\">&nbsp;</td>
 							<td>".$v["alias_nome"]."&nbsp;</td>
 							<td>".$v["descrizione"]."&nbsp;</td>
 							<td>".$v["tag"]."&nbsp;</td>
 						</tr>"; ?>
 					</table>
-					<img onclick="show(<?=$i?>)" src="images/top.gif" >Chiudi
+					<img onclick="show(<?php echo $i?>)" src="images/top.gif" >Chiudi
 				</DIV>
 			<hr></td>
 		</tr>
-	<?} ?>
+	<?php } ?>
 	</table>
 </body>

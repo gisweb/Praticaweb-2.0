@@ -86,7 +86,7 @@ if ($_POST["mode"]=="tmp_new"){
 			</tr>
 		</FORM>		
 		</table>	
-<?}
+<?php }
 		/*-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN EDITING  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>---*/
 
 elseif ($modo=="edit" or $modo=="new"){
@@ -159,7 +159,7 @@ elseif ($modo=="edit" or $modo=="new"){
 			<tr>
 				<TD>
 				<input name="azione" type="submit" class="hexfield" tabindex="14" value="Salva">
-				<?if ($modo=="edit") {?><input name="azione" type="submit" class="hexfield" tabindex="14" value="Elimina"><?}?>
+				<?if ($modo=="edit") {?><input name="azione" type="submit" class="hexfield" tabindex="14" value="Elimina"><?php }?>
 				<input name="azione" type="submit" class="hexfield" tabindex="14" value="Annulla">
 				</TD>
 			</tr>
@@ -195,7 +195,7 @@ elseif ($modo=="edit" or $modo=="new"){
 		</table>";
 		?>
 		<br>
-		<?if ($nrec) {?><input name="" type="submit" class="hexfield" tabindex="14" value="Aggiungi" onclick="invia.azione.value='Salva'"><?}?>
+		<?if ($nrec) {?><input name="" type="submit" class="hexfield" tabindex="14" value="Aggiungi" onclick="invia.azione.value='Salva'"><?php }?>
 		<input name="active_form" type="hidden" value="pe.provvedimenti.php">				
 		<input name="mode" type="hidden" value="new">
 		<input name="tipo" type="hidden" value="<?=$id_tipo?>">
@@ -205,7 +205,7 @@ elseif ($modo=="edit" or $modo=="new"){
 		<input name="config_file" type="hidden" value="pe/pe.notifiche.tab"> 
 		<input name="azione" type="hidden" value="">
 		</form>
-<?}}else{
+<?php }}else{
 		//$tabella=new tabella_v("provvedimenti_view.tab");
 		?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
@@ -269,7 +269,7 @@ elseif ($modo=="edit" or $modo=="new"){
 			</TD>
 		  </TR>			  
 		</TABLE>
-<?}?>
+<?php }?>
 
 </body>
 </html>

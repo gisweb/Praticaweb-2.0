@@ -75,13 +75,13 @@ function paginasucc(pg){
 </head>
 <body link="#0000FF" vlink="#0000FF" alink="#0000FF">
 
-<?include "./inc/inc.page_header.php";?>
+<?php include "./inc/inc.page_header.php";?>
 
 <H2 class=blueBanner>Esito della ricerca&nbsp;&nbsp;<font size=-1 color=#000000>Risultati <b><?=$offset+1?></b> - <b><?=$prat_max?></b> su <?=$totrec?> <b></b></font></H2>
 <p><font size="-2"><b>criteri di ricerca:</b> <?=$criterio?></font></p>
 
 <form name="result" method="post" action="ce.ricerca_commissione.php">	
-	<?include "ce.elenco_commissioni.php";?>
+	<?php include "ce.elenco_commissioni.php";?>
 	<input type="hidden" name="pag"> 
 	<input type="hidden" name="xpag" value="<?=$pratichexpagina?>">
 	<input type="hidden" name="elenco" value="<?=$elenco?>">
@@ -98,10 +98,10 @@ function paginasucc(pg){
 			$numpag=$i;
 		?> 
 		<td><a href="javascript:paginasucc(<?=$i?>)"><br><?=$numpag?></a></td>
-		<?}?>
+		<?php }?>
 	</tr>
 	</table>
-	<?if ($modo=="cancella") {?><input class="hexfield" type="submit" name="azione" value="Cancella" onclick="return confirm('Sicuro di voler procedere con l\'eliminazione ?');"><?}?>
+	<?if ($modo=="cancella") {?><input class="hexfield" type="submit" name="azione" value="Cancella" onclick="return confirm('Sicuro di voler procedere con l\'eliminazione ?');"><?php }?>
 	<input  class="hexfield"  type="button" value="Annulla" onClick="javascript: document.location='ce.ricerca_commissione.php?<?=$commissione?>=1<?if ($_REQUEST["mode"]=="cancella") print("&mode=cancella");?>'" >
 	</form>
 	
@@ -205,6 +205,6 @@ function paginasucc(pg){
 			<input type="hidden" name="mode" value="<?=$modo?>">
 		</FORM>	
 		</table>	
-		<?include "./inc/inc.window.php"; // contiene la gesione della finestra popup?>
+		<?php include "./inc/inc.window.php"; // contiene la gesione della finestra popup?>
 </body>
 </html>

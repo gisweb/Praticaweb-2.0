@@ -93,7 +93,7 @@ else
 			</TD>
 		  </TR>				  
 		</TABLE>
-<?}?>
+<?php }?>
 
 </body>
 </html>

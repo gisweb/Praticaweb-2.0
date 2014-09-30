@@ -1,4 +1,6 @@
-<?include_once("login.php");?>
+<?php 
+include_once("login.php");
+?>
 <html>
 <head>
 <title>Pratiche recenti</title>
@@ -10,7 +12,7 @@
 ?>
 </head>
 <body link="#0000FF" vlink="#0000FF" alink="#0000FF">
-<?include "./inc/inc.page_header.php";?>
+<?php include "./inc/inc.page_header.php";?>
 <H2 class=blueBanner>Ultime pratiche aperte</H2>
 <?php
 $userid=$_SESSION["USER_ID"];

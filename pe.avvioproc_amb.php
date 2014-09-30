@@ -76,9 +76,9 @@ include "./lib/tabella_v.class.php";?>
 				<td valign="bottom"><input name="azione" type="submit" class="hexfield" tabindex="14" value="Salva"></td>
 				<?if ($modo=="new"){?>
 				<td valign="bottom"><input name="close" type="button" class="hexfield" tabindex="14" value="Annulla" onclick="javascript:NewWindow('index.php','indexPraticaweb',0,0,'yes');window.close();"></td>
-				<?}else{?>
+				<?php }else{?>
 				<td valign="bottom"><input name="azione" type="submit" class="hexfield" tabindex="14" value="Annulla"></td>
-				<?}?>
+				<?php }?>
 			</tr>
 		</FORM>	
 		</table>	
@@ -101,6 +101,6 @@ include "./lib/tabella_v.class.php";?>
 			 </TD>
 	      </TR>
 		</TABLE>
-<?}?>
+<?php }?>
 </body>
 </html>

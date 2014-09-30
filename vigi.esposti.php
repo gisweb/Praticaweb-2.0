@@ -94,7 +94,7 @@ function aggiungi_riferimento(id,pratica){
 			</TD>
 		  </TR>			  
 		</TABLE>
-<?}?>
+<?php }?>
 
 </body>
 </html>

@@ -79,11 +79,11 @@ $tornaacasa="
 		<input name="id" type="hidden" value="<?=$id_parere?>">
 		<input name="numero" type="hidden" value=<?=$_POST["numero"]?>>
 		<input name="azione" type="submit" class="hexfield" tabindex="14" value="Salva" style="margin-top:10">
-		<?if ($modo=="edit"){?><input name="azione" type="submit" class="hexfield" tabindex="14" value="Elimina" style="margin-top:10" onclick="return confirm('Sei sicuro di voler eliminare il parere?')"><?}?>
+		<?if ($modo=="edit"){?><input name="azione" type="submit" class="hexfield" tabindex="14" value="Elimina" style="margin-top:10" onclick="return confirm('Sei sicuro di voler eliminare il parere?')"><?php }?>
 		<input name="azione" type="submit" class="hexfield" tabindex="14" value="Annulla" style="margin-top:10">
 	</form>
 		
-		<?include "./inc/inc.window.php";
+		<?php include "./inc/inc.window.php";
 	}
 	elseif($modo=="view"){
 			$idpratica=$_REQUEST["id_pratica"];

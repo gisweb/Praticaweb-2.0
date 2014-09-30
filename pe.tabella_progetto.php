@@ -56,7 +56,7 @@ $parametri=$db->sql_fetchrowset();
 </head>
 <body>
 
-<?include "./inc/inc.page_header.php";?>
+<?php include "./inc/inc.page_header.php";?>
 
 <table cellPadding=2  cellspacing=1 width="100%" class="stiletabella" border=0>
 <FORM name="progetto" method="post" action="praticaweb.php">
@@ -71,12 +71,12 @@ $parametri=$db->sql_fetchrowset();
 		<td height="15" colspan="<?=$colspan[$i]?>" align="center">
 			<font face="Verdana" color="#ffffff" size="1"><b><?=$vincoli[$index[$i]]["descrizione"]?></b></font>
 		</td>
-		<?}?>
+		<?php }?>
 	</tr>
 	<tr bgColor=#728bb8>
 	<?for($i=0;$i<$nzone;$i++){?>	
 		  <td valign="top" align="center"><font face="Verdana" color="#ffffff" size="1"><b>Zona: <?=$vincoli[$i]["zona"]?></b></font></td>
-	<?}
+	<?php }
 	echo("</tr>");
 	
 	// ###### Elenco parametri #########
@@ -102,7 +102,7 @@ $parametri=$db->sql_fetchrowset();
     </tr>
 	<tr><td colspan="9"><img src="images/gray_light.gif" height="1" width="100%"></td></tr>
 	
-<?}?>
+<?php }?>
 
 </table>
 <br>

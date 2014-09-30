@@ -118,7 +118,7 @@ if (($modo=="edit") or ($modo=="new")){
 			?>
 			</td>
 		  </TR>
-<?}// end for?>
+<?php }// end for?>
 	</TABLE>
 		
 	</FORM>			

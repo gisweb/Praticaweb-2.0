@@ -57,7 +57,7 @@
 				<input type="button" class="hexfield" name="" value="Seleziona Campo -->" onclick="((viste.selectedIndex==0)?(alert('Selezionare una vista')):(get_elenco_stampe('viste',viste.options[viste.selectedIndex].value)))">
 				<input type="button" class="hexfield" name="" value="Seleziona Funzione-->" onclick="get_elenco_stampe('funzioni','')">
 				<input type="button" class="hexfield" name="" value="Inserisci Ciclo" onclick="struct()">
-				<?}?>
+				<?php }?>
 <!-- SECONDA RIGA DI PULSANTI-->				
 				<hr>
 				<div id="EditMode">

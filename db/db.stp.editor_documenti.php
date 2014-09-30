@@ -1,4 +1,4 @@
-<?include "login.php";
+<?php include "login.php";
 
 if(preg_match_all("|<body>(.+)</body>|Umi",$testo,$ris,PREG_SET_ORDER)) $testo=$out[0][1];
 $id=$_POST["id"];

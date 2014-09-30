@@ -129,4 +129,4 @@ include "./inc/inc.window.php"; // contiene la gesione della finestra popup
 		<input type="hidden" name="id" value="<?=$id?>">
 	</form>
 </body>
-<?}?>
+<?php }?>

@@ -134,7 +134,7 @@ if (($modo=="edit") or ($modo=="new")){
 		
 		  
 		</table>
-<?}?>
+<?php }?>
 
 </body>
 </html>

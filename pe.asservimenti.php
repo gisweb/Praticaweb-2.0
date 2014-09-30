@@ -110,7 +110,7 @@ function link(id){
 			</tr>
 		</FORM>		
 		</TABLE>
-	<?}else{
+	<?php }else{
 	//---<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  EDITA ASSERVIMENTO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>------------------------------>	
 		unset($_SESSION["ADD_NEW"]);
 		$tabella_asservimento=new tabella_v("$tabpath/asservimenti",$modo);
@@ -190,7 +190,7 @@ else{
 	      </TR>
 		</TABLE>
 	
-<?}?>		
+<?php }?>		
 
 </body>
 </html>

@@ -81,11 +81,11 @@ if (($modo=="edit") || ($modo=="new")) {
 				<td valign="bottom"><input name="azione" type="submit" class="hexfield" tabindex="14" value="Annulla"></td>
 				<?if($modo=="edit"){?>
 					<td valign="bottom"><input name="azione" type="submit" class="hexfield" tabindex="14" value="Elimina" onClick="return confirmSubmit()"></td>
-				<?}?>
+				<?php }?>
 			</tr>
 		</FORM>	
 		</table>	
-<?}else{?>
+<?php }else{?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 		<H2 class="blueBanner">Dati impianti scarichi idrici civili</H2>
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
@@ -113,6 +113,6 @@ if (($modo=="edit") || ($modo=="new")) {
 			 </TD>
 	      </TR>
 		</TABLE>
-<?}?>
+<?php }?>
 </body>
 </html>

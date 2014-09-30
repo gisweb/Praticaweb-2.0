@@ -72,7 +72,7 @@ if (($modo=="edit") or ($modo=="new")){
         <input name="active_form" type="hidden" value="oneri.fidi.php">
         <input name="mode" type="hidden" value="<?=$modo?>">
 </FORM>	
-<?}else{
+<?php }else{
 		//-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 ?>		<H2 class="blueBanner">Elenco Fideiussioni</H2>
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">

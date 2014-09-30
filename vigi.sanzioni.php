@@ -70,7 +70,7 @@ if ($_POST["mode"]=="new"){
 				<td valign="bottom"><input name="azione" type="button" class="hexfield" tabindex="14" value="Annulla"></td>			</tr>
 		</FORM>		
 		</table>	
-<?}elseif ($_POST["mode"]=="edit"){
+<?php }elseif ($_POST["mode"]=="edit"){
 		$tabella=new tabella_h("sanzioni");	
 		include "./inc/inc.page_header.php";
 		$idpratica=$_POST["pratica"];
@@ -102,7 +102,7 @@ if ($_POST["mode"]=="new"){
 				<input name="pratica" type="hidden" value="<?=$idpratica?>">
 				
 		</FORM>
-<?}else{
+<?php }else{
 		$idpratica=$_GET["pid"];
 		if(!isset($idpratica)) $idpratica=$_POST["pratica"];
 		$tabella=new tabella_h("sanzioni");
@@ -167,7 +167,7 @@ if ($_POST["mode"]=="new"){
 			</TD>
 		  </TR>			  
 		</TABLE>
-<?}?>
+<?php }?>
 
 </body>
 </html>

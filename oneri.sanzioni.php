@@ -67,7 +67,7 @@ if ($modo=="edit" or $modo=="new"){
 				
 		</FORM>			
 
-<?}
+<?php }
 else{
 		//-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 ?>
@@ -100,7 +100,7 @@ else{
 			</TD>
 		  </TR>	
 		</TABLE>
-<?}?>
+<?php }?>
 
 </body>
 </html>

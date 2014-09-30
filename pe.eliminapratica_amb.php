@@ -48,7 +48,7 @@ if ($_REQUEST["ricerca"]){
 	</table>
 	</form>
 	
-<?}
+<?php }
 else{
 	include_once "./lib/tabella_h.class.php";
 	
@@ -98,7 +98,7 @@ else{
 		<tr>
 			<td colspan="2">
 				<input class="hexfield" type="submit" value="Annulla">
-				<?if ($numrows>0){?> <input class="hexfield" type="submit" name="azione" value="Elimina" onclick="return confirm('Sicuro di voler procedere con l\'eliminazione della pratica ?');"><?}?>
+				<?if ($numrows>0){?> <input class="hexfield" type="submit" name="azione" value="Elimina" onclick="return confirm('Sicuro di voler procedere con l\'eliminazione della pratica ?');"><?php }?>
 				<input type="hidden" name="ricerca" value="1">
 				<input type="hidden" name="pratica" value="<?=$pratica?>">
 				<input type="hidden" name="config_file" value="pe/eliminapratica.tab">
@@ -107,6 +107,6 @@ else{
 		
 	</table>
 	</form>
-<?}?>
+<?php }?>
 </body>
 </html>

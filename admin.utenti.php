@@ -48,7 +48,7 @@ function link(i){
 </head>
 <body>
 
-<?include "./inc/inc.page_header.php";?>
+<?php include "./inc/inc.page_header.php";?>
 <H2 class="blueBanner"><?=$tit?></H2>
 <?php
    
@@ -113,7 +113,7 @@ function link(i){
    
 
 
-<?}else{		//-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA TUTTI DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
+<?php }else{		//-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA TUTTI DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 ?>
    <TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">
 	  <TR> 
@@ -144,6 +144,6 @@ function link(i){
 		 closeWindow();
 	  });
    </script>
-<?}?>
+<?php }?>
 </body>
 </html>

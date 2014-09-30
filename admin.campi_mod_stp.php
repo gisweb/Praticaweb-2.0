@@ -49,8 +49,10 @@ function link(i){
 </head>
 <body>
 
-<?include "./inc/inc.page_header.php";?>
-<H2 class="blueBanner"><?=$tit?></H2>
+<?php
+include "./inc/inc.page_header.php";
+?>
+<H2 class="blueBanner"><?php echo $tit?></H2>
 <?php
    
 	if (($modo=="edit") or ($modo=="new") or $modo=="view"){
@@ -61,7 +63,7 @@ function link(i){
 		 <tr> 
 			<td> 
 				<!-- contenuto-->
-			<?					
+			<?php					
 				$tabella->set_titolo("Campo modello di stampa");
 				$tabella->get_titolo();
 				$tabella->set_dati("nome='$_REQUEST[nome]'");
@@ -71,13 +73,11 @@ function link(i){
 			</td>
 		  </tr>
 		</TABLE>
-   <!--<form name="invia" method="POST">
-	  <input type="hidden" name="mode" value="list">
-   <input type="submit" id="btn_close" style="margin-left:20px;" value="Chiudi"></div>-->
+
    
 
 
-<?}else{		//-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA TUTTI DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
+<?php}else{		//-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA TUTTI DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 ?>
    <TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">
 	  <TR> 
@@ -112,6 +112,8 @@ function link(i){
 		 window.close();
 	  });
    </script>
-<?}?>
+<?php
+}
+?>
 </body>
 </html>

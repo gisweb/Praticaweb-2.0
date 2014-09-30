@@ -35,7 +35,9 @@ $last_change=shell_exec("git log -1 --pretty=format:'%ci'");
 </head>
 <body>
 
-<?include "./inc/inc.page_header.php";	?>
+<?php
+include "./inc/inc.page_header.php";	
+?>
 <TABLE id=main_layout cellSpacing=0 cellPadding=0 width="102%" border=0>
   <TBODY> 
   <TR vAlign=top align=left> 

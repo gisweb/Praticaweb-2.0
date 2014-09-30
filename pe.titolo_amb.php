@@ -74,11 +74,11 @@ if (($modo=="edit") || ($modo=="new")) {
 				<td valign="bottom"><input name="azione" type="submit" class="hexfield" tabindex="14" value="Annulla"></td>
 				<?if($modo=="edit"){?>
 					<td valign="bottom"><input name="azione" type="submit" class="hexfield" tabindex="14" value="Elimina" onClick="return confirmSubmit()"></td>
-				<?}?>
+				<?php }?>
 			</tr>
 		</FORM>	
 		</table>	
-<?}else{
+<?php }else{
 		$tabella=new Tabella_v("$tabpath/titolo");?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 		<H2 class="blueBanner">Rilascio del titolo</H2>
@@ -113,6 +113,6 @@ if (($modo=="edit") || ($modo=="new")) {
 			 </TD>
 	      </TR>
 		</TABLE>
-<?}?>
+<?php }?>
 </body>
 </html>

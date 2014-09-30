@@ -105,7 +105,7 @@ function show(id){
 		</table>
 	</form>
 		
-	<?}?>
+	<?php }?>
 		<img src="images/gray_light.gif" height="2" width="90%">
 		
 		

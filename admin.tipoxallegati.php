@@ -27,7 +27,7 @@ $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 	</SCRIPT>
 </head>
 <body>
-	<?include "./inc/inc.page_header.php";
+	<?php include "./inc/inc.page_header.php";
 	if ($modo=="new"){?>
 	<H2 class="blueBanner">Nuovo modello di Stampa</H2>
 	<form name="" action="admin.editor.php" method="POST">
@@ -57,7 +57,7 @@ $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 			</tr>
 		</table>
 	</form>
-	<?}
+	<?php }
 	elseif ($modo=="view"){
 		$tabella=new tabella_h("$tabpath/$file_config",$modo);
 		$tabella->def_col[0][0]="";

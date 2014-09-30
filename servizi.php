@@ -26,7 +26,7 @@ include_once ("login.php");
 		<script language="javascript">
 			window.open('praticaweb.php?pratica=5772','Praticaweb', 'scrollbars=yes,menubar=no,status=no,left=0,screenX=0,screenY=0,resizable');
 		</script>
-	<?}*/?>
+	<?php }*/?>
 <TABLE id=header cellSpacing=0 cellPadding=0 width="100%" border=0>
   <TBODY> 
   <TR vAlign=top> 

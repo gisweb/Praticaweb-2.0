@@ -286,7 +286,7 @@ alert(parent.frames.Composition.document.body.text);
 <table border="0" cellpadding="5" cellspacing="0" width="100%" class="stiletabella">
 	<tr>
 		<td >
-			<?include "admin.pulsanti.php"?>
+			<?php include "admin.pulsanti.php"?>
 			<center>
 			<iframe class="Composition" STYLE="width:25cm;" id="Composition" height="300" src="">
 			</iframe>

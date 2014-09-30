@@ -1,4 +1,4 @@
-<?include_once("login.php");
+<?php include_once("login.php");
 include_once "./lib/tabella_h.class.php";
 $tabpath="stp";
 $usr=$_SESSION['USER_NAME'];

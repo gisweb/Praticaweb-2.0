@@ -1,5 +1,5 @@
 <?php
-require_once 'login.php';
+require_once('login.php');
 require_once APPS_DIR.'lib/tabella_v.class.php';
 ?>
 <html>

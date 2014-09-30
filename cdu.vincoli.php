@@ -172,10 +172,10 @@ if (($modo=="edit") or ($modo=="new")){
 				}?>
 			</td>
 		  </TR>
-<?}// end for?>
+<?php }// end for?>
 	</TABLE>
 </form>		
-		<?include "./inc/inc.window.php"; // contiene la gesione della finestra popup
+		<?php include "./inc/inc.window.php"; // contiene la gesione della finestra popup
 	}//end if
 
 else{
@@ -387,7 +387,7 @@ else{
 		<td height="15"  align="center">
 			<font face="Verdana" color="#ffffff" size="1"><b><?=$piani[$i]["descrizione"]?></b></font>
 		</td>
-	<?}?>
+	<?php }?>
 </tr>
 
 <?php
@@ -415,9 +415,9 @@ for($i=0;$i<count($array_mappali);$i++){
 		<td height="15"  align="left">
 			<font face="Verdana" size="1"><b><?=$zona?></b></font>
 	</td>
-	<?}?>
+	<?php }?>
 </tr>
-<?}?>
+<?php }?>
 
 <?//Aggiungo i mappali senza vincoli
 	for($i=0;$i<count($mappali);$i++){
@@ -439,9 +439,9 @@ for($i=0;$i<count($array_mappali);$i++){
 		<td height="15"  align="left">
 			<font face="Verdana" size="1"><b>---</b></font>
 	</td>
-	<?}?>
+	<?php }?>
 </tr>
-<?}?>
+<?php }?>
 </table>
 </FORM>		
 			

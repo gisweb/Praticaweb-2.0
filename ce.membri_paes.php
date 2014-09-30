@@ -71,7 +71,7 @@ if (($modo=="edit") or ($modo=="new")) {
 				<TD valign="bottom" height="50">
                            
 				<input name="azione" type="submit" class="hexfield" tabindex="14" value="Salva">
-				<?if ($modo=="edit"){?><input name="azione" type="submit" class="hexfield" tabindex="14" value="Elimina" onclick="return confirm('Sicuro di volerlo eliminare ?');"><?}?>
+				<?if ($modo=="edit"){?><input name="azione" type="submit" class="hexfield" tabindex="14" value="Elimina" onclick="return confirm('Sicuro di volerlo eliminare ?');"><?php }?>
 				<input name="azione" type="submit" class="hexfield" tabindex="14" value="Annulla">
 				
 				</TD>
@@ -83,7 +83,7 @@ if (($modo=="edit") or ($modo=="new")) {
 		</TABLE>
 		
 </BODY>
-<?include "./inc/inc.window.php"; // contiene la gesione della finestra popup
+<?php include "./inc/inc.window.php"; // contiene la gesione della finestra popup
 } elseif($modo=="all") {
 ?>
 <!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA TUTTI DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
@@ -144,4 +144,4 @@ if (($modo=="edit") or ($modo=="new")) {
 		<input type="submit" name="azione" class="hexfield" tabindex="14" value="Chiudi">
 	</form>
 </body>
-<?}?>
+<?php }?>

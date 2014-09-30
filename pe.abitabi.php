@@ -65,7 +65,7 @@ else
 		<input name="mode" type="hidden" value="<?=$modo?>">
 	</form>
 
-<?}else{
+<?php }else{
 		//-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 ?>	<H2 class="blueBanner">Elenco Agibilità </H2>
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">
@@ -92,7 +92,7 @@ else
 			</TD>
 		  </TR>				  
 		</TABLE>
-<?}?>
+<?php }?>
 
 </body>
 </html>

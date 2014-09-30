@@ -140,7 +140,7 @@ if (($modo=="new") or ($modo=="edit")){
        else if ($modo=="new") $dati="pratica=$idpratica";
 ?>
 
-<?include "./inc/inc.page_header.php";	?>
+<?php include "./inc/inc.page_header.php";	?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN EDITING  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
     <FORM id="oneri" name="oneri" method="post" action="praticaweb.php">
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">		
@@ -183,7 +183,7 @@ if (($modo=="new") or ($modo=="edit")){
 
 	</body>
 </html>
-<?}
+<?php }
 else{
 ?>
 
@@ -217,5 +217,5 @@ else{
 <?php } ?>		
 </body>
 
-<?}?>
+<?php }?>
 </html>

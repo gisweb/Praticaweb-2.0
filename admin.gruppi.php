@@ -110,7 +110,7 @@ function link(i){
 		</TABLE>
 		
 
-<?}else{		//-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA TUTTI DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
+<?php }else{		//-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA TUTTI DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 ?>	
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">
 		  <TR> 
@@ -145,7 +145,7 @@ function link(i){
 		 window.close();
 	  });
    </script>
-<?}?>
+<?php }?>
 
 </body>
 </html>
