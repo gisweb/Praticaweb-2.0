@@ -1,9 +1,7 @@
 <?php
-include_once ("login.php");
+require_once ("login.php");
 
-//unset($is_condono);
 
-//print_array($_REQUEST);
 unset($is_cdu);
 $is_cdu=isset($_REQUEST["cdu"])?($_REQUEST["cdu"]):(0);
 
@@ -23,9 +21,6 @@ $id=(isset($_REQUEST["id"]))?($_REQUEST["id"]):('');
 if (isset($_REQUEST["active_form_param"])){
 	$active_form=$_REQUEST["active_form"].".php?pratica=$idpratica&".@implode("&",$_REQUEST["active_form_param"]);
 }
-//if ($is_condono) include_once("admin/check_owner.php");
-
-//if ($_REQUEST["stato"]) $_SESSION["stato"]=$_REQUEST["stato"];
 
 if(isset($_POST["stampe"])){
 	include "./db/db.stp.stampe.php";
@@ -81,6 +76,8 @@ $_SESSION["TITOLO_".$idpratica]=  appUtils::titoloPratica($_REQUEST);
 
 </HEAD>
 <BODY >
+    
+    
 <script language="javascript">
 	window.name='praticaweb';
         var url_documenti='<?php echo $pr->url_documenti;?>';
@@ -89,7 +86,9 @@ $_SESSION["TITOLO_".$idpratica]=  appUtils::titoloPratica($_REQUEST);
 
 
 <!-- ### STANDARD  PAGE HEADER  ################### -->
-<?include "./inc/inc.page_header.php";?>
+<?php
+include "./inc/inc.page_header.php";
+?>
 <!-- ### STANDARD  PAGE HEADER  ################### -->
 
 <!-- === MAIN PAGE LAYOUT TABLE ======================================================== -->
@@ -104,6 +103,7 @@ $_SESSION["TITOLO_".$idpratica]=  appUtils::titoloPratica($_REQUEST);
 		   <IMG height=1 alt="" src="images/white.gif" width=160 align=bottom border=0>-->
 		   <!--*** elenco menu *** -->
 			<?php
+                        
 			/*if ($is_commissione) 
 				$menu->get_list($idpratica);
 			else*/
@@ -121,22 +121,7 @@ $_SESSION["TITOLO_".$idpratica]=  appUtils::titoloPratica($_REQUEST);
 		<IFRAME id=myframe style="DISPLAY: none; OVERFLOW: visible; WIDTH: 97%" marginWidth=0  marginHeight=0 src="<?=$active_form?>" frameBorder=0 scrolling=no ></IFRAME>	
 		</TD>
 	</TR>
-	<!--<TR vAlign=top align=left> 
-		<TD valign="top" colspan=3>
-			<table cellSpacing=0 cellPadding=0 width="100%" border="0">
-				<tr>
-					<td align="left"><P style="MARGIN-TOP: 0.3em; FONT-SIZE: 11px; MARGIN-BOTTOM: 0.8em; COLOR: black; LINE-HEIGHT: 1.4em; FONT-FAMILY: Verdana, Geneva, Arial, sans-serif;paddding-bottom: .1em;color:red"><b>
-					</b></P></td>
-					<td align="right">
-						<P class=footerlinks>		
-							<A  href="javascript:goToPratica('praticaweb.php',{'pratica':<?php echo $pr->prev?>});">Pratica Precedente</A> &nbsp; &nbsp;
-							<A href="javascript:goToPratica('praticaweb.php',{'pratica':<?php echo $pr->next?>});">Pratica Successiva</A> &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						</P>
-					</td>
-				</tr>
-			</table>
-		</TD>
-    </TR>-->
+	
 	<TR vAlign=top align=left> 
     <!-- *** cella piè di pagina *** -->
 		<TD height="200" valign="top" colspan=3>
@@ -156,7 +141,7 @@ $_SESSION["TITOLO_".$idpratica]=  appUtils::titoloPratica($_REQUEST);
 			<SPAN class="footerlinks" style="margin-rigth:50px;margin-top:30px"></SPAN>
 			
 			<IMG height="2" width="95%" src="images/gray_light.gif"  vspace=1><BR>	
-			<?//include "./inc/messaggi.inc.php";
+			<?php
 				if(isset($ERRMSG) && $ERRMSG) print ("<p>$ERRMSG</p>");
 			?>
 		
