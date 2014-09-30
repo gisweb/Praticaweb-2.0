@@ -5,9 +5,10 @@
             if (file_exists(LOCAL_LIB.$lib)){
                 require_once LOCAL_LIB.$lib;
             }
-            else{
+            elseif(file_exists(LIB.$lib)) {
                 require_once LIB.$lib;
             }
+            else die("impossibile caricare la libreria $lib");
         }
     };
     error_reporting(E_ERROR);
