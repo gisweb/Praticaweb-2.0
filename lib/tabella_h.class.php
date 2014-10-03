@@ -112,6 +112,7 @@ function get_cella($row,$col){
                     $obj=json_encode($prms['params']);
                     $destination=($this->array_dati[$row]["row_form"])?($this->array_dati[$row]["row_form"]):($prms['form']);
                     $retval="";
+                    
                     if ($this->editable){
                         $retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
                         $retval.="<a href='javascript:linkToEdit(\"$destination\",$obj)'><img title=\"Modifica\" src=\"images/edit.png\" border=\"0\"></a>";
@@ -124,7 +125,7 @@ function get_cella($row,$col){
                     $retval="";
                     if ($this->viewable){
                         $retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
-                        $retval.="<a href='javascript:loadInto(\"".$prms['form'].".php\",$obj)'><img title=\"Visualizza\" src=\"images/view.png\" border=\"0\"></a>";
+                        $retval.="<a href='javascript:loadInto(\"".$prms['form']."\",$obj)'><img title=\"Visualizza\" src=\"images/view.png\" border=\"0\"></a>";
                         $retval.="</td>\n";
                     }
                     break;

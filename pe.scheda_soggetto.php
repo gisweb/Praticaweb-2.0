@@ -70,7 +70,9 @@ switch ($modo) {
 		  <tr> 
 			<td> 
 				<!-- contenuto-->
-				<?$tabella->edita()?>
+				<?php
+                                    $tabella->edita();
+                                ?>
 				<!-- fine contenuto-->
 			</td>
 		  </tr>
