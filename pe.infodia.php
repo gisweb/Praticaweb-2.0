@@ -18,7 +18,7 @@ $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 </head>
 <body>
 
-<?	if (($modo=="edit") or ($modo=="new")){
+<?php	if (($modo=="edit") or ($modo=="new")){
 		$tabella=new tabella_v("$tabpath/infodia",$modo);
 		$tabella->set_errors($errors);
 		include "./inc/inc.page_header.php";?>	
