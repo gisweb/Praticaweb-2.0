@@ -47,10 +47,15 @@ class utils {
     
     static function url_exists($url) {
         $exists = true;
-        $file_headers = @get_headers($url);
-        $file_headers[]="$url";
-        utils::debug(DEBUG_DIR.'test.debug',$file_headers);
-        $InvalidHeaders = array('404', '403', '500');
+        //$file_headers = @get_headers($url);
+        //$file_headers[]="$url";
+        //utils::debug(DEBUG_DIR.'test.debug',$file_headers);
+        //$InvalidHeaders = array('404', '403', '500');
+        $headers=@get_headers($url);
+        if(strpos($headers[0],'200')===false) return false;
+        else 
+            return true;
+            
         foreach($InvalidHeaders as $HeaderVal)
         {
                 if(strstr($file_headers[0], $HeaderVal))
