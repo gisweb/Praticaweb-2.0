@@ -136,7 +136,7 @@ function elimina(id){
 		  </tr>
 		</TABLE>
 		<input name="active_form" type="hidden" value="pe.progetto.php">
-		<input name="pratica" type="hidden" value="<?echo($idpratica);?>">				
+		<input name="pratica" type="hidden" value="<?php echo($idpratica);?>">				
 		<input type="hidden" name="mode" value="<?php echo $modo;?>"></td>
 	</FORM>		
 
