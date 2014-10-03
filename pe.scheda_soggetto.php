@@ -134,7 +134,7 @@ switch ($modo) {
 		</TABLE>
 	<input name="mode" type="hidden" value="new">
 	<input name="active_form" type="hidden" value="pe.scheda_soggetto.php">
-	<input name="pratica" type="hidden" value="<?=$idpratica?>">
+	<input name="pratica" type="hidden" value="<?php print $idpratica;?>">
 				
 	</FORM>	
 		<?php
@@ -179,7 +179,8 @@ switch ($modo) {
 		  <tr> 
 			<td> 
 				<!-- contenuto-->
-				<?$tabella->set_dati($dataset);
+				<?php
+                                $tabella->set_dati($dataset);
 				$tabella->edita();
 				?>
 				<!-- fine contenuto-->
