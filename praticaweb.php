@@ -58,6 +58,7 @@ else{
 		include "./db/db.pe.recenti.php";
 	}
 }
+
 $pr=new pratica($idpratica,$is_cdu);
 //$_SESSION["TITOLO_".$idpratica]=$pr->titolo;
 $_SESSION["TITOLO_".$idpratica]=  appUtils::titoloPratica($_REQUEST);
@@ -89,6 +90,7 @@ $_SESSION["TITOLO_".$idpratica]=  appUtils::titoloPratica($_REQUEST);
 <!-- ### STANDARD  PAGE HEADER  ################### -->
 <?php
 include "./inc/inc.page_header.php";
+echo $active_form;
 ?>
 <!-- ### STANDARD  PAGE HEADER  ################### -->
 
@@ -119,7 +121,7 @@ include "./inc/inc.page_header.php";
   	<!-- *** cella contenuti dinamici caricati nell'iframe *** -->
 		<TD  height="100" width="97%" valign="top">
 			<!-- *** MY IFRAME ********************************************* -->
-		<IFRAME id=myframe style="DISPLAY: none; OVERFLOW: visible; WIDTH: 97%" marginWidth=0  marginHeight=0 src="<?=$active_form?>" frameBorder=0 scrolling=no ></IFRAME>	
+		<IFRAME id=myframe style="DISPLAY: none; OVERFLOW: visible; WIDTH: 97%" marginWidth=0  marginHeight=0 src="<?php echo $active_form?>" frameBorder=0 scrolling=no ></IFRAME>	
 		</TD>
 	</TR>
 	
