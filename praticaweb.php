@@ -32,6 +32,7 @@ if(isset($_POST["stampe"])){
 		if($is_cdu) 
 			$active_form="cdu.richiesta.php?pratica=$idpratica";
 		else {
+                        if (!strpos($active_form,".php")) $active_form.=".php";
 			$active_form.="?pratica=$idpratica";
 		}
 }
