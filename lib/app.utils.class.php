@@ -389,5 +389,6 @@ class appUtils {
                 return Array("totali"=>0,"data"=>Array());
             }
     }
+    
 }
 ?>

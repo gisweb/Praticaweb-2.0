@@ -1,4 +1,5 @@
-<?//Creazione della query di ricerca		
+<?php
+//Creazione della query di ricerca		
 		$numeroprot=$_POST["protocollo"];
 		$richiedente=$_POST["richiedente"];
 		$foglio=$_POST["foglio"];
@@ -27,9 +28,9 @@
 			$sql=substr($sql,0,strlen($sql)-4);
 			if ($foglio or $mappale) $sqlRicerca="select distinct richiesta.pratica,data from cdu.richiesta,cdu.mappali where $sql and richiesta.pratica=mappali.pratica order by data desc";
 			else
-				$sqlRicerca="select distinct data,pratica from cdu.richiesta where $sql order by data desc";
+				$sqlRicerca="select distinct pratica,data from cdu.richiesta where $sql order by data desc";
 		}
-		else $sqlRicerca="select distinct * from cdu.richiesta order by data desc";
+		else $sqlRicerca="select distinct pratica,data from cdu.richiesta order by data desc";
 		//echo "$sqlRicerca<br>";
 		
 ?>

@@ -4,31 +4,34 @@ $indirizzoip=getenv("REMOTE_ADDR");
 $pwd=$password;
 $password = md5($password);
 // Controllo se l'utente ï¿œregistrato e attivo
-$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
-if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
-$sql = "SELECT * FROM admin.users WHERE username='$username' AND enc_pwd='$password'";
-$db->sql_query($sql);
-$risultato = $db->sql_fetchrowset();
-$nrec=$db->sql_numrows();
+
+$sql = "SELECT * FROM admin.users WHERE username=? AND enc_pwd=?";
+$conn=utils::getDb();
+$sth=$conn->prepare($sql);
+$sth->execute(Array($username,$password));
+
+$result = $sth->fetchAll(PDO::FETCH_ASSOC);
+$nrec=count($result);
 
 if($nrec==1){
     $groups=Array();
     $sql="UPDATE admin.users SET ultimo_accesso=CURRENT_TIMESTAMP(1) WHERE username='$username'";
-    $db->sql_query($sql);
-    $db->sql_query("INSERT INTO admin.accessi_log(ipaddr,username,data_enter) VALUES('$indirizzoip','$username',CURRENT_TIMESTAMP(1))");
+    $conn->exec($sql);
+    $conn->exec("INSERT INTO admin.accessi_log(ipaddr,username,data_enter) VALUES('$indirizzoip','$username',CURRENT_TIMESTAMP(1))");
     
     //Metto in sessione l'utente
-    foreach( $risultato[0] AS $key=>$val ) $$key = stripslashes( $val );
+    extract($result[0]);
     //se l'utente è stato disattivato lo avviso ed esco
     if(!$attivato){
 	    echo "Il tuo account non &egrave; pi&ugrave; valido.Contatta l'amministratore del Sistema per ottenere un nuovo account. <a href=\"mailto:info@gisweb.it\" style=\"color:red; text-align:center; font-size:13px\">info@gisweb.it</a>";
 	    exit;
     }
     $sql="SELECT nome FROM admin.groups WHERE id in ($gruppi);";
-    $db->sql_query($sql);
-    $ris = $db->sql_fetchrowset();
+    $sth=$conn->prepare($sql);
+    $sth->execute(Array($gruppi));
+    $ris = $sth->fetch(PDO::FETCH_ASSOC);
     for($i=0;$i<count($ris);$i++) $groups[]=$ris[$i]['nome'];
-    $db->sql_close();
+;
     $_SESSION['USER_NAME'] = $username;
     $_SESSION['USERNAME'] = $username;
     $_SESSION['PERMESSI']=$permessi;
@@ -38,19 +41,18 @@ if($nrec==1){
 } 
 else {
 	$sql="INSERT INTO admin.errori_log(ipaddr,username,data_enter) VALUES('$indirizzoip','$username',CURRENT_TIMESTAMP(1))";
-	$db->sql_query($sql);
-	$sql="SELECT * FROM admin.errori_log WHERE username='$username' AND data_enter=CURRENT_TIMESTAMP(1)";
-	$db->sql_query($sql);
-	$ris = $db->sql_fetchrowset();
-	$nrec=$db->sql_numrows();
+	$conn->exec($sql);
+	$sql="SELECT * FROM admin.errori_log WHERE username='?' AND data_enter=CURRENT_TIMESTAMP(1)";
+	$sth=$conn->prepare($sql);
+        $sth->execute(Array($username));
+	$ris = $sth->fetchAll(PDO::FETCH_ASSOC);
+	$nrec=count($ris);
 	if ($nrec>5) {
 		$sql="UPDATE admin.users SET attivato=0 WHERE username='$username'";
-		$db->sql_query($sql);
+		$conn->exec($sql);
 		echo "Il tuo account non &egrave; pi&ugrave; valido.Contatta l'amministratore del Sistema per ottenere un nuovo account. <a href=\"mailto:info@gisweb.it\" style=\"color:red; text-align:center; font-size:13px\">info@gisweb.it</a>";
-		$db->sql_close();
 	}
 	else {
-		$db->sql_close();
 		include_once "./admin/enter.php";
 	}
 	exit;

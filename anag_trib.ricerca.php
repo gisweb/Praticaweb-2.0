@@ -1,16 +1,17 @@
 <?php
 include_once ("login.php");
 $mode=$_REQUEST["mode"];
-$db=new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME,false);
-if (!$db->db_connect_id) die("Impossibile Connettersi al Database");
+$conn=utils::getDb();
+
 $totali_pr=$_POST["totali_pr"];
 if ($mode=="view"){			//MODALITA' DI RICERCA
 	$_SESSION["tot_pagine"]=0;
 	$sel_size="widt:150px;";
 	
 	$sql="SELECT DISTINCT date_part('year',data_presentazione) as anno FROM pe.avvioproc ORDER BY 1;";
-	$db->sql_query($sql);
-	$anni=$db->sql_fetchlist("anno");
+        $sth=$conn->prepare($sql);
+        $sth->execute();
+	$anni=$sth->fetchAll(PDO::FETCH_COLUMN);
 	foreach($anni as $val)
 		$html["anno"].="<option value=\"$val\">$val</option>";
 	$html["anno"]="<select name=\"anno\" class=\"textbox\"  style=\"$sel_size\"><option value=\"-1\" selected>Seleziona ===></option><option value=\"0\">Tutti</option>".$html["anno"]."</select>";
@@ -53,9 +54,9 @@ else{
         $sql_dia="SELECT count(*) as tot FROM anagrafe_tributaria.pratiche WHERE $filter_dia ";
         $sql_pc="SELECT count(*) as tot FROM anagrafe_tributaria.pratiche WHERE $filter_pc ";
         $sql=($tipo==0)?($sql_dia." UNION ".$sql_pc):(($tipo==1)?($sql_pc):($sql_dia));
-		//if($_SESSION["USER_ID"]<4) echo "<p>$sql</p>";
-        if(!$db->sql_query($sql)) print_debug($sql);
-        $tota=$db->sql_fetchlist("tot");
+        $sth=$conn->prepare($sql);
+        if(!$sth->execute()) print_debug($sql);
+        $tota=$sth->fetchAll(PDO::FETCH_COLUMN);
         for($k=0;$k<count($tota);$k++) $tot+=$tota[$k];
         //$tot=$db->sql_fetchfield("tot");
         $totali_pr=$tot;
@@ -70,17 +71,17 @@ else{
 	$sql=($tipo==0)?($sql_dia." UNION ".$sql_pc):(($tipo==1)?($sql_pc):($sql_dia));
 	if($_SESSION["USER_ID"]<2) echo "<p>$sql</p>";
         
-	if(!$db->sql_query($sql)) print_debug($sql);
-	
-	$ris=$db->sql_fetchrowset();
+	$sth=$conn->prepare($sql);
+        if(!$sth->execute()) print_debug($sql);
+        $ris=$sth->fetchAll(PDO::FETCH_ASSOC);
 	$err=0;
 	//passthru("rm ".STAMPE."anagrafe_tributaria.txt");
 	
 	// TROVO INFO SUL RECORD DI TESTA
 	$sql="SELECT * FROM anagrafe_tributaria.find_testa($anno);";
-	
-	if (!$db->sql_query($sql)) print_debug($sql);
-	$testa=$db->sql_fetchrowset();
+	$sth=$conn->prepare($sql);
+        if(!$sth->execute()) print_debug($sql);
+        $ris=$sth->fetchAll(PDO::FETCH_ASSOC);
 	$testa=implode("",$testa[0]);
 	// SCRITTURA DEL RECORD DI TESTA
 	$handle=fopen(STAMPE_DIR."anagrafe_tributaria.txt",'a+');
@@ -91,8 +92,9 @@ else{
 	for($i=0;$i<count($ris);$i++){		//CICLO SU TUUTE LE PRATICHE TROVATE
 		list($pratica,$num_pr,$data_pres)=array_values($ris[$i]);
 		$sql="SELECT * FROM anagrafe_tributaria.e_record order by ordine;";
-		if (!$db->sql_query($sql)) print_debug($sql);
-		$rec=$db->sql_fetchrowset();
+		$sth=$conn->prepare($sql);
+                if(!$sth->execute()) print_debug($sql);
+                $rec=$sth->fetchAll(PDO::FETCH_ASSOC);
 		foreach($rec as $v){
 			$sql="SELECT * FROM anagrafe_tributaria.e_tipi_record WHERE record='".$v["tipo"]."' order by ordine;";
 			
@@ -106,9 +108,9 @@ else{
                         
 		}		
 		foreach($arr_sql as $key=>$sql){
-			if (!$db->sql_query($sql)) utils::debug(DEBUG_DIR."anagrafe.debug",$key."  ===> \n\t\t\t".$sql,'w+');
-			//if($_SESSION["USER_ID"]<5) echo "<p>$sql</p>";
-			$r[$key]=$db->sql_fetchrowset();
+			$sth=$conn->prepare($sql);
+                        if(!$sth->execute()) utils::debug(DEBUG_DIR."anagrafe.debug",$key."  ===> \n\t\t\t".$sql,'w+');
+			$r[$key]=$sth->fetchAll(PDO::FETCH_ASSOC); 
 		}
 		$p=valida_recordset($r,$intestazioni,$pratica);
 		list($html_code,$errore)=array_values($p);
@@ -122,8 +124,9 @@ else{
 		$r=Array();
 	}
 	$sql="SELECT * FROM anagrafe_tributaria.find_coda($anno);";	// TROVO INFO SUL RECORD DI CODA
-	if (!$db->sql_query($sql)) print_debug($sql);
-	$coda=$db->sql_fetchrowset();
+        $sth=$conn->prepare($sql);
+	if(!$sth->execute()) print_debug($sql);
+	$coda=$sth->fetchAll(PDO::FETCH_ASSOC); 
 	$coda=implode("",$coda[0]);
 	// SCRITTURA DEL RECORD DI CODA
 	$handle=fopen(STAMPE_DIR."anagrafe_tributaria.txt",'a+');
@@ -176,7 +179,8 @@ else{
 	}
 </script>
 <br>
-<?if($mode=="view"){			//MODALITA' DI RICERCA?>	
+<?php
+if($mode=="view"){			//MODALITA' DI RICERCA?>	
 <form name="frm_ricerca" id="ricerca" method="POST">
 <table width="80%" class="stiletabella">
 	<tr>

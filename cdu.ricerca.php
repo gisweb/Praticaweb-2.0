@@ -3,8 +3,7 @@ $tabpath="cdu";
 //Attenzione funzione relazione tra il file elenco e 
 $pratichexpagina=5;
 $offset=0;
-$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
-if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
+
 
 if ($_POST["pag"]){
 	//pagina con i risultati al primo giro faccio tutta la query poi mi porto dietro l'array delle pratiche trovate
@@ -16,9 +15,10 @@ if ($_POST["pag"]){
 	if (!isset($elenco)){		
 		//se non ho ancora fatto la query la costruisco
 		include_once "./db/db.cdu.queryricerca.php";	
-		//echo $sqlRicerca;
-		$db->sql_query ($sqlRicerca);//trovo l'elenco degli id delle pratiche che mi interessano
-		$elenco_pratiche=$db->sql_fetchlist("pratica");
+		$sth=$conn->prepare($sqlRicerca);
+                if(!$sth->execute()) utils::debug ('errore_ricerca', $sql);
+		
+		$elenco_pratiche=$sth->fetchAll(PDO::FETCH_COLUMN);
 		if ($elenco_pratiche) $elenco=implode(",",$elenco_pratiche);
 		$_SESSION["RICERCA"]=$_POST;
 	} 
@@ -36,7 +36,7 @@ if ($_POST["pag"]){
 				<script language="javascript">
 					document.location='praticaweb.php?cdu=1&pratica=<?=$idpratica?>';
 				</script></body></html>
-		<?	
+		<?php	
 			exit;
 		}
 		$pages=intval($totrec/$pratichexpagina); 
@@ -75,7 +75,7 @@ function paginasucc(pg){
 	 <table border=0 cellpadding=0 width=1% cellspacing=4 align=center>
 	<tr>
 	<td valign="bottom" nowrap class="selezione">Pagina dei risultati:&nbsp;<td>
-	<?for ($i=1;$i<$pages+1;$i++){
+	<?php for ($i=1;$i<$pages+1;$i++){
 		if ($i==$pagenum)
 			$numpag="<font color=#FF0000>$i</font>";
 		else

@@ -6,8 +6,7 @@ $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $azione=(isset($_REQUEST["azione"]))?($_REQUEST["azione"]):(null);
 
 
-$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
-if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
+$conn=utils::getDb();
 
 if ($azione=="Annulla" or $azione=="Chiudi"){
 	if ($modo=="edit") $modo="view";
@@ -18,7 +17,7 @@ elseif($azione=="Salva"){
 	
 	else{
 		$sql="UPDATE admin.users SET pwd='$pwd',enc_pwd='$enc_pwd' WHERE userid=$id";
-		if (!$errors) $db->sql_query($sql);	
+		if (!$errors) $conn->execute($sql);	
 	}
 	if (!$errors) $modo="view";
 }

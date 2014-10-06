@@ -65,12 +65,12 @@ if ($_POST["azione"]=="Avvia"){
 		$nrows=$tabella->set_dati("$cond order by substr(report.numero,4,1),substr(report.numero,5,3),substr(report.numero,1,3)");
 	}	
 }
-$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
-if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
+
 $sql="(SELECT 0 as id, 'Seleziona ===>' as opzione) UNION (SELECT 1 as id, 'Tutti i Permessi di Costruire' as opzione) UNION (SELECT 2 as id, 'Tutte le D.I.A.' as opzione) UNION (SELECT distinct id,nome as opzione FROM pe.e_tipopratica order by opzione);";
-$db->sql_query($sql);
-print_debug($sql);
-$tipo_pratica=$db->sql_fetchrowset();
+$conn=utils::getDb();
+$sth=$conn->prepare($sql);
+$sth->execute();
+$tipo_pratica=$sth->fetchAll(PDO::FETCH_ASSOC);
 $sel_tipo_pratica="";
 foreach($tipo_pratica as $val){
 	$s=($_POST["tipo_pratica"] && $_POST["tipo_pratica"]==$val["id"])?("selected"):("");
@@ -108,11 +108,15 @@ foreach($tipo_pratica as $val){
 		<table class="stiletabella">
 			<TR>
 				<td width="250" bgColor="#728bb8"><font color="#ffffff"><b>Data di presentazione - Dal - Al</b></TD>
-				<?if (!$ricerca["data_pres_in"]["errore"]){?><TD><input type="text" class="textbox" name="data_pres_in" align="right" value="<?=$_POST["data_pres_in"]?>"></TD><?php }
-				else{?>
-				<TD><input type="text" class="errors" name="data_pres_in" value="<?=$_POST["data_pres_in"]?>" align="right"><image src="images/small_help.gif" onclick="alert('<?=$ricerca["data_pres_in"]["errore"]?>')"></TD>
+				<?php
+                                    if (!$ricerca["data_pres_in"]["errore"]){
+                                ?><TD><input type="text" class="textbox" name="data_pres_in" align="right" value="<?php echo $_POST["data_pres_in"];?>"></TD>
+                                <?php }
+				else{
+                                ?>
+				<TD><input type="text" class="errors" name="data_pres_in" value="<?php echo $_POST["data_pres_in"];?>" align="right"><image src="images/small_help.gif" onclick="alert('<?php echo $ricerca["data_pres_in"]["errore"]?>')"></TD>
 				<?php }
-				if (!$ricerca["data_pres_fi"]["errore"]){?><TD><input type="text" class="textbox" name="data_pres_fi" value="<?=$_POST["data_pres_fi"]?>" align="right"></TD><?php }
+				if (!$ricerca["data_pres_fi"]["errore"]){?><TD><input type="text" class="textbox" name="data_pres_fi" value="<?php echo $_POST["data_pres_fi"]?>" align="right"></TD><?php }
 				else{?>
 					<TD><input type="text" class="errors" name="data_pres_fi" value="<?=$_POST["data_pres_fi"]?>" align="right"><image src="images/small_help.gif" onclick="alert('<?=$ricerca["data_pres_fi"]["errore"]?>')"></TD>
 				<?php }?>
@@ -120,9 +124,9 @@ foreach($tipo_pratica as $val){
 			<TR>
 				<td width="250" bgColor="#728bb8"><font color="#ffffff"><b>Data di inserimento</b></td>
 				<TD>&nbsp;</TD>
-				<?if (!$ricerca["data_ins"]["errore"]){?><TD><input type="text" class="textbox" name="data_ins" align="right" value="<?=$_POST["data_ins"]?>"></TD><?php }
+				<?php if (!$ricerca["data_ins"]["errore"]){?><TD><input type="text" class="textbox" name="data_ins" align="right" value="<?php echo $_POST["data_ins"]?>"></TD><?php }
 				else{?>
-					<TD><input type="text" class="errors" name="data_ins" value="<?=$_POST["data_ins"]?>" align="right"><image src="images/small_help.gif" onclick="alert('<?=$ricerca["data_ins"]["errore"]?>')"></TD>
+					<TD><input type="text" class="errors" name="data_ins" value="<?php echo $_POST["data_ins"]?>" align="right"><image src="images/small_help.gif" onclick="alert('<?=$ricerca["data_ins"]["errore"]?>')"></TD>
 				<?php }?>
 			</TR>
 			<TR>
@@ -145,7 +149,7 @@ foreach($tipo_pratica as $val){
 	</form>
 	<hr>
 	<H2 class="bluebanner">Riepilogo delle pratiche trovate</H2>
-	<?	if ($nrows)
+	<?php	if ($nrows)
 			$tabella->elenco();
 		else
 			print "<table class=\"stiletabella\"><tr><td><b>Nessun Dato Trovato</b></td></tr></table>";

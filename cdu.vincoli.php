@@ -10,6 +10,7 @@ if($ar_particella[0])
 $sql_update_mappale="foglio='" . $ar_particella[1] . "' , mappale='" . $ar_particella[2] . "'";
 
 $tabpath=cdu;
+$conn=utils::getDb();
 $azione=$_POST["azione"]; 
 if ($_POST["azione"]){ 
 	$idrow=$_POST["idriga"];
@@ -23,8 +24,8 @@ if ($_POST["azione"]){
 		if ($modo=="new"){ 
 			$newid=$_SESSION["ADD_NEW"];
 			$sql="update cdu.mappali set $sql_update_mappale where id=$newid";
-			//echo "<p>$sql</p>";
-			$db->sql_query($sql);
+			
+			$conn->exec($sql);
 		}
 		$_SESSION["ADD_NEW"]=$_POST;	
 	}
@@ -62,48 +63,7 @@ function elimina(id){
 function link(id){
 	window.location="pe.scheda_normativa.php?id="+id;
 }
-/*
-function is_array(obj){
-		if(typeof(obj)=='object' && typeof(obj.length)=='number')
-			return true;
-		else
-			return false;
-	}
-	
-	function getVincoli(obj,id,schema){ 
-		if (obj.name=='vincolo')  {
-			var prm=new Array('action=elenco_vinc','obj=tavola');
-			var val=obj.options[obj.selectedIndex].value;
-			prm.push('id='+val); 
-			var param=prm.join('&'); 
-		}
-		else if(obj.name=='tavola'){
-			var prm=new Array('action=elenco_vinc','obj=zona');
-			var o=xGetElementById('vincolo');
-			var val=o.options[o.selectedIndex].value;
-			val=val+obj.options[obj.selectedIndex].value;
-			prm.push('id='+val);
-			var param=prm.join('&'); 
-		}
-		
-		makeRequest('rpc_vincoli_cdu.php',param,'setVincoli','POST');
-	}
-	function setVincoli(obj) {
-		var o=xGetElementById(obj.id);	
-		for(j=o.length-1;j>=0;j--){
-			o.remove(j);	//Rimuovo tutte le opzioni dal select
-		}
-		var arr=obj.values;  
-		if (is_array(arr)){
-			if (arr.length==0){	
-				o.options[0]=new Option('Seleziona ====>','');
-			}
-			else{
-				o.options[0]=new Option('Seleziona ====>','');			//Aggiungo il Primo elemento
-				for(j=1;j<=arr.length;j++) o.options[j]=new Option(arr[j-1].name,arr[j-1].id);	//Aggiungo le altre opzioni
-			}
-		}
-	}*/
+
 </script>
 </head>
 <body  background="" leftMargin="0" topMargin="0" marginheight="0" marginwidth="0">
@@ -154,10 +114,10 @@ if (($modo=="edit") or ($modo=="new")){
 <p>&nbsp;</p>
 	<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">	
 		
-	<?$db=$tabellah->get_db();
-		$db->sql_query ("select * from vincoli.vincolo order by ordine;");
-		
-		$elenco_vincoli = $db->sql_fetchrowset(); 
+	<?php   
+		$sth=$conn->prepare ("select * from vincoli.vincolo order by ordine;");
+		$sth->execute();
+		$elenco_vincoli = $sth->fetchAll(PDO::FETCH_ASSOC); 
 		foreach($elenco_vincoli as $row){
 			$vincolo=$row["nome_vincolo"];
 			$nome_vincolo=$row["descrizione"];	
@@ -181,8 +141,7 @@ if (($modo=="edit") or ($modo=="new")){
 else{
 	
 //########## MODALITA' VISTA DATI #####################
-$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
-if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
+
 
 //SCHEMA DB VECCHIO
 //elenco dei piani
@@ -202,8 +161,9 @@ print_debug($sql_mappali,"tabella");
 //verifico l'esitenza dei vincoli per la pratica corrente
 $sqlElencoTavole="SELECT A.nome_vincolo as vincolo,A.descrizione as desc_vincolo,B.nome_tavola as tavola,coalesce(B.descrizione,B.descrizione) as desc_tavola FROM vincoli.vincolo A inner join vincoli.tavola B using(nome_vincolo) WHERE cdu=1 order by A.ordine,B.ordine";
 //echo "<p>$sqlElencoTavole</p>";
-$db->sql_query ($sqlElencoTavole); 
-$ris=$db->sql_fetchrowset();
+$sth=$conn->prepare($sqlElencoTavole); 
+$sth->execute();
+$ris=$sth->fetchAll(PDO::FETCH_ASSOC);
 for($i=0;$i<count($ris);$i++){
     $tavole[$ris[$i]["vincolo"]]["label"]=$ris[$i]["desc_vincolo"];
     $tavole[$ris[$i]["vincolo"]]["tavole"][$ris[$i]["tavola"]]=$ris[$i]["desc_tavola"];
@@ -314,7 +274,8 @@ $req="mode=edit&pratica=$idpratica";
 </head>
 <body>
 
-<?//include "./inc/page_header.inc";
+<?php
+//include "./inc/page_header.inc";
 /*********************************************************************************************************/    
 //                              MODIFICA TEMPORANEA PER GIRARE VINCOLI E PARTICELLE
 /*********************************************************************************************************/
@@ -383,7 +344,7 @@ else{
 	<td colspan="<?=$npiani?>" align="center"><font face="Verdana" color="#ffffff" size="1"><b>Vincoli</b></font></td>		
 </tr>
 <tr bgColor=#728bb8>
-	<?for($i=0;$i<$npiani;$i++){?>	
+	<?php for($i=0;$i<$npiani;$i++){?>	
 		<td height="15"  align="center">
 			<font face="Verdana" color="#ffffff" size="1"><b><?=$piani[$i]["descrizione"]?></b></font>
 		</td>
@@ -405,7 +366,7 @@ for($i=0;$i<count($array_mappali);$i++){
 	<td height="15"  align="center">
 		<font face="Verdana"  size="1"><b><?=$particella?></b></font>
 	</td>
-	<?for($j=0;$j<$npiani;$j++){
+	<?php for($j=0;$j<$npiani;$j++){
 	
 		$piano=$piani[$j]["nome_tavola"]; 
 		$zona=$array_zone[$idparticella][$piano]; 
@@ -419,7 +380,7 @@ for($i=0;$i<count($array_mappali);$i++){
 </tr>
 <?php }?>
 
-<?//Aggiungo i mappali senza vincoli
+<?php //Aggiungo i mappali senza vincoli
 	for($i=0;$i<count($mappali);$i++){
 		$idparticella=$mappali[$i]['particella'];
 		$ar_particella=explode(',',$mappali[$i]["particella"]); 
@@ -435,7 +396,7 @@ for($i=0;$i<count($array_mappali);$i++){
 		<font face="Verdana"  size="1"><b><?=$particella?></b></font>
 		</b></font>
 	</td>
-	<?for($j=0;$j<$npiani;$j++){?>
+	<?php for($j=0;$j<$npiani;$j++){?>
 		<td height="15"  align="left">
 			<font face="Verdana" size="1"><b>---</b></font>
 	</td>

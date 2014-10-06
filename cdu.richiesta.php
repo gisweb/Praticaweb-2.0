@@ -97,7 +97,8 @@ function link(id){
 </script>
 </head>
 <body>
-<?if (($modo=="edit") or ($modo=="new")){
+<?php
+    if (($modo=="edit") or ($modo=="new")){
 	//---<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  EDITA MAPPALI ASSERVITI >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>------------------------------>
 	if($_POST["mappali"]){
 	//print_r($_POST);
@@ -178,7 +179,8 @@ function link(id){
 	</FORM>		
 
 	
-	<?//include "./inc/window.inc"; // contiene la gesione della finestra popup
+	<?php
+//include "./inc/window.inc"; // contiene la gesione della finestra popup
 	}
 }	
 else{
@@ -195,7 +197,8 @@ else{
 		  <TR> 
 			<TD> 
 			<!-- contenuto-->
-				<?if ($nrec){
+				<?php
+                                    if ($nrec){
 					$tabella_richiesta->set_titolo("Richiesta cdu","modifica");
 					$tabella_mappali=new tabella_h("$tabpath/mappali",'view');
 					$tabella_mappali->set_titolo("Elenco dei mappali","modifica",array("mappali"=>1));

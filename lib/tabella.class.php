@@ -284,9 +284,10 @@ EOT;
 			//echo("<p>$sql</p>");
 			//print_debug($this->config_file."\n".$sql,NULL,"tabella");
                         utils::debug(DEBUG_DIR.$_SESSION["USER_ID"]."_".'tabella.debug', $sql);
-			if ($this->db->sql_query(trim($sql))){
-				$this->array_dati=$this->db->sql_fetchrowset();
-				$this->num_record=$this->db->sql_numrows();
+                        $sth=$this->db->prepare(trim($sql));
+			if ($sth->execute()){
+				$this->array_dati=$sth->fetchAll(PDO::FETCH_ASSOC);
+				$this->num_record=count($this->array_dati);
 			}
 			else
 				$this->num_record=0;
@@ -316,12 +317,13 @@ EOT;
 	}
 	
 	function connettidb(){
-		$this->db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
-		if(!$this->db->db_connect_id)  die( "Impossibile connettersi al database");
+		$dsn = sprintf('pgsql:dbname=%s;host=%s;port=%s',DB_NAME,DB_HOST,DB_PORT);
+                $this->db = new PDO($dsn, DB_USER, DB_PWD);
+                if (!$this->db) die("Impossibile connettersi al Database ".DB_NAME);
 	}
 	
 	function close_db(){
-		if(isset($this->db)) $this->db->sql_close();
+		if(isset($this->db)) unset($this->db);
 	}
 	
 	function set_tag($mytag){
@@ -456,38 +458,44 @@ EOT;
 			case "cdu":		//Caso del CDU
 				//Verifico il responsabile del Servizio
 				$sql="SELECT userid FROM admin.users WHERE (SELECT DISTINCT id::varchar FROM admin.groups WHERE nome='cdu')=ANY(string_to_array(coalesce(gruppi,''),','));";
-				$db->sql_query($sql);
-				$idCDU=$db->sql_fetchlist('userid');
+				$sth=$db->prepare($sql);
+                                $sth->execute();
+				$idCDU=$sth->fetchAll(PDO::FETCH_COLUMN);
 				$editor=$idCDU;
 			break;
 			default:		//Caso delle pratiche Edilizie
 				//Verifico il responsabile del procedimento
 				$sql="SELECT resp_proc FROM pe.avvioproc WHERE pratica=".$this->idpratica;
-				$db->sql_query($sql);
-				$rdp=$db->sql_fetchfield('resp_proc');
+				$sth=$db->prepare($sql);
+                                $sth->execute();
+				$rdp=$sth->fetchAll(PDO::FETCH_COLUMN);
 				
 				//Verifico il dirigente
 				$sql="SELECT userid FROM admin.users WHERE (SELECT DISTINCT id::varchar FROM admin.groups WHERE nome='dirigenza')=ANY(string_to_array(coalesce(gruppi,''),','));";
-				$db->sql_query($sql);
-				$idDiri=$db->sql_fetchfield('userid');
+				$sth=$db->prepare($sql);
+                                $sth->execute();
+				$idDiri=$sth->fetchAll(PDO::FETCH_COLUMN);
 				
 				//Verifico il responsabile del Servizio
 				$sql="SELECT userid FROM admin.users WHERE (SELECT DISTINCT id::varchar FROM admin.groups WHERE nome='rds')=ANY(string_to_array(coalesce(gruppi,''),','));";
-				$db->sql_query($sql);
-				$idRds=$db->sql_fetchfield('userid');
+				$sth=$db->prepare($sql);
+                                $sth->execute();
+				$idRds=$sth->fetchAll(PDO::FETCH_COLUMN);
 				
 				//Verifico gli archivisti
 				$sql="SELECT userid FROM admin.users WHERE (SELECT DISTINCT id::varchar FROM admin.groups WHERE nome='archivio')=ANY(string_to_array(coalesce(gruppi,''),','));";
-				$db->sql_query($sql);
-				$idArch=$db->sql_fetchlist('userid');
+				$sth=$db->prepare($sql);
+                                $sth->execute();
+				$idArch=$sth->fetchAll(PDO::FETCH_COLUMN);
 				
 				//Array con tutti i ruoli
 				$ris=Array($rdp,$idRds,$idDiri);
 				
-				$sql="SELECT role,utente FROM pe.wf_roles WHERE pratica=".$this->idpratica;
-			   
-				if ($db->sql_query($sql)){
-					$res=$db->sql_fetchrowset();
+				$sql="SELECT role,utente FROM pe.wf_roles WHERE pratica=?";
+                                $sth=$db->prepare($sql);
+                                
+				if ($sth->execute(Array($this->idpratica))){
+					$res=$sth->fetchAll(PDO::FETCH_ASSOC);
 					$roles[$idDiri]=Array('dir');
 					$roles[$idRds]=Array('rds');
 					for($i=0;$i<count($idArch);$i++) {
@@ -571,19 +579,22 @@ EOT;
 	
 function elenco_stampe ($form){
 //elenco degli elaborati in modo vista: solo i pdf
+        $conn=$this->db;
 	if ($_SESSION["PERMESSI"]>3) return;
 	$icona_pdf="images/acrobat.gif";
 	$icona_rtf="images/word.gif";
 	$procedimento=$this->array_dati[$this->curr_record]["id"];		
-	$sql="select id,file_doc,file_pdf,utente_pdf from stp.stampe where (pratica=$this->idpratica) and (form='$form') and ((char_length(file_doc)>0 or (char_length(file_pdf)>0)));";
+	$sql="select id,file_doc,file_pdf,utente_pdf from stp.stampe where (pratica=) and (form=?) and ((char_length(file_doc)>0 or (char_length(file_pdf)>0)));";
 	if ($this->debug) echo ("<p>$sql</p>");
-	$this->db->sql_query($sql);
-	$elenco = $this->db->sql_fetchrowset();
-	$nrighe=$this->db->sql_numrows();
+	$sth=$conn->prepare($sql);
+        $sth->execute(Array($this->idpratica,$form));
+	$elenco = $sth->etchAll();
+	$nrighe=count($elenco);
 	//$hostname=$_SERVER["HTTP_HOST"];
-       $sql="select e_tipopratica.nome as tipo from pe.avvioproc left join pe.e_tipopratica on (avvioproc.tipo=e_tipopratica.id) where pratica=$this->idpratica";
-       $this->db->sql_query($sql);
-       $tipo_pratica=$this->db->sql_fetchfield("tipo");
+        $sql="select e_tipopratica.nome as tipo from pe.avvioproc left join pe.e_tipopratica on (avvioproc.tipo=e_tipopratica.id) where pratica=?";
+        $sth=$conn->prepare($sql);
+        $sth->execute(Array($this->idpratica));
+        $tipo_pratica=$sth->fetchAll(PDO::FETCH_COLUMN);
 	$form=($form)?($form):($this->printForm);
 	list($schema,$f)=explode(".",$form);
 		$tabella="

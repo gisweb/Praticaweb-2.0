@@ -453,11 +453,11 @@ function calcolacodicefiscale_calcolacomune($com){
     }
     fclose($fp);*/
 	
-	$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
-	if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
-	$sql="SELECT codice FROM pe.e_comuni WHERE nome ilike '$com'";
-	if ($db->sql_query($sql)){
-		$ris=$db->sql_fetchrowset();
+	$conn=utils::getDb();
+	$sql="SELECT codice FROM pe.e_comuni WHERE nome ilike ?";
+        $sth=$conn->prepare($sql);
+	if ($sth->execute($sql)){
+		$ris=$sth->fetchAll(PDO::FETCH_ASSOC);
 		if (count($ris)==1)	$cod=$ris[0]['codice'];
 		else
 			return 0;
