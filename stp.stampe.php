@@ -133,21 +133,7 @@ EOT;
 <TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="800">
 	<TR>
 		<TD colspan="4">
-		<?/*php
-		$tabella=new Tabella_h($file_tab,'list'); 
-		$tabella->set_titolo($titolo);
-		$tabella->set_tag("modello");
-		$numrows=$tabella->set_dati($filtro);
-                $tabella->get_titolo();
-        
-		if ($numrows){
-			$tabella->elenco();
-
-		}
-                else{
-                    print ("<p><b>Nessun Modello disponibile</b></p>");
-                }*/
-		?>
+		
 		</TD>
 	</TR>
 	<TR>
@@ -157,12 +143,12 @@ EOT;
 	</TR>
 </table>
 <form method="POST" action="praticaweb.php" name="modelli" id="praticaFrm">
-	<input type="hidden" name="pratica" value="<?=$idpratica?>">
-	<input type="hidden" name="form" value="<?=$form?>">
+	<input type="hidden" name="pratica" value="<?php echo $idpratica;?>">
+	<input type="hidden" name="form" value="<?php echo $form;?>">
 	<input type="hidden" name="condono" value="<?=$condono?>">
 	<input type="hidden" name="cdu" value="<?=$cdu?>">
 	<input type="hidden" name="comm" value="<?=$ce?>">
-	<input type="hidden" name="active_form" value="<?=$active_form?>">
+	<input type="hidden" name="active_form" value="<?php echo $active_form?>">
 	<input type="hidden" name="stampe" value="1">
 	<input type="hidden" name="id" id="id_mod" value="">
 	<input type="hidden" name="comm_paesaggio" value="<?=$comm_paesaggio?>">
