@@ -3,11 +3,11 @@
 //altrimenti crea l'array degli errori
 require_once './lib/tabella.class.php';
 error_reporting(E_ERROR);
+$conn=utils::getDb();
 function valida_dati($array_config,$campi_obbligatori){
 	//dall'array tratto dal file di configurazione crea l'array campi=>valori validati per il db
 	$OK_Save=1;
-	$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
-	if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
+	
 	//Controllo dei campi obbligatori
 	if (isset($campi_obbligatori)){
 		foreach($campi_obbligatori as $c){
@@ -33,9 +33,10 @@ function valida_dati($array_config,$campi_obbligatori){
 			case "pratica":
 			case "numero_pratica":
 				if (strlen(trim($val))>0){
-					$sql="SELECT pratica FROM pe.avvioproc WHERE numero='$val'";
-					if($db->sql_query($sql)){
-						$r=$db->sql_fetchrowset();
+					$sql="SELECT pratica FROM pe.avvioproc WHERE numero=?";
+                                        $sth=$conn->prepare($sql);
+					if($sth->execute(Array($val))){
+						$r=$sth->fetchAll(PDO::FETCH_ASSOC);
 						if (count($r)==0) {
 							$OK_Save=0;
 							$errors[$campo]="La pratica $val non esiste";
@@ -107,7 +108,7 @@ function valida_dati($array_config,$campi_obbligatori){
 					$OK_Save=0;
 					$errors[$campo]=($campo=="tipo_allegati")?("Impossibile modificare il tipo per allegati. Prima di modicarlo rimuovere tutti gli allegati presenti"):("Errore generico");
 				}
-                elseif(strlen(trim($val))==0) $val='null';
+                                elseif(strlen(trim($val))==0) $val='null';
 				elseif(!is_numeric($val)) $val="'".addslashes($val)."'";
                 
 			case "elenco":
@@ -220,15 +221,13 @@ function valida_campi($arr){
 	$campi_obbl=$tb->campi_obbl;
 	$array_config=$tb->tab_config;
 	
-	$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
-	if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
 	$idrow=$_POST["id"];
 	if (!$idrow) $idrow=$_POST["idriga"]; //utilizzato solo per eliminare dall'iter, da togliere dopo modifica a pe.iter 
 		
 	
 	if ($azione=="Elimina"){
 		$sql="delete from $tabelladb where id=$idrow;";
-		$db->sql_query ($sql);
+		$conn->exec($sql);
 		return;
 	}
 
@@ -256,13 +255,12 @@ function valida_campi($arr){
             if (!$tb->table_list){
                 $chkret=0;
                 $sql="select coalesce(chk,0) as chk from $tabelladb where id=$idrow;";
-
-                $db->sql_query ($sql);
-                $chkret = $db->sql_fetchfield("chk");
+                $sth=$conn->prepare($sql);
+                $sth->execute();
+                $chkret = $sth->fetchColumn();
                 if (!($chkret==$_POST["chk"])){
                     $Errors["Multiutenza"]= "Un altro utente ha salvato il record, oppure è gia stato salvato.....aggiornare  il form";
 					echo "<p style=\"color:red\">Un altro utente ha salvato il record, oppure è gia stato salvato.....aggiornare  il form</p>";
-                    $db->sql_close();
                     include $active_form;			
                     exit;
                 }
