@@ -60,7 +60,7 @@ if ($elenco_pratiche){
 				<script language="javascript">
 					document.location='praticaweb.php?pratica=<?=$idpratica?>';
 				</script></body></html>
-		<?	
+		<?php	
 			exit;
 		}
 		$pages=intval($totrec/$pratichexpagina); 

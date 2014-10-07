@@ -2,22 +2,24 @@
 if ($_POST["azione"]=="Chiudi" || $_POST["azione"]=="Annulla") $active_form="cdu.iter.php?cdu=1&pratica=$idpratica";
 elseif($_POST["azione"]=="Elimina"){
 	$pr=new pratica($idpratica,1);
-	$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
-	if(!$db->db_connect_id)  die( "Impossibile connettersi al database ".DB_NAME);
-	$sql="SELECT stampe from cdu.iter where id=".$_POST["idriga"];
-	$db->sql_query($sql);
-	$id_stampa=$db->sql_fetchfield("stampe");
-	$sql="SELECT file_doc,file_pdf FROM stp.stampe WHERE id=$id_stampa;";
-	$db->sql_query($sql);
-	$nome_doc=$db->sql_fetchfield("file_doc");
-	$nome_pdf=$db->sql_fetchfield("file_pdf");
-	$sql="DELETE FROM stp.stampe WHERE id=$id_stampa;";
-    $db->sql_query($sql);
+	$conn = utils::getDb();
+	$sql="SELECT stampe from cdu.iter where id=?";
+        $sth=$conn->prepare($sql);
+        $sth->execute(Array($_POST["idriga"]));
+	$id_stampa=$sth->fetchAll(PDO::FETCH_COLUMN);
+	$sql="SELECT file_doc,file_pdf FROM stp.stampe WHERE id=?;";
+	$sth=$conn->prepare($sql);
+        $sth->execute(Array($id_stampa));
+	$nome_doc=$sth->fetchColumn();
+	$nome_pdf=$sth->fetchColumn(1);
+	$sql="DELETE FROM stp.stampe WHERE id=?;";
+        $sth=$conn->prepare($sql);
+        $sth->execute(Array($id_stampa));
 	if($id_stampa){
-		$sql="SELECT file_doc,file_pdf FROM stp.stampe WHERE id=$id_stampa;";
-		//echo "<p>$sql</p>";
-		$db->sql_query($sql);
-		$row=$db->sql_fetchrow();
+		$sql="SELECT file_doc,file_pdf FROM stp.stampe WHERE id=?;";
+		$sth=$conn->prepare($sql);
+                $sth->execute(Array($id_stampa));
+		$row=$sth->fetch();
 		$file_doc=basename($row[0]).".doc";
 		$file_pdf=$row[1];
 		//extract($row);
@@ -34,9 +36,9 @@ elseif($_POST["azione"]=="Elimina"){
 }
 else{
 	include_once "./db/db.savedata.php";
-	$sql="UPDATE cdu.iter SET nota=nota_edit WHERE id=$lastid;";
-	//echo "<p>$sql</p>";
-	$db->sql_query($sql);
+	$sql="UPDATE cdu.iter SET nota=nota_edit WHERE id=?;";
+	$sth=$conn->prepare($sql);
+        $sth->execute(Array($lastid));
 }
 
 

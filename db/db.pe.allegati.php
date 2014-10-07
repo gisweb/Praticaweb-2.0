@@ -1,8 +1,7 @@
 <?php
 //GESTIONE salvataggio form allegati
 
-$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
-if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
+$conn = utils::getDb();
 $modo=(isset($_REQUEST["mode"]) && $_REQUEST["mode"])?($_REQUEST["mode"]):('view');
 //per la gestione del form integrazioni
 if (isset($_POST["integrazione"])) $integrazione=$_POST["integrazione"];
@@ -27,14 +26,16 @@ if (isset($_POST["azione"]) && $_POST["azione"]=="Salva"){
 				}
 			elseif($value=="id")
 				$sql="delete from pe.allegati where id=$id";
-			$db->sql_query ($sql);
+			$sth = $conn->prepare($sql);
+                        $sth->execute();
 		}
 		elseif ($tab=="doc"){			
 			$insert=1;
 			if (!$_SESSION["ADD_NEW"]){//inserisco solo se non ho già inserito il dato
 				$sql="insert into pe.allegati (pratica,documento,$value,chk,uidins,tmsins) values ($idpratica,$id,1,1,".$_SESSION["USER_ID"].",".time().");";
 				//print_debug($sql);
-				$db->sql_query ($sql);
+				$sth = $conn->prepare($sql);
+                                $sth->execute();
 				if ($value=="mancante")
 					$flag_mancante=1;
 				//echo $sql."......".$flag_mancante;

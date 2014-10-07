@@ -1,4 +1,4 @@
-<? 
+<?php
 $active_form="cdu.vincoli.php?pratica=$idpratica";
 function setData($val){
 	if (strlen($val)>0){
@@ -14,8 +14,7 @@ function setData($val){
 }
 
 include_once ("login.php");
-$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
-if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
+$conn = utils::getDb();
 
 $idpratica=$_POST["pratica"];
 $azione=$_POST["azione"];
@@ -33,13 +32,14 @@ if(!$_POST["foglio"] && !$_POST["mappale"])	// EDIT VINCOLI
 	$tavola=$_POST["tavola"];
 	$perc=$_POST["perc_area"];
 	$zona=$_POST["zona"];
-    if($azione=="Aggiungi"){ 
-		$sql_del="delete from cdu.mappali where foglio='$foglio' and mappale='$mappale' and coalesce(vincolo,'')='';";
+        if($azione=="Aggiungi"){ 
+		$sql_del="delete from cdu.mappali where foglio=? and mappale=? and coalesce(vincolo,'')='';";
 		print_debug($sql_del); 
-		$db->sql_query($sql_del); 
+		$sth=$conn->prepare($sql_del);
+                $sth->execute(Array($foglio,$mappale));
 		$sql="insert into cdu.mappali (pratica,sezione,foglio,mappale,vincolo,tavola,zona,perc_area) values($idpratica,'$sezione','$foglio','$mappale','$vincolo','$tavola','$zona','$perc') ;";
-		print "$sql"; 
-		$db->sql_query($sql); 
+		$sth=$conn->prepare($sql);
+                $sth->execute();
 	}
 }
 else {		// EDIT MAPPALI
@@ -50,57 +50,60 @@ else {		// EDIT MAPPALI
 	$sqlmappali="foglio=$foglio and mappale=$mappale";
 	if (isset($_POST["sezione"])) $sqlmappali.=" and sezione=$sezione";
 	if($azione=="Aggiungi"){ 
-        $sql="SELECT coalesce(data_certificazione,CURRENT_DATE) as data FROM cdu.richiesta WHERE pratica=$idpratica;";
-        $db->sql_query($sql);
-        $data=$db->sql_fetchfield('data');
+        $sql="SELECT coalesce(data_certificazione,CURRENT_DATE) as data FROM cdu.richiesta WHERE pratica=?;";
+        $sth=$conn->prepare($sql);
+        $sth->execute(Array($idpratica));
         
-		$sql="insert into cdu.mappali (pratica,sezione,foglio,mappale,vincolo,tavola,zona,perc_area) 
-		select $idpratica,particelle.sezione,particelle.foglio,particelle.mappale,zona_plg.nome_vincolo,zona_plg.nome_tavola,zona_plg.nome_zona,
-		round(sum(area(intersection (particelle.".THE_GEOM.",zona_plg.the_geom))/area (particelle.".THE_GEOM.")*100)::numeric,1) from
-		nct.particelle,(SELECT A.* FROM vincoli.zona_plg A inner join vincoli.zona B using(nome_vincolo,nome_tavola,nome_zona)  inner join vincoli.tavola using(nome_vincolo,nome_tavola) WHERE '$data'::date BETWEEN coalesce(data_da,'01/01/1970'::date) AND coalesce(data_a,CURRENT_DATE) AND cdu=1) as zona_plg
-        WHERE $sqlmappali and (particelle.".THE_GEOM." && zona_plg.the_geom) and
-		(area(intersection (particelle.".THE_GEOM.",zona_plg.the_geom))>10 or (area(intersection(particelle.".THE_GEOM.",zona_plg.the_geom))/area (particelle.".THE_GEOM.")*100)>=0.02) 
+        $data=$sth->fetchColumn();
+        
+        $sql="insert into cdu.mappali (pratica,sezione,foglio,mappale,vincolo,tavola,zona,perc_area) 
+        select $idpratica,particelle.sezione,particelle.foglio,particelle.mappale,zona_plg.nome_vincolo,zona_plg.nome_tavola,zona_plg.nome_zona,
+        round(sum(area(intersection (particelle.".THE_GEOM.",zona_plg.the_geom))/area (particelle.".THE_GEOM.")*100)::numeric,1) from
+        nct.particelle,(SELECT A.* FROM vincoli.zona_plg A inner join vincoli.zona B using(nome_vincolo,nome_tavola,nome_zona)  inner join vincoli.tavola using(nome_vincolo,nome_tavola) WHERE '$data'::date BETWEEN coalesce(data_da,'01/01/1970'::date) AND coalesce(data_a,CURRENT_DATE) AND cdu=1) as zona_plg
+WHERE $sqlmappali and (particelle.".THE_GEOM." && zona_plg.the_geom) and
+        (area(intersection (particelle.".THE_GEOM.",zona_plg.the_geom))>10 or (area(intersection(particelle.".THE_GEOM.",zona_plg.the_geom))/area (particelle.".THE_GEOM.")*100)>=0.02) 
 
-		group by particelle.sezione,particelle.foglio,particelle.mappale,zona_plg.nome_vincolo,zona_plg.nome_tavola,zona_plg.nome_zona,particelle.".THE_GEOM;
+        group by particelle.sezione,particelle.foglio,particelle.mappale,zona_plg.nome_vincolo,zona_plg.nome_tavola,zona_plg.nome_zona,particelle.".THE_GEOM;
+        $sth=$conn->prepare($sql);
+        if(!$sth->execute()){
+            $err=$sth->errorInfo();
+        }
+	$numrows=$sth->rowCount();
 
-		$result=$db->sql_query ($sql);
-		//echo "<p>$sql</p>";
-		$err=$db->sql_error();
-		print_debug($sql); 
-		$numrows=$db->sql_affectedrows();
-
-		if($numrows===0 or $err["message"]){
-		$sql="insert into cdu.mappali (pratica,sezione,foglio,mappale) values ($idpratica,$sezione,$foglio,$mappale)";
-		$result=$db->sql_query ($sql); 
-		}
+        if($numrows===0 or $err[2]){
+            $sql="insert into cdu.mappali (pratica,sezione,foglio,mappale) values ($idpratica,$sezione,$foglio,$mappale)";
+            $sth=$conn->prepare($sql);
+            $sth->execute();
 	}
+    }
 	
 }
 
 if($azione=="Elimina"){ 	
 	if($_POST["active_form"]=="cdu.richiesta.php"){ 
-		$id=$_POST["id"];
-		$sql="delete from cdu.mappali where id in(select q.id from cdu.mappali as p,cdu.mappali as q where p.foglio=q.foglio and p.mappale=q.mappale and p.id=$id);"; 
-		
-		$db->sql_query($sql); 
+            $id=$_POST["id"];
+            $sql="delete from cdu.mappali where id in(select q.id from cdu.mappali as p,cdu.mappali as q where p.foglio=q.foglio and p.mappale=q.mappale and p.id=?);"; 
+            $sth=$conn->prepare($sql);
+            $sth->execute(Array($id));
 	}
 	
 	else if($_POST["active_form"]=="cdu.vincoli.php") { 
 		$id=$_POST["idriga"];
-		$sql_count="SELECT coalesce(count(*),0) as quantita FROM cdu.mappali where pratica=$idpratica and foglio='$foglio' and mappale='$mappale'";
-		 
-		$db->sql_query($sql_count);
-		$quantita=$db->sql_fetchfield('quantita'); 
+		$sql_count="SELECT coalesce(count(*),0) as quantita FROM cdu.mappali where pratica=? and foglio=? and mappale=?";
+		$sth=$conn->prepare($sql);
+                if($sth->execute(Array($idpratica,$foglio,$mappale)))
+		$quantita=$sth->fetchColumn(); 
 		if($quantita>1){
-			$sql="delete from cdu.mappali where id=$id";
-			print_debug($sql); 
-			$db->sql_query($sql);
+                    $sql="delete from cdu.mappali where id=$?";
+                    $sth=$conn->prepare($sql);
+                    $sth->execute(Array($id));
 
 		}
 		else{
 
-			$sql="update cdu.mappali set sezione=NULL,vincolo=NULL,zona=NULL,tavola=NULL,perc_area='0' where id=$id";
-			$db->sql_query($sql); 
+                    $sql="update cdu.mappali set sezione=NULL,vincolo=NULL,zona=NULL,tavola=NULL,perc_area='0' where id=?";
+                    $sth=$conn->prepare($sql);
+                    $sth->execute(Array($id));
 		}
 	}	
 

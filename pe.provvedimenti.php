@@ -33,7 +33,7 @@ include_once "./lib/tabella_v.class.php";
 </head>
 <body  background="">
 
-<?	
+<?php	
 if ($_POST["mode"]=="tmp_new"){
 	include "./inc/inc.page_header.php";	
 	unset($_SESSION["ADD_NEW"]);?>
@@ -122,7 +122,7 @@ elseif ($modo=="edit" or $modo=="new"){
 		  <tr> 
 			<td> 
 			<!-- intestazione-->
-				<H2 class="blueBanner"><?print(($modo=="edit")?("Modifica provvedimento"):("Inserisci nuovo provvedimento"))?></H2>
+				<H2 class="blueBanner"><?php print(($modo=="edit")?("Modifica provvedimento"):("Inserisci nuovo provvedimento"))?></H2>
 			<!-- fine intestazione-->
 			</td>
 		  </tr>
@@ -159,14 +159,14 @@ elseif ($modo=="edit" or $modo=="new"){
 			<tr>
 				<TD>
 				<input name="azione" type="submit" class="hexfield" tabindex="14" value="Salva">
-				<?if ($modo=="edit") {?><input name="azione" type="submit" class="hexfield" tabindex="14" value="Elimina"><?php }?>
+				<?php if ($modo=="edit") {?><input name="azione" type="submit" class="hexfield" tabindex="14" value="Elimina"><?php }?>
 				<input name="azione" type="submit" class="hexfield" tabindex="14" value="Annulla">
 				</TD>
 			</tr>
 		</table>
 		</form>
 		<form action="pe.provvedimenti.php" name="invia" id="invia" method="POST">
-		<?//Aggiungo la parte delle notifiche solo se il tipo di provvedimento Ãš diverso dalla sanzione amministrativa
+		<?php //Aggiungo la parte delle notifiche solo se il tipo di provvedimento Ãš diverso dalla sanzione amministrativa
 		if ($_POST["tipo"]!=1 and $modo=="edit") {
 		echo "<H2 class=\"blueBanner\">Elenco Soggetti </H2>";
 		echo "\t<table width=\"50%\">
@@ -195,7 +195,7 @@ elseif ($modo=="edit" or $modo=="new"){
 		</table>";
 		?>
 		<br>
-		<?if ($nrec) {?><input name="" type="submit" class="hexfield" tabindex="14" value="Aggiungi" onclick="invia.azione.value='Salva'"><?php }?>
+		<?php if ($nrec) {?><input name="" type="submit" class="hexfield" tabindex="14" value="Aggiungi" onclick="invia.azione.value='Salva'"><?php }?>
 		<input name="active_form" type="hidden" value="pe.provvedimenti.php">				
 		<input name="mode" type="hidden" value="new">
 		<input name="tipo" type="hidden" value="<?=$id_tipo?>">
@@ -262,7 +262,7 @@ elseif ($modo=="edit" or $modo=="new"){
 		  <TR> 
 			<TD> 
 			<!-- tabella nuovo inserimento-->
-				<?	if (!isset($tabellah)) $tabellah=new tabella_h("$tabpath/notifiche");
+				<?php	if (!isset($tabellah)) $tabellah=new tabella_h("$tabpath/notifiche");
 					$tabellah->set_titolo("Aggiungi nuovo Provvedimento ---> clicca su Nuovo","nuovo",array("mode"=>"tmp_new"));
 					print $tabellah->get_titolo();?><BR>
 			<!-- fine tabella nuovo inserimento-->
