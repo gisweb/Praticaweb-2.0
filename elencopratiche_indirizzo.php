@@ -1,7 +1,7 @@
 <?php
 require_once "login.php";
 require_once APPS_DIR.'utils/searchQuery.php';
-$filter[]=($_REQUEST["via"])?("via ilike '".$_REQUEST["via"]."'"):('true');
+$filter[]=($_REQUEST["via"])?("via ilike '".addlashes($_REQUEST["via"])."'"):('true');
 $filter[]=($_REQUEST["civico"])?("civico ilike '".$_REQUEST["civico"]."'"):('true');
 $filter[]=($_REQUEST["interno"])?("interno ilike '".$_REQUEST["interno"]."'"):('true');
 $db=appUtils::getDb();
