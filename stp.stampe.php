@@ -29,14 +29,9 @@ if($_POST["azione"])
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
-	utils::loadJS();
-	utils::loadCss();
+	utils::loadJS(Array('jquery.easyui.min','locale/easyui-lang-it','datagrid-detailview'));
+	utils::loadCss(Array('default/easyui','icon'));
 ?>
-<link rel="stylesheet" type="text/css" href="/css/default/easyui.css">
-<link rel="stylesheet" type="text/css" href="/css/icon.css">
-<script type="text/javascript" src="/js/jquery.easyui.min.js"></script>
-<script type="text/javascript" src="/js/locale/easyui-lang-it.js"></script>
-<script type="text/javascript" src="/js/datagrid-detailview.js"></script>
 <SCRIPT language="javascript">
     $(document).ready(function(){
         $('#result-table-modelli').tree({
