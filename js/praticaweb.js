@@ -1,7 +1,8 @@
+if (typeof(appBaseUrl) == 'undefined') var appBaseUrl='';
 var baseURL='/gisclient/template/';
-var searchUrl='/services/xSearch.php';
-var serverUrl='/services/xServer.php';
-var suggestUrl='/services/xSuggest.php';
+var searchUrl=appBaseUrl+'/services/xSearch.php';
+var serverUrl=appBaseUrl+'/services/xServer.php';
+var suggestUrl=appBaseUrl+'/services/xSuggest.php';
 
 
 function setDatiAutoSuggest(event,ui){
