@@ -477,7 +477,7 @@ INSERT INTO oneri.rate(pratica,rata,totale,uidins,tmsins) (SELECT $this->pratica
 		return $ris;
 	}
 	
-	
+        
 }
 
 

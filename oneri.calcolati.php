@@ -166,7 +166,7 @@ if (($modo=="new") or ($modo=="edit")){
 				}
                 else{
                     $pr=new pratica($idpratica);
-                    $request["anno"]=$pr->info['anno'];
+                    $request["anno"]=appUtils::getAnnoOneri(idPratica,$pr->info['data_presentazione']);
                     $tabella->set_dati($request);
                 }
 				$tabella->edita();?>

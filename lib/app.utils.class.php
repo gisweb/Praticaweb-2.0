@@ -4,7 +4,7 @@ require_once APPS_DIR.'plugins/Doctrine/Common/ClassLoader.php';
 
 
 
-class appUtils {
+class generalAppUtils {
    static function getDB(){
 		$classLoader = new ClassLoader('Doctrine', APPS_DIR.'plugins/');
 		$classLoader->register();
@@ -388,6 +388,18 @@ class appUtils {
                 $res=$stmt->fetchAll(PDO::FETCH_ASSOC);
                 return Array("totali"=>0,"data"=>Array());
             }
+    }
+    static function getAnnoOneri($id,$data){
+        $conn=utils::getDb();
+        $sql = "SELECT DISTINCT anno FROM oneri.e_tariffe WHERE valido_da <= ? AND valido_a >= ?;";
+        $stmt=$conn->prepare($sql);
+        if(!$stmt->execute(Array($data,$data))){
+            return -1;
+        }
+        else{
+            $res=$stmt->fetchColumn();
+            return $res;
+        }
     }
 }
 ?>

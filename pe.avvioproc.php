@@ -44,6 +44,10 @@ foreach($res as $val){
             $file_config="$tabpath/chiusura";
             $intestazione='Dati di chiusura del procedimento';            
         }
+        else if ($_REQUEST["dati_chiusura_pa"]){
+            $file_config="$tabpath/chiusura_pa";
+            $intestazione='Dati di chiusura del procedimento amministrativo';            
+        }
         else{
            
              $file_config="$tabpath/avvio_procedimento";
@@ -101,6 +105,12 @@ foreach($res as $val){
                 $nrec=$tabella->set_dati("pratica=$idpratica");
                 $tabella->elenco();
                 $tabella->close_db();
+                if (file_exists(TAB."$tabpath/chiusura_pa.tab")){
+                    $tabella=new tabella_v("$tabpath/chiusura_pa","view");
+                    $tabella->set_titolo("Dati di chiusura della procedimento amministrativo","modifica",Array("dati_chiusura_pa"=>1));
+                    $nrec=$tabella->set_dati("pratica=$idpratica");
+                    $tabella->elenco();
+                }
                 if (file_exists(TAB."$tabpath/chiusura.tab")){
                     $tabella=new tabella_v("$tabpath/chiusura","view");
                     $tabella->set_titolo("Dati di chiusura della pratica","modifica",Array("dati_chiusura"=>1));
