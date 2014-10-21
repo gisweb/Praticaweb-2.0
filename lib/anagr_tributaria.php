@@ -324,6 +324,13 @@ function valida_dato($field,$value,$valid,$row,$tmp){
 					$out=Array("valido"=>1,"campo"=>$field,"valore"=>$value);
 			}
 			break;
+                //Partita Iva Obbligatoria
+                case 21:
+			if (trim($value) && !controllaPIVA(trim($value)))
+				$out=Array("valido"=>1,"campo"=>$field,"valore"=>$value);
+			else
+				$out=Array("valido"=>0,"campo"=>$field,"valore"=>$value,"active_form"=>$valid["active_form"],"param"=>Array("id=$id","ruolo=$ruolo"),"id"=>$row["id_soggetto"],"pratica"=>$row["id_pratica"]);
+			break;
 		default:
 			$out=Array("valido"=>1,"campo"=>$field,"valore"=>$value);
 			break;
