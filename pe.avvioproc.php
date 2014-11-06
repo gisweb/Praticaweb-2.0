@@ -42,11 +42,11 @@ foreach($res as $val){
  if (($modo=="edit") or ($modo=="new")) {
         if ($_REQUEST["dati_chiusura"]){
             $file_config="$tabpath/chiusura";
-            $intestazione='Dati di chiusura del procedimento';            
+            $intestazione='Dati di chiusura del procedimento - Fine lavori agibilità';            
         }
         else if ($_REQUEST["dati_chiusura_pa"]){
             $file_config="$tabpath/chiusura_pa";
-            $intestazione='Dati di chiusura del procedimento amministrativo';            
+            $intestazione='Dati di chiusura del procedimento amministrativo - Avvenuta Verifica Atti';            
         }
         else{
            
@@ -107,13 +107,13 @@ foreach($res as $val){
                 $tabella->close_db();
                 if (file_exists(TAB."$tabpath/chiusura_pa.tab")){
                     $tabella=new tabella_v("$tabpath/chiusura_pa","view");
-                    $tabella->set_titolo("Dati di chiusura della procedimento amministrativo","modifica",Array("dati_chiusura_pa"=>1));
+                    $tabella->set_titolo("Dati di chiusura della procedimento amministrativo - Avvenuta Verifica Atti","modifica",Array("dati_chiusura_pa"=>1));
                     $nrec=$tabella->set_dati("pratica=$idpratica");
                     $tabella->elenco();
                 }
                 if (file_exists(TAB."$tabpath/chiusura.tab")){
                     $tabella=new tabella_v("$tabpath/chiusura","view");
-                    $tabella->set_titolo("Dati di chiusura della pratica","modifica",Array("dati_chiusura"=>1));
+                    $tabella->set_titolo("Dati di chiusura della pratica - Fine lavori agibilità","modifica",Array("dati_chiusura"=>1));
                     $nrec=$tabella->set_dati("pratica=$idpratica");
                     $tabella->elenco();
                 }
