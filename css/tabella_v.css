@@ -46,7 +46,7 @@ table.stiletabella td.intestazione{
     font-size:11px !important;
 }
 
-span.allegati{
+.allegati{
     cursor: pointer;
     cursor: hand;
     text-decoration: underline;

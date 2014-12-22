@@ -140,6 +140,17 @@ function get_cella($row,$col){
                         $retval.="</td>\n";
                     }
                     break;
+                case "btn_list":
+                    $prms=$this->getParams($row,$w);
+                    $obj=json_encode($prms['params']);
+                    $retval="";
+                    $destination=($this->array_dati[$row]["row_form"])?($this->array_dati[$row]["row_form"]):($prms['form']);
+                    if ($this->viewable){
+                        $retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
+                        $retval.="<a href='javascript:linkToList(\"$destination.php\",$obj)'><img title=\"Visualizza\" src=\"images/view.png\" border=\"0\"></a>";
+                        $retval.="</td>\n";
+                    }
+                    break;
                 case "btn_delete":
                     $prms=$this->getParams($row,$w);
                     $obj=json_encode($prms['params']);
@@ -186,6 +197,9 @@ function get_cella($row,$col){
             $retval.="<a target='modelli' href='/modelli/".$valore."'></a>";*/
             
             $retval.="</td>\n";
+            break;
+        case "allegati":
+            $retval="<td class=\"allegati\" data-url=\"$valore\" title=\"Visualizza il documento\">$valore</td>\n";
             break;
         case "stampe":
             $retval="<td class=\"stampe\" data-url=\"$valore\" title=\"Visualizza il documento\">$valore</td>\n";

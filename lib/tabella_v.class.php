@@ -100,6 +100,14 @@ function get_controllo($label,$tipo,$w,$campo,$html5Attr,$frozen=0){
 			$testo=stripslashes($dato);
 			$retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$size\" name=\"$campo\" id=\"$campo\" value=\"$testo\" $html5Attr $disabilitato>$help";
 			break;
+                case "allegati":
+                    if($dato) $retval=<<<EOT
+<span class="allegati" data-plugins="link" data-url="">$dato</span>
+EOT;
+                    else
+                        $retval="<b>Allegato Non Presente</b>";
+                    return $retval;
+                    break;
                 case "combosuggest":
                         $prms=explode('#',$w);
 			if (count($prms)>1)
