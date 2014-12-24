@@ -9,11 +9,11 @@ $idfile=$_REQUEST["idfile"];
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('list');
 $titolo=$_SESSION["TITOLO_$idpratica"];
 $form=$_POST["form"];
-if(is_uploaded_file($_FILES['myfile']['tmp_name'])){//operazione di upload 
-    if (!$_SESSION["ADD_NEW"]){//inserisco solo se non ho già  inserito il dato
-            include_once "./lib/upload.php";//gestione dell'upload del file
-    }
-}
+$dbh=  utils::getDb();
+$sql =  "SELECT 'Elenco Allegati del documento : ' || coalesce(A.nome,'') as titolo FROM pe.e_documenti A INNER JOIN pe.allegati B ON(B.documento=A.id) WHERE B.id=".substr($idallegato,4);
+$sth = $dbh->prepare($sql);
+$sth->execute();
+$tit = $sth->fetchColumn();
 
 
 ?>
@@ -161,10 +161,14 @@ else {
     include_once "./lib/tabella_h.class.php";
     $tabella=new tabella_h("$tabpath/doc_dettaglio",'list');
     $idallegato=substr($idallegato,4);
-    $tabella->set_titolo($titolo,"nuovo",array("mode"=>"new","titolo"=>$titolo,"id"=>$idallegato,"pratica"=>$idpratica));
+    $tabella->set_titolo($tit,"nuovo",array("mode"=>"new","titolo"=>$titolo,"id"=>$idallegato,"pratica"=>$idpratica));
     $numrows=$tabella->set_dati("id=$idallegato AND coalesce(idfile,0)>0");
+    
     $tabella->get_titolo();
-    $tabella->elenco();
+    if ($numrows)
+        $tabella->elenco();
+    else
+        print "<p><b>Nessun allegato caricato</b></p>";
 }//end switch
 ?>
 
