@@ -23,6 +23,19 @@ var colsDef={
         {title:'Intervento',sortable:true,field:'tipo_intervento',width:150},
         {title:'Oggetto',sortable:true,field:'oggetto',width:350}
     ]],
+    online:[[
+        {title:'',field:'pratica',sortable:false,width:20,formatter: function(value,row,index){return '<a target="new" href="praticaweb.php?pratica=' + value + '"><div class="ui-icon ui-icon-search"/></a>'}},
+        {title:'Tipo Pratica',field:'tipo_pratica',sortable:true,width:200,styler: function(value,row,index){return 'font-size:11px;';}},
+        {title:'Numero',field:'numero',sortable:true,width:70,styler: function(value,row,index){return 'font-size:11px;';}},
+        {title:'Data Pres.',sortable:true,field:'data_presentazione',width:100,styler: function(value,row,index){return 'font-size:11px;';}},
+        {title:'Data Prot.',sortable:true,field:'data_prot',width:100,styler: function(value,row,index){return 'font-size:11px;';}},
+        //{title:'Intervento',sortable:true,field:'tipo_intervento',width:150,formatter: function(value,row,index){if (value) return value; else return 'Da Definire';},styler: function(value,row,index){return 'font-size:11px;';}},
+        {title:'Oggetto',sortable:true,field:'oggetto',width:150,styler: function(value,row,index){return 'font-size:11px;';}},
+        {title:'Richiedenti',sortable:true,field:'richiedente',width:150,styler: function(value,row,index){return 'font-size:11px;';}},
+        {title:'Progettista',sortable:true,field:'progettista',width:150,styler: function(value,row,index){return 'font-size:11px;';}},
+        {title:'Responsabile',sortable:true,field:'responsabile',width:150,styler: function(value,row,index){return 'font-size:11px;';}},
+        {title:'Assegnata',sortable:true,field:'assegnata_istruttore',width:70,styler: function(value,row,index){return 'font-size:11px;';},formatter:function(value,row,index){if (value) return 'SI'; else return 'NO';}}
+    ]],
     delete:[[
         {title:'',field:'pratica',sortable:false,width:40,formatter: function(value,row,index){return '<input type="radio" data-testo="' + row['numero'] + '" name="pratica" id="' + value + '"class="textbox delete-radio"/>'}},
         {title:'Tipo Pratica',field:'tipo_pratica',sortable:true,width:150},

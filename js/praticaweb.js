@@ -255,12 +255,14 @@ function selectOneriIntervento(){
   function getSearchFilter(){
 	var searchFilter=new Object();
 	$(".search").each(function(index){
+            
             var name=$(this).attr('name');
             var id = $(this).attr('id').replace('op_','');
             var opValue=$(this).val();
             var filter='';
             var t=($(this).hasClass('text'))?('text'):(($(this).hasClass('number'))?('number'):('date'));
-            if (!$('#1_'+id).val()){
+            //console.log(String($('#1_'+id).val()).length==0||String($('#1_'+id).val())=='undefined');
+            if ((String($('#1_'+id).val()).length==0||String($('#1_'+id).val())=='undefined')&&!$(this).hasClass('check')){
                 filter='';
             }
             else if (opValue == 'between'){
@@ -272,18 +274,28 @@ function selectOneriIntervento(){
                 }
             }
             else if(opValue == 'equal'){
-                 if(t=='date'){
-                    filter=name+" = '"+$('#1_'+id).val()+"'::date";
-                }
-                else if (t=='text'){
-                    filter=name+"::varchar ilike '"+$('#1_'+id).val()+"'";
+                var val;
+                
+                if ($(this).hasClass('check')){
+                    val = $('input[name="' + this.name + '"]:checked').val();
                 }
                 else{
-                    filter=name+" = "+$('#1_'+id).val();
+                    val = $('#1_'+id).val();
                 }
-                if (!$('#1_'+id).val()){
+                if(t=='date'){
+                    filter=name+" = '"+val+"'::date";
+                }
+                else if (t=='text'){
+                    filter=name+"::varchar ilike '"+ val +"'";
+                    
+                }
+                else{
+                    filter=name+" = "+val;
+                }
+                if (String(val).length==0 || String(val)=='undefined'){
                     filter='';
                 }
+                
             }
             else if(opValue == 'great'){
                 if(t=='date'){
@@ -312,9 +324,13 @@ function selectOneriIntervento(){
             }
             else if(opValue == 'in'){
                 var res = [];
+                
                 $('#1_'+ id + ' :selected').each(function(i,selected){
                     res.push("'" + $(selected).val() + "'"); 
-                })
+                });
+                $('#1_'+ id + ':checked').each(function(i,selected){
+                    res.push("'" + $(selected).val() + "'"); 
+                });
                 filter=name+" IN ("+res.join(",")+")";
                 
             }

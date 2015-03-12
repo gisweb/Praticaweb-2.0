@@ -2,7 +2,7 @@
 $utente = utils::getUser($_SESSION["USER_ID"]);
 $scadenze = json_encode(appUtils::getScadenze($_SESSION["USER_ID"]));
 $verifiche = json_encode(appUtils::getVerifiche($_SESSION["USER_ID"]));
-$annotazioni = appUtils::getAnnotazioni($_SESSION["USER_ID"]);
+$annotazioni = json_encode(appUtils::getAnnotazioni($_SESSION["USER_ID"]));
 $script = <<<EOT
     <script language="javascript">
         var scadenze = $scadenze;
@@ -35,7 +35,8 @@ echo $script;
                     font-weight:bold;
                 }
                 .annotazioni-div{
-                    
+                    color:#ff8000;
+                    font-weight:bold;
                 }
 	</style>
 	<div id="intestazione">

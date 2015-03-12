@@ -40,18 +40,23 @@ function setInfoVerifiche(data){
 }
 function setInfoAnnotazioni(data){
     var text = '';
+    var idObject = '#msg-note';
+    $(idObject).removeClass('underline-cursor');
+    $(idObject).unbind('click');
     if ('errore' in data){
         text = 'Si è verificato un errore';
     }
    else{
         if (data['totali']==0){
-            text = 'Nessuna annotazione';
+            text = 'Nessuna pratica da assegnare';
         }
         else{
-            text=sprintf('<span class="ui-icon ui-icon-notice" style="display:inline-block;margin-right:10px;"></span>Sono presenti %d annotazioni',data['totali']);
+            $(idObject).addClass('underline-cursor');
+            $(idObject).bind('click',loadInfoAnnotazioni);
+            text=sprintf('<span class="ui-icon ui-icon-notice" style="display:inline-block;margin-right:10px;"></span>Sono presenti %d pratiche da assegnare',data['totali']);
         }
     }    
-    $('#msg-verifiche').html(text);
+    $('#msg-note').html(text);
 }
 function notifiche(){
     var data = {action:'notify'};
@@ -130,9 +135,37 @@ function loadInfoVerifiche(){
         })
 
 }
+
+function loadInfoAnnotazioni(){
+        var rows=[];
+        $.each(annotazioni['data'],function(k,v){
+            var text = sprintf('<li><a class="underline-cursor" data-href="praticaweb.php" data-pratica="%d" data-target="praticaweb" data-active_form="pe.avvioproc.php" data-id="%d">Pratica n° %s : "%s".</li>',v['pratica'],v['id'],v['numero'],v['oggetto']);
+            rows.push(text);
+        });
+        var html = '<ol>';
+        html += rows.join('');
+        html += '</ol>';
+        $('#message-div').html(html);
+        $('#message-div').dialog({
+            title:'Pratiche Presentate OnLine',
+            width:800,
+            height:400
+            
+        });
+        $.each($("#message-div .underline-cursor"),function(k,v){
+            $(v).bind('click',function(event){
+                event.preventDefault();
+                var data=$(v).data();
+                $('#message-div').dialog("close");
+                linkToView(data['href'],data);
+            });
+        })
+
+}
 $(document).ready(function(){
     setInfoScadenze(scadenze);
     setInfoVerifiche(verifiche);
+    setInfoAnnotazioni(annotazioni);
     setInterval(notifiche,3600000);
     
 });
