@@ -27,6 +27,7 @@ function goToView(obj){
 }
 
 function linkToList(url,prms){
+    if (url.indexOf('.php')=='-1') url += '.php';
     var form='<form method="POST" action="'+url+'" id="submitFrm"></form>';
     $(form).appendTo('body');
     prms['mode']='list';
@@ -38,6 +39,7 @@ function linkToList(url,prms){
 }
 
 function linkToView(url,prms){
+    if (url.indexOf('.php')=='-1') url += '.php';
     if('target' in prms){
         var form = '<form action="'+url+'" method="POST" target="'+ prms['target']+'" id="submitFrm"></form>';
     }
@@ -51,6 +53,8 @@ function linkToView(url,prms){
     $('#submitFrm').submit();
 }
 function loadInto(url,prms){
+    if (url.indexOf('.php')=='-1') url += '.php';
+
     var form='<form action="praticaweb.php" method="POST" id="submitFrm"></form>';
     $(form).appendTo($('body',window.parent.document));
     //prms['mode']='view';
@@ -63,6 +67,8 @@ function loadInto(url,prms){
     $('#submitFrm',window.parent.document).submit();
 }
 function linkToEdit(url,prms){
+    if (url.indexOf('.php')=='-1') url += '.php';
+    
     var form='<form action="'+url+'" method="POST" id="submitFrm"></form>';
     prms['mode']='edit';
     if (!window.parent){
@@ -89,6 +95,8 @@ function linkToEdit(url,prms){
     //window.parent.location=url+'?'+tmp.join('&');
 }
 function goToPratica(url,prms){
+    if (url.indexOf('.php')=='-1') url += '.php';
+
     var form='<form action="'+url+'" method="POST" id="submitFrm"></form>';
     prms['mode']='view';
     if (!window.parent){
@@ -255,14 +263,12 @@ function selectOneriIntervento(){
   function getSearchFilter(){
 	var searchFilter=new Object();
 	$(".search").each(function(index){
-            
             var name=$(this).attr('name');
             var id = $(this).attr('id').replace('op_','');
             var opValue=$(this).val();
             var filter='';
             var t=($(this).hasClass('text'))?('text'):(($(this).hasClass('number'))?('number'):('date'));
-            //console.log(String($('#1_'+id).val()).length==0||String($('#1_'+id).val())=='undefined');
-            if ((String($('#1_'+id).val()).length==0||String($('#1_'+id).val())=='undefined')&&!$(this).hasClass('check')){
+            if (!$('#1_'+id).val()){
                 filter='';
             }
             else if (opValue == 'between'){
@@ -274,28 +280,18 @@ function selectOneriIntervento(){
                 }
             }
             else if(opValue == 'equal'){
-                var val;
-                
-                if ($(this).hasClass('check')){
-                    val = $('input[name="' + this.name + '"]:checked').val();
-                }
-                else{
-                    val = $('#1_'+id).val();
-                }
-                if(t=='date'){
-                    filter=name+" = '"+val+"'::date";
+                 if(t=='date'){
+                    filter=name+" = '"+$('#1_'+id).val()+"'::date";
                 }
                 else if (t=='text'){
-                    filter=name+"::varchar ilike '"+ val +"'";
-                    
+                    filter=name+"::varchar ilike '"+$('#1_'+id).val()+"'";
                 }
                 else{
-                    filter=name+" = "+val;
+                    filter=name+" = "+$('#1_'+id).val();
                 }
-                if (String(val).length==0 || String(val)=='undefined'){
+                if (!$('#1_'+id).val()){
                     filter='';
                 }
-                
             }
             else if(opValue == 'great'){
                 if(t=='date'){
@@ -324,13 +320,9 @@ function selectOneriIntervento(){
             }
             else if(opValue == 'in'){
                 var res = [];
-                
                 $('#1_'+ id + ' :selected').each(function(i,selected){
                     res.push("'" + $(selected).val() + "'"); 
-                });
-                $('#1_'+ id + ':checked').each(function(i,selected){
-                    res.push("'" + $(selected).val() + "'"); 
-                });
+                })
                 filter=name+" IN ("+res.join(",")+")";
                 
             }
