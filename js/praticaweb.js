@@ -27,6 +27,7 @@ function goToView(obj){
 }
 
 function linkToList(url,prms){
+    if (url.indexOf('.php')=='-1') url += '.php';
     var form='<form method="POST" action="'+url+'" id="submitFrm"></form>';
     $(form).appendTo('body');
     prms['mode']='list';
@@ -38,6 +39,7 @@ function linkToList(url,prms){
 }
 
 function linkToView(url,prms){
+    if (url.indexOf('.php')=='-1') url += '.php';
     if('target' in prms){
         var form = '<form action="'+url+'" method="POST" target="'+ prms['target']+'" id="submitFrm"></form>';
     }
@@ -51,6 +53,8 @@ function linkToView(url,prms){
     $('#submitFrm').submit();
 }
 function loadInto(url,prms){
+    if (url.indexOf('.php')=='-1') url += '.php';
+
     var form='<form action="praticaweb.php" method="POST" id="submitFrm"></form>';
     $(form).appendTo($('body',window.parent.document));
     //prms['mode']='view';
@@ -63,6 +67,8 @@ function loadInto(url,prms){
     $('#submitFrm',window.parent.document).submit();
 }
 function linkToEdit(url,prms){
+    if (url.indexOf('.php')=='-1') url += '.php';
+    
     var form='<form action="'+url+'" method="POST" id="submitFrm"></form>';
     prms['mode']='edit';
     if (!window.parent){
@@ -89,6 +95,8 @@ function linkToEdit(url,prms){
     //window.parent.location=url+'?'+tmp.join('&');
 }
 function goToPratica(url,prms){
+    if (url.indexOf('.php')=='-1') url += '.php';
+
     var form='<form action="'+url+'" method="POST" id="submitFrm"></form>';
     prms['mode']='view';
     if (!window.parent){
