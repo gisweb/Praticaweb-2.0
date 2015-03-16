@@ -105,7 +105,7 @@ switch($action){
         $sql=sprintf($query["default"],$filter,$order,$orderType,$rows,$offset);
         utils::debug(DEBUG_DIR."search.debug",$sql);
         $res=$db->fetchAll($sql);
-        $result=Array("total"=>$total,"rows"=>$res,"filter"=>$filter,"elenco_id"=>$listId);
+        $result=Array("total"=>$total,"rows"=>$res,"filter"=>$filter,"sql"=>$sql,"elenco_id"=>$listId);
         break;
 }
 header('Content-Type: application/json');

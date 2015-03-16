@@ -255,7 +255,6 @@ function selectOneriIntervento(){
   function getSearchFilter(){
 	var searchFilter=new Object();
 	$(".search").each(function(index){
-            
             var name=$(this).attr('name');
             var id = $(this).attr('id').replace('op_','');
             var opValue=$(this).val();
@@ -326,20 +325,25 @@ function selectOneriIntervento(){
                 var res = [];
                 
                 $('#1_'+ id + ' :selected').each(function(i,selected){
-                    res.push("'" + $(selected).val() + "'"); 
+                    if ($(selected).val()) res.push("'" + $(selected).val() + "'"); 
                 });
                 $('#1_'+ id + ':checked').each(function(i,selected){
-                    res.push("'" + $(selected).val() + "'"); 
+			if ($(selected).val()) res.push("'" + $(selected).val() + "'"); 
                 });
-                filter=name+" IN ("+res.join(",")+")";
+                
+                if (res.length) filter=name+" IN ("+res.join(",")+")";
                 
             }
             if (filter) {
                 var table=$(this).attr('datatable');
-                if (searchFilter[table]) searchFilter[table].push(filter);
+                if (searchFilter[table]){
+                    searchFilter[table].push(filter);
+                    
+                }
                 else{
                     searchFilter[table]=new Array();
                     searchFilter[table].push(filter);
+                    
                 }
             }
 		

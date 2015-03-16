@@ -5,8 +5,8 @@ SELECT DISTINCT
     A.pratica,A.numero,A.protocollo,A.data_prot,A.data_presentazione,A.oggetto,
     B.nome as tipo_pratica,C.descrizione as tipo_intervento,coalesce(D.nome,'non assegnata') as responsabile,
     E.richiedente,F.progettista,L.esecutore,G.elenco_ct,H.elenco_cu,I.ubicazione,
-    CASE WHEN (coalesce(A.resp_it,coalesce(A.resp_ia,0)) = 0) THEN 0 ELSE 1 END as assegnata_istruttore,
-    coalesce(O.nome,'non assegnata') as responsabile_it,coalesce(P.nome,'non assegnata') as responsabile_ia
+    CASE WHEN (coalesce(A.resp_it,coalesce(A.resp_ia,0)) = 0) THEN 0 ELSE 1 END as assegnata_istruttore
+    --,coalesce(O.nome,'non assegnata') as responsabile_it,coalesce(P.nome,'non assegnata') as responsabile_ia
 FROM pe.avvioproc A LEFT JOIN 
 pe.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN
 pe.e_intervento C ON (A.intervento=C.id) LEFT JOIN
@@ -20,9 +20,9 @@ admin.users D ON(A.resp_proc=D.userid) LEFT JOIN
    FROM pe.indirizzi
   GROUP BY indirizzi.pratica) I USING(pratica) LEFT JOIN
 (SELECT pratica,titolo,data_rilascio FROM pe.titolo) M USING(pratica) LEFT JOIN
-(SELECT pratica,trim(array_to_string(array_agg(cip::varchar),',')) as cip FROM pe.soggetti WHERE esecutore=1 AND coalesce(voltura,0)=0 GROUP BY pratica) N USING(pratica) LEFT JOIN
-admin.users O ON(A.resp_it=D.userid) LEFT JOIN
-admin.users P ON(A.resp_ia=D.userid)
+(SELECT pratica,trim(array_to_string(array_agg(cip::varchar),',')) as cip FROM pe.soggetti WHERE esecutore=1 AND coalesce(voltura,0)=0 GROUP BY pratica) N USING(pratica) 
+--LEFT JOIN admin.users O ON(A.resp_it=D.userid) LEFT JOIN
+--admin.users P ON(A.resp_ia=D.userid)
 WHERE pratica IN (%s)
 %s %s LIMIT %s OFFSET %s                 
 EOT;
