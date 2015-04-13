@@ -97,7 +97,7 @@ function link(i){
 		 <tr> 
 			<td> 
 				<!-- contenuto-->
-			<?					
+			<?php					
 				$tabella->set_titolo("Dati Personali di Registrazione","modifica",array("id"=>$id));
 				$tabella->get_titolo();
 				$tabella->set_dati("id=$id");

@@ -96,7 +96,7 @@ function link(i){
 		<tr> 
 			<td> 
 				<!-- contenuto-->
-			<?					
+			<?php					
 				$tabella->set_titolo("Dati del gruppo di utenti","modifica",array("id"=>$id));
 				$tabella->get_titolo();
 				$tabella->set_dati("id=$id");
@@ -116,7 +116,8 @@ function link(i){
 		  <TR> 
 			<TD> 
 			<!-- contenuto-->
-				<?$tabella=new tabella_h("$tabpath/$file_config",'list');
+				<?php
+                                $tabella=new tabella_h("$tabpath/$file_config",'list');
 				
 				$tabella->set_titolo("Elenco dei gruppi di Utenti","nuovo",array("id"=>""));
 				$tabella->get_titolo();

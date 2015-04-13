@@ -59,7 +59,8 @@ function link(id){
 </script>
 </head>
 <body>
-<?if (($modo=="edit") or ($modo=="new")){
+<?php
+    if (($modo=="edit") or ($modo=="new")){
 	//---<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  EDITA MAPPALI ASSERVITI >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>------------------------------>
 	if($_POST["mappali"]){
 		$asservimento=$_REQUEST["asservimento"];

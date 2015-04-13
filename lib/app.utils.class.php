@@ -389,6 +389,11 @@ class generalAppUtils {
                 return Array("totali"=>count($res),"data"=>$res,"sql"=>$sql);
             }
     }
+    
+    static function chooseRespVerifiche($tipo){
+        return 'NULL';
+    }
+    
     static function getAnnoOneri($id,$data){
         $conn=utils::getDb();
         $sql = "SELECT DISTINCT anno FROM oneri.e_tariffe WHERE valido_da <= ? AND valido_a >= ?;";

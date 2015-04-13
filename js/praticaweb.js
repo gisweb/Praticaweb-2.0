@@ -27,7 +27,7 @@ function goToView(obj){
 }
 
 function linkToList(url,prms){
-    if (url && url.indexOf('.php')=='-1') url += '.php';
+    if (url &&  url.indexOf('.php')=='-1') url += '.php';
     var form='<form method="POST" action="'+url+'" id="submitFrm"></form>';
     $(form).appendTo('body');
     prms['mode']='list';

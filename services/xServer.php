@@ -104,12 +104,14 @@ switch($action) {
             $success=1;
             $conn->beginTransaction();
             for($i=0;$i<count($result);$i++){
-                $sql=sprintf("INSERT INTO pe.verifiche(pratica, tipo, uidins, tmsins, data_sorteggio) VALUES (%s, %s, %s, %s, %s);",$result[$i]["pratica"],$idTipo,$_SESSION["USER_ID"],time(),$dataSorteggio);
+                $istr = appUtils::chooseRespVerifiche($idTipo);
+                $sql=sprintf("INSERT INTO pe.verifiche(pratica, tipo, uidins, tmsins, data_sorteggio, resp_proc_verifica) VALUES (%s, %s, %s, %s, %s,%s );",$result[$i]["pratica"],$idTipo,$_SESSION["USER_ID"],time(),$dataSorteggio,$istr);
                 utils::debug(DEBUG_DIR.'draw.debug', $sql);
                 $stmt=$conn->prepare($sql);
                 if(!$stmt->execute()) {
                     $success=0;
-                    $message="no_draw_insert";
+                    $error = $stmt->errorInfo();
+                    $message="no_draw_insert - ".$error[2];
                 }
             }
             if($success==1){
