@@ -8,6 +8,7 @@ if (isset($_POST["id_soggetto"])){
 	$modo="edit";
 	
 }
+appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
 $tabpath="pe";
 $config_file="$tabpath/provvedimenti";

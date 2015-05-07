@@ -11,6 +11,7 @@ $modo=(isset($_REQUEST["mode"]) && $_REQUEST["mode"])?($_REQUEST["mode"]):('view
 $titolo=$_SESSION["TITOLO_$idpratica"];
 $azione=(isset($_POST["azione"]) && $_POST['azione'])?($_POST['azione']):(null);
 $sqlPermission="(uidins=$userid or $userid = (select resp_proc from pe.avvioproc where pratica=$idpratica))";
+appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
 if ($azione){
 	if($_SESSION["ADD_NEW"]!==$_POST){

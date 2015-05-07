@@ -16,6 +16,7 @@ foreach($res as $val){
     $categoria[$val["tipo"]][]=Array("id"=>$val["id"],"opzione"=>$val["nome"]);
     $tipopratica[$val["tipo"]]=$val["tipopratica"];
 }
+appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
 ?>
 <html>

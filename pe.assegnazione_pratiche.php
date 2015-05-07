@@ -11,7 +11,7 @@ $titolo=$_SESSION["TITOLO_$idpratica"];
 $azione=(isset($_POST["azione"]) && $_POST['azione'])?($_POST['azione']):(null);
 if ($azione){
 	if($_SESSION["ADD_NEW"]!==$_POST){
-			unset($_SESSION["ADD_NEW"]);//serve per non inserire più record con f5
+			unset($_SESSION["ADD_NEW"]);//serve per non inserire piï¿½ record con f5
 		$idrow=$_POST["idriga"];
 		$active_form=$_REQUEST["active_form"];
 		if (isset($array_dati["errors"])) //sono al ritorno errore
@@ -23,6 +23,7 @@ if ($azione){
 		}
 	}	$_SESSION["ADD_NEW"]=$_POST;
 }
+appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
 ?>
 <html>
@@ -102,7 +103,7 @@ if (($modo=="edit") or ($modo=="new")){
 			
 		<?php include "./inc/inc.window.php"; // contiene la gesione della finestra popup
 
-}else{// modalità vedi
+}else{// modalitï¿½ vedi
 ?>
 
 

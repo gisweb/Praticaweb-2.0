@@ -5,6 +5,8 @@ $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $idpratica=$_REQUEST["pratica"];
 $config_file="$tabpath/esposti";
 include "./lib/tabella_v.class.php";
+appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
+
 ?>
 <html>
 <head>

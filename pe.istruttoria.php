@@ -9,6 +9,8 @@ $data=date("d/m/Y");
 $pr=new pratica($idpratica);
 
 $filetab="$tabpath/istruttoria";
+appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
+
 ?>
 <html>
 <head>

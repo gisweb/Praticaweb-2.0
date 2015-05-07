@@ -69,6 +69,7 @@ function loadInto(url,prms){
 function linkToEdit(url,prms){
     if (url && url.indexOf('.php')=='-1') url += '.php';
     
+    
     var form='<form action="'+url+'" method="POST" id="submitFrm"></form>';
     prms['mode']='edit';
     if (!window.parent){
@@ -378,7 +379,6 @@ function verificaRuoloSoggetti(){
         checkedObj['cip'] = true;
     }
     $.each(checkedObj,function(k,v){
-        console.log(sprintf('%s : %s',k,v));
         if (v) $('#'+k).closest('tr').show();
         else
             $('#'+k).closest('tr').hide();

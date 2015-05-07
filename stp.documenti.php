@@ -8,6 +8,7 @@ $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $id=(isset($_REQUEST["id"]))?($_REQUEST["id"]):(null);
 $idpratica=$_REQUEST["pratica"];
 $file_config="$tabpath/documenti";
+appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
 $db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
 if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
