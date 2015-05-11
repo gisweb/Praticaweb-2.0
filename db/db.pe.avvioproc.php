@@ -5,7 +5,7 @@
 	//UTILIZZARE UNA TRANSAZIONE PER L'EREDITARIETA DEI DATI DELLA NUOVA PRATICA
 	
 	//se ho annullato esco
-	if ($_POST["azione"]=="Annulla"){
+	if ($_POST["azione"]=="Annulla" || !isset($_POST["azione"])){
 		$active_form.="?pratica=$idpratica";
 		return;
 	}

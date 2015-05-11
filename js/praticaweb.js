@@ -67,7 +67,7 @@ function loadInto(url,prms){
     $('#submitFrm',window.parent.document).submit();
 }
 function linkToEdit(url,prms){
-    if (url && url.indexOf('.php')=='-1') url += '.php';
+    if (url && url.indexOf('.php')=='-1' && url.indexOf('.docx')=='-1' && url.indexOf('.odt')=='-1') url += '.php';
     
     
     var form='<form action="'+url+'" method="POST" id="submitFrm"></form>';

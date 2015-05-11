@@ -200,7 +200,8 @@ else{
                 <tr> 
                   <td> 
                   <!--  intestazione-->
-                      <?$tabella_modelli->get_titolo();
+                      <?php
+			$tabella_modelli->get_titolo();
                           if ($num_modelli) 
                               $tabella_modelli->elenco();
                           else
