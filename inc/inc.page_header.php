@@ -2,7 +2,8 @@
 $utente = utils::getUser($_SESSION["USER_ID"]);
 $scadenze = json_encode(appUtils::getScadenze($_SESSION["USER_ID"]));
 $verifiche = json_encode(appUtils::getVerifiche($_SESSION["USER_ID"]));
-$annotazioni = json_encode(appUtils::getAnnotazioni($_SESSION["USER_ID"]));
+$annotazioni = json_encode(appUtils::getNotifiche($_SESSION["USER_ID"]));
+
 $script = <<<EOT
     <script language="javascript">
         var scadenze = $scadenze;
@@ -87,7 +88,6 @@ echo $script;
                 
 	</div>
        <script src="js/notifiche.js"></script>
-        
         
         <div id="message-div" style="display:none;">
             
