@@ -199,7 +199,9 @@ function get_cella($row,$col){
             $retval.="</td>\n";
             break;
         case "allegati":
-            $retval="<td class=\"allegati\" data-url=\"$valore\" title=\"Visualizza il documento\">$valore</td>\n";
+            $id = $this->array_dati[$row]["idfile"];
+            $pr = $this->array_dati[$row]["pratica"];
+            $retval="<td class=\"allegati\" data-url=\"$valore\" data-id=\"".$id."\" data-pratica=\"".$pr."\" title=\"Visualizza il documento\">$valore</td>\n";
             break;
         case "stampe":
             $retval="<td class=\"stampe\" data-url=\"$valore\" title=\"Visualizza il documento\">$valore</td>\n";
