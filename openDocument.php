@@ -10,10 +10,11 @@ if ($pratica!="null" && $pratica){
     $stmt->execute(Array($id));
     list($fName,$fType) = $stmt->fetch();
     $pr=new pratica($pratica,$type);
-
-	$url=(defined('LOCAL_DOCUMENT') && LOCAL_DOCUMENT)?($pr->smb_allegati.$fName):($pr->url_allegati.$fName);
-    //$f=fopen($url,'r');
-    //$doc=fread($f,filesize($url));
+    $ext = pathinfo($fName, PATHINFO_EXTENSION);
+    if($ext=='p7m') $fType="application/pkcs7-mime";
+    $url=(defined('LOCAL_DOCUMENT') && LOCAL_DOCUMENT)?($pr->smb_allegati.$fName):($pr->allegati.$fName);
+    $f=fopen($url,'r');
+    $doc=fread($f,filesize($url));
     
 }
 else{
@@ -24,7 +25,7 @@ else{
 }
 //echo $url;exit;
 header("Content-type: $fType");
-//header('Content-Disposition: inline; filename="'.$fname.'"');
-@header("Location: $url") ;
-
+header('Content-Disposition: inline; filename="'.$fName.'"');
+//@header("Location: $url") ;
+print $doc;
 ?>
