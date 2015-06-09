@@ -22,7 +22,11 @@
         }
         
         if (file_exists(DATA_DIR."praticaweb/db/db.pe.avvioproc.before.php")){
-            require_once DATA_DIR."praticaweb/db/db.pe.before.avvioproc.before.php";
+            $dataprot = $_REQUEST["data_prot"];
+            $prot = $_REQUEST["protocollo"];
+            require_once DATA_DIR."praticaweb/db/db.pe.avvioproc.before.php";
+            $_REQUEST["data_prot"]=$dataprot;
+            $_REQUEST["protocollo"]=$prot;
         }
 	//Modulo condiviso per la gestione dei dati
 	include_once "./db/db.savedata.php";
