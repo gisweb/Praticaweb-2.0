@@ -20,6 +20,8 @@
 		$db=$prPrec->db1;
 		$pratPrec=$db->fetchAssoc("SELECT * FROM pe.avvioproc WHERE pratica=?",Array($idpratica));
         }
+        
+        
 	//Modulo condiviso per la gestione dei dati
 	include_once "./db/db.savedata.php";
 	
