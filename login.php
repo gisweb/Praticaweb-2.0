@@ -12,7 +12,7 @@
         }
     };
     error_reporting(E_ERROR);
-
+    
 	if (!session_id())
 	session_start();
         
@@ -23,9 +23,10 @@
         define('DATA_DIR',$dataDir);
         define('APPS_DIR',$appsDir);
 
-	include_once DATA_DIR.'config.php';
-        loadLibs();
 
+	if (!file_exists(DATA_DIR.'config.php')) die("Nessun file di configurazione trovato!");
+        require_once DATA_DIR.'config.php';
+        loadLibs();
 	if ((defined('UPDATE_SW') && UPDATE_SW==1 && $_SESSION["USER_ID"]>4)){
             require_once "aggiornamento.php";
             exit;
