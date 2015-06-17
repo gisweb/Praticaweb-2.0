@@ -2,6 +2,7 @@
 //VERIFICARE IN BASE AL TIPO DI UTENTE I SERVIZI DISPONIBILI
 //se passo un idpratica punto alla pratica
 
+
 require_once ("login.php");
 
 $file = TAB_ELENCO."elenco_index.tab";
