@@ -59,6 +59,8 @@ else{
 	}
 }
 
+list($visitedForm,$prms) = explode('?',$active_form);
+
 $pr=new pratica($idpratica,$is_cdu);
 //$_SESSION["TITOLO_".$idpratica]=$pr->titolo;
 $_SESSION["TITOLO_".$idpratica]=  appUtils::titoloPratica($_REQUEST);

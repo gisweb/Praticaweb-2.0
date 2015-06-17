@@ -6,6 +6,7 @@ $self=$_SERVER["PHP_SELF"];
 $idpratica=$_REQUEST["pratica"];
 $idallegato=$_REQUEST["id"];
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
+appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
 $form=$_POST["form"];
 ?>

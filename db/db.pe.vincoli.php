@@ -1,4 +1,5 @@
-<?//GESTIONE salvataggio form allegati
+<?php
+////GESTIONE salvataggio form allegati
 //print_r($_POST);
 /*
 $db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);

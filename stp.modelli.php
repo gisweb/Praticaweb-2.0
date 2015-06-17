@@ -73,7 +73,7 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
 				  
 		  <tr> 
 			<td> 
-				<H2 class="blueBanner"><?php echo $intestazione?></H2>
+				<H2 class="blueBanner"><?=$intestazione?></H2>
 				<?php
 				$tabella->edita();?>			  
 			</td>
@@ -201,7 +201,7 @@ else{
                   <td> 
                   <!--  intestazione-->
                       <?php
-			 $tabella_modelli->get_titolo();
+			$tabella_modelli->get_titolo();
                           if ($num_modelli) 
                               $tabella_modelli->elenco();
                           else
@@ -242,3 +242,4 @@ else{
 ?>
 </body>
 </html>
+

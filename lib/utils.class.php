@@ -65,8 +65,8 @@ class utils {
         $dirName = (dirname($_SERVER['REQUEST_URI'])=="\\")?(""):(dirname($_SERVER['REQUEST_URI']));
         if($default){
             foreach(self::$js as $js){
-                $jsLocalURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],$dirName .self::jsLocalURL,$js);
-                $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],$dirName.self::jsURL,$js);
+                $jsLocalURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/') .self::jsLocalURL,$js);
+                $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsURL,$js);
                 if (self::url_exists($jsLocalURL))
                     $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsLocalURL);
                 elseif(self::url_exists($jsURL))
@@ -79,8 +79,8 @@ class utils {
         if (is_array($f) && count($f)){
             
             foreach($f as $js){
-                $jsLocalURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],$dirName.self::jsLocalURL,$js);
-                $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],$dirName.self::jsURL,$js);
+                $jsLocalURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsLocalURL,$js);
+                $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsURL,$js);
                 if (self::url_exists($jsLocalURL))
                     $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsLocalURL);
                 elseif(self::url_exists($jsURL))
@@ -95,8 +95,8 @@ class utils {
         $dirName = (dirname($_SERVER['REQUEST_URI'])=="\\")?(""):(dirname($_SERVER['REQUEST_URI']));
         if($default){
             foreach(self::$css as $css){
-                $cssLocalURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],$dirName.self::cssLocalURL,$css);
-                $cssURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],$dirName.self::cssURL,$css);
+                $cssLocalURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::cssLocalURL,$css);
+                $cssURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::cssURL,$css);
                 if (self::url_exists($cssLocalURL))
                     $tag=sprintf("\n\t\t<LINK media=\"screen\" href=\"%s\" type=\"text/css\" rel=\"stylesheet\"></link>",$cssLocalURL);
                 elseif(self::url_exists($jsURL))
@@ -108,8 +108,8 @@ class utils {
         }
         if (is_array($f) && count($f)){
             foreach($f as $css){
-                $cssLocalURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],$dirName.self::cssLocalURL,$css);
-                $cssURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],$dirName.self::cssURL,$css);
+                $cssLocalURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::cssLocalURL,$css);
+                $cssURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::cssURL,$css);
                 if (self::url_exists($cssLocalURL))
                     $tag=sprintf("\n\t\t<LINK media=\"screen\" href=\"%s\" type=\"text/css\" rel=\"stylesheet\"></link>",$cssLocalURL);
                 elseif(self::url_exists($jsURL))

@@ -48,12 +48,12 @@ function setInfoAnnotazioni(data){
     }
    else{
         if (data['totali']==0){
-            text = 'Nessuna pratica da assegnare';
+            text = 'Nessuna notifica';
         }
         else{
             $(idObject).addClass('underline-cursor');
             $(idObject).bind('click',loadInfoAnnotazioni);
-            text=sprintf('<span class="ui-icon ui-icon-notice" style="display:inline-block;margin-right:10px;"></span>Sono presenti %d pratiche da assegnare',data['totali']);
+            text=sprintf('<span class="ui-icon ui-icon-notice" style="display:inline-block;margin-right:10px;"></span>Sono presenti %d notifiche',data['totali']);
         }
     }    
     $('#msg-note').html(text);

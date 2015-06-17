@@ -8,6 +8,7 @@ $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 
 $idpratica=$_REQUEST["pratica"];
 $titolo=$_SESSION["TITOLO_$idpratica"];
+appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
 
 ?>

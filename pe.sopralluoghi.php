@@ -6,6 +6,8 @@ $tabpath="pe";
 $config_file="$tabpath/sopralluoghi";
 $host=$_SERVER["HTTP_HOST"];
 $modal=$_POST["modal"];
+appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
+
 include "./lib/tabella_v.class.php";
 include "./lib/tabella_h.class.php";
 ?>

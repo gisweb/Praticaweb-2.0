@@ -4,6 +4,7 @@ include "./lib/tabella_v.class.php";
 $tabpath="pe";
 $idpratica=$_REQUEST["pratica"];
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
+appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
 ?>
 <html>

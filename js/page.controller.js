@@ -35,8 +35,10 @@ $(document).ready(function(){
        $(v).bind('click',function(event){
            event.preventDefault();
            var d=$(this).data();
-           var url=d['url']+'?random='+rnd;
-           window.open(window.parent.url_allegati+url,'stampe');
+           //var url=d['url']+'?random='+rnd;
+           //window.open(window.parent.url_allegati+url,'stampe');
+           var url='/openDocument.php?type=allegati&pratica=' + d['pratica']+ '&id=' + d['id'];
+           window.open(url,'stampe');
        });
    });
     $("#btn_elenco_pratiche_indirizzi").button({

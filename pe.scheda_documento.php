@@ -15,6 +15,7 @@ $sth = $dbh->prepare($sql);
 $sth->execute();
 $tit = $sth->fetchColumn();
 
+appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
 ?>
 <html>

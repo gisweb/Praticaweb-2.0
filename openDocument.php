@@ -2,16 +2,19 @@
 require_once "login.php";
 $id=$_REQUEST["id"];
 $pratica=$_REQUEST["pratica"];
-$type=($_REQUEST["cdu"]==1)?(1):(0);
+$t=$_REQUEST["type"];
 if ($pratica!="null" && $pratica){
-    $db=appUtils::getDB();
-    $sql="SELECT file_doc FROM stp.stampe WHERE id=?";
-    $fName=$db->fetchColumn($sql, array($id));
+    $conn=utils::getDB();
+    $sql="SELECT nome_file,tipo_file FROM pe.file_allegati WHERE id=?";
+    $stmt=$conn->prepare($sql);
+    $stmt->execute(Array($id));
+    list($fName,$fType) = $stmt->fetch();
     $pr=new pratica($pratica,$type);
-
-	$url=(defined('LOCAL_DOCUMENT') && LOCAL_DOCUMENT)?($pr->smb_documenti.$fName):($pr->url_documenti.$fName);
-    //$f=fopen($url,'r');
-    //$doc=fread($f,filesize($url));
+    $ext = pathinfo($fName, PATHINFO_EXTENSION);
+    if($ext=='p7m') $fType="application/pkcs7-mime";
+    $url=(defined('LOCAL_DOCUMENT') && LOCAL_DOCUMENT)?($pr->smb_allegati.$fName):($pr->allegati.$fName);
+    $f=fopen($url,'r');
+    $doc=fread($f,filesize($url));
     
 }
 else{
@@ -21,8 +24,8 @@ else{
     $url=SMB_MODELLI.$fName;
 }
 //echo $url;exit;
-header("Content-type: application/vnd.ms-word");
-//header('Content-Disposition: inline; filename="'.$fname.'"');
-@header("Location: $url") ;
-
+header("Content-type: $fType");
+header('Content-Disposition: inline; filename="'.$fName.'"');
+//@header("Location: $url") ;
+print $doc;
 ?>

@@ -23,6 +23,7 @@ elseif ($azione=="Elimina"){
 }
 
 $sqlElencoVincoli="SELECT DISTINCT vincolo.nome_vincolo, COALESCE(vincolo.descrizione, vincolo.nome_vincolo) AS descrizione, vincolo.ordine FROM vincoli.vincolo INNER JOIN vincoli.tavola USING (nome_vincolo)  WHERE tavola.pe = 1 ORDER BY vincolo.ordine";
+appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
 ?>
 <html>

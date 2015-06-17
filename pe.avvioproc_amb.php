@@ -16,7 +16,10 @@ if ($modo=='new'){
 }
 else
 	$intestazione='Avvio del procedimento e comunicazione responsabile';
-include "./lib/tabella_v.class.php";?>
+include "./lib/tabella_v.class.php";
+appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
+
+?>
 
 <html>
 <head>

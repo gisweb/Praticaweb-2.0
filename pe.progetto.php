@@ -7,6 +7,7 @@ $tabpath="pe";
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 
 $idpratica=$_REQUEST["pratica"];
+appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
 if ($_POST["azione"]){
 	$idrow=$_POST["idriga"];

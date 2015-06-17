@@ -9,6 +9,8 @@ $modo=isset($_REQUEST["mode"])?($_REQUEST["mode"]):('view');
 $errors=null;
 
 $idpratica=$_REQUEST["pratica"];
+appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
+
 if(substr($ruolo,0,1)=='v'){
 	$ruolo=substr($ruolo,1);
 	$voltura=1;

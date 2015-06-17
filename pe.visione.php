@@ -23,6 +23,7 @@ if ($azione){
 		}
 	}	$_SESSION["ADD_NEW"]=$_POST;
 }
+appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
 ?>
 <html>

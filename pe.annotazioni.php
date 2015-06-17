@@ -6,6 +6,8 @@ $tabpath="pe";
 $idpratica=$_REQUEST["pratica"];
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $id=$_REQUEST["id"];
+appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
+
 ?>
 <html>
 <head>

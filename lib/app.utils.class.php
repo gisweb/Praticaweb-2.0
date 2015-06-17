@@ -406,5 +406,11 @@ class generalAppUtils {
             return $res;
         }
     }
+    static function setVisitata($id,$frm,$user){
+        $sql="INSERT INTO pe.pratiche_visitate(pratica,form,userid) VALUES(?,?,?)";
+        $conn=utils::getDb();
+        $stmt=$conn->prepare($sql);
+        $stmt->execute(Array($id,$frm,$user));
+    }
 }
 ?>
