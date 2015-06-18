@@ -28,7 +28,7 @@ if ($_POST["azione"]){
 
 <html>
 <head>
-<title>Iter - <?=$titolo?></title>
+<title>Iter - <?php echo $titolo?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
@@ -52,7 +52,8 @@ function elimina(id){
 </script>
 </head>
 <body>
-<?if (($modo=="edit") or ($modo=="new") ){
+<?php
+    if (($modo=="edit") or ($modo=="new") ){
 	//---<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  EDITA ELENCO ITER >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>------------------------------>
 		$tabella=new tabella_h("$tabpath/iter",$modo);
 		include "./inc/inc.page_header.php";?>
@@ -75,7 +76,7 @@ function elimina(id){
 								  <option>Seleziona da elenco >>></option>
 								<option >Avvio del procedimento</option>
 								<option >Richiesta documentazione integrativa</option>
-								<option >Pratica presa in carico dall'utente <?=$_SESSION["USER_NAME"]?></option>
+								<option >Pratica presa in carico dall'utente <?php echo $_SESSION["USER_NAME"]?></option>
 							</select>
 					  </td>
 				  </tr>
@@ -87,16 +88,16 @@ function elimina(id){
 					</tr>
 					<tr>
 						<td height="24" valign="top" bgColor="#728bb8"><font color="#ffffff"><b>Data</b></font></td>
-						<td width="66" valign="top"><INPUT  maxLength="10" size="10"  class="textbox" name="data" id="data" value="<?=$today?>"></td>
+						<td width="66" valign="top"><INPUT  maxLength="10" size="10"  class="textbox" name="data" id="data" value="<?php echo $today?>"></td>
 						<td  valign="top"><input type="checkbox"  name="pubblico" checked>
 					    <b>Commento pubblicato</b></td>				
 						<td  valign="top">
 							<input  name="aggiungi"  id="aggiungi" class="hexfield1" style="width:130px" type="submit" value="Aggiungi" onclick="return confirmSubmit()" >
-							<input  class="hexfield1" style="width:130px" type="submit" value="Carica Documento" onclick="NewWindow('stp.carica_documento.php?schema=ce&pratica=<?=$idpratica?>','documento',500,200);" >
+							<input  class="hexfield1" style="width:130px" type="submit" value="Carica Documento" onclick="NewWindow('stp.carica_documento.php?schema=ce&pratica=<?php echo $idpratica?>','documento',500,200);" >
 						</td>
 					</tr>
 				</table>
-				<input type="hidden" name="utente" value="<?=$_SESSION["USER_NAME"]?>">
+				<input type="hidden" name="utente" value="<?php echo $_SESSION["USER_NAME"]?>">
 			  <br>
 					<table width="90%">		  	
 						<tr>
@@ -113,15 +114,17 @@ function elimina(id){
 		  <tr> 
 			<td> 
 				<!-- contenuto-->
-				<?$numrows=$tabella->set_dati("pratica=$idpratica");
-				  if ($numrows)  print $tabella->elenco();?>	
+				<?php 
+                                $numrows=$tabella->set_dati("pratica=$idpratica");
+				if ($numrows)  print $tabella->elenco();
+                                ?>	
 				<input type="hidden" name="azione" id="azione" value="aggiungi">
 				<input type="hidden"  id="idriga" name="idriga" value="0">
 				<input type="hidden" name="mode" value="new">
-				<INPUT type="hidden" name="pratica" value="<?=$idpratica?>">
+				<INPUT type="hidden" name="pratica" value="<?php echo $idpratica?>">
 				<INPUT type="hidden" name="chk" value="">
 				
-				<INPUT type="hidden" name="config_file" value="<?=$tabpath?>/iter_edit.tab">
+				<INPUT type="hidden" name="config_file" value="<?php echo $tabpath?>/iter_edit.tab">
 				<br><br><br>
 				<!-- fine contenuto-->			
 			</td>
@@ -138,7 +141,7 @@ function elimina(id){
 		<FORM method="post" action="praticaweb.php">	
 			<tr>
 				<td><input name="active_form" type="hidden" value="ce.iter.php">
-				<input name="pratica" type="hidden" value="<?=$idpratica?>"></td>
+				<input name="pratica" type="hidden" value="<?php echo $idpratica;?>"></td>
 				<INPUT type="hidden" name="comm" value="1">
 				<td valign="bottom"><input name="azione" type="submit" class="hexfield" tabindex="14" value="Chiudi"></td>
 			</tr>

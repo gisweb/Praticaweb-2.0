@@ -3,11 +3,16 @@ require_once ("login.php");
 
 
 unset($is_cdu);
+unset($is_ce);
 $is_cdu=isset($_REQUEST["cdu"])?($_REQUEST["cdu"]):(0);
-
+$is_ce=isset($_REQUEST["comm"])?($_REQUEST["comm"]):(0);
 if($is_cdu==1){
  	$tipomenu="cdu";
 	$path="cdu";
+}
+elseif($is_ce==1){
+ 	$tipomenu="commissione";
+	$path="ce";
 }
 else{
 	$tipomenu="pratica";

@@ -117,4 +117,13 @@ pe.e_categoriapratica C ON(A.categoria=C.id) LEFT JOIN
 (SELECT DISTINCT pratica, coalesce(via,'') as via, coalesce(civico,'s.c.') as civico,coalesce(interno,'') as interno FROM pe.indirizzi WHERE %s) I USING(pratica)
 ORDER BY via,civico,interno,data_prot DESC               
 EOT;
+$query["search-ce"]=<<<EOT
+SELECT A.pratica,A.data_convocazione,sede1,B.nome as tipo_commissione FROM 
+ce.commissione A INNER JOIN pe.e_enti B ON(A.tipo_comm=B.id)
+WHERE pratica IN(%s)
+%s %s LIMIT %s OFFSET %s  
+EOT;
+$query["search-cdu"]=<<<EOT
+
+EOT;
 ?>

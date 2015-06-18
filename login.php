@@ -2,6 +2,7 @@
     function loadLibs(){
         $libs=Array("pratica.class.php","app.utils.class.php","utils.class.php","menu.class.php");
         foreach($libs as $lib){
+	    
             if (file_exists(LOCAL_LIB.$lib)){
                 require_once LOCAL_LIB.$lib;
             }
@@ -22,6 +23,7 @@
         if (!$appsDir) die("Manca la variabile d'ambiente PWAppsDir nel file di configurazione di Apache.");
         define('DATA_DIR',$dataDir);
         define('APPS_DIR',$appsDir);
+
 
 
 	if (!file_exists(DATA_DIR.'config.php')) die("Nessun file di configurazione trovato!");

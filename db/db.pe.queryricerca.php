@@ -265,7 +265,7 @@
 			$criterio="tutte le commissioni";
 		}
 		if ($sql)
-			$sqlRicerca="((".substr($sql,0,strlen($sql)-10).") $order)";
+			$sqlRicerca="((".substr($sql,0,strlen($sql)-10).") )";
 	
 		//echo $op."<br>";
 		//print("<p>$sqlRicerca</p>");

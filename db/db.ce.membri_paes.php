@@ -1,4 +1,4 @@
-<?	
+<?php	
 
 if ($_POST["azione"]=="Salva" or $_POST["azione"]=="Elimina") {
 	include("./db/db.savedata.php");
