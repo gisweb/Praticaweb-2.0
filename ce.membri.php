@@ -62,8 +62,8 @@ if (($modo=="edit") or ($modo=="new")) {
 				$tabella->edita();?>			  
 				</td>
 			</tr>
-			<input type="hidden" name="mode" value="<?=$modo?>">
-			<input type="hidden" name="id" value="<?=$id?>">
+			<input type="hidden" name="mode" value="<?php echo $modo?>">
+			<input type="hidden" name="id" value="<?php echo $id?>">
 		
 		</TABLE>
 	</form>	
@@ -80,15 +80,16 @@ include "./inc/inc.window.php"; // contiene la gesione della finestra popup
 		  <TR> 
 			<TD> 
 			<!-- contenuto-->
-				<?$tabella=new tabella_h($file_config,'list');
+				<?php
+                                $tabella=new tabella_h($file_config,'list');
 				$tabella->set_titolo("Elenco membri","nuovo");
 				$tabella->get_titolo();
 				$nrec=$tabella->set_dati("pratica=0");
 				$tabella->elenco();
 				$tabella->close_db();?>
 				<form name="membri_v" method="POST" action="ce.membri.php">
-					<input type="hidden" name="mode" value="<?=$modo?>">
-					<input type="hidden" name="id" value="<?=$id?>">
+					<input type="hidden" name="mode" value="<?php echo $modo?>">
+					<input type="hidden" name="id" value="<?php echo $id?>">
 				</form>
 			<!-- fine contenuto-->
 			 </TD>
@@ -125,8 +126,8 @@ include "./inc/inc.window.php"; // contiene la gesione della finestra popup
 		</TR>
 	</TABLE>
 	<form name="membri_v" method="POST" action="ce.membri.php">
-		<input type="hidden" name="mode" value="<?=$modo?>">
-		<input type="hidden" name="id" value="<?=$id?>">
+		<input type="hidden" name="mode" value="<?php echo $modo?>">
+		<input type="hidden" name="id" value="<?php echo $id?>">
 	</form>
 </body>
 <?php }?>
