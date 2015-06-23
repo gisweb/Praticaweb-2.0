@@ -39,7 +39,7 @@ class wordDoc {
 		$this->pratica=$pratica;
 		$sql="SELECT * FROM stp.e_modelli WHERE id=?";
 		$ris=$db->fetchAssoc($sql,Array($modello));
-		$this->type=(strpos($ris["form"],'cdu.')!==FALSE)?(1):(0);
+		$this->type=$this->getType($ris["form"]);
 		$this->modello=$ris["nome"];
 		$this->viste=explode(',',$ris["views"]);
 		$this->funzioni=explode(',',$ris["functions"]);
@@ -51,41 +51,37 @@ class wordDoc {
 		$this->actions=$ris["action"];
                 $this->query=$this->setQuery();
 	}
+        private function getType($form){
+            $frms=explode(".",$form);
+            switch($frms[0]){
+                case "cdu":
+                    $type=1;
+                    break;
+                case "ce":
+                    $type=2;
+                    break;
+                case "vigi":
+                    $type=3;
+                    break;
+                default:
+                    $type=0;
+                    break;
+            }
+            return $type;
+        }
 	private function getData(){
-		$db=$this->db;
-		/*for($i=0;$i<count($this->viste);$i++){
-			$vista=$this->viste[$i];
-			if ($vista){
-				$sql="SELECT * FROM ".$this->schema.".$vista WHERE pratica=?";
-				
-				$ris=$db->fetchAll($sql,Array($this->pratica));
-				//array_walk_recursive($ris, 'decode');
-				$this->data[$vista]=$ris;
-					
-				
-			}
-			
-		}
-		for($i=0;$i<count($this->funzioni);$i++){
-			$funzione=$this->funzioni[$i];
-			if ($funzione){
-				$sql="SELECT * FROM ".$this->schema.".$funzione(?);";
-				$ris=$db->fetchAll($sql,Array($this->pratica));
-				//array_walk_recursive($ris, 'decode');
-				$this->data[$funzione]=$ris;
-			}
-		}
-                */
-                foreach($this->query["single"] as $sql){
-                    $ris=$db->fetchAssoc($sql,Array($this->pratica));
-                    $this->data=(!$ris)?($this->data):(array_merge($this->data,$ris));
-                    
-                    
-                }
-                foreach($this->query["multiple"] as $key=>$sql){
-                    $ris=$db->fetchAll($sql,Array($this->pratica));
-                    $this->data[$key]=$ris;
-                }
+            $db=$this->db;
+            foreach($this->query["single"] as $sql){
+                $ris=$db->fetchAssoc($sql,Array($this->pratica));
+                $this->data=(!$ris)?($this->data):(array_merge($this->data,$ris));
+            }
+            foreach($this->query["multiple"] as $key=>$sql){
+                $ris=$db->fetchAll($sql,Array($this->pratica));
+                $this->data[$key]=$ris;
+            }
+            foreach($this->query["file_multi"] as $file=>$values){
+
+            }
                 
                 //print_debug($this->data,null,"STAMPE-PRE");
 		$customData=$this->data;
@@ -134,20 +130,15 @@ class wordDoc {
 		$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
 
 		$this->getData();
-                if($this->type==1){
-                    $TBS->LoadTemplate($this->modelliDir.$this->modello,OPENTBS_ALREADY_XML);	
-                }
-                else{
-                    $TBS->LoadTemplate($this->modelliDir.$this->modello,OPENTBS_ALREADY_XML);
-                }
-		$TBS->SetOption('noerr',true);
-		//$template = $PHPWord->loadTemplate($this->modelliDir.$this->modello);
-		foreach($this->data as $tb=>$data){
-			if (is_array($data))
-				$TBS->MergeBlock($tb, $data);
-			else
-				$TBS->MergeField($tb,$data);
+                $TBS->LoadTemplate($this->modelliDir.$this->modello,OPENTBS_ALREADY_XML);
 
+		$TBS->SetOption('noerr',true);
+		
+		foreach($this->data as $tb=>$data){
+                    if (is_array($data))
+                        $TBS->MergeBlock($tb, $data);
+                    else
+                        $TBS->MergeField($tb,$data);
 		}
 		$TBS->MergeField("data", date("d/m/Y"));
                 /*Check if exists header and footer */
@@ -155,9 +146,9 @@ class wordDoc {
                     $TBS->LoadTemplate("#styles.xml");
                     foreach($this->data as $tb=>$data){
 			if (is_array($data))
-				$TBS->MergeBlock($tb, $data);
+                            $TBS->MergeBlock($tb, $data);
 			else
-				$TBS->MergeField($tb,$data);
+                            $TBS->MergeField($tb,$data);
 
                     }
                     $TBS->MergeField("data", date("d/m/Y"));
@@ -183,7 +174,7 @@ class wordDoc {
         function setQuery(){
             $this->db=appUtils::getDb();
             $db=$this->db;
-            $result=Array("single"=>Array("data_odierna"=>"SELECT CURRENT_DATE as oggi;"),"multiple"=>Array());
+            $result=Array("single"=>Array("data_odierna"=>"SELECT CURRENT_DATE as oggi;"),"multiple"=>Array(),"fromfile"=>Array());
             $sql="SELECT table_name as name,array_to_string(array_agg('B.'||column_name::varchar),',') as field_list FROM information_schema.views INNER JOIN information_schema.columns USING(table_name,table_schema) WHERE table_schema='stp' AND table_name ILIKE 'single_%' AND column_name NOT IN ('pratica') GROUP BY table_name ORDER BY 1;";
             $ris=$db->fetchAll($sql);
             for($i=0;$i<count($ris);$i++){
@@ -198,7 +189,14 @@ class wordDoc {
                 $fieldList=$ris[$i]["field_list"];
                 $result["multiple"][str_replace('multiple_','',$view)]="SELECT A.pratica,$fieldList FROM pe.avvioproc A LEFT JOIN stp.$view B USING(pratica) WHERE A.pratica=?;";
             }
-            utils::debug(DEBUG_DIR.'pippo.debug',$result);
+            
+            $sql="SELECT table_name as name,array_to_string(array_agg('B.'||column_name::varchar),',') as field_list FROM information_schema.views INNER JOIN information_schema.columns USING(table_name,table_schema) WHERE table_schema='stp' AND table_name ILIKE 'fromfile_multiple_%' AND column_name NOT IN ('pratica') GROUP BY table_name ORDER BY 1;";
+            $ris=$db->fetchAll($sql);
+            for($i=0;$i<count($ris);$i++){
+                $view=$ris[$i]["name"];
+                $fieldList=$ris[$i]["field_list"];
+                $result["file_multi"][str_replace('fromfile_multiple','',$view)]="SELECT A.pratica,$fieldList FROM pe.avvioproc A LEFT JOIN stp.$view B USING(pratica) WHERE A.pratica=?;";
+            }
             /*switch($this->type){
                 case 1:
                     if(file_exists(LOCAL_INCLUDE."cdu.php")){
