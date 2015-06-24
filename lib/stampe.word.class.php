@@ -32,6 +32,7 @@ class wordDoc {
 	var $modelliDir;
         var $fields;
 	var $query;
+        var $table;
 	function __construct($modello,$pratica){
 		$this->db=appUtils::getDb();
 		$db=$this->db;
@@ -56,15 +57,19 @@ class wordDoc {
             switch($frms[0]){
                 case "cdu":
                     $type=1;
+                    $this->table="cdu.richiesta";
                     break;
                 case "ce":
                     $type=2;
+                    $this->table="ce.commissione";
                     break;
                 case "vigi":
                     $type=3;
+                    $this->table="vigi.avvioproc";
                     break;
                 default:
                     $type=0;
+                    $this->table="pe.avvioproc";
                     break;
             }
             return $type;
@@ -79,14 +84,37 @@ class wordDoc {
                 $ris=$db->fetchAll($sql,Array($this->pratica));
                 $this->data[$key]=$ris;
             }
-            foreach($this->query["file_multi"] as $file=>$values){
-
+            
+            //Recupero dati da file 
+            $TBS = new clsTinyButStrong; // new instance of TBS
+            $TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
+            foreach($this->query["file_multi"] as $key=>$sql){
+                $ris=$db->fetchAll($sql,Array($this->pratica));
+                $libDoc = "";
+                for($i=0;$i<count($ris);$i++){
+                    if ($ris[$i]["file"]!= $libDoc){
+                        $TBS->LoadTemplate($this->modelliDir."documentLib".DIRECTORY_SEPARATOR.$ris[$i]["file"],OPENTBS_DEFAULT);
+                    }
+                    $ris[$i]["source"]=$TBS->GetBlockSource($ris[$i]["blockname"], FALSE, FALSE);
+                    $libDoc=$ris[$i]["file"];
+                }
+                $this->data[$key]=$ris;
             }
                 
                 //print_debug($this->data,null,"STAMPE-PRE");
 		$customData=$this->data;
                 $pratica=$this->pratica;
 		switch($this->type){
+                    case 3:
+                        if(file_exists(LOCAL_INCLUDE."vigi.stampe.php")){
+                            include_once LOCAL_INCLUDE."vigi.stampe.php";
+                         }
+                        break;
+                    case 2:
+                        if(file_exists(LOCAL_INCLUDE."ce.stampe.php")){
+                            include_once LOCAL_INCLUDE."ce.stampe.php";
+                         }
+                        break;
                     case 1:
                         if(file_exists(LOCAL_INCLUDE."cdu.php")){
                                 include_once LOCAL_INCLUDE."cdu.php";
@@ -180,14 +208,14 @@ class wordDoc {
             for($i=0;$i<count($ris);$i++){
                 $view=$ris[$i]["name"];
                 $fieldList=$ris[$i]["field_list"];
-                $result["single"][$view]="SELECT A.pratica,$fieldList FROM pe.avvioproc A LEFT JOIN stp.$view B USING(pratica) WHERE A.pratica=?;";
+                $result["single"][$view]=sprintf("SELECT A.pratica,$fieldList FROM %s A LEFT JOIN stp.$view B USING(pratica) WHERE A.pratica=?;",$this->table);
             }
             $sql="SELECT table_name as name,array_to_string(array_agg('B.'||column_name::varchar),',') as field_list FROM information_schema.views INNER JOIN information_schema.columns USING(table_name,table_schema) WHERE table_schema='stp' AND table_name ILIKE 'multiple_%' AND column_name NOT IN ('pratica') GROUP BY table_name ORDER BY 1;";
             $ris=$db->fetchAll($sql);
             for($i=0;$i<count($ris);$i++){
                 $view=$ris[$i]["name"];
                 $fieldList=$ris[$i]["field_list"];
-                $result["multiple"][str_replace('multiple_','',$view)]="SELECT A.pratica,$fieldList FROM pe.avvioproc A LEFT JOIN stp.$view B USING(pratica) WHERE A.pratica=?;";
+                $result["multiple"][str_replace('multiple_','',$view)]=sprintf("SELECT A.pratica,$fieldList FROM %s A LEFT JOIN stp.$view B USING(pratica) WHERE A.pratica=?;",$this->table);
             }
             
             $sql="SELECT table_name as name,array_to_string(array_agg('B.'||column_name::varchar),',') as field_list FROM information_schema.views INNER JOIN information_schema.columns USING(table_name,table_schema) WHERE table_schema='stp' AND table_name ILIKE 'fromfile_multiple_%' AND column_name NOT IN ('pratica') GROUP BY table_name ORDER BY 1;";
@@ -195,20 +223,8 @@ class wordDoc {
             for($i=0;$i<count($ris);$i++){
                 $view=$ris[$i]["name"];
                 $fieldList=$ris[$i]["field_list"];
-                $result["file_multi"][str_replace('fromfile_multiple','',$view)]="SELECT A.pratica,$fieldList FROM pe.avvioproc A LEFT JOIN stp.$view B USING(pratica) WHERE A.pratica=?;";
+                $result["file_multi"][str_replace('fromfile_multiple','',$view)]=sprintf("SELECT A.pratica,$fieldList FROM %s A LEFT JOIN stp.$view B USING(pratica) WHERE A.pratica=?;",$this->table);
             }
-            /*switch($this->type){
-                case 1:
-                    if(file_exists(LOCAL_INCLUDE."cdu.php")){
-                            include_once LOCAL_INCLUDE."cdu.php";
-                    }
-                    break;
-                default:
-                    if(file_exists(LOCAL_INCLUDE."stampe.php")){
-                        include_once LOCAL_INCLUDE."stampe.php";
-                     }
-                    break;
-            }*/
             return $result;
     }
 }
