@@ -2,14 +2,15 @@
 include_once("login.php");
 include "./lib/tabella_h.class.php";
 $tabpath="ce";
-
+//print_array($_REQUEST);
 $idpratica=$_REQUEST["pratica"];
-$modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
-$titolo=$_SESSION["TITOLO_$idpratica"];
+$modo=(isset($_REQUEST["mode"]) && $_REQUEST["mode"])?($_REQUEST["mode"]):('view');
 $today=date('j-m-y'); 
+$titolo="Iter - ".$_SESSION["TITOLO_".$idpratica];
+$pr=new pratica($idpratica,2);
+$pr->createStructure();
 
-
-if ($_POST["azione"]){
+if (isset($_POST["azione"]) && $_POST["azione"]){
 	//$id=$_POST["idrow"];
 	$active_form=$_REQUEST["active_form"];
 	if($_SESSION["ADD_NEW"]!==$_POST)
@@ -21,6 +22,7 @@ if ($_POST["azione"]){
 	}
 	$_SESSION["ADD_NEW"]=$_POST;				
 }
+//appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
 
 
@@ -28,12 +30,13 @@ if ($_POST["azione"]){
 
 <html>
 <head>
-<title>Iter - <?php echo $titolo?></title>
+<title>Iter - <?=$_SESSION["TITOLO_".$idpratica]?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
 <?php
 	utils::loadJS();
-	utils::loadCss();
+	utils::loadCss(Array('iter'));
 ?>
 <script language="javascript">
 function confirmSubmit()
@@ -53,12 +56,12 @@ function elimina(id){
 </head>
 <body>
 <?php
-    if (($modo=="edit") or ($modo=="new") ){
+if (($modo=="edit") or ($modo=="new") ){
 	//---<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  EDITA ELENCO ITER >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>------------------------------>
 		$tabella=new tabella_h("$tabpath/iter",$modo);
 		include "./inc/inc.page_header.php";?>
 		
-		<form method="post" name="iter" action="ce.iter.php">		
+		<form method="post" name="iter" action="pe.iter.php">		
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">			
 		<tr> 
 			<td> 
@@ -70,16 +73,7 @@ function elimina(id){
 		  <tr>
 			  <td>
 				  <table cellPadding="2" border="0" class="stiletabella">
-				  <tr>
-					  <td colspan="4">
-					  <select style="width:650px" class="textbox"  name="evento"  id="evento" onmousewheel="return false"  onchange="javascript:document.iter.nota_edit.value=document.iter.evento.options[document.iter.evento.selectedIndex].text">
-								  <option>Seleziona da elenco >>></option>
-								<option >Avvio del procedimento</option>
-								<option >Richiesta documentazione integrativa</option>
-								<option >Pratica presa in carico dall'utente <?php echo $_SESSION["USER_NAME"]?></option>
-							</select>
-					  </td>
-				  </tr>
+
 					<tr>
 						<td width="130" height="24" bgColor="#728bb8"><font color="#ffffff"><b>Evento</b></font></td>
 						<td valign="middle" colspan="3">
@@ -88,16 +82,16 @@ function elimina(id){
 					</tr>
 					<tr>
 						<td height="24" valign="top" bgColor="#728bb8"><font color="#ffffff"><b>Data</b></font></td>
-						<td width="66" valign="top"><INPUT  maxLength="10" size="10"  class="textbox" name="data" id="data" value="<?php echo $today?>"></td>
+						<td width="66" valign="top"><INPUT  maxLength="10" size="10"  class="textbox" name="data" id="data" value="<?=$today?>"></td>
 						<td  valign="top"><input type="checkbox"  name="pubblico" checked>
 					    <b>Commento pubblicato</b></td>				
 						<td  valign="top">
 							<input  name="aggiungi"  id="aggiungi" class="hexfield1" style="width:130px" type="submit" value="Aggiungi" onclick="return confirmSubmit()" >
-							<input  class="hexfield1" style="width:130px" type="submit" value="Carica Documento" onclick="NewWindow('stp.carica_documento.php?schema=ce&pratica=<?php echo $idpratica?>','documento',500,200);" >
+							<input  class="hexfield1" style="width:130px" type="submit" value="Carica Documento" onclick="NewWindow('stp.carica_documento.php?schema=pe&pratica=<?=$idpratica?>','documento',500,200);" >
 						</td>
 					</tr>
 				</table>
-				<input type="hidden" name="utente" value="<?php echo $_SESSION["USER_NAME"]?>">
+				<input type="hidden" name="utente" value="<?=$_SESSION["USER_NAME"]?>">
 			  <br>
 					<table width="90%">		  	
 						<tr>
@@ -114,17 +108,16 @@ function elimina(id){
 		  <tr> 
 			<td> 
 				<!-- contenuto-->
-				<?php 
+				<?php
                                 $numrows=$tabella->set_dati("pratica=$idpratica");
-				if ($numrows)  print $tabella->elenco();
-                                ?>	
+				  if ($numrows)  print $tabella->elenco();?>	
 				<input type="hidden" name="azione" id="azione" value="aggiungi">
 				<input type="hidden"  id="idriga" name="idriga" value="0">
 				<input type="hidden" name="mode" value="new">
-				<INPUT type="hidden" name="pratica" value="<?php echo $idpratica?>">
+				<INPUT type="hidden" name="pratica" value="<?=$idpratica?>">
 				<INPUT type="hidden" name="chk" value="">
-				
-				<INPUT type="hidden" name="config_file" value="<?php echo $tabpath?>/iter_edit.tab">
+				<INPUT type="hidden" name="config_file" value="pe/iter.tab">
+					<input name="active_form" type="hidden" value="pe.iter.php">
 				<br><br><br>
 				<!-- fine contenuto-->			
 			</td>
@@ -140,9 +133,8 @@ function elimina(id){
 		<TABLE>
 		<FORM method="post" action="praticaweb.php">	
 			<tr>
-				<td><input name="active_form" type="hidden" value="ce.iter.php">
-				<input name="pratica" type="hidden" value="<?php echo $idpratica;?>"></td>
-				<INPUT type="hidden" name="comm" value="1">
+				<td><input name="active_form" type="hidden" value="pe.iter.php">
+				<input name="pratica" type="hidden" value="<?=$idpratica?>"></td>
 				<td valign="bottom"><input name="azione" type="submit" class="hexfield" tabindex="14" value="Chiudi"></td>
 			</tr>
 		</FORM>		
@@ -151,8 +143,8 @@ function elimina(id){
 }	
 else{
 	//-<<<<<<<<<<<<<<<<<<<<<< VISUALIZZA ITER >>>>>>>>>>>>>>>>>>>>>>>>>>>----------------------->	
-		$tabella=new tabella_h("$tabpath/iter");
-		$titolo="Iter della pratica";
+		$tabella=new tabella_h("$tabpath/iter_pratica",$modo);
+
 		$nrec=$tabella->set_dati("pratica = $idpratica");	?>			
 		<H2 class="blueBanner">Iter della pratica</H2>
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
@@ -160,7 +152,7 @@ else{
 			<TD> 
 			<!-- contenuto-->
 				<?php
-					$tabella->set_titolo($titolo,"modifica");
+					$tabella->set_titolo($titolo);
 					$tabella->get_titolo();
 					if ($nrec)	
 						$tabella->elenco();
@@ -172,7 +164,9 @@ else{
 	      </TR>
 		</TABLE>
 	
-<?php }?>		
+<?php
+}
+?>		
 
 </body>
 </html>

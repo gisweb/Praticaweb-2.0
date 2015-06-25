@@ -8,7 +8,8 @@ $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 
 $idpratica=$_REQUEST["pratica"];
 $titolo=$_SESSION["TITOLO_$idpratica"];
-
+$pr=new pratica($idpratica,1);
+$pr->createStructure();
 if ($_POST["azione"]){
        if ($_POST["azione"]=="Aggiungi" && !$_POST["foglio"]){
           $array_dati["errors"]["foglio"]="Campo obbligatorio";

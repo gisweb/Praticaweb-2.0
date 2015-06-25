@@ -281,6 +281,7 @@ class generalPratica {
             $stmt->execute(Array($this->pratica));
             $this->prev=$stmt->fetchColumn();
         }
+        
     }
     
     
@@ -295,7 +296,7 @@ class generalPratica {
             if(!file_exists($this->documenti)) {
                     mkdir($this->documenti);
                     chmod($this->documenti,0777);
-                    //print (!file_exists($this->documenti))?("Errore nella creazione della cartella $this->documenti\n"):("Cartella $this->documenti creata con successo\n");
+                    print (!file_exists($this->documenti))?("Errore nella creazione della cartella $this->documenti\n"):("Cartella $this->documenti creata con successo\n");
             }
             if($this->allegati && !file_exists($this->allegati)) {
                     mkdir($this->allegati);

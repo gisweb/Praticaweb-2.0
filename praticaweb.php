@@ -6,17 +6,26 @@ unset($is_cdu);
 unset($is_ce);
 $is_cdu=isset($_REQUEST["cdu"])?($_REQUEST["cdu"]):(0);
 $is_ce=isset($_REQUEST["comm"])?($_REQUEST["comm"]):(0);
+$is_vigi=isset($_REQUEST["vigi"])?($_REQUEST["vigi"]):(0);
 if($is_cdu==1){
  	$tipomenu="cdu";
 	$path="cdu";
+        $app=1;
 }
 elseif($is_ce==1){
  	$tipomenu="commissione";
 	$path="ce";
+        $app=2;
+}
+elseif($is_vigi==1){
+ 	$tipomenu="vigilanza";
+	$path="vigi";
+        $app=3;
 }
 else{
 	$tipomenu="pratica";
 	$path="pe";
+        $app=0;
 }
 
 $menu=new Menu($tipomenu,$path);
@@ -66,7 +75,7 @@ else{
 
 list($visitedForm,$prms) = explode('?',$active_form);
 
-$pr=new pratica($idpratica,$is_cdu);
+$pr=new pratica($idpratica,$app);
 //$_SESSION["TITOLO_".$idpratica]=$pr->titolo;
 $_SESSION["TITOLO_".$idpratica]=  appUtils::titoloPratica($_REQUEST);
 //$_SESSION["TITOLO_PRATICA"]=$pr->titolo;

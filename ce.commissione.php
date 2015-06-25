@@ -13,7 +13,8 @@ $titolo=$_SESSION["TITOLO_$idcomm"];
 $file_config="$tabpath/convocazione";
 $title="Commissione Edilizia";
 $membri="$tabpath/membri.tab";
-
+$pr=new pratica($idcomm,2);
+$pr->createStructure();
 include "./lib/tabella_v.class.php";
 include "./lib/tabella_h.class.php";
 

@@ -44,7 +44,7 @@ if ($_POST["azione"]==="Crea Documento") {	//	Creo un nuovo documento
         /*sql="INSERT INTO stp.stampe(pratica,modello,file_doc,file_pdf,form,utente_doc,utente_pdf,data_creazione_doc,data_creazione_pdf) VALUES($idpratica,$id_modello,$doc->docName,$doc->docName,'$form','$usr','$usr',now(),now())";
         if(!$db->sql_query($sql)) print_debug($sql);
         $lastid=$db->sql_nextid();*/
-		$type=($schema_iter=='cdu')?("&cdu=1"):("");
+	$type=($schema_iter=='cdu')?("&cdu=1"):("");
         $edit="<img src=\"images/word.gif\" border=0 >&nbsp;&nbsp;<a target=\"documenti\" href=\"./openDocument.php?id=$lastid&pratica=$idpratica$type\" >$doc->basename</a>";
         $view="Creato il Documento ".$doc->basename;
         $data=Array(

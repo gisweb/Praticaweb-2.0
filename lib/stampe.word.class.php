@@ -93,6 +93,7 @@ class wordDoc {
                 $libDoc = "";
                 for($i=0;$i<count($ris);$i++){
                     if ($ris[$i]["file"]!= $libDoc){
+                        
                         $TBS->LoadTemplate($this->modelliDir."documentLib".DIRECTORY_SEPARATOR.$ris[$i]["file"],OPENTBS_DEFAULT);
                     }
                     $ris[$i]["source"]=$TBS->GetBlockSource($ris[$i]["blockname"], FALSE, FALSE);
@@ -223,7 +224,7 @@ class wordDoc {
             for($i=0;$i<count($ris);$i++){
                 $view=$ris[$i]["name"];
                 $fieldList=$ris[$i]["field_list"];
-                $result["file_multi"][str_replace('fromfile_multiple','',$view)]=sprintf("SELECT A.pratica,$fieldList FROM %s A LEFT JOIN stp.$view B USING(pratica) WHERE A.pratica=?;",$this->table);
+                $result["file_multi"][str_replace('fromfile_multiple_','',$view)]=sprintf("SELECT A.pratica,$fieldList FROM %s A LEFT JOIN stp.$view B USING(pratica) WHERE A.pratica=?;",$this->table);
             }
             return $result;
     }
