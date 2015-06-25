@@ -2,7 +2,7 @@
 
 $azione=  strtolower($_REQUEST["azione"]);
 $modo=($_REQUEST["mode"])?($_REQUEST["mode"]):('view');
-$pr=new pratica($idpratica);
+$pr=new pratica($idpratica,$app);
 
 if (in_array($azione, Array("salva","elimina"))){
     

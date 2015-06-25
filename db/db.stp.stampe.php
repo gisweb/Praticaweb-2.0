@@ -75,6 +75,11 @@ if ($_POST["azione"]==="Crea Documento") {	//	Creo un nuovo documento
         }
     }
 }
-$active_form=($is_cdu)?("cdu.iter.php?pratica=$idpratica"):("pe.iter.php?pratica=$idpratica&tipo=pratica");
+if ($is_cdu) $active_form="cdu.iter.php?pratica=$idpratica";
+elseif($is_ce) $active_form="ce.iter.php?pratica=$idpratica";
+elseif($is_vigi) $active_form="vigi.iter.php?pratica=$idpratica";
+else {
+    $active_form="pe.iter.php?pratica=$idpratica";
+}
 
 ?>

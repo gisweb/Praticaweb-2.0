@@ -43,11 +43,11 @@ if(isset($_POST["stampe"])){
 		elseif($is_commissione_paesaggio) 
 			$active_form="ce.commissione_paesaggio.php?pratica=$idpratica&comm_paesaggio=1";
 		else*/
-		if($is_cdu) 
-			$active_form="cdu.richiesta.php?pratica=$idpratica";
-		else {
-                        
-			$active_form.="?pratica=$idpratica";
+		if ($is_cdu) $active_form="cdu.iter.php?pratica=$idpratica";
+                elseif($is_ce) $active_form="ce.iter.php?pratica=$idpratica";
+                elseif($is_vigi) $active_form="vigi.iter.php?pratica=$idpratica";
+                else {
+                    $active_form.="?pratica=$idpratica";
 		}
 }
 elseif (isset($active_form) && $active_form){
@@ -65,8 +65,9 @@ elseif (isset($active_form) && $active_form){
 		$active_form.="?pratica=$idpratica";
 }
 else{
-	if($is_cdu) 
-		$active_form="cdu.richiesta.php?pratica=$idpratica";
+	if ($is_cdu) $active_form="cdu.iter.php?pratica=$idpratica";
+                elseif($is_ce) $active_form="ce.iter.php?pratica=$idpratica";
+                elseif($is_vigi) $active_form="vigi.iter.php?pratica=$idpratica";
 	else {
 		$active_form="pe.iter.php?pratica=$idpratica";
 		include "./db/db.pe.recenti.php";
