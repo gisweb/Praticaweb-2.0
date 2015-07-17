@@ -15,7 +15,7 @@ if ($_POST["azione"]=="Salva"){
 		$pr->setOC();
 		$rate=(isset($_POST["rateizzato"]) && $_POST["rateizzato"])?(1):(-1);
 		$pr->setRateOC($rate);
-		if(!$_REQUEST['fideiussione']) $pr->setFidiOC();
+		//if(!$_REQUEST['fideiussione']) $pr->setFidiOC();
 		//if (isset($_POST["fideiussione"])){
 		//	$menu->add_menu($idpratica,$menu_fidi);		
 		//}
