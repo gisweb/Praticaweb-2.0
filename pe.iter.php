@@ -108,7 +108,8 @@ if (($modo=="edit") or ($modo=="new") ){
 		  <tr> 
 			<td> 
 				<!-- contenuto-->
-				<?$numrows=$tabella->set_dati("pratica=$idpratica");
+				<?php
+                                $numrows=$tabella->set_dati("pratica=$idpratica");
 				  if ($numrows)  print $tabella->elenco();?>	
 				<input type="hidden" name="azione" id="azione" value="aggiungi">
 				<input type="hidden"  id="idriga" name="idriga" value="0">

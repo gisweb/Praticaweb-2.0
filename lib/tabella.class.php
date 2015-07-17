@@ -1,4 +1,6 @@
 <?php
+
+
 /*
 Descrizione della classe e dei metodi
 
@@ -449,20 +451,25 @@ EOT;
 /*-------------------------------Verifica dei permessi della pratica----------------------*/
 	function checkPermission($cfg){
 		/*TODO   AUTORIZZAZIONE NON SUI GRUPPI MA SUI RUOLI*/
-		
-		$db=$this->get_db();
+		$db = $this->get_db();
+		$dsn = sprintf('pgsql:dbname=%s;host=%s;port=%s',DB_NAME,DB_HOST,DB_PORT);
+                $conn = new PDO($dsn, DB_USER, DB_PWD);
 		list($schema,$table)=explode('.',$this->tabelladb);
 		switch($schema){
 			case "cdu":		//Caso del CDU
 				//Verifico il responsabile del Servizio
 				$sql="SELECT userid FROM admin.users WHERE (SELECT DISTINCT id::varchar FROM admin.groups WHERE nome='cdu')=ANY(string_to_array(coalesce(gruppi,''),','));";
 				$db->sql_query($sql);
+			default:		//Caso delle pratiche Edilizie
+                            $sql = "SELECT * FROM pe.ruoli_pratica WH
 				$idCDU=$db->sql_fetchlist('userid');
 				$editor=$idCDU;
-			break;
-			default:		//Caso delle pratiche Edilizie
+			break;ERE pratica=?;";
+                            $stmt = $conn->prepare($sql);
+                            $stmt->execute(Array($this->pratica));
+                            $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
 				//Verifico il responsabile del procedimento
-				$sql="SELECT resp_proc FROM pe.avvioproc WHERE pratica=".$this->idpratica;
+				/*$sql="SELECT resp_proc FROM pe.avvioproc WHERE pratica=".$this->idpratica;
 				$db->sql_query($sql);
 				$rdp=$db->sql_fetchfield('resp_proc');
 				
@@ -506,7 +513,7 @@ EOT;
 				}
 				else
 					$owner=3;
-				$editor=Array($rdp,$idRds,$idDiri);
+				$editor=Array($rdp,$idRds,$idDiri);*/
 			break;
 		}
         if($_SESSION["PERMESSI"]<2 ) $owner=1;
@@ -538,7 +545,7 @@ EOT;
 				$this->editable=true;
 			}
 			else
-				$this->editable=false;
+                            $this->editable=false;
 		}
 
 		//$sql="SELECT * FROM pe.assegnazione_pratiche WHERE pratica=$this->idpratica";

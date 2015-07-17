@@ -240,6 +240,33 @@ function selectOneriIntervento(){
   function hideSection(obj){
       
   }
+  
+  function ctrOneri(obj){
+      var prms = $(obj).attr('data-params').split(',');
+      var anno = $('#anno').val();
+      for(i=0;i<prms.length;i++){
+          var el = $('#'+prms[i]);
+          var id = el.attr('id');
+          var value = $(obj).val();
+          if ($(obj).is('select')){
+              el.html('');
+              if (typeof(selectdb[id][value])== 'undefined') 
+                  el.append($('<option>', { value : '' }).text('Nessun Valore'));
+              else{
+                  el.append($('<option>', { value : '' }).text('Seleziona =====>'));
+                  if (id != 'tabella'){
+                  for(j=0;j<selectdb[id][value][anno].length;j++)
+                      el.append($('<option>', { value : selectdb[id][value][anno][j]['id'] }).text(selectdb[id][value][anno][j]['opzione']));
+                  }
+                  else{
+                      for(j=0;j<selectdb[id][value].length;j++)
+                      el.append($('<option>', { value : selectdb[id][value][j]['id'] }).text(selectdb[id][value][j]['opzione']));
+                  }
+              }
+          }
+          
+      }
+  }
   function fillCtr(obj){
       var prms = $(obj).attr('data-params').split(',');
       for(i=0;i<prms.length;i++){

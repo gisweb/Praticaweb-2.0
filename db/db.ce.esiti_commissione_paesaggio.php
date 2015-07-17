@@ -1,4 +1,4 @@
-<?	
+<?php
 include "db/db.savedata.php";
 $idcomm=$_POST["pratica"];
 if ($_POST["azione"]=="Salva" and $_POST["parere"]) {

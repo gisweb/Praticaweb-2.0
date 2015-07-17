@@ -2,6 +2,7 @@
     function loadLibs(){
         $libs=Array("pratica.class.php","app.utils.class.php","utils.class.php","menu.class.php");
         foreach($libs as $lib){
+	    
             if (file_exists(LOCAL_LIB.$lib)){
                 require_once LOCAL_LIB.$lib;
             }
@@ -12,7 +13,7 @@
         }
     };
     error_reporting(E_ERROR);
-
+    
 	if (!session_id())
 	session_start();
         
@@ -23,9 +24,11 @@
         define('DATA_DIR',$dataDir);
         define('APPS_DIR',$appsDir);
 
-	include_once DATA_DIR.'config.php';
-        loadLibs();
 
+
+	if (!file_exists(DATA_DIR.'config.php')) die("Nessun file di configurazione trovato!");
+        require_once DATA_DIR.'config.php';
+        loadLibs();
 	if ((defined('UPDATE_SW') && UPDATE_SW==1 && $_SESSION["USER_ID"]>4)){
             require_once "aggiornamento.php";
             exit;

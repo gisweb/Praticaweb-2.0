@@ -204,6 +204,7 @@ function get_cella($row,$col){
             $retval="<td class=\"allegati\" data-url=\"$valore\" data-id=\"".$id."\" data-pratica=\"".$pr."\" title=\"Visualizza il documento\">$valore</td>\n";
             break;
         case "stampe":
+            //$app = $this->array_dati[$row]["tipo_app"];
             $retval="<td class=\"stampe\" data-url=\"$valore\" title=\"Visualizza il documento\">$valore</td>\n";
             break;
         case "info":
