@@ -68,7 +68,13 @@ appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]
 		  <tr> 
 			<td> 
 				<H2 class="blueBanner"><?=$intestazione?></H2>
+                                
 				<?php
+                                if (file_exists(LOCAL_INCLUDE."pe.avvioproc.edit.before.php")){
+                                    $html="";
+                                    include_once LOCAL_INCLUDE."pe.avvioproc.edit.before.php";
+                                    print $html;
+                                }
 				if(isset($Errors) && $Errors){
 					$tabella->set_errors($Errors);
 					$tabella->set_dati($_POST);
