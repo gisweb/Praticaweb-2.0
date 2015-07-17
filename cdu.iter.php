@@ -33,7 +33,7 @@ $titolo="Iter della pratica";
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
     utils::loadJS();
-    utils::loadCss();
+    utils::loadCss(Array('iter'));
 ?>
 <script language="javascript">
 function confirmSubmit()
@@ -98,7 +98,7 @@ function elimina(id){
 }	
 else{
 	//-<<<<<<<<<<<<<<<<<<<<<< VISUALIZZA ITER >>>>>>>>>>>>>>>>>>>>>>>>>>>----------------------->	
-		$tabella=new tabella_h("$tabpath/iter");
+		$tabella=new tabella_h("$tabpath/iter_pratica");
 		
 		$nrec=$tabella->set_dati("pratica = $idpratica");	?>			
 		<H2 class="blueBanner">Iter della pratica</H2>
@@ -107,7 +107,7 @@ else{
 			<TD> 
 			<!-- contenuto-->
 				<?php
-					$tabella->set_titolo($titolo,"modifica");
+					$tabella->set_titolo($titolo);
 					$tabella->get_titolo();
 					if ($nrec)	
 						$tabella->elenco();

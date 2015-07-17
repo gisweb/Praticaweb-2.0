@@ -126,4 +126,58 @@ EOT;
 $query["search-cdu"]=<<<EOT
 
 EOT;
+$query["search-vigi"]=<<<EOT
+SELECT DISTINCT 
+    A.pratica,A.numero,A.protocollo,A.data_prot,A.data_presentazione,A.oggetto,
+    B.nome as tipo_pratica,C.descrizione as tipo_intervento,coalesce(D.nome,'non assegnata') as responsabile,
+    E.richiedente,F.progettista,L.esecutore,G.elenco_ct,H.elenco_cu,I.ubicazione,
+    CASE WHEN (coalesce(A.resp_it,coalesce(A.resp_ia,0)) = 0) THEN 0 ELSE 1 END as assegnata_istruttore
+    ,coalesce(O.nome,'non assegnata') as responsabile_it
+    --,coalesce(P.nome,'non assegnata') as responsabile_ia
+FROM vigi.avvioproc A LEFT JOIN 
+vigi.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN
+vigi.e_intervento C ON (A.intervento=C.id) LEFT JOIN
+admin.users D ON(A.resp_proc=D.userid) LEFT JOIN 
+(SELECT pratica,trim(array_to_string(array_agg(coalesce(app||' ','')||coalesce(' '||nome,'')||coalesce(' '||cognome)||coalesce(' - '||ragsoc,'')),',')) as richiedente FROM vigi.soggetti WHERE richiedente=1 AND coalesce(voltura,0)=0 GROUP BY pratica) E USING(pratica) LEFT JOIN
+(SELECT pratica,trim(array_to_string(array_agg(coalesce(app||' ','')||coalesce(' '||nome,'')||coalesce(' '||cognome)||coalesce(' - '||ragsoc,'')),',')) as progettista FROM vigi.soggetti WHERE progettista=1 AND coalesce(voltura,0)=0 GROUP BY pratica) F USING(pratica) LEFT JOIN
+(SELECT pratica,trim(array_to_string(array_agg(coalesce(app||' ','')||coalesce(' '||nome,'')||coalesce(' '||cognome)||coalesce(' - '||ragsoc,'')),',')) as esecutore FROM vigi.soggetti WHERE esecutore=1 AND coalesce(voltura,0)=0 GROUP BY pratica) L USING(pratica) LEFT JOIN
+(SELECT * FROM vigi.grp_particelle_ct) G USING(pratica) LEFT JOIN
+(SELECT * FROM vigi.grp_particelle_cu) H USING(pratica) LEFT JOIN
+(SELECT indirizzi.pratica, array_to_string(array_agg((COALESCE(indirizzi.via, ''::character varying)::text || COALESCE(' '::text || indirizzi.civico::text,'')) || COALESCE(' int.'::text || indirizzi.interno::text, ''::text)), ', '::text) AS ubicazione
+   FROM vigi.indirizzi
+  GROUP BY indirizzi.pratica) I USING(pratica) LEFT JOIN
+(SELECT pratica,titolo,data_rilascio FROM vigi.titolo) M USING(pratica) LEFT JOIN
+(SELECT pratica,trim(array_to_string(array_agg(cip::varchar),',')) as cip FROM vigi.soggetti WHERE esecutore=1 AND coalesce(voltura,0)=0 GROUP BY pratica) N USING(pratica) 
+LEFT JOIN admin.users O ON(A.resp_it=O.userid) 
+--LEFT JOIN admin.users P ON(A.resp_ia=D.userid)
+WHERE pratica IN (%s)
+%s %s LIMIT %s OFFSET %s                 
+EOT;
+$query["search-agi"]=<<<EOT
+SELECT DISTINCT 
+    A.pratica,A.numero,A.protocollo,A.data_prot,A.data_presentazione,A.oggetto,
+    B.nome as tipo_pratica,C.descrizione as tipo_intervento,coalesce(D.nome,'non assegnata') as responsabile,
+    E.richiedente,F.progettista,L.esecutore,G.elenco_ct,H.elenco_cu,I.ubicazione,
+    CASE WHEN (coalesce(A.resp_it,coalesce(A.resp_ia,0)) = 0) THEN 0 ELSE 1 END as assegnata_istruttore
+    ,coalesce(O.nome,'non assegnata') as responsabile_it
+    --,coalesce(P.nome,'non assegnata') as responsabile_ia
+FROM agi.avvioproc A LEFT JOIN 
+agi.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN
+agi.e_intervento C ON (A.intervento=C.id) LEFT JOIN
+admin.users D ON(A.resp_proc=D.userid) LEFT JOIN 
+(SELECT pratica,trim(array_to_string(array_agg(coalesce(app||' ','')||coalesce(' '||nome,'')||coalesce(' '||cognome)||coalesce(' - '||ragsoc,'')),',')) as richiedente FROM agi.soggetti WHERE richiedente=1 AND coalesce(voltura,0)=0 GROUP BY pratica) E USING(pratica) LEFT JOIN
+(SELECT pratica,trim(array_to_string(array_agg(coalesce(app||' ','')||coalesce(' '||nome,'')||coalesce(' '||cognome)||coalesce(' - '||ragsoc,'')),',')) as progettista FROM agi.soggetti WHERE progettista=1 AND coalesce(voltura,0)=0 GROUP BY pratica) F USING(pratica) LEFT JOIN
+(SELECT pratica,trim(array_to_string(array_agg(coalesce(app||' ','')||coalesce(' '||nome,'')||coalesce(' '||cognome)||coalesce(' - '||ragsoc,'')),',')) as esecutore FROM agi.soggetti WHERE esecutore=1 AND coalesce(voltura,0)=0 GROUP BY pratica) L USING(pratica) LEFT JOIN
+(SELECT * FROM agi.grp_particelle_ct) G USING(pratica) LEFT JOIN
+(SELECT * FROM agi.grp_particelle_cu) H USING(pratica) LEFT JOIN
+(SELECT indirizzi.pratica, array_to_string(array_agg((COALESCE(indirizzi.via, ''::character varying)::text || COALESCE(' '::text || indirizzi.civico::text,'')) || COALESCE(' int.'::text || indirizzi.interno::text, ''::text)), ', '::text) AS ubicazione
+   FROM agi.indirizzi
+  GROUP BY indirizzi.pratica) I USING(pratica) LEFT JOIN
+(SELECT pratica,titolo,data_rilascio FROM agi.titolo) M USING(pratica) LEFT JOIN
+(SELECT pratica,trim(array_to_string(array_agg(cip::varchar),',')) as cip FROM agi.soggetti WHERE esecutore=1 AND coalesce(voltura,0)=0 GROUP BY pratica) N USING(pratica) 
+LEFT JOIN admin.users O ON(A.resp_it=O.userid) 
+--LEFT JOIN admin.users P ON(A.resp_ia=D.userid)
+WHERE pratica IN (%s)
+%s %s LIMIT %s OFFSET %s                 
+EOT;
 ?>

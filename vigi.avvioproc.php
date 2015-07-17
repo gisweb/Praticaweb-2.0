@@ -1,12 +1,12 @@
 <?php
 //Nota conservo il tipo per poter verificere se Ãš cambiato
 include_once("login.php");
-$tabpath="pe";
+$tabpath="vigi";
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $idpratica=isset($_REQUEST["pratica"])?($_REQUEST["pratica"]):('');
-$pr=new pratica($idpratica);
+$pr=new pratica($idpratica,3);
 $pr->createStructure();
-$file_config="$tabpath/avvio_procedimento_vigilanza";
+$file_config="$tabpath/avvio_procedimento";
 
 $intestazione='Avvio del procedimento e comunicazione responsabile';
 include "./lib/tabella_v.class.php";?>
@@ -61,6 +61,8 @@ include "./lib/tabella_v.class.php";?>
 <input name="ctmappale" type="hidden" value="<?=$_POST["ctmappale"]?>">
 <input name="oldtipo" type="hidden" value="<?=$tabella->get_campo("tipo")?>">
 <input name="mode" type="hidden" value="<?=$modo?>">
+<input name="vigi" type="hidden" value="1">
+
 </FORM>
 <?php
 }else{
@@ -73,7 +75,7 @@ include "./lib/tabella_v.class.php";?>
 			<TD> 
 			<!-- contenuto-->
 	<?php
-                $pr=new pratica($idpratica);
+                $pr=new pratica($idpratica,3);
                 $tabella=new tabella_v($file_config,"view");
                 $tabella->set_titolo("Dati della pratica","modifica");
                 $nrec=$tabella->set_dati("pratica=$idpratica");

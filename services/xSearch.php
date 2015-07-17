@@ -101,6 +101,12 @@ switch($action){
             case "cdu":
                 $queryName="search-cdu";
                 break;
+            case "vigi":
+                $queryName="search-vigi";
+                break;
+            case "agi":
+                $queryName="search-agi";
+                break;
             default:
                 $queryName="default";
                 break;

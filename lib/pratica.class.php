@@ -135,7 +135,7 @@ class generalPratica {
         $conn = utils::getDb();
         if ($this->pratica && is_numeric($this->pratica)){
             //INFORMAZIONI SULLA PRATICA
-            $sql="SELECT numero,tipo,resp_proc,resp_it,resp_ia,date_part('year',data_presentazione) as anno,data_presentazione,data_prot,B.nome as tipo_pratica,B.tipologia FROM pe.avvioproc A LEFT JOIN pe.e_tipopratica B ON(A.tipo=B.id)  WHERE A.pratica=?";
+            $sql="SELECT numero,tipo,resp_proc,resp_it,resp_ia,date_part('year',data_presentazione) as anno,data_presentazione,data_prot,B.nome as tipo_pratica,B.tipologia FROM vigi.avvioproc A LEFT JOIN vigi.e_tipopratica B ON(A.tipo=B.id)  WHERE A.pratica=?";
             $stmt = $conn->prepare($sql);
             if (!$stmt->execute(Array($this->pratica))){
                 return;
@@ -162,8 +162,8 @@ class generalPratica {
             $anno=($r['anno'])?($r['anno']):($tmp[0]);
 
             //Struttura delle directory
-            //$arrDir=Array('/data','sanremo','pe','praticaweb','documenti','pe',$anno);
-                $arrDir=Array(DATA_DIR,'praticaweb','documenti','pe',$anno);
+            //$arrDir=Array('/data','sanremo','vigi','praticaweb','documenti','vigi',$anno);
+                $arrDir=Array(DATA_DIR,'praticaweb','documenti','vigi',$anno);
             $this->annodir=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
             $arrDir[]=$numero;
             $this->documenti=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
@@ -172,17 +172,17 @@ class generalPratica {
             $arrDir[]="tmb";
             $this->allegati_tmb=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
 
-            $this->url_documenti="/documenti/pe/$anno/$numero/";
-            $this->url_allegati="/documenti/pe/$anno/$numero/allegati/";
+            $this->url_documenti="/documenti/vigi/$anno/$numero/";
+            $this->url_allegati="/documenti/vigi/$anno/$numero/allegati/";
             $this->smb_documenti=SMB_PATH."$anno/$numero/";
 
 
             //INFO PRATICA PREC E SUCC
-            $sql="SELECT max(pratica) as pratica FROM pe.avvioproc WHERE pratica < ?";
+            $sql="SELECT max(pratica) as pratica FROM vigi.avvioproc WHERE pratica < ?";
             $stmt = $conn->prepare($sql);
             $stmt->execute(Array($this->pratica));
             $this->prev=$stmt->fetchColumn();
-            $sql="SELECT min(pratica) as pratica FROM pe.avvioproc WHERE pratica > ?";
+            $sql="SELECT min(pratica) as pratica FROM vigi.avvioproc WHERE pratica > ?";
             $stmt = $conn->prepare($sql);
             $stmt->execute(Array($this->pratica));
             $this->prev=$stmt->fetchColumn();
@@ -206,6 +206,7 @@ class generalPratica {
         $stmt = $conn->prepare($sql);
         $stmt->execute(Array($this->userid));
         $this->user=$stmt->fetchColumn();
+
     }
     
     private function initCdu(){
