@@ -86,7 +86,7 @@ function formatLink(value,rowData,rowIndex){
 </SCRIPT>
 </head>	
 
-<body onload="<?=$body_onload?>">
+<body>
 
 <?php
 	include "./inc/inc.page_header.php";
@@ -95,7 +95,7 @@ function formatLink(value,rowData,rowIndex){
     if ($cdu) $arrFiltri["form"]="form='$form'";
     $arrFiltri["utente"]="(coalesce(proprietario,'pubblico')='pubblico' or proprietario='$usr')";
     //$arrFiltri["tipopratica"]="(coalesce(tipo_pratica,'0')='0' or '".floor((double)$pr->info['tipo']/100)."'=ANY(string_to_array(coalesce(tipo_pratica,''),',')) or '".$pr->info['tipo']."'=ANY(string_to_array(coalesce(tipo_pratica,''),',')))";
-    $arrFiltri["disponibili"]="NOT A.id IN (SELECT DISTINCT modello FROM stp.stampe A INNER JOIN stp.e_modelli B ON (B.id=A.modello) WHERE A.pratica=$idpratica and multiple=0)";
+    $arrFiltri["disponibili"]="NOT A.id IN (SELECT DISTINCT modello FROM stp.stampe A INNER JOIN stp.e_modelli B ON (B.id=A.modello) WHERE A.pratica=$idpratica and multiple=0) AND form ILIKE '$tipo%'";
     /*if ($_SESSION["PERMESSI"]<=3) $array_file_tab=(!$condono)?(array("$tabpath/stampe_docx","$tabpath/stampe_rtf","$tabpath/stampe_pdf")):(array("$tabpath/modelli_condono","$tabpath/stampehtml_condono","$tabpath/stampepdf_condono"));
 	else
 		$array_file_tab=(!$condono)?(array("$tabpath/modelli_usr","$tabpath/stampe_rtf","$tabpath/stampe_pdf")):(array("$tabpath/modelli_condono","$tabpath/stampehtml_condono","$tabpath/stampepdf_condono"));

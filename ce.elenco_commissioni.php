@@ -1,4 +1,4 @@
-<? 
+<?php
 	for($i=$offset;$i<$prat_max;$i++){
 		$idcomm=$elenco_pratiche[$i];
 		 

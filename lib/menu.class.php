@@ -51,9 +51,40 @@ class Menu{
 				$mnu="condono";
 			}
 			elseif ($this->tipo=="vigilanza"){// menu per la commissione
-				$menu_settings=@file(MENU."vigilanza.mnu");
+                            //menu per le pratiche
+				$sql="select menu_list,menu_file from vigi.menu where pratica=$idpratica;";
+				$result = $db->sql_query($sql);
+				if (!$result){
+					echo "<p><b>ERRORE:</b><br>Configurazione dei menù errata</p>";
+					exit;
+				}
+				$row = $db->sql_fetchrow();
+				$menu_list=str_replace('#','',$row["menu_list"]);
+				$menu_list=explode(",",$menu_list);
+				$menu_file=$row["menu_file"];
+				$menu_settings=@file(MENU."$menu_file".".mnu");
+				if (!$menu_settings){
+					echo "<p><b>ERRORE:</b><br>File di configurazione dei menù mancante o errato</p>";
+					exit;
+				}
+				$cont_separatore=0;
 				foreach ($menu_settings as $riga){
-					$menu_pratica[]=explode(",",$riga);
+					$menu=explode(",",$riga);
+					$idmenu=$menu[0];
+					if (count($menu)==1){//riga di separazione
+						if ($cont_separatore==0 && strpos($menu,'-')==0){ //una sola volta
+							$menu_pratica[]="separatore-sezioni";
+							$cont_separatore++;
+						}
+					}
+                    if (count($menu)==2){
+                        $menu_pratica[]=$menu[1];
+                    }
+                    elseif (in_array($idmenu,$menu_list)){
+						$menu_pratica[]=$menu;
+						$cont_separatore=0;
+					}
+				
 				}
 				$mnu="vigilanza";
 			}	

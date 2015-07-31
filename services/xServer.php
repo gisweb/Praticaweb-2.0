@@ -134,17 +134,17 @@ switch($action) {
 		$pratica=$_REQUEST['pratica'];
 		$field=$_REQUEST["field"];
 		switch($field){
-			case "anno":
-				$anno=$_REQUEST['data']['anno'];
-				$sql="SELECT * FROM oneri.e_tariffe WHERE anno = ?";
-				$ris=$db->fetchAll($sql,Array($anno));
-				break;
-			case "tabella":
-				$anno=$_REQUEST['data']['anno'];
-				$tabella=$_REQUEST['data']['tabella'];
-				break;
-			default:
-				break;
+                    case "anno":
+                        $anno=$_REQUEST['data']['anno'];
+                        $sql="SELECT * FROM oneri.e_tariffe WHERE anno = ?";
+                        $ris=$db->fetchAll($sql,Array($anno));
+                        break;
+                    case "tabella":
+                        $anno=$_REQUEST['data']['anno'];
+                        $tabella=$_REQUEST['data']['tabella'];
+                        break;
+                    default:
+                        break;
 		}
 		break;
 	case "checkModelli":

@@ -3,9 +3,11 @@ require_once "login.php";
 $id=$_REQUEST["id"];
 $pratica=$_REQUEST["pratica"];
 $t=$_REQUEST["type"];
+
 if ($pratica!="null" && $pratica){
     $conn=utils::getDB();
     $sql="SELECT nome_file,tipo_file FROM pe.file_allegati WHERE id=?";
+   
     $stmt=$conn->prepare($sql);
     $stmt->execute(Array($id));
     list($fName,$fType) = $stmt->fetch();

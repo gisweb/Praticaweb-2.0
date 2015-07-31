@@ -32,7 +32,7 @@ $tornaacasa="
 
 <html>
 <head>
-<title>Pareri della commissione - <?=$titolo?></title>
+<title>Pareri della commissione - <?php echo $titolo?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
@@ -41,7 +41,7 @@ $tornaacasa="
 ?>
 <SCRIPT>
 	function link(id,prat){
-		loc="ce.esiti_commissione.php?mode=view&pratica=<?=$idcomm?>&id_pratica="+prat+"&id_parere="+id;
+		loc="ce.esiti_commissione.php?mode=view&pratica=<?php echo $idcomm?>&id_pratica="+prat+"&id_parere="+id;
 		//alert(loc);
 		window.location=loc;
 	}
@@ -68,16 +68,16 @@ $tornaacasa="
 		}
 		$tabella->get_titolo();?>
 	<form name="pareri" method="post" action="praticaweb.php">
-		<?$tabella->edita();?>
+		<?php $tabella->edita();?>
 		<input name="active_form" type="hidden" value="ce.esiti_commissione.php">
-		<input name="mode" type="hidden" value="<?=$modo?>">
-		<input name="id_pratica" type="hidden" value="<?=$idpratica?>">
+		<input name="mode" type="hidden" value="<?php echo $modo?>">
+		<input name="id_pratica" type="hidden" value="<?php echo $idpratica?>">
 		<input name="comm" type="hidden" value=1>
-		<input name="id_parere" type="hidden" value="<?=$id_parere?>">
-		<input name="pratica" type="hidden" value="<?=$idcomm?>">
-              <input name="tipo" type="hidden" value="<?=$tipo?>">
-		<input name="id" type="hidden" value="<?=$id_parere?>">
-		<input name="numero" type="hidden" value=<?=$_POST["numero"]?>>
+		<input name="id_parere" type="hidden" value="<?php echo $id_parere?>">
+		<input name="pratica" type="hidden" value="<?php echo $idcomm?>">
+              <input name="tipo" type="hidden" value="<?php echo $tipo?>">
+		<input name="id" type="hidden" value="<?php echo $id_parere?>">
+		<input name="numero" type="hidden" value=<?php echo $_POST["numero"]?>>
 		
 	</form>
 		
