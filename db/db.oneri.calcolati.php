@@ -127,7 +127,14 @@ if ($_POST["azione"]!="Elimina"){
                 $CC = 0;
 		$B1 = $K * $perc * ((100 - ($C2 + $C3 + $C4) + $D2) * $B1) / 1000000;
 		$B2 = $K * $perc * ((100 - ($C1 + $C2 + $C3 + $C4) + $D2) * $B2) / 1000000;
-	}	
+	}
+	elseif($intervento >=300 && $intervento < 400){		 //Fedele Ricostruzione
+		$perc = $intervento - 300.0;
+		$CC = $K * $perc * ((100 + $D1) * $A) / 1000000;
+		$B1 = 0;
+		$B2 = 0;
+		
+	}
 	else{
 		if($perc==0)
 			$perc=$intervento;
