@@ -338,7 +338,7 @@ class generalAppUtils {
             $sql="SELECT 'Certificato di Destinazione Urbanitica Prot n° '||protocollo as titolo FROM cdu.richiesta WHERE pratica=?";
         }
         elseif ($_REQUEST["vigi"] || strpos($filename,'vigi.')!==FALSE){
-            $sql="SELECT B.nome|| coalesce(' - '||C.nome,'') ||' n° '||A.numero as titolo FROM vigi.avvioproc A INNER JOIN vigi.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN vigi.e_categoriapratica C ON (coalesce(A.categoria,0)=C.id)  WHERE pratica=?;";
+            $sql="SELECT B.nome|| ' n° '||A.numero as titolo FROM vigi.avvioproc A INNER JOIN vigi.e_tipopratica B ON(A.tipo=B.id)  WHERE pratica=?;";
         }
         elseif($_REQUEST["agi"] || strpos($filename,'agi.')!==FALSE){
             $sql="SELECT B.nome|| coalesce(' - '||C.nome,'') ||' n° '||A.numero as titolo FROM agi.avvioproc A INNER JOIN agi.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN agi.e_categoriapratica C ON (coalesce(A.categoria,0)=C.id)  WHERE pratica=?;";

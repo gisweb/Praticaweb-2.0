@@ -16,7 +16,7 @@ if($is_cdu==1){
 elseif($is_ce==1){
  	$tipomenu="commissione";
 	$path="ce";
-        $app=2;
+    $app=2;
 }
 elseif($is_vigi==1){
  	$tipomenu="vigilanza";
@@ -62,13 +62,14 @@ elseif (isset($active_form) && $active_form){
             if (file_exists(DATA_DIR."db".DIRECTORY_SEPARATOR."db.$active_form")){
                 include_once DATA_DIR."db".DIRECTORY_SEPARATOR."db.$active_form";
             }
-            else
+            else{
                 include (APPS_DIR."db/db.$active_form");
+            }
 
             $titolo=$_SESSION["TITOLO_$idpratica"];
     }
     else
-	$active_form.="?pratica=$idpratica";
+		$active_form.="?pratica=$idpratica";
 }
 else{
 	if ($is_cdu) $active_form="cdu.iter.php?pratica=$idpratica";

@@ -146,7 +146,7 @@ admin.users D ON(A.resp_proc=D.userid) LEFT JOIN
 (SELECT indirizzi.pratica, array_to_string(array_agg((COALESCE(indirizzi.via, ''::character varying)::text || COALESCE(' '::text || indirizzi.civico::text,'')) || COALESCE(' int.'::text || indirizzi.interno::text, ''::text)), ', '::text) AS ubicazione
    FROM vigi.indirizzi
   GROUP BY indirizzi.pratica) I USING(pratica) LEFT JOIN
-(SELECT pratica,titolo,data_rilascio FROM vigi.titolo) M USING(pratica) LEFT JOIN
+
 (SELECT pratica,trim(array_to_string(array_agg(cip::varchar),',')) as cip FROM vigi.soggetti WHERE esecutore=1 AND coalesce(voltura,0)=0 GROUP BY pratica) N USING(pratica) 
 LEFT JOIN admin.users O ON(A.resp_it=O.userid) 
 --LEFT JOIN admin.users P ON(A.resp_ia=D.userid)

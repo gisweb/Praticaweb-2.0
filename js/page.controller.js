@@ -176,5 +176,8 @@ $(document).ready(function(){
             verificaRuoloSoggetti();
         });
         
+        $("[data-plugins='link']").bind('click',function(event){
+            
+        });
 });
 
