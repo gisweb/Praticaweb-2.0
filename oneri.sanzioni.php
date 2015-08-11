@@ -49,7 +49,8 @@ if ($modo=="edit" or $modo=="new"){
 		  <tr> 
 			<td> 
 				<!-- contenuto-->
-			<?if($Errors){
+			<?php
+			if($Errors){
 					$tabella->set_errors($Errors);
 					$tabella->set_dati($_POST);
 				}
@@ -76,7 +77,8 @@ else{
 		  <TR> 
 			<TD> 
 			<!-- contenuto-->
-				<?$tabella=new tabella_v("$tabpath/sanzioni");
+				<?php
+				$tabella=new tabella_v("$tabpath/sanzioni");
 				$nrec=$tabella->set_dati("pratica=$idpratica");
 				if($nrec){
 					$tabella->set_titolo("Sanzioni","modifica",array("titolo"=>"","id"=>""));
