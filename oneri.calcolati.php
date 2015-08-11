@@ -119,15 +119,19 @@ foreach($res as $val){
         if ($('#mode').val()=='new') $('#anno').trigger('change');
 		
         set_perc();
-		$('#intervento').bind('change',function(event){
-			if($(this).val()== 400){
-				$(this).closest('tr').prev().prev().show();
-			}
-			else{
-				$(this).closest('tr').prev().prev().hide();
-			}
-		});
-		$('#intervento').trigger('change');
+
+		if ($('#tabella_old').length > 0) {
+			$('#intervento').bind('change',function(event){
+				if($(this).val()== 400){
+					$(this).closest('tr').prev().prev().show();
+				}
+				else{
+					$(this).closest('tr').prev().prev().hide();
+				}
+			});
+			$('#intervento').trigger('change');
+		}
+		
     });
     
 </script>
@@ -179,7 +183,8 @@ if (($modo=="new") or ($modo=="edit")){
                     $request["anno"]=appUtils::getAnnoOneri(idPratica,$pr->info['data_presentazione']);
                     $tabella->set_dati($request);
                 }
-		$tabella->edita();?>
+
+				$tabella->edita();?>
 				<!-- fine contenuto-->
 			</td>
 		  </tr>
