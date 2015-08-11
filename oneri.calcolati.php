@@ -117,7 +117,17 @@ foreach($res as $val){
     }
     $(document).ready(function(){
         if ($('#mode').val()=='new') $('#anno').trigger('change');
+		
         set_perc();
+		$('#intervento').bind('change',function(event){
+			if($(this).val()== 400){
+				$(this).closest('tr').prev().prev().show();
+			}
+			else{
+				$(this).closest('tr').prev().prev().hide();
+			}
+		});
+		$('#intervento').trigger('change');
     });
     
 </script>

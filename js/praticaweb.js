@@ -250,7 +250,7 @@ function selectOneriIntervento(){
           var value = $(obj).val();
           if ($(obj).is('select')){
               el.html('');
-              if (typeof(selectdb[id][value])== 'undefined') 
+              if (typeof(selectdb[id])=='undefined' || typeof(selectdb[id][value])== 'undefined') 
                   el.append($('<option>', { value : '' }).text('Nessun Valore'));
               else{
                   el.append($('<option>', { value : '' }).text('Seleziona =====>'));

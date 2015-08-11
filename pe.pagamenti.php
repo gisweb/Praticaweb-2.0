@@ -1,38 +1,44 @@
 <?php
 include_once("login.php");
 include "./lib/tabella_v.class.php";
-$tabpath="vigi";
-$filetab=$tabpath.DIRECTORY_SEPARATOR."sanzioni";
-$idpratica=$_REQUEST["pratica"];
-$modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
-$id=$_REQUEST['id'];
-$form="sanzioni";
-appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
-
+include "./lib/tabella_h.class.php";
+$modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('list');
+$id=(isset($_REQUEST["id"]))?($_REQUEST["id"]):('');
+$idpratica=(isset($_REQUEST["pratica"]))?($_REQUEST["pratica"]):('');
+$tabpath="pe";
+$form="pe.pagamenti.php";
+$file_config=$filetab="pe/pagamenti.tab";
+switch ($modo) {
+	case "new" :
+		$tit="Inserimento nuovo pagamento";
+		break;
+	case "edit" :
+		$tit="Modifica Pagamento";
+		break;
+	case "view" :
+		$tit="Dettagli sulPagamento";
+		break;
+	default :
+		$tit="Elenco dei Pagamenti";
+		break;
+}
 ?>
 <html>
 <head>
-<title>Sanzioni - <?=$_SESSION["TITOLO_".$idpratica]?></title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<?php
-    utils::loadCss();
-    utils::loadJS();
+    <title>Elenco dei pagamenti della pratica</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <?php
+	utils::loadJS();
+	utils::loadCss();
 ?>
+    <SCRIPT language="javascript" type="text/javascript">
 
-<script LANGUAGE="JavaScript">
-function confirmSubmit()
-{
-var msg='Sicuro di voler eliminare definitivamente il parere corrente?';
-var agree=confirm(msg);
-if (agree)
-	return true ;
-else
-	return false ;
-}
+        function confirmSubmit(){
+            return confirm('Sei sicuro di voler eliminare questo pagamento?');
+        }
+    </SCRIPT>
 
-</script>
-</head>
+    </head>
 <body>
 <?php
 
@@ -44,7 +50,7 @@ if (($modo=="edit") or ($modo=="new")){
             $titolo="";
         }
         else{
-            $titolo="Inserisci nuova sanzione";
+            $titolo="Inserisci nuovo pagamento";
         }
 
 		//aggiungendo un nuovo parere uso pareri_edit che contiene anche l'elenco degli ENTI
@@ -74,16 +80,14 @@ if (($modo=="edit") or ($modo=="new")){
                 </TD>
             </TR>
         </TABLE>
-		<input name="active_form" type="hidden" value="vigi.<?php echo $form;?>.php">
+		<input name="active_form" type="hidden" value="<?php echo $form;?>">
 		<input name="mode" type="hidden" value="<?=$modo?>">
-                <input name="vigi" type="hidden" value="1">
-                <input name="pratica" type="hidden" value="<?php echo $idpratica;?>">
 
 		</FORM>	
 	<?php
         include "./inc/inc.window.php";
 		
-	}else{
+	}elseif($modo=="view"){
 		$tabella=new tabella_v($filetab);
 		$tabella->set_errors($errors);
 		$numrec=$tabella->set_dati("pratica=$idpratica;");?>
@@ -94,7 +98,7 @@ if (($modo=="edit") or ($modo=="new")){
 			<TD> 
 			<!-- contenuto-->
 		<?php
-                    $tabella->set_titolo("tipo_sanzione","modifica",array("tipo_sanzione"=>"","id"=>""));
+                    $tabella->set_titolo("Modica ","modifica",array("id"=>""));
                     for($i=0;$i<$numrec;$i++){
                             $tabella->curr_record=$i;
                             $tabella->idtabella=$tabella->array_dati[$i]['id'];
@@ -103,14 +107,39 @@ if (($modo=="edit") or ($modo=="new")){
                     }
 		print "</td></tr><tr><td>";
                 
-                $tabella->set_titolo("Aggiungi una nuova Sanzione","nuovo");
+                $tabella->set_titolo("Aggiungi un nuovo pagamento","nuovo");
                 $tabella->get_titolo();
                 print "<BR>";
 		if ($tabella->editable) print($tabella->elenco_stampe());
                
                 print "</td></tr></table>";
     }
-?>
+
+		else {
+	$tabella=new Tabella_h("$file_config",'list');
+	$tabella->set_titolo($tit,"nuovo");
+	$tabella->set_dati();
+	
+	?>
+	<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
+		<TR> 
+			<TD> 
+				
+				<?php
+                $tabella->get_titolo();
+				if($tabella->num_record > 0) {
+					$tabella->elenco();
+				}
+				else{
+					echo "<p><b>Nennun pagamento inserito</b></p>";
+				}
+				?>
+			</TD>
+		</TR>
+	</TABLE>
+  
+	<?php
+	}?>
 
 </body>
 </html>

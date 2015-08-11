@@ -2,18 +2,18 @@
 include_once("login.php");
 include "./lib/tabella_v.class.php";
 $tabpath="vigi";
-$filetab=$tabpath.DIRECTORY_SEPARATOR."sanzioni";
+$filetab=$tabpath.DIRECTORY_SEPARATOR."infrazioni";
 $idpratica=$_REQUEST["pratica"];
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $id=$_REQUEST['id'];
-$form="sanzioni";
+$form="infrazioni";
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
 ?>
 <html>
 <head>
-<title>Sanzioni - <?=$_SESSION["TITOLO_".$idpratica]?></title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Abusi - <?=$_SESSION["TITOLO_".$idpratica]?></title>
+<meta http-equiv="Content-Tyvigi" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
     utils::loadCss();
@@ -23,7 +23,7 @@ appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]
 <script LANGUAGE="JavaScript">
 function confirmSubmit()
 {
-var msg='Sicuro di voler eliminare definitivamente il parere corrente?';
+var msg="Sicuro di voler eliminare definitivamente l'infrazione corrente?";
 var agree=confirm(msg);
 if (agree)
 	return true ;
@@ -37,18 +37,23 @@ else
 <?php
 
 if (($modo=="edit") or ($modo=="new")){
-        include "./inc/inc.page_header.php";
-        unset($_SESSION["ADD_NEW"]);
-        if ($modo=="edit"){
-            $filtro="id=$id";
-            $titolo="";
-        }
-        else{
-            $titolo="Inserisci nuova sanzione";
-        }
-
-		//aggiungendo un nuovo parere uso pareri_edit che contiene anche l'elenco degli ENTI
-		$tabella=new tabella_v($filetab,$modo);?>	
+    include "./inc/inc.page_header.php";
+    unset($_SESSION["ADD_NEW"]);
+    $tabella=new tabella_v($filetab,$modo);
+    if($Errors){
+        $tabella->set_errors($Errors);
+        $tabella->set_dati($_POST);
+        $titolo="Infrazione";
+    }
+    elseif ($modo=="edit"){	
+        $filtro="id=$id";
+        $tabella->set_dati($filtro);
+        $titolo="Infrazione";
+    }
+    else{
+        $titolo="Inserisci nuova Infrazione";
+    }
+?>	
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN EDITING  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
     <FORM height=0 method="post" action="praticaweb.php">
         <TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">		
@@ -59,15 +64,7 @@ if (($modo=="edit") or ($modo=="new")){
                 <TD>
 						<!-- contenuto-->
 		<?php
-		if($Errors){
-                    $tabella->set_errors($Errors);
-                    $tabella->set_dati($_POST);
-                    $titolo="";
-                }
-                elseif ($modo=="edit"){	
-                   $tabella->set_dati($filtro);
-                   $titolo="";
-                }
+		
                 $tabella->edita();
 		?>
 		<!-- fine contenuto-->
@@ -76,8 +73,8 @@ if (($modo=="edit") or ($modo=="new")){
         </TABLE>
 		<input name="active_form" type="hidden" value="vigi.<?php echo $form;?>.php">
 		<input name="mode" type="hidden" value="<?=$modo?>">
-                <input name="vigi" type="hidden" value="1">
-                <input name="pratica" type="hidden" value="<?php echo $idpratica;?>">
+		<input name="pratica" type="hidden" value="<?php echo $idpratica;?>">
+		<input name="vigi" type="hidden" value="1">
 
 		</FORM>	
 	<?php
@@ -86,24 +83,27 @@ if (($modo=="edit") or ($modo=="new")){
 	}else{
 		$tabella=new tabella_v($filetab);
 		$tabella->set_errors($errors);
-		$numrec=$tabella->set_dati("pratica=$idpratica;");?>
+		$numrec=$tabella->set_dati("pratica=$idpratica");
+		?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
-		<H2 class="blueBanner">Elenco Sanzioni</H2>
+		<H2 class="blueBanner">Elenco delle Infrazioni</H2>
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">
 		  <TR> 
 			<TD> 
 			<!-- contenuto-->
 		<?php
-                    $tabella->set_titolo("tipo_sanzione","modifica",array("tipo_sanzione"=>"","id"=>""));
+                    
                     for($i=0;$i<$numrec;$i++){
-                            $tabella->curr_record=$i;
-                            $tabella->idtabella=$tabella->array_dati[$i]['id'];
-                            $tabella->get_titolo();
-                            $tabella->tabella();	
+                        $titolo=sprintf("Infrazioni");
+                        $tabella->set_titolo($titolo,"modifica",array("id"=>""));
+                        $tabella->curr_record=$i;
+                        $tabella->idtabella=$tabella->array_dati[$i]['id'];
+                        $tabella->get_titolo();
+                        $tabella->tabella();	
                     }
 		print "</td></tr><tr><td>";
                 
-                $tabella->set_titolo("Aggiungi una nuova Sanzione","nuovo");
+                $tabella->set_titolo("Aggiungi una nuova Infrazione","nuovo");
                 $tabella->get_titolo();
                 print "<BR>";
 		if ($tabella->editable) print($tabella->elenco_stampe());

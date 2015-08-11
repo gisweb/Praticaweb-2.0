@@ -7,6 +7,7 @@ $db=$dbconn;
 $result=Array();
 $field=$_REQUEST['field'];
 $value=($_REQUEST['term'])?(addslashes($_REQUEST['term'])):(addslashes($_REQUEST['q']));
+$query=0;
 switch($field) {
 	case 'tavola':
 		$sql="SELECT nome_tavola as id,coalesce(descrizione,nome_tavola) as opzione FROM vincoli.tavola WHERE nome_vincolo='$value' or nome_vincolo is null order by ordine,2;";
@@ -274,10 +275,29 @@ switch($field) {
 
             }
         }
+		$query=1;
+        break;
+	case "infrazione":
+	case "esposto":    
+        $sql="SELECT numero as valore, nome||' n° '|| coalesce(numero,'') ||  coalesce(' del ' ||to_char(data_prot,'DD/MM/YYYY'),'') as label,
+		B.nome as categoria,coalesce(data_prot,data_presentazione) as data_prot,pratica FROM vigi.avvioproc A left join vigi.e_tipopratica B on (A.tipo=B.id) WHERE tipologia='$field' AND numero ilike '$value%' order by 3,4;";
+        if($db->sql_query($sql)){
+            $res=$db->sql_fetchrowset();
+            for($i=0;$i<count($res);$i++){
+                $result[]=Array(
+                    "id"=>$res[$i]["pratica"],
+                    "value"=>$res[$i]["valore"],
+                    "label"=>$res[$i]["label"],
+                    "category"=>$res[$i]["categoria"]
+                );
+
+            }
+        }
+		$query=1;
         break;
 
 }
-if (!$result){
+if (!$result && $query==0){
     $sql="select distinct $field as valore from $tabella where $field ilike '$value%' order by 1;";
     if($db->sql_query($sql)){
         $res=$db->sql_fetchrowset();

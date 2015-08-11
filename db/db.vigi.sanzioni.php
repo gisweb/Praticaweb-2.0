@@ -4,7 +4,7 @@ if (($azione=="Salva") || ($azione=="Elimina") ){
 	include_once "./db/db.savedata.php";
 }
 
-$active_form="pe.sanzioni.php?pratica=$idpratica";
+$active_form="vigi.sanzioni.php?pratica=$idpratica";
 
 ?>
 
