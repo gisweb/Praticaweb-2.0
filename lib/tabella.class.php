@@ -285,13 +285,17 @@ EOT;
 					$sql=($this->table_list)?("select $this->elenco_campi,id from $this->tabelladb $data $ord"):("select $this->elenco_campi,id,pratica,chk from $this->tabelladb $data $ord");	//aggiungo sempre il campo chk per il controllo della concorrenza
 			//echo("<p>$sql</p>");
 			//print_debug($this->config_file."\n".$sql,NULL,"tabella");
-                        utils::debug(DEBUG_DIR.$_SESSION["USER_ID"]."_".'tabella.debug', $sql);
+                    utils::debug(DEBUG_DIR.$_SESSION["USER_ID"]."_".'tabella.debug', $sql);
 			if ($this->db->sql_query(trim($sql))){
 				$this->array_dati=$this->db->sql_fetchrowset();
 				$this->num_record=$this->db->sql_numrows();
 			}
-			else
+			else{
 				$this->num_record=0;
+				if ($_SESSION["USER_ID"]==1){
+					echo "<p>$sql</p>";
+				}
+			}
 			$this->curr_record=0;	
 			return  $this->num_record;	
 		}

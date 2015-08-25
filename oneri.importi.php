@@ -89,10 +89,10 @@ function link(id){
     $calcolo=1; //se non ci sono record visualizzo comunque il pulsante per il calcolo automatico
     $tabella_monetizz=new Tabella_v('oneri/monetizzazione','view');
     $tabellav=new Tabella_v("$tabpath/totali",'view');//tabella verticale con totali ed estremi di pagamento
-    $tabellah=new Tabella_h("$tabpath/importi",'view');
+    //$tabellah=new Tabella_h("$tabpath/importi",'view');
     $numrows=$tabellav->set_dati("pratica=$idpratica");//vedo se c'è un record nella tabella dei totali
     $tabella=new Tabella_v("$tabpath/totali",'view');//tabella verticale con totali ed estremi di pagamento
-    if ($numrows){
+    /*if ($numrows){
         $calcolo=$tabellav->get_campo("calcolo");//prendo il campo calcolo per capire se il dato è stato inserito con calcolo automatico o a mano
         $tabellah->set_dati("pratica=$idpratica");
         $tabella->set_titolo("Costo di Costruzione e Oneri di Urbanizzazione","modifica",array("calcolo"=>$calcolo,"tabella"=>"oneri"));			 
@@ -101,7 +101,7 @@ function link(id){
     else{// se non c'e un calcolo fatto propongo il menu nuovo 
         $tabella->set_titolo("Costo di Costruzione e Oneri di Urbanizzazione","nuovo",array("tabella"=>"oneri"));			 
         $tabella->get_titolo();
-    }
+    }*/
     
     
     
@@ -137,12 +137,12 @@ function link(id){
 	}*/
     
     if ($numrows){
-        print("<td valign=\"top\">");
+        print("<td colspan=\"2\" valign=\"top\">");
         $tabellav->tabella();
         print("</td>");
-        print("<td valign=\"top\">");
-        $tabellah->elenco();
-        print("</td>");
+        //print("<td valign=\"top\">");
+        //$tabellah->elenco();
+        //print("</td>");
         
     }
     else {
