@@ -63,29 +63,29 @@ function get_controllo($label,$tipo,$w,$campo,$html5Attr,$frozen=0){
 				$dato="0";
 			$retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$w\" name=\"$campo\" id=\"$campo\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
 			break;
-                case "intero":
-                                 if ($dato) 
-                                         $dato=number_format($dato,0, ',', '');			
-                                 else
-                                         $dato="0";
-                                 $retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$w\"  name=\"$campo\" id=\"numero\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
-                                 break;
-            
-                case "valuta":
-                case "volume":
-                case "superficie":
-                        if ($dato)
-                                $dato=number_format($dato,2, ',','.');
-                        else
-                                $dato="0,00";
-                        $retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$w\" name=\"$campo\" id=\"$campo\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
-                    break;
-                case "upload":
-                    $size=intval($w+($w/5));
-                                $testo=stripslashes($dato);
+		case "intero":
+						 if ($dato) 
+								 $dato=number_format($dato,0, ',', '');			
+						 else
+								 $dato="0";
+						 $retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$w\"  name=\"$campo\" id=\"numero\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
+						 break;
+	
+		case "valuta":
+		case "volume":
+		case "superficie":
+			if ($dato)
+					$dato=number_format($dato,2, ',','.');
+			else
+					$dato="0,00";
+			$retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$w\" name=\"$campo\" id=\"$campo\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
+			break;
+		case "upload":
+			$size=intval($w+($w/5));
+						$testo=stripslashes($dato);
 
-                    $retval="<INPUT class=\"$class\" type=\"file\" maxLength=\"$w\" size=\"$size\" name=\"$campo\" id=\"$campo\" value=\"$testo\" $html5Attr $disabilitato>$help";
-                    break;
+			$retval="<INPUT class=\"$class\" type=\"file\" maxLength=\"$w\" size=\"$size\" name=\"$campo\" id=\"$campo\" value=\"$testo\" $html5Attr $disabilitato>$help";
+			break;
 		case "ui-button":
 			$size=explode("x",$w);
 			$jsfunction=$size[1];
@@ -100,16 +100,16 @@ function get_controllo($label,$tipo,$w,$campo,$html5Attr,$frozen=0){
 			$testo=stripslashes($dato);
 			$retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$size\" name=\"$campo\" id=\"$campo\" value=\"$testo\" $html5Attr $disabilitato>$help";
 			break;
-                case "allegati":
-                    if($dato) $retval=<<<EOT
+		case "allegati":
+			if($dato) $retval=<<<EOT
 <span class="allegati" data-plugins="link" data-url="">$dato</span>
 EOT;
-                    else
-                        $retval="<b>Allegato Non Presente</b>";
-                    return $retval;
-                    break;
-                case "combosuggest":
-                        $prms=explode('#',$w);
+			else
+				$retval="<b>Allegato Non Presente</b>";
+			return $retval;
+			break;
+		case "combosuggest":
+			$prms=explode('#',$w);
 			if (count($prms)>1)
 				list($size,$selectFN)=$prms;
 			else{
@@ -122,10 +122,10 @@ EOT;
 			$params=implode(',',$prms);
 			$size=intval($size+($size/5));
 			$testo=stripslashes($dato);
-                        $retval=<<<EOT
+			$retval=<<<EOT
 <select class="$class" name="$campo" id="$campo" $title $html5Attr $disabilitato></select>$help
 EOT;
-                    break;
+			break;
 		case "autosuggest":
 			$prms=explode('#',$w);
 			if (count($prms)>1)
@@ -556,7 +556,8 @@ function get_dato($tipo,$w,$campo,$html5Attr){
 				$table = $size[1];
 				$key=$size[2];
 				$lbl =$size[3];
-				$values=explode(',',str_replace(Array('{','}'),'',$dati[$campo]));
+				//$values=explode(',',str_replace(Array('{','}'),'',$dati[$campo]));
+				$values = json_encode($dati[$campo]);
 				$labels=$this->getlabels($table,$key,$lbl,"pratica IN (".implode(',',$values).")");
 				
 				foreach($labels as $k=>$v){
@@ -600,6 +601,16 @@ EOT;
                 $obj=json_encode($params);
                 $retval=($dati[$campo])?("<a href=\"#\" id=\"$campo\" style=\"text-decoration:none;\" $h>$testo &nbsp;<span style=\"display:inline-block\" class=\"ui-icon $class\"></a>"):('');
                 break;
+			case "ui-icons":
+				$pr = $dati["pratica"];
+                $prms=explode('#',$w);
+                $size=array_shift($prms);
+                $class=array_shift($prms);
+                $testo=array_shift($prms);
+				$retval=<<<EOT
+<a href="#" id="$campo" style="text-decoration:none;width:$size" data-pratica="$pr" $html5Attr>$testo &nbsp;<span style="display:inline-block" class="ui-icon $class"></a>
+EOT;
+				break;
 			
 	}
 	return $retval;

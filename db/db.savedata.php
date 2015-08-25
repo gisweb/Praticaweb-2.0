@@ -326,13 +326,13 @@ function valida_campi($arr){
 		$retval="";
 		$elenco = $db->sql_fetchrowset();
 		$nrighe=$db->sql_numrows();*/
-                $dbh=utils::getDb();
-                $sth = $dbh->prepare($sql);
-                if(!$sth->execute()){
-                    $arr = $sth->errorInfo();
-                    echo ("ERRORE NEL SALVATAGGIO<p>$sql</p>");
-                    return;
-                }
+		$dbh=utils::getDb();
+		$sth = $dbh->prepare($sql);
+		if(!$sth->execute()){
+			$arr = $sth->errorInfo();
+			echo ("ERRORE NEL SALVATAGGIO<p>$sql</p>");
+			return;
+		}
 		//se ho inserito un nuovo valore ricavo l'ultimo id
 		if ($_POST["mode"]=="new") {
             

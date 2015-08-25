@@ -32,9 +32,9 @@ function get_cella($row,$col){
 	$valore=htmlspecialchars($this->array_dati[$row][$nome], ENT_QUOTES,"UTF-8");//valore del campo
 	$w=$this->def_col[$col][2];//larghezza del campo
 	$tipo=trim($this->def_col[$col][3]);//tipo del campo
-        $classe=($this->array_dati[$row]["row_class"])?(' class="'.$this->array_dati[$row]["row_class"].'"'):("");
-        $dati=$this->array_dati[$row];
-	//echo "<p>Riga $row $nome : $valore</p>";
+	$classe=($this->array_dati[$row]["row_class"])?(' class="'.$this->array_dati[$row]["row_class"].'"'):("");
+	$dati=$this->array_dati[$row];
+
 	switch ($tipo){//tipo campo in configfile
 		case "idriga":
 			$retval="<td><input type=\"hidden\" name=\"idriga\" value=\"$valore\" ></td>\n";
@@ -108,59 +108,59 @@ function get_cella($row,$col){
 			$retval="<td align=\"center\" valign=\"middle\" width=\"7\"><input width=\"7\" type=\"radio\" name=\"$id\" value=\"$nome\" $selezionato></td>\n";
 			break;
 		case "btn_edit":
-                    $prms=$this->getParams($row,$w);
-                    $obj=json_encode($prms['params']);
-                    $destination=($this->array_dati[$row]["row_form"])?($this->array_dati[$row]["row_form"]):($prms['form']);
-                    $retval="";
-                    
-                    if ($this->editable){
-                        $retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
-                        $retval.="<a href='javascript:linkToEdit(\"$destination\",$obj)'><img title=\"Modifica\" src=\"images/edit.png\" border=\"0\"></a>";
-                        $retval.="</td>\n";
-                    }
-                    break;
-                case "btn_pwview":
-                    $prms=$this->getParams($row,$w);
-                    $obj=json_encode($prms['params']);
-                    $retval="";
-                    if ($this->viewable){
-                        $retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
-                        $retval.="<a href='javascript:loadInto(\"".$prms['form']."\",$obj)'><img title=\"Visualizza\" src=\"images/view.png\" border=\"0\"></a>";
-                        $retval.="</td>\n";
-                    }
-                    break;
-                case "btn_view":
-                    $prms=$this->getParams($row,$w);
-                    $obj=json_encode($prms['params']);
-                    $retval="";
-                    $destination=($this->array_dati[$row]["row_form"])?($this->array_dati[$row]["row_form"]):($prms['form']);
-                    if ($this->viewable){
-                        $retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
-                        $retval.="<a href='javascript:linkToView(\"$destination.php\",$obj)'><img title=\"Visualizza\" src=\"images/view.png\" border=\"0\"></a>";
-                        $retval.="</td>\n";
-                    }
-                    break;
-                case "btn_list":
-                    $prms=$this->getParams($row,$w);
-                    $obj=json_encode($prms['params']);
-                    $retval="";
-                    $destination=($this->array_dati[$row]["row_form"])?($this->array_dati[$row]["row_form"]):($prms['form']);
-                    if ($this->viewable){
-                        $retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
-                        $retval.="<a href='javascript:linkToList(\"$destination.php\",$obj)'><img title=\"Visualizza\" src=\"images/view.png\" border=\"0\"></a>";
-                        $retval.="</td>\n";
-                    }
-                    break;
-                case "btn_delete":
-                    $prms=$this->getParams($row,$w);
-                    $obj=json_encode($prms['params']);
-                    $retval="";
-                    if ($this->editable){
-                        $retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
-                        $retval.="<a href='javascript:linkToDelete(\"".$prms['form'].".php\",$obj)'><img title=\"Elimina\" src=\"images/delete.png\" border=\"0\"></a>";
-                        $retval.="</td>\n";
-                    }
-                    break;
+			$prms=$this->getParams($row,$w);
+			$obj=json_encode($prms['params']);
+			$destination=($this->array_dati[$row]["row_form"])?($this->array_dati[$row]["row_form"]):($prms['form']);
+			$retval="";
+			
+			if ($this->editable){
+				$retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
+				$retval.="<a href='javascript:linkToEdit(\"$destination\",$obj)'><img title=\"Modifica\" src=\"images/edit.png\" border=\"0\"></a>";
+				$retval.="</td>\n";
+			}
+			break;
+		case "btn_pwview":
+			$prms=$this->getParams($row,$w);
+			$obj=json_encode($prms['params']);
+			$retval="";
+			if ($this->viewable){
+				$retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
+				$retval.="<a href='javascript:loadInto(\"".$prms['form']."\",$obj)'><img title=\"Visualizza\" src=\"images/view.png\" border=\"0\"></a>";
+				$retval.="</td>\n";
+			}
+			break;
+		case "btn_view":
+			$prms=$this->getParams($row,$w);
+			$obj=json_encode($prms['params']);
+			$retval="";
+			$destination=($this->array_dati[$row]["row_form"])?($this->array_dati[$row]["row_form"]):($prms['form']);
+			if ($this->viewable){
+				$retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
+				$retval.="<a href='javascript:linkToView(\"$destination.php\",$obj)'><img title=\"Visualizza\" src=\"images/view.png\" border=\"0\"></a>";
+				$retval.="</td>\n";
+			}
+			break;
+		case "btn_list":
+			$prms=$this->getParams($row,$w);
+			$obj=json_encode($prms['params']);
+			$retval="";
+			$destination=($this->array_dati[$row]["row_form"])?($this->array_dati[$row]["row_form"]):($prms['form']);
+			if ($this->viewable){
+				$retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
+				$retval.="<a href='javascript:linkToList(\"$destination.php\",$obj)'><img title=\"Visualizza\" src=\"images/view.png\" border=\"0\"></a>";
+				$retval.="</td>\n";
+			}
+			break;
+		case "btn_delete":
+			$prms=$this->getParams($row,$w);
+			$obj=json_encode($prms['params']);
+			$retval="";
+			if ($this->editable){
+				$retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
+				$retval.="<a href='javascript:linkToDelete(\"".$prms['form'].".php\",$obj)'><img title=\"Elimina\" src=\"images/delete.png\" border=\"0\"></a>";
+				$retval.="</td>\n";
+			}
+			break;
         case "btn_word":
             $prms=$this->getParams($row,$w);
             $obj=json_encode($prms['params']);
@@ -247,12 +247,6 @@ function get_cella($row,$col){
 				
 				
 			break;
-				
-		/*case "info1":
-			$l="10%";
-			$jslink="link('$valore')";
-			$retval="<a href=\"javascript:$jslink\"><img src=\"icons/foto.gif\" border=\"0\">$valore</a>\n";
-			break;*/
 			
 		case "upload":
 			$retval="<td align=\"center\" valign=\"middle\"  width=\"$w\"><a href=\"upload.php?id=$valore\"><img src=\"images/upload.gif\" border=\"0\"></a></td>\n";
@@ -349,26 +343,26 @@ function get_cella($row,$col){
 			$size=explode("x",$w);
 			$retval="<td$classe valign=\"middle\" width=\"$size[0]\">".$this->get_selectdb_value($valore,"id",$size[1],"opzione")."</td>";
 			break;	
-                case "folder":
-                    $campo=$nome;
-                    $prms=explode('#',$w);
-                    $size=array_shift($prms);
-                    $class=array_shift($prms);
-                    $testo=array_shift($prms);
-                    for($i=0;$i<count($prms);$i++){
-                        $tmp=explode(":",$prms[$i]);
-                        $params[]=(count($tmp)==2)?("data-$tmp[0]=\"$tmp[1]\""):("data-$prms[$i]=\"".$dati[$prms[$i]]."\"");
-                    }
+		case "folder":
+			$campo=$nome;
+			$prms=explode('#',$w);
+			$size=array_shift($prms);
+			$class=array_shift($prms);
+			$testo=array_shift($prms);
+			for($i=0;$i<count($prms);$i++){
+				$tmp=explode(":",$prms[$i]);
+				$params[]=(count($tmp)==2)?("data-$tmp[0]=\"$tmp[1]\""):("data-$prms[$i]=\"".$dati[$prms[$i]]."\"");
+			}
 
-                    $h=implode(" ",$params);
+			$h=implode(" ",$params);
 
-                    if (isset($this->params))
-                        foreach($this->params as $k=>$v){
-                            $params[$k]=$v;
-                        }
-                    $obj=json_encode($params);
-                    $retval=($dati[$campo])?("<td$classe valign=\"middle\" width=\"$size[0]\"><a href=\"#\" id=\"$campo\" style=\"text-decoration:none;\" $h>$testo &nbsp;<span style=\"display:inline-block\" class=\"ui-icon $class\"></a></td>"):('<td>&nbsp;</td>');
-                    break;
+			if (isset($this->params))
+				foreach($this->params as $k=>$v){
+					$params[$k]=$v;
+				}
+			$obj=json_encode($params);
+			$retval=($dati[$campo])?("<td$classe valign=\"middle\" width=\"$size[0]\"><a href=\"#\" id=\"$campo\" style=\"text-decoration:none;\" $h>$testo &nbsp;<span style=\"display:inline-block\" class=\"ui-icon $class\"></a></td>"):('<td>&nbsp;</td>');
+			break;
 	}
 	return $retval;
 }	
@@ -527,7 +521,7 @@ function zoomto($tabella,$id){
 
 function zoomto_gc($tabella,$id){
 
-$msgerr="Oggetto non presente in cartografia";
+	$msgerr="Oggetto non presente in cartografia";
 
 	switch ($tabella){
 		

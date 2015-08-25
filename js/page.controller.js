@@ -105,6 +105,16 @@ $(document).ready(function(){
             
             
         });
+        $("[data-plugins='loadIntoIFrame']").bind('click',function(event){
+            var form='<form action="praticaweb.php" method="POST" id="submitFrm"></form>';
+            $(form).appendTo($('body',window.parent.document));
+            var prms = $(this).data();
+            $.each(prms,function(k,v){
+                $('<input type="hidden" name="'+k+'" value="'+v+'">').appendTo($('#submitFrm',window.parent.document));
+            });
+            $('#submitFrm',window.parent.document).submit();
+        });
+            
         $("[data-plugins='field-disabled']").each(function(k,v){
             var params=$(v).data();
             var id = 'edit-' + $(v).attr('id');

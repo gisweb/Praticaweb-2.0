@@ -90,7 +90,9 @@ if (($modo=="edit") or ($modo=="new")){
 	}elseif($modo=="view"){
 		$tabella=new tabella_v($filetab);
 		$tabella->set_errors($errors);
-		$numrec=$tabella->set_dati("pratica=$idpratica;");?>
+		$numrec=$tabella->set_dati("pratica=$idpratica;");
+		
+		?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 		<H2 class="blueBanner">Elenco Sanzioni</H2>
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">
@@ -118,7 +120,7 @@ if (($modo=="edit") or ($modo=="new")){
 		else {
 	$tabella=new Tabella_h("$file_config",'list');
 	$tabella->set_titolo($tit,"nuovo");
-	$tabella->set_dati();
+	$tabella->set_dati("pratica=$idpratica;");
 	
 	?>
 	<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
