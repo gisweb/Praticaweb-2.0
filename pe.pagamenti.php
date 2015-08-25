@@ -133,7 +133,7 @@ if (($modo=="edit") or ($modo=="new")){
 					$tabella->elenco();
 				}
 				else{
-					echo "<p><b>Nennun pagamento inserito</b></p>";
+					echo "<p><b>Nessun pagamento inserito</b></p>";
 				}
 				?>
 			</TD>
