@@ -90,7 +90,7 @@ if (($modo=="edit") or ($modo=="new")){
 	}elseif($modo=="view"){
 		$tabella=new tabella_v($filetab);
 		$tabella->set_errors($errors);
-		$numrec=$tabella->set_dati("pratica=$idpratica;");
+		$numrec=$tabella->set_dati("pratica=$idpratica");
 		
 		?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
