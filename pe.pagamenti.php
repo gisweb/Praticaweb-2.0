@@ -120,7 +120,7 @@ if (($modo=="edit") or ($modo=="new")){
 		else {
 	$tabella=new Tabella_h("$file_config",'list');
 	$tabella->set_titolo($tit,"nuovo");
-	$tabella->set_dati("pratica=$idpratica;");
+	$tabella->set_dati("pratica=$idpratica");
 	
 	?>
 	<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
