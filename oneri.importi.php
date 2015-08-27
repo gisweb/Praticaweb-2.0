@@ -92,16 +92,16 @@ function link(id){
     //$tabellah=new Tabella_h("$tabpath/importi",'view');
     $numrows=$tabellav->set_dati("pratica=$idpratica");//vedo se c'è un record nella tabella dei totali
     $tabella=new Tabella_v("$tabpath/totali",'view');//tabella verticale con totali ed estremi di pagamento
-    /*if ($numrows){
+    if ($numrows){
         $calcolo=$tabellav->get_campo("calcolo");//prendo il campo calcolo per capire se il dato è stato inserito con calcolo automatico o a mano
-        $tabellah->set_dati("pratica=$idpratica");
+        //$tabellah->set_dati("pratica=$idpratica");
         $tabella->set_titolo("Costo di Costruzione e Oneri di Urbanizzazione","modifica",array("calcolo"=>$calcolo,"tabella"=>"oneri"));			 
         $tabella->get_titolo();
     }
     else{// se non c'e un calcolo fatto propongo il menu nuovo 
         $tabella->set_titolo("Costo di Costruzione e Oneri di Urbanizzazione","nuovo",array("tabella"=>"oneri"));			 
         $tabella->get_titolo();
-    }*/
+    }
     
     
     
