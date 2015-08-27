@@ -215,7 +215,6 @@ else{
 					$tabella->set_tabella_elenco("oneri.e_tariffe");	
 					$tabella->set_titolo("calcolo","modifica",array("id"=>"","pratica"=>""));
 					$tabella->elenco();
-					$tabella->get_titolo();
 				}
 				else{
 					echo "<p><b>Nessun calcolo</b></p>";
