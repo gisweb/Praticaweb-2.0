@@ -8,6 +8,14 @@ $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $id=$_REQUEST['id'];
 $form="ordinanze";
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
+$db=appUtils::getDB();
+$sql="SELECT A.*,B.nome FROM vigi.infrazioni A INNER JOIN vigi.e_violazioni B ON(A.tipo=B.id) WHERE pratica = $idpratica;";
+$res=$db->fetchAll($sql);
+$infrazioni=Array("id"=>0,"opzione"=>"Seleziona ====>");
+foreach($res as $val){
+	$descrizione = sprintf("Infrazione %s Verbale n° %s del %s",$val["nome"],$val["numero_verbale"],$val["data_verbale"]);
+    $infrazioni[]=Array("id"=>$val["id"],"opzione"=>$descrizione);
+}
 
 ?>
 <html>
@@ -21,15 +29,7 @@ appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]
 ?>
 
 <script LANGUAGE="JavaScript">
-function confirmSubmit()
-{
-var msg='Sicuro di voler eliminare definitivamente il parere corrente?';
-var agree=confirm(msg);
-if (agree)
-	return true ;
-else
-	return false ;
-}
+var infrazioni = <?php echo json_encode($infrazioni);?>
 
 </script>
 </head>

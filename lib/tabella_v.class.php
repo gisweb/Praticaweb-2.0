@@ -836,8 +836,14 @@ function elenco_selectdb($tabella,$selezionato,$filtro=''){
 	if (!isset($this->db)) $this->connettidb();
 	$sql="select id,opzione from $tabella";
 	if (trim($filtro)){
-		if (!ereg("=",$filtro))
-			$filtro="$filtro='".$this->array_dati[$this->curr_record][$filtro]."'";
+		if (!ereg("=",$filtro)){
+			if ($this->array_dati[$this->curr_record][$filtro]){
+				$filtro="$filtro='".$this->array_dati[$this->curr_record][$filtro]."'";
+			}
+			elseif($_REQUEST[$filtro]){
+				$filtro="$filtro='".$_REQUEST[$filtro]."'";
+			}
+		}
 		$sql.=" where $filtro";
 
 	}
