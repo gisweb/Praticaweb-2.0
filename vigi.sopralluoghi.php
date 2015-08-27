@@ -72,7 +72,7 @@ window.open('http://'+host+'/praticaweb/carica_foto.php?pratica='+idpr+'&form=vi
 		<input name="host" type="hidden" value="<?=$host;?>">
 		<input name="mode" type="hidden" value="<?=$modo?>">
 		<input name="id" type="hidden" value="<?=$id;?>">
-                <input name="vigi" type="hidden" value="1">
+        <input name="vigi" type="hidden" value="1">
 
 	</form>
 	<br>

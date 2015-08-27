@@ -8,6 +8,14 @@ $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $id=$_REQUEST['id'];
 $form="sanzioni";
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
+$db=appUtils::getDB();
+$sql="SELECT A.*,B.nome FROM vigi.infrazioni A INNER JOIN vigi.e_violazioni B ON(A.tipo=B.id) WHERE pratica = $idpratica;";
+$res=$db->fetchAll($sql);
+$infrazioni=Array("id"=>0,"opzione"=>"Seleziona ====>");
+foreach($res as $val){
+	$descrizione = sprintf("Infrazione %s Verbale n° %s del %s",$val["nome"],$val["numero_verbale"],$val["data_verbale"]);
+    $infrazioni[]=Array("id"=>$val["id"],"opzione"=>$descrizione);
+}
 
 ?>
 <html>
@@ -30,7 +38,7 @@ if (agree)
 else
 	return false ;
 }
-
+var infrazioni = <?php echo json_encode($infrazioni);?>
 </script>
 </head>
 <body>
@@ -94,7 +102,7 @@ if (($modo=="edit") or ($modo=="new")){
 			<TD> 
 			<!-- contenuto-->
 		<?php
-                    $tabella->set_titolo("tipo_sanzione","modifica",array("tipo_sanzione"=>"","id"=>""));
+                    $tabella->set_titolo("Sanzione","modifica",array("tipo_sanzione"=>"","id"=>""));
                     for($i=0;$i<$numrec;$i++){
                             $tabella->curr_record=$i;
                             $tabella->idtabella=$tabella->array_dati[$i]['id'];
