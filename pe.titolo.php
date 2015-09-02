@@ -65,6 +65,11 @@ if (($modo=="edit") || ($modo=="new")) {
             elseif ($modo=="edit"){	
                     $tabella->set_dati("pratica=$idpratica");
             }
+			if (file_exists(LOCAL_INCLUDE."pe.titolo.edit.before.php")){
+				$html="";
+				include_once LOCAL_INCLUDE."pe.titolo.edit.before.php";
+				print $html;
+			}
             $tabella->edita();?>			  
 			</td>
 		  </tr>  
