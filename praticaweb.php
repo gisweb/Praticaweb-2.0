@@ -53,7 +53,7 @@ if(isset($_POST["stampe"])){
                 elseif($is_ce) $active_form="ce.iter.php?pratica=$idpratica";
                 elseif($is_vigi) $active_form="vigi.iter.php?pratica=$idpratica";
                 else {
-                    $active_form.="?pratica=$idpratica";
+                    $active_form="pe.iter.php?pratica=$idpratica";
 		}
 }
 elseif (isset($active_form) && $active_form){
