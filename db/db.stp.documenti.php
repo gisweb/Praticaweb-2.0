@@ -11,7 +11,7 @@ if (in_array($azione, Array("salva","elimina"))){
     if ($azione=='elimina'){
         require_once 'db.savedata.php';
         $fName=$_REQUEST['file_doc'];
-        $r=unlink (DOCUMENTI. $fName);
+        $r=unlink ($pr->documenti. $fName);
         
     }
     elseif ($_FILES['file']['tmp_name']){
