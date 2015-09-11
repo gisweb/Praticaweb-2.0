@@ -41,7 +41,7 @@ if($action=="Salva"){
         ":tms"=>Array(time(),PDO::PARAM_INT),
         ":chk"=>Array($_REQUEST["chk"]+1,PDO::PARAM_INT),
     );
-    if ($mode=="new"){
+    if (!$_REQUEST["idfile"]){
         $sql="INSERT INTO pe.file_allegati(pratica,allegato,prot_allegato,data_prot_allegato,note,stato_allegato,nome_file,tipo_file,size_file,form,uidins,tmsins) 
 VALUES(:pratica,:allegato,:protocollo,:data_protocollo,:note,:stato_allegato,:nome_allegato,:tipo_file,:size_file,:form,:uid,:tms);";
     }
@@ -60,6 +60,7 @@ VALUES(:pratica,:allegato,:protocollo,:data_protocollo,:note,:stato_allegato,:no
     if(!$sth->execute()){
         $arr = $sth->errorInfo();
         print_r($arr);
+		echo "<p>$sql</p>";
     }
     else{
         if ($mode=="new") $_SESSION["ADD_NEW"]=1;
