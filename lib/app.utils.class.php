@@ -421,4 +421,5 @@ class generalAppUtils {
         $stmt->execute(Array($id,$frm,$user));
     }
 }
+
 ?>
