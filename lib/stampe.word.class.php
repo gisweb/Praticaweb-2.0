@@ -133,55 +133,67 @@ class wordDoc {
 	}
         private function getFields(){
 		$db=$this->db;
-                $result=Array();
-                $result=$db->fetchAll("SELECT colonna as id,colonna||coalesce(' : '||descrizione,'') as text,'open' as state FROM stp.descrizioni_colonne_di_stampa WHERE tabella='' AND colonna <> 'pratica' ORDER BY 1;",Array());
-		
-                $views=$db->fetchAll("SELECT DISTINCT tabella FROM stp.descrizioni_colonne_di_stampa WHERE length(tabella)>0 ORDER BY 1");
-                foreach($views as $v){
-                        $view=$v["tabella"];
-                        $ris=$db->fetchAll("SELECT colonna as id,colonna||coalesce(' : '||descrizione,'') as text,'open' as state FROM stp.descrizioni_colonne_di_stampa WHERE tabella=? AND colonna <> 'pratica' ORDER BY 1;",Array($view));
-                        $result[$view]=Array("id"=>$view,"text"=>$view,"state"=>"closed","key"=>$view,"children"=>$ris);
-                }
+		$result=Array();
+		$result=$db->fetchAll("SELECT colonna as id,colonna||coalesce(' : '||descrizione,'') as text,'open' as state FROM stp.descrizioni_colonne_di_stampa WHERE tabella='' AND colonna <> 'pratica' ORDER BY 1;",Array());
+
+		$views=$db->fetchAll("SELECT DISTINCT tabella FROM stp.descrizioni_colonne_di_stampa WHERE length(tabella)>0 ORDER BY 1");
+		foreach($views as $v){
+				$view=$v["tabella"];
+				$ris=$db->fetchAll("SELECT colonna as id,colonna||coalesce(' : '||descrizione,'') as text,'open' as state FROM stp.descrizioni_colonne_di_stampa WHERE tabella=? AND colonna <> 'pratica' ORDER BY 1;",Array($view));
+				$result[$view]=Array("id"=>$view,"text"=>$view,"state"=>"closed","key"=>$view,"children"=>$ris);
+		}
                 
 		$customFields=$result;
                 
-                /*if(file_exists(LOCAL_INCLUDE."cdu.php")){
-                        include_once LOCAL_INCLUDE."cdu.php";
-                }
-                
-                if(file_exists(LOCAL_INCLUDE."stampe.php")){
-                        include_once LOCAL_INCLUDE."stampe.php";
-                }*/
+		if(file_exists(LOCAL_INCLUDE."stampe.cdu.php")){
+				include_once LOCAL_INCLUDE."stampe.cdu.php";
+		}
+		
+		if(file_exists(LOCAL_INCLUDE."stampe.pe.php")){
+				include_once LOCAL_INCLUDE."stampe.pe.php";
+		}
 		$this->fields=$customFields;
 	}
+	
+	function substFields(&$TBS){
+		foreach($this->data as $tb=>$data){
+			if (is_array($data))
+				$TBS->MergeBlock($tb, $data);
+			else
+				$TBS->MergeField($tb,$data);
+		}
+		$TBS->MergeField("data", date("d/m/Y"));
+	}
+	
 	function createDoc($test=0){
 		$TBS = new clsTinyButStrong; // new instance of TBS
 		$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
 
 		$this->getData();
-                $TBS->LoadTemplate($this->modelliDir.$this->modello,OPENTBS_ALREADY_XML);
+        $TBS->LoadTemplate($this->modelliDir.$this->modello,OPENTBS_ALREADY_UTF8);
 
 		$TBS->SetOption('noerr',true);
 		
-		foreach($this->data as $tb=>$data){
-                    if (is_array($data))
-                        $TBS->MergeBlock($tb, $data);
-                    else
-                        $TBS->MergeField($tb,$data);
+		$this->substFields($TBS);
+        /*Check if exists header and footer */
+		/*$files=$TBS->PlugIn(OPENTBS_GET_HEADERS_FOOTERS);
+		for($i=0;$i<count($files);$i++){
+			$TBS->LoadTemplate($files[$i],OPENTBS_ALREADY_XML);
+			echo $files[$i];
+			$TBS->substFields($TBS);
 		}
-		$TBS->MergeField("data", date("d/m/Y"));
-                /*Check if exists header and footer */
-                if($TBS->Plugin(OPENTBS_FILEEXISTS, "styles.xml")){
-                    $TBS->LoadTemplate("#styles.xml");
-                    foreach($this->data as $tb=>$data){
-			if (is_array($data))
-                            $TBS->MergeBlock($tb, $data);
-			else
-                            $TBS->MergeField($tb,$data);
+		$TBS->PlugIn(OPENTBS_SELECT_MAIN);*/
+        /*if($TBS->Plugin(OPENTBS_FILEEXISTS, "styles.xml")){
+            $TBS->LoadTemplate("#styles.xml");
+            foreach($this->data as $tb=>$data){
+				if (is_array($data))
+                   $TBS->MergeBlock($tb, $data);
+				else
+                    $TBS->MergeField($tb,$data);
 
-                    }
-                    $TBS->MergeField("data", date("d/m/Y"));
                 }
+                $TBS->MergeField("data", date("d/m/Y"));
+            }*/
 		$pr=new pratica($this->pratica,$this->type);
 		if ($test==1){
 			$TBS->Show(TBS_OUTPUT);

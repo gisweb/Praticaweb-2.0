@@ -84,7 +84,7 @@ $tabella->edita();
 		</TABLE>		
 				<input name="active_form" type="hidden" value="pe.scheda_documento.php">	
 				<input name="id" type="hidden" value="<?=$idallegato?>">
-                                <input name="idfile" type="hidden" value="<?=$idfile?>">
+                <input name="idfile" type="hidden" value="<?=$idfile?>">
 				<input name="mode" type="hidden" value="<?=$modo?>">				
 				<input name="pratica" type="hidden" value="<?=$idpratica?>">
 </FORM>

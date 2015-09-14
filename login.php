@@ -1,6 +1,6 @@
 <?php
     function loadLibs(){
-        $libs=Array("pratica.class.php","app.utils.class.php","utils.class.php","menu.class.php");
+        $libs=Array("pratica.class.php","app.utils.class.php","utils.class.php","menu.class.php","mail.class.php");
         foreach($libs as $lib){
 	    
             if (file_exists(LOCAL_LIB.$lib)){
