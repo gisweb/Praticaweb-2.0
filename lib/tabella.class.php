@@ -546,6 +546,8 @@ function elenco_stampe ($form){
 	$procedimento=$this->array_dati[$this->curr_record]["id"];		
 	$sql="select id,file_doc,file_pdf,utente_pdf from stp.stampe where (pratica=$this->idpratica) and (form='$form') and ((char_length(file_doc)>0 or (char_length(file_pdf)>0)));";
 	if ($this->debug) echo ("<p>$sql</p>");
+	
+	if (!$this->db) $this->connettidb();
 	$this->db->sql_query($sql);
 	$elenco = $this->db->sql_fetchrowset();
 	$nrighe=$this->db->sql_numrows();
