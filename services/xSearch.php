@@ -18,7 +18,7 @@ $queryOP=($op=='AND')?('INTERSECT'):('UNION');
 $page = isset($_POST['page']) ? intval($_POST['page']) : 1;
 $rows = isset($_POST['rows']) ? intval($_POST['rows']) : 10;
 $offset = ($page-1)*$rows;
-$order = isset($_POST['sort']) ? ("ORDER BY ".$_POST['sort']) : "ORDER BY coalesce(data_prot,data_presentazione)";
+$order = isset($_POST['sort']) ? ("ORDER BY ".$_POST['sort']) : "ORDER BY data_presentazione";
 $orderType = isset($_POST['order']) ? ($_POST['order']) : "DESC";
 $groupBy=isset($_POST['field']) ? ($_POST['field']) : "civico";
 $result=Array();
