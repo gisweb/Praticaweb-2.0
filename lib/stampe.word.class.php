@@ -170,7 +170,7 @@ class wordDoc {
 		$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
 
 		$this->getData();
-        $TBS->LoadTemplate($this->modelliDir.$this->modello,OPENTBS_ALREADY_UTF8);
+        $TBS->LoadTemplate($this->modelliDir.$this->modello,OPENTBS_ALREADY_XML);
 
 		$TBS->SetOption('noerr',true);
 		
