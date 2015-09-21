@@ -292,7 +292,7 @@ EOT;
 			$retval="<INPUT $class maxLength=\"$w\" size=\"$size\"  class=\"textbox\" name=\"$campo\" id=\"$campo\" value=\"$testo\" disabled>$help";
 			break;
 		case "checkbox":
-			(($dati[$campo]=="t") or ($dati[$campo]=="on") or (abs($dati[$campo])==1))?($selezionato="checked"):($selezionato="");
+			$selezionato=(($dati[$campo]==="t") || ($dati[$campo]==="on") || ($dati[$campo]===1))?("checked"):("");
 			$ch=strtoupper($campo);
 			if($dati[$campo]==-1) $ch="<font color=\"FF0000\">EX $ch</font>";
 			$retval="<b>$ch</b><input type=\"checkbox\"  name=\"$campo\"  id=\"$campo\" $selezionato $html5Attr $disabilitato>&nbsp;&nbsp;";
