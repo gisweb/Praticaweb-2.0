@@ -498,8 +498,10 @@ EOT;
 				$this->viewable=false;
 			}
 		}
-                
-		if ((!$cfg['editable']) || ALWAYS_EDITABLE==1){
+        if ($_SESSION["PERMESSI"]>= 4){
+			$this->editable=false;
+		}        
+		elseif ((!$cfg['editable']) || ALWAYS_EDITABLE==1){
 			$this->editable=true;
 		}
 		else{
