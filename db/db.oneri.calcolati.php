@@ -167,7 +167,6 @@ if ($_POST["azione"]!="Elimina"){
 		$B1 = ((($B1 + $B2)- ($B1_OLD + $B2_OLD)) > 0)?($B1 - $B1_OLD):(0);
 		$B2 = ((($B1 + $B2)- ($B1_OLD + $B2_OLD)) > 0)?($B2 - $B2_OLD):(0);
 	}
->>>>>>> b082fc673287ae94ac9d00a6298144defefcb710
 	else{
 		if($perc==0)
 			$perc=$intervento;
