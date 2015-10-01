@@ -135,8 +135,6 @@ if ($_POST["azione"]!="Elimina"){
 		$B2 = 0;
 		
 	}
-<<<<<<< HEAD
-=======
 	elseif($intervento==400){		//Mutamento di destinazione d'uso senza opere
 			
 		$sql="select tr,a,ie,k from oneri.e_tariffe where tabella='".$_POST["tabella_old"]."' and anno=" .$_POST["anno"] ;
