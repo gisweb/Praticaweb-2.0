@@ -142,7 +142,12 @@ function loadInfoAnnotazioni(){
             if (typeof(v["form"])=='undefined') {
                 v["form"]='pe.avvioproc.php';
             }
-            var text = sprintf('<li><a class="underline-cursor" data-href="praticaweb.php" data-pratica="%d" data-target="praticaweb" data-active_form="%s" data-id="%d">Pratica n° %s : "%s".</li>',v['pratica'],v['form'],v['id'],v['numero'],v['oggetto']);
+            var vigi = '';
+            if (v['form'].indexOf('vigi.')==0) {
+                vigi = 'data-vigi="1"';
+            }
+            
+            var text = sprintf('<li><a class="underline-cursor" data-href="praticaweb.php" data-pratica="%d" data-target="praticaweb" data-active_form="%s" data-id="%d" %s>Pratica n° %s : "%s".</li>',v['pratica'],v['form'],v['id'],v['numero'],v['oggetto'],vigi);
             rows.push(text);
         });
         var html = '<ol>';
