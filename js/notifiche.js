@@ -139,7 +139,10 @@ function loadInfoVerifiche(){
 function loadInfoAnnotazioni(){
         var rows=[];
         $.each(annotazioni['data'],function(k,v){
-            var text = sprintf('<li><a class="underline-cursor" data-href="praticaweb.php" data-pratica="%d" data-target="praticaweb" data-active_form="pe.avvioproc.php" data-id="%d">Pratica n° %s : "%s".</li>',v['pratica'],v['id'],v['numero'],v['oggetto']);
+            if (typeof(v["form"])=='undefined') {
+                v["form"]='pe.avvioproc.php';
+            }
+            var text = sprintf('<li><a class="underline-cursor" data-href="praticaweb.php" data-pratica="%d" data-target="praticaweb" data-active_form="%s" data-id="%d">Pratica n° %s : "%s".</li>',v['pratica'],v['form'],v['id'],v['numero'],v['oggetto']);
             rows.push(text);
         });
         var html = '<ol>';
