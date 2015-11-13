@@ -148,19 +148,20 @@ if ($_POST["azione"]!="Elimina"){
 		$K_OLD = $tariffa_old["k"];
 		$A_OLD = $tariffa_old["a"];
 		$tariffa_old["tr"]=($C5>0)?($tariffa_old["tr"]*$C5/100):($tariffa_old["tr"]);
-		$B_OLD = $tariffa_old["tr"]-$A;
+		$B_OLD = $tariffa_old["tr"]-$A_OLD;
 		$IE_OLD = $tariffa_old["ie"];
 		$B1_OLD =$B_OLD*$IE_OLD/100;
-		$B2=$B_OLD-$B1_OLD;
-		$perc=100.0;
+		$B2_OLD=$B_OLD - $B1_OLD;
+		
+		$perc=60.0;
 		
 		$CC = 0;
 		$CC_OLD = 0;
-		$B1 = $K * $perc * ((100 - ($C2 + $C3 + $C4) + $D2) * $B1) / 1000000;
-		$B2 = $K * $perc * ((100 - ($C1 + $C2 + $C3 + $C4) + $D2) * $B2) / 1000000;
+		$B1 = ($K * $perc  * $B1) / 10000;
+		$B2 = ($K * $perc  * $B2) / 10000;
 		
-		$B1_OLD = $K_OLD * $perc * ((100 - ($C2 + $C3 + $C4) + $D2) * $B1_OLD) / 1000000;
-		$B2_OLD = $K_OLD * $perc * ((100 - ($C1 + $C2 + $C3 + $C4) + $D2) * $B2_OLD) / 1000000;
+		$B1_OLD = ($K_OLD * $perc * $B1_OLD) / 10000;
+		$B2_OLD = ($K_OLD * $perc * $B2_OLD) / 10000;
 		
 		$B1 = ((($B1 + $B2)- ($B1_OLD + $B2_OLD)) > 0)?($B1 - $B1_OLD):(0);
 		$B2 = ((($B1 + $B2)- ($B1_OLD + $B2_OLD)) > 0)?($B2 - $B2_OLD):(0);
