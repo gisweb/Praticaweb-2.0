@@ -163,9 +163,6 @@ if ($_POST["azione"]!="Elimina"){
 		$B1_OLD = ($K_OLD * $perc * $B1_OLD) / 10000;
 		$B2_OLD = ($K_OLD * $perc * $B2_OLD) / 10000;
 		
-		if ((($B1 + $B2)- ($B1_OLD + $B2_OLD)) > 0){
-			
-		}
 		$B1_NEW = ((($B1 + $B2)- ($B1_OLD + $B2_OLD)) > 0)?($B1 - $B1_OLD):(0);
 		$B2_NEW = ((($B1 + $B2)- ($B1_OLD + $B2_OLD)) > 0)?($B2 - $B2_OLD):(0);
 		
