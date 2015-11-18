@@ -436,6 +436,87 @@ class generalAppUtils {
                 return Array("totali"=>count($res),"data"=>$res);
             }
     }
+    static function getInterventiOneri(){
+    	$db = self::getDB();
+    	$sql="SELECT * FROM oneri.e_interventi order by tabella,descrizione";
+    	$res=$db->fetchAll($sql);
+    	foreach($res as $val){
+    		$result[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
+    	}
+    	return $result;
+    }
+    static function getTariffeOneri(){
+    	$db = self::getDB();
+	    $sql="SELECT * FROM oneri.e_tariffe order by anno,tabella,descrizione";
+	    $res=$db->fetchAll($sql);
+	    foreach($res as $val){
+	    	$result[$val["anno"]][]=Array("id"=>$val["tabella"],"opzione"=>$val["descrizione"]);
+	    }
+	    return $result;
+    }
+    static function getC1Oneri(){
+    	$db = self::getDB();
+    	$sql="SELECT * FROM oneri.e_c1 order by tabella,descrizione";
+    	$res=$db->fetchAll($sql);
+    	foreach($res as $val){
+    		$result[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
+    	}
+    	return $result;
+    }
+    static function getC2Oneri(){
+    	$db = self::getDB();
+    	$sql="SELECT * FROM oneri.e_c2 order by tabella,descrizione";
+    	$res=$db->fetchAll($sql);
+    	foreach($res as $val){
+    		$result[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
+    	}
+    	return $result;
+    }
+    static function getC3Oneri(){
+    	$db = self::getDB();
+    	$sql="SELECT * FROM oneri.e_c3 order by tabella,descrizione";
+    	$res=$db->fetchAll($sql);
+    	foreach($res as $val){
+    		$result[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
+    	}
+    	return $result;
+    }
+    static function getC4Oneri(){
+    	$db = self::getDB();
+    	$sql="SELECT * FROM oneri.e_c4 order by tabella,descrizione";
+    	$res=$db->fetchAll($sql);
+    	foreach($res as $val){
+    		$result[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
+    	}
+    	return $result;
+    }
+    static function getC5Oneri(){
+    	$db = self::getDB();
+    	$sql="SELECT * FROM oneri.e_c5 order by tabella,descrizione";
+    	$res=$db->fetchAll($sql);
+    	foreach($res as $val){
+    		$result[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
+    	}
+    	return $result;
+    }
+    static function getD1Oneri(){
+    	$db = self::getDB();
+    	$sql="SELECT * FROM oneri.e_d1 order by tabella,descrizione";
+    	$res=$db->fetchAll($sql);
+    	foreach($res as $val){
+    		$result[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
+    	}
+    	return $result;
+    }
+    static function getD2Oneri(){
+    	$db = self::getDB();
+    	$sql="SELECT * FROM oneri.e_d2 order by tabella,descrizione";
+    	$res=$db->fetchAll($sql);
+    	foreach($res as $val){
+    		$result[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
+    	}
+    	return $result;
+    }
 }
 
 ?>

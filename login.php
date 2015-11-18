@@ -35,7 +35,7 @@
         }
 	//per il debug
 	$dbconn=new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
-	if(!$dbconn->db_connect_id)  die( "Impossibile connettersi al database");
+	if(!$dbconn->db_connect_id)  die( "Impossibile connettersi al database ".DB_NAME." sulla porta ".DB_PORT);
 	//Se sto validando l'utente includo la validazione, se va male esco altrimenti continuo a caricare la pagina stessa
 	
 	if(isset($_POST['entra'])){
