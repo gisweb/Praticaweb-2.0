@@ -3,15 +3,35 @@ require_once ("login.php");
 
 
 unset($is_cdu);
+unset($is_ce);
 $is_cdu=isset($_REQUEST["cdu"])?($_REQUEST["cdu"]):(0);
-
+$is_ce=isset($_REQUEST["comm"])?($_REQUEST["comm"]):(0);
+$is_vigi=isset($_REQUEST["vigi"])?($_REQUEST["vigi"]):(0);
+$is_agi=isset($_REQUEST["agi"])?($_REQUEST["agi"]):(0);
 if($is_cdu==1){
  	$tipomenu="cdu";
 	$path="cdu";
+        $app=1;
+}
+elseif($is_ce==1){
+ 	$tipomenu="commissione";
+	$path="ce";
+    $app=2;
+}
+elseif($is_vigi==1){
+ 	$tipomenu="vigilanza";
+	$path="vigi";
+        $app=3;
+}
+elseif($is_agi==1){
+    $tipomenu="agibilita";
+    $path="agi";
+    $app=4;
 }
 else{
 	$tipomenu="pratica";
 	$path="pe";
+        $app=0;
 }
 
 $menu=new Menu($tipomenu,$path);
@@ -29,30 +49,32 @@ if(isset($_POST["stampe"])){
 		elseif($is_commissione_paesaggio) 
 			$active_form="ce.commissione_paesaggio.php?pratica=$idpratica&comm_paesaggio=1";
 		else*/
-		if($is_cdu) 
-			$active_form="cdu.richiesta.php?pratica=$idpratica";
-		else {
-                        
-			$active_form.="?pratica=$idpratica";
+		if ($is_cdu) $active_form="cdu.iter.php?pratica=$idpratica";
+                elseif($is_ce) $active_form="ce.iter.php?pratica=$idpratica";
+                elseif($is_vigi) $active_form="vigi.iter.php?pratica=$idpratica";
+                else {
+                    $active_form="pe.iter.php?pratica=$idpratica";
 		}
 }
 elseif (isset($active_form) && $active_form){
-	//per la gestione dei salvataggi
-    
-	if (!isset($_REQUEST["ext"])){
-		if (file_exists(DATA_DIR."db".DIRECTORY_SEPARATOR."db.$active_form")){
-			include_once DATA_DIR."db".DIRECTORY_SEPARATOR."db.$active_form";
-		}
-		else
-			include (APPS_DIR."db/db.$active_form");
-		$titolo=$_SESSION["TITOLO_$idpratica"];
-	}
-	else
+//per la gestione dei salvataggi
+    if (!isset($_REQUEST["ext"])){
+            if (file_exists(DATA_DIR."db".DIRECTORY_SEPARATOR."db.$active_form")){
+                include_once DATA_DIR."db".DIRECTORY_SEPARATOR."db.$active_form";
+            }
+            else{
+                include (APPS_DIR."db/db.$active_form");
+            }
+
+            $titolo=$_SESSION["TITOLO_$idpratica"];
+    }
+    else
 		$active_form.="?pratica=$idpratica";
 }
 else{
-	if($is_cdu) 
-		$active_form="cdu.richiesta.php?pratica=$idpratica";
+	if ($is_cdu) $active_form="cdu.iter.php?pratica=$idpratica";
+                elseif($is_ce) $active_form="ce.iter.php?pratica=$idpratica";
+                elseif($is_vigi) $active_form="vigi.iter.php?pratica=$idpratica";
 	else {
 		$active_form="pe.iter.php?pratica=$idpratica";
 		include "./db/db.pe.recenti.php";
@@ -61,7 +83,7 @@ else{
 
 list($visitedForm,$prms) = explode('?',$active_form);
 
-$pr=new pratica($idpratica,$is_cdu);
+$pr=new pratica($idpratica,$app);
 //$_SESSION["TITOLO_".$idpratica]=$pr->titolo;
 $_SESSION["TITOLO_".$idpratica]=  appUtils::titoloPratica($_REQUEST);
 //$_SESSION["TITOLO_PRATICA"]=$pr->titolo;

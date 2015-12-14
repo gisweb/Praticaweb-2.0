@@ -25,7 +25,7 @@ function valida_dati($array_config,$campi_obbligatori){
 	foreach($array_def as $def){
 		$campo=$def[1];
 		$tipo=trim($def[3]);
-		$val=(trim($def[3])!='multiselectdb')?(trim($_POST[$campo])):($_REQUEST[$campo]);
+		$val=(!in_array($tipo,Array('select2-int','select2-str','multiselectdb')))?(trim($_POST[$campo])):($_REQUEST[$campo]);
 		switch ($tipo) {
 			case "idriga":	
 				$val=''; //inutile metterlo nella query
@@ -61,6 +61,22 @@ function valida_dati($array_config,$campi_obbligatori){
 
 				}
 				elseif (strlen($val)===0) $val="NULL";
+				break;
+			case "select2-str":
+				if (!is_array($val)) {
+					$val = "NULL";
+				}
+				else{
+					$val = sprintf("ARRAY['%s']",implode("','",$val));
+				}
+				break;
+			case "select2-int":
+				if (!is_array($val)) {
+					$val = "NULL";
+				}
+				else{
+					$val = sprintf("ARRAY[%s]",implode(",",$val));
+				}
 				break;
 			case "data":
 				$l=strlen($val);
@@ -310,13 +326,13 @@ function valida_campi($arr){
 		$retval="";
 		$elenco = $db->sql_fetchrowset();
 		$nrighe=$db->sql_numrows();*/
-                $dbh=utils::getDb();
-                $sth = $dbh->prepare($sql);
-                if(!$sth->execute()){
-                    $arr = $sth->errorInfo();
-                    echo ("ERRORE NEL SALVATAGGIO<p>$sql</p>");
-                    return;
-                }
+		$dbh=utils::getDb();
+		$sth = $dbh->prepare($sql);
+		if(!$sth->execute()){
+			$arr = $sth->errorInfo();
+			echo ("ERRORE NEL SALVATAGGIO<p>$sql</p>");
+			return;
+		}
 		//se ho inserito un nuovo valore ricavo l'ultimo id
 		if ($_POST["mode"]=="new") {
             

@@ -10,150 +10,308 @@ use Doctrine\Common\ClassLoader;
 require_once APPS_DIR.'plugins/Doctrine/Common/ClassLoader.php';
 class generalPratica {
     var $pratica;
-	var $tipopratica=null;
-	var $titolo="";
+    var $tipopratica=null;
+    var $titolo="";
     var $info=Array();
     var $allegati;
     var $url_allegati;
     var $documenti;
     var $url_documenti;
     var $user;
-	var $cm_mq=37.7; //Valore Corrispettivo monetario €/mq
-	var $next;
-	var $prev;
+    var $cm_mq=37.7; //Valore Corrispettivo monetario €/mq
+    var $next;
+    var $prev;
     var $db;
     
     function __construct($id,$type=0){
 		
-		$this->pratica=$id;
-		$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
-		if(!$db->db_connect_id)  die( "Impossibile connettersi al database ".DB_NAME);
-		$this->db=$db;
-		$this->db1=$this->setDB();
-		switch($type){
-			case 1:
-				$this->initCdu();
-				break;
-			default:
-				$this->initPratica();
-				break;
-		}
+        $this->pratica=$id;
+        $db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
+        if(!$db->db_connect_id)  die( "Impossibile connettersi al database ".DB_NAME);
+        $this->db=$db;
+        $this->db1=$this->setDB();
+        switch($type){
+            case 1:
+                $this->initCdu();
+                break;
+            case 2:
+                $this->initCE();
+                break;
+            case 3:
+                $this->initVigi();
+                break;
+            default:
+                $this->initPE();
+                break;
+        }
 		
     }
     function __destruct(){
         $this->db1->close();
     }
+    
+    private function _setInfoUsers(){
+        $conn = utils::getDb();
+        $sql="SELECT userid as dirigente FROM admin.users WHERE attivato=1 and '13' = ANY(string_to_array(coalesce(gruppi,''),','));";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(Array($this->pratica));
+        $this->info['dirigente']=$stmt->fetchColumn();
+        //ESTRAGGO INFORMAZIONI SUL RESPONSABILE DEL SERVIZIO
+        $sql="SELECT userid as rds FROM admin.users WHERE attivato=1 and '15' = ANY(string_to_array(coalesce(gruppi,''),','));";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(Array($this->pratica));
+        $this->info['rds']=$stmt->fetchColumn();
+        //INFO UTENTE (ID-GRUPPI-NOME)
+        $this->userid=$_SESSION['USER_ID'];
+        $this->usergroups=$_SESSION['GROUPS'];
+        $sql="SELECT username FROM admin.users WHERE userid=?";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(Array($this->userid));
+        $this->user=$stmt->fetchColumn();
+    }
+    
+    private function initPE(){
+        $conn = utils::getDb();
+        if ($this->pratica && is_numeric($this->pratica)){
+            //INFORMAZIONI SULLA PRATICA
+            $sql="SELECT numero,tipo,resp_proc,resp_it,resp_ia,date_part('year',data_presentazione) as anno,data_presentazione,data_prot,B.nome as tipo_pratica,B.tipologia FROM pe.avvioproc A LEFT JOIN pe.e_tipopratica B ON(A.tipo=B.id)  WHERE A.pratica=?";
+            $stmt = $conn->prepare($sql);
+            if (!$stmt->execute(Array($this->pratica))){
+                return;
+            }
+            $r=$stmt->fetch(PDO::FETCH_ASSOC);
+            $this->info=$r;
+            $this->titolo=sprintf("%s n° %s del %s",$r["tipo_pratica"],$r["numero"],$r["data_presentazione"]);
+            /*if($this->info['tipo'] < 10000 || in_array($this->info['tipo'],Array(14000,15000))){
+                    $this->tipopratica='pratica';
+            }
+            elseif($this->info['tipo'] < 13000){
+                    $this->tipopratica='dia';
+            }
+            else{
+                    $this->tipopratica='ambientale';
+            }*/
+            $this->tipopratica=$info["tipologia"];
+            $numero=appUtils::normalizeNumero($this->info['numero']);
+            $tmp=explode('-',$numero);
+            if (count($tmp)==2 && preg_match("|([A-z0-9]+)|",$tmp[0])){
+                    $tmp[0]=(preg_match("|^[89]|",$tmp[0]))?("19".$tmp[0]):($tmp[0]);
+                    $numero=implode('-',$tmp);
+            }
+            $anno=($r['anno'])?($r['anno']):($tmp[0]);
+
+            //Struttura delle directory
+            //$arrDir=Array('/data','sanremo','pe','praticaweb','documenti','pe',$anno);
+                $arrDir=Array(DATA_DIR,'praticaweb','documenti','pe',$anno);
+            $this->annodir=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
+            $arrDir[]=$numero;
+            $this->documenti=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
+            $arrDir[]="allegati";
+            $this->allegati=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
+            $arrDir[]="tmb";
+            $this->allegati_tmb=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
+
+            $this->url_documenti="/documenti/pe/$anno/$numero/";
+            $this->url_allegati="/documenti/pe/$anno/$numero/allegati/";
+            $this->smb_documenti=SMB_PATH."$anno/$numero/";
+
+
+            //INFO PRATICA PREC E SUCC
+            $sql="SELECT max(pratica) as pratica FROM pe.avvioproc WHERE pratica < ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute(Array($this->pratica));
+            $this->prev=$stmt->fetchColumn();
+            $sql="SELECT min(pratica) as pratica FROM pe.avvioproc WHERE pratica > ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute(Array($this->pratica));
+            $this->prev=$stmt->fetchColumn();
+        }
+
+        //ESTRAGGO INFORMAZIONI SUL DIRIGENTE
+        $this->_setInfoUsers();
+    }
+    
+    private function initVigi(){
+        $conn = utils::getDb();
+        if ($this->pratica && is_numeric($this->pratica)){
+            //INFORMAZIONI SULLA PRATICA
+            $sql="SELECT numero,tipo,resp_proc,resp_it,resp_ia,date_part('year',data_presentazione) as anno,data_presentazione,data_prot,B.nome as tipo_pratica,B.tipologia FROM vigi.avvioproc A LEFT JOIN vigi.e_tipopratica B ON(A.tipo=B.id)  WHERE A.pratica=?";
+            $stmt = $conn->prepare($sql);
+            if (!$stmt->execute(Array($this->pratica))){
+                return;
+            }
+            $r=$stmt->fetch(PDO::FETCH_ASSOC);
+            $this->info=$r;
+            $this->titolo=sprintf("%s n° %s del %s",$r["tipo_pratica"],$r["numero"],$r["data_presentazione"]);
+            /*if($this->info['tipo'] < 10000 || in_array($this->info['tipo'],Array(14000,15000))){
+                    $this->tipopratica='pratica';
+            }
+            elseif($this->info['tipo'] < 13000){
+                    $this->tipopratica='dia';
+            }
+            else{
+                    $this->tipopratica='ambientale';
+            }*/
+            $this->tipopratica=$info["tipologia"];
+            $numero=appUtils::normalizeNumero($this->info['numero']);
+            $tmp=explode('-',$numero);
+            if (count($tmp)==2 && preg_match("|([A-z0-9]+)|",$tmp[0])){
+                    $tmp[0]=(preg_match("|^[89]|",$tmp[0]))?("19".$tmp[0]):($tmp[0]);
+                    $numero=implode('-',$tmp);
+            }
+            $anno=($r['anno'])?($r['anno']):($tmp[0]);
+
+            //Struttura delle directory
+            //$arrDir=Array('/data','sanremo','vigi','praticaweb','documenti','vigi',$anno);
+                $arrDir=Array(DATA_DIR,'praticaweb','documenti','vigi',$anno);
+            $this->annodir=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
+            $arrDir[]=$numero;
+            $this->documenti=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
+            $arrDir[]="allegati";
+            $this->allegati=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
+            $arrDir[]="tmb";
+            $this->allegati_tmb=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
+
+            $this->url_documenti="/documenti/vigi/$anno/$numero/";
+            $this->url_allegati="/documenti/vigi/$anno/$numero/allegati/";
+            $this->smb_documenti=SMB_PATH."$anno/$numero/";
+
+
+            //INFO PRATICA PREC E SUCC
+            $sql="SELECT max(pratica) as pratica FROM vigi.avvioproc WHERE pratica < ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute(Array($this->pratica));
+            $this->prev=$stmt->fetchColumn();
+            $sql="SELECT min(pratica) as pratica FROM vigi.avvioproc WHERE pratica > ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute(Array($this->pratica));
+            $this->prev=$stmt->fetchColumn();
+        }
+
+        //ESTRAGGO INFORMAZIONI SUL DIRIGENTE
+
+        $sql="SELECT userid as dirigente FROM admin.users WHERE attivato=1 and '13' = ANY(string_to_array(coalesce(gruppi,''),','));";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(Array($this->pratica));
+        $this->info['dirigente']=$stmt->fetchColumn();
+        //ESTRAGGO INFORMAZIONI SUL RESPONSABILE DEL SERVIZIO
+        $sql="SELECT userid as rds FROM admin.users WHERE attivato=1 and '15' = ANY(string_to_array(coalesce(gruppi,''),','));";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(Array($this->pratica));
+        $this->info['rds']=$stmt->fetchColumn();
+        //INFO UTENTE (ID-GRUPPI-NOME)
+        $this->userid=$_SESSION['USER_ID'];
+        $this->usergroups=$_SESSION['GROUPS'];
+        $sql="SELECT username FROM admin.users WHERE userid=?";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(Array($this->userid));
+        $this->user=$stmt->fetchColumn();
+
+    }
+    
+    private function initCdu(){
+        $db=$this->db1;
+        $this->tipopratica='cdu';
+        if($this->pratica){
+            $sql="select protocollo,date_part('year',data) as anno FROM cdu.richiesta WHERE pratica=?";
+            $r=$db->fetchAssoc($sql,Array($this->pratica));
+            $this->info=$r;
+            extract($r);
+            $arrDir=Array(DATA_DIR,'praticaweb','documenti','cdu',$anno);
+            $this->annodir=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
+            $arrDir[]=$protocollo;
+            $this->documenti=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
+            $this->url_documenti="/documenti/cdu/$anno/$protocollo/";
+            $this->smb_documenti=SMB_PATH."$anno/$protocollo/";
+        }
+    }
 	
-	private function initPratica(){
-		$db=$this->db1;
-		if ($this->pratica && is_numeric($this->pratica)){
-                    //INFORMAZIONI SULLA PRATICA
-                    $sql="SELECT numero,tipo,resp_proc,resp_it,resp_ia,date_part('year',data_presentazione) as anno,data_presentazione,data_prot,B.nome as tipo_pratica FROM pe.avvioproc A LEFT JOIN pe.e_tipopratica B ON(A.tipo=B.id)  WHERE A.pratica=?";
-                    $r=$db->fetchAssoc($sql, Array($this->pratica));
-                    $this->info=$r;
-                    $this->titolo=sprintf("%s n° %s del %s",$r["tipo_pratica"],$r["numero"],$r["data_presentazione"]);
-                    if($this->info['tipo'] < 10000 || in_array($this->info['tipo'],Array(14000,15000))){
-                            $this->tipopratica='pratica';
-                    }
-                    elseif($this->info['tipo'] < 13000){
-                            $this->tipopratica='dia';
-                    }
-                    else{
-                            $this->tipopratica='ambientale';
-                    }
+    private function initCE(){
+        $conn = utils::getDb();
+        if ($this->pratica && is_numeric($this->pratica)){
+            //INFORMAZIONI SULLA PRATICA
+            $sql="SELECT A.pratica,C.nome,A.numero,A.data_convocazione,A.ora_convocazione,date_part('year',data_convocazione) as anno,A.sede1 as sede,C.tipologia FROM ce.commissione A inner join pe.e_enti B ON(A.tipo_comm=B.id) inner join ce.e_tipopratica C ON(B.codice=C.tipologia)  WHERE A.pratica=?";
+            $stmt = $conn->prepare($sql);
+            if (!$stmt->execute(Array($this->pratica))){
+                return;
+            }
+            $r=$stmt->fetch(PDO::FETCH_ASSOC);
+            $this->info=$r;
+            $this->titolo=sprintf("%s n° %s del %s",$r["tipo_pratica"],$r["numero"],$r["data_convocazione"]);
+            /*if($this->info['tipo'] < 10000 || in_array($this->info['tipo'],Array(14000,15000))){
+                    $this->tipopratica='pratica';
+            }
+            elseif($this->info['tipo'] < 13000){
+                    $this->tipopratica='dia';
+            }
+            else{
+                    $this->tipopratica='ambientale';
+            }*/
+            $this->tipopratica=$info["tipologia"];
+            $numero=appUtils::normalizeNumero($this->info['numero']);
+            $tmp=explode('-',$numero);
+            if (count($tmp)==2 && preg_match("|([A-z0-9]+)|",$tmp[0])){
+                    $tmp[0]=(preg_match("|^[89]|",$tmp[0]))?("19".$tmp[0]):($tmp[0]);
+                    $numero=implode('-',$tmp);
+            }
+            $anno=($r['anno'])?($r['anno']):($tmp[0]);
 
-                    $numero=appUtils::normalizeNumero($this->info['numero']);
-                    $tmp=explode('-',$numero);
-                    if (count($tmp)==2 && preg_match("|([A-z0-9]+)|",$tmp[0])){
-                            $tmp[0]=(preg_match("|^[89]|",$tmp[0]))?("19".$tmp[0]):($tmp[0]);
-                            $numero=implode('-',$tmp);
-                    }
-                    $anno=($r['anno'])?($r['anno']):($tmp[0]);
+            //Struttura delle directory
+            //$arrDir=Array('/data','sanremo','pe','praticaweb','documenti','pe',$anno);
+            $arrDir=Array(DATA_DIR,'praticaweb','documenti','ce',$anno);
+            $this->annodir=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
+            $arrDir[]=$numero;
+            $this->documenti=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
+            $arrDir[]="allegati";
+            $this->allegati=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
+            $arrDir[]="tmb";
+            $this->allegati_tmb=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
 
-                    //Struttura delle directory
-                    //$arrDir=Array('/data','sanremo','pe','praticaweb','documenti','pe',$anno);
-			$arrDir=Array(DATA_DIR,'praticaweb','documenti','pe',$anno);
-                    $this->annodir=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
-                    $arrDir[]=$numero;
-                    $this->documenti=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
-                    $arrDir[]="allegati";
-                    $this->allegati=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
-                    $arrDir[]="tmb";
-                    $this->allegati_tmb=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
-
-                    $this->url_documenti="/documenti/pe/$anno/$numero/";
-                    $this->url_allegati="/documenti/pe/$anno/$numero/allegati/";
-                    $this->smb_documenti=SMB_PATH."$anno/$numero/";
+            $this->url_documenti="/documenti/ce/$anno/$numero/";
+            $this->url_allegati="/documenti/ce/$anno/$numero/allegati/";
+            $this->smb_documenti=SMB_PATH."$anno/$numero/";
 
 
-                    //INFO PRATICA PREC E SUCC
-                    $sql="SELECT max(pratica) as pratica FROM pe.avvioproc WHERE pratica < ?";
-                    $this->prev=$db->fetchColumn($sql,Array($this->pratica));
-                    $sql="SELECT min(pratica) as pratica FROM pe.avvioproc WHERE pratica > ?";
-                    $this->next=$db->fetchColumn($sql,Array($this->pratica));
-		}
+            //INFO PRATICA PREC E SUCC
+            $sql="SELECT max(pratica) as pratica FROM pe.avvioproc WHERE pratica < ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute(Array($this->pratica));
+            $this->prev=$stmt->fetchColumn();
+            $sql="SELECT min(pratica) as pratica FROM pe.avvioproc WHERE pratica > ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute(Array($this->pratica));
+            $this->prev=$stmt->fetchColumn();
+        }
+        
+    }
+    
+    
+    function createStructure(){
+        if($this->pratica){
 
-		//ESTRAGGO INFORMAZIONI SUL DIRIGENTE
-		
-		$sql="SELECT userid as dirigente FROM admin.users WHERE attivato=1 and '13' = ANY(string_to_array(coalesce(gruppi,''),','));";
-		$dirig=$db->fetchColumn($sql);
-		$this->info['dirigente']=$dirig;
-		//ESTRAGGO INFORMAZIONI SUL RESPONSABILE DEL SERVIZIO
-		$sql="SELECT userid as rds FROM admin.users WHERE attivato=1 and '15' = ANY(string_to_array(coalesce(gruppi,''),','));";
-		$rds=$db->fetchColumn($sql);
-		$this->info['rds']=$rds;
-		//INFO UTENTE (ID-GRUPPI-NOME)
-		$this->userid=$_SESSION['USER_ID'];
-		$this->usergroups=$_SESSION['GROUPS'];
-		$sql="SELECT username FROM admin.users WHERE userid=?";
-		$this->user=$db->fetchColumn($sql,Array($this->userid));
-				
-	}
-	
-	private function initCdu(){
-		$db=$this->db1;
-		$this->tipopratica='cdu';
-		if($this->pratica){
-			$sql="select protocollo,date_part('year',data) as anno FROM cdu.richiesta WHERE pratica=?";
-			$r=$db->fetchAssoc($sql,Array($this->pratica));
-			$this->info=$r;
-			extract($r);
-			$arrDir=Array(DATA_DIR,'praticaweb','documenti','cdu',$anno);
-			$this->annodir=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
-			$arrDir[]=$protocollo;
-			$this->documenti=implode(DIRECTORY_SEPARATOR,$arrDir).DIRECTORY_SEPARATOR;
-			$this->url_documenti="/documenti/cdu/$anno/$protocollo/";
-			$this->smb_documenti=SMB_PATH."$anno/$protocollo/";
-		}
-	}
-	
-	
-		function createStructure(){
-		if($this->pratica){
-			
-			if(!file_exists($this->annodir)) {
-				mkdir($this->annodir);
-				chmod($this->annodir,0777);
-				print (!file_exists($this->annodir))?("Errore nella creazione della cartella $this->annodir\n"):("");
-			}
-			if(!file_exists($this->documenti)) {
-				mkdir($this->documenti);
-				chmod($this->documenti,0777);
-				//print (!file_exists($this->documenti))?("Errore nella creazione della cartella $this->documenti\n"):("Cartella $this->documenti creata con successo\n");
-			}
-			if($this->allegati && !file_exists($this->allegati)) {
-				mkdir($this->allegati);
-				chmod($this->allegati,0777);
-				//print (!file_exists($this->allegati))?("Errore nella creazione della cartella $this->allegati\n"):("Cartella $this->allegati creata con successo\n");
-			}
-			if($this->allegati_tmb && !file_exists($this->allegati_tmb)){
-				mkdir($this->allegati_tmb);
-				chmod($this->allegati_tmb,0777);
-				//print (!file_exists($this->allegati_tmb))?("Errore nella creazione della cartella $this->allegati_tmb\n"):("Cartella $this->allegati_tmb creata con successo\n");
+            if(!file_exists($this->annodir)) {
+                    mkdir($this->annodir);
+                    chmod($this->annodir,0777);
+                    print (!file_exists($this->annodir))?("Errore nella creazione della cartella $this->annodir\n"):("");
+            }
+            if(!file_exists($this->documenti)) {
+                    mkdir($this->documenti);
+                    chmod($this->documenti,0777);
+                    print (!file_exists($this->documenti))?("Errore nella creazione della cartella $this->documenti\n"):("Cartella $this->documenti creata con successo\n");
+            }
+            if($this->allegati && !file_exists($this->allegati)) {
+                    mkdir($this->allegati);
+                    chmod($this->allegati,0777);
+                    //print (!file_exists($this->allegati))?("Errore nella creazione della cartella $this->allegati\n"):("Cartella $this->allegati creata con successo\n");
+            }
+            if($this->allegati_tmb && !file_exists($this->allegati_tmb)){
+                    mkdir($this->allegati_tmb);
+                    chmod($this->allegati_tmb,0777);
+                    //print (!file_exists($this->allegati_tmb))?("Errore nella creazione della cartella $this->allegati_tmb\n"):("Cartella $this->allegati_tmb creata con successo\n");
 
-			}
-		}
-	}
+            }
+        }
+    }
 	
 	//Cancellazione della Pratica
     static function delete($id){
@@ -171,17 +329,8 @@ class generalPratica {
 	}
 	
 	function nuovaPratica($arrInfo){
-		//Creazione Struttura nuova Pratica
-		$this->createStructure();
-		if(in_array($this->tipopratica,Array("ambientale","dia","pratica"))){
-			$this->setAllegati();
-			//Array('codice'=>null,'utente_in'=>$this->userid,'utente_fi'=>null,'data'=>"now",'stato_in'=>null,'stato_fi'=>null,'note'=>null,'tmsins'=>time(),'uidins'=>$this->userid);
-			//$this->addTransition(Array('codice'=>'ardp',"utente_fi"=>$this->info["resp_proc"],"data"=>$arrInfo["data_resp"]));
-			//$this->addTransition(Array('codice'=>'aipre',"utente_fi"=>$this->userid));
-			//if ($this->info["resp_it"]) $this->addTransition(Array('codice'=>'aitec',"utente_fi"=>$this->info["resp_it"],"data"=>$arrInfo["data_resp_it"]));
-			//if ($this->info["resp_ia"]) $this->addTransition(Array('codice'=>'aiamm',"utente_fi"=>$this->info["resp_ia"],"data"=>$arrInfo["data_resp_ia"]));
-		}
-		
+            //Creazione Struttura nuova Pratica
+            $this->createStructure();	
 	}
 	private function setAllegati($list=Array()){
             if(!$list){

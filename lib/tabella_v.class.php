@@ -63,29 +63,29 @@ function get_controllo($label,$tipo,$w,$campo,$html5Attr,$frozen=0){
 				$dato="0";
 			$retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$w\" name=\"$campo\" id=\"$campo\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
 			break;
-                case "intero":
-                                 if ($dato) 
-                                         $dato=number_format($dato,0, ',', '');			
-                                 else
-                                         $dato="0";
-                                 $retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$w\"  name=\"$campo\" id=\"numero\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
-                                 break;
-            
-                case "valuta":
-                case "volume":
-                case "superficie":
-                        if ($dato)
-                                $dato=number_format($dato,2, ',','.');
-                        else
-                                $dato="0,00";
-                        $retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$w\" name=\"$campo\" id=\"$campo\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
-                    break;
-                case "upload":
-                    $size=intval($w+($w/5));
-                                $testo=stripslashes($dato);
+		case "intero":
+						 if ($dato) 
+								 $dato=number_format($dato,0, ',', '');			
+						 else
+								 $dato="0";
+						 $retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$w\"  name=\"$campo\" id=\"numero\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
+						 break;
+	
+		case "valuta":
+		case "volume":
+		case "superficie":
+			if ($dato)
+					$dato=number_format($dato,2, ',','.');
+			else
+					$dato="0,00";
+			$retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$w\" name=\"$campo\" id=\"$campo\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
+			break;
+		case "upload":
+			$size=intval($w+($w/5));
+						$testo=stripslashes($dato);
 
-                    $retval="<INPUT class=\"$class\" type=\"file\" maxLength=\"$w\" size=\"$size\" name=\"$campo\" id=\"$campo\" value=\"$testo\" $html5Attr $disabilitato>$help";
-                    break;
+			$retval="<INPUT class=\"$class\" type=\"file\" maxLength=\"$w\" size=\"$size\" name=\"$campo\" id=\"$campo\" value=\"$testo\" $html5Attr $disabilitato>$help";
+			break;
 		case "ui-button":
 			$size=explode("x",$w);
 			$jsfunction=$size[1];
@@ -100,16 +100,16 @@ function get_controllo($label,$tipo,$w,$campo,$html5Attr,$frozen=0){
 			$testo=stripslashes($dato);
 			$retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$size\" name=\"$campo\" id=\"$campo\" value=\"$testo\" $html5Attr $disabilitato>$help";
 			break;
-                case "allegati":
-                    if($dato) $retval=<<<EOT
+		case "allegati":
+			if($dato) $retval=<<<EOT
 <span class="allegati" data-plugins="link" data-url="">$dato</span>
 EOT;
-                    else
-                        $retval="<b>Allegato Non Presente</b>";
-                    return $retval;
-                    break;
-                case "combosuggest":
-                        $prms=explode('#',$w);
+			else
+				$retval="<b>Allegato Non Presente</b>";
+			return $retval;
+			break;
+		case "combosuggest":
+			$prms=explode('#',$w);
 			if (count($prms)>1)
 				list($size,$selectFN)=$prms;
 			else{
@@ -122,10 +122,10 @@ EOT;
 			$params=implode(',',$prms);
 			$size=intval($size+($size/5));
 			$testo=stripslashes($dato);
-                        $retval=<<<EOT
+			$retval=<<<EOT
 <select class="$class" name="$campo" id="$campo" $title $html5Attr $disabilitato></select>$help
 EOT;
-                    break;
+			break;
 		case "autosuggest":
 			$prms=explode('#',$w);
 			if (count($prms)>1)
@@ -232,6 +232,18 @@ EOT;*/
 			});";
 			$retval.="</script>";
 			break;
+		case "select2-str":
+		case "select2-int":
+			$size=explode("x",$w);
+			$fieldName = $campo."[]";
+			$values=explode(',',str_replace(Array('{','}'),'',$dato));
+			$opzioni=$this->elenco_selectdb($size[1],$values,"id = ANY(ARRAY[".implode(',',$values)."])");
+			$retval =<<<EOT
+	<select style="width:$size[0]px" class="$class" name="$fieldName"  id="$campo" data-plugins="select2"  $html5Attr >
+	$opzioni
+	</select>$help
+EOT;
+			break;
 		case "select"://elenco preso da file testo
 			//echo $size;
 			$size=explode("x",$w);
@@ -280,7 +292,7 @@ EOT;*/
 			$retval="<INPUT $class maxLength=\"$w\" size=\"$size\"  class=\"textbox\" name=\"$campo\" id=\"$campo\" value=\"$testo\" disabled>$help";
 			break;
 		case "checkbox":
-			(($dati[$campo]=="t") or ($dati[$campo]=="on") or (abs($dati[$campo])==1))?($selezionato="checked"):($selezionato="");
+			$selezionato=(($dati[$campo]==="t") || ($dati[$campo]==="on") || ($dati[$campo]==1))?("checked"):("");
 			$ch=strtoupper($campo);
 			if($dati[$campo]==-1) $ch="<font color=\"FF0000\">EX $ch</font>";
 			$retval="<b>$ch</b><input type=\"checkbox\"  name=\"$campo\"  id=\"$campo\" $selezionato $html5Attr $disabilitato>&nbsp;&nbsp;";
@@ -460,7 +472,7 @@ EOT;
 	return $retval;
 }
 
-function get_dato($tipo,$w,$campo){
+function get_dato($tipo,$w,$campo,$html5Attr){
 //restituisce il dato come stringa
 	$dati=$this->array_dati[$this->curr_record];
 
@@ -537,6 +549,24 @@ function get_dato($tipo,$w,$campo){
                     $size=explode("x",$w);
                     $retval=$this->get_multiselectdb_value($dati[$campo],"id",$size[1],"opzione");
                     break;
+				
+			case "select2-str":
+			case "select2-int":
+				$size=explode("x",$w);
+				$table = $size[1];
+				$key=$size[2];
+				$lbl =$size[3];
+				//$values=explode(',',str_replace(Array('{','}'),'',$dati[$campo]));
+				$values = json_encode($dati[$campo]);
+				$labels=$this->getlabels($table,$key,$lbl,"pratica IN (".implode(',',$values).")");
+				
+				foreach($labels as $k=>$v){
+					$retval .=<<<EOT
+		<span id="$campo-$i" $html5Attr data-$key="$k"><span class="underline-cursor">$v</span><span class="ui-icon ui-icon-link" style="display:inline-block;margin-left:1px;"/></span>
+EOT;
+				}
+				
+				break;
             case "riferimento":
                 $prms=explode('#',$w);
                 $size=array_shift($prms);
@@ -571,6 +601,16 @@ function get_dato($tipo,$w,$campo){
                 $obj=json_encode($params);
                 $retval=($dati[$campo])?("<a href=\"#\" id=\"$campo\" style=\"text-decoration:none;\" $h>$testo &nbsp;<span style=\"display:inline-block\" class=\"ui-icon $class\"></a>"):('');
                 break;
+			case "ui-icons":
+				$pr = $dati["pratica"];
+                $prms=explode('#',$w);
+                $size=array_shift($prms);
+                $class=array_shift($prms);
+                $testo=array_shift($prms);
+				$retval=<<<EOT
+<a href="#" id="$campo" style="text-decoration:none;width:$size" data-pratica="$pr" $html5Attr>$testo &nbsp;<span style="display:inline-block" class="ui-icon $class"></a>
+EOT;
+				break;
 			
 	}
 	return $retval;
@@ -629,9 +669,26 @@ function get_riga_view($nriga){
 	$testo_riga='';
 	$riga=$this->tab_config[$nriga];
 	for ($i=0;$i<count($riga);$i++){
-		list($label,$campo,$w,$tipo)=explode(';',$riga[$i]);
+		list($label,$campo,$w,$tipo,$html5Data)=explode(';',$riga[$i]);
+		$html5Attr=Array();
+		//Raccolgo gli HTML5 Attributes (sono nella forma data1=val1#data2=val2....)
+		if ($html5Data){
+			$d=explode('#',$html5Data);
+			//$d=(is_array($d))?($d):(Array($d));
+			for($k=0;$k<count($d);$k++){
+				list($key,$v)=explode('=',$d[$k]);
+				if(strpos($v, '@')===0){
+					$html5Attr[]=sprintf('%s="%s"',$key,$this->array_dati[$nriga][str_replace('@', '', $v)]);
+				}
+				else{
+					$html5Attr[]=sprintf('%s="%s"',$key,$v);
+				}
+				
+			}
+			$html5Attr=implode(" ",$html5Attr);
+		}
 		if ($label)  $label="<b>$label:&nbsp;</b>";
-		$dato=$this->get_dato(trim($tipo),$w,$campo);
+		$dato=$this->get_dato(trim($tipo),$w,$campo,$html5Attr);
 		if ($label.$dato)  
 			$testo_riga.=$label.$dato."&nbsp;&nbsp;&nbsp;&nbsp;";
 	}
@@ -779,11 +836,18 @@ function elenco_selectdb($tabella,$selezionato,$filtro=''){
 	if (!isset($this->db)) $this->connettidb();
 	$sql="select id,opzione from $tabella";
 	if (trim($filtro)){
-		if (!ereg("=",$filtro))
-			$filtro="$filtro='".$this->array_dati[$this->curr_record][$filtro]."'";
+		if (!ereg("=",$filtro)){
+			if ($this->array_dati[$this->curr_record][$filtro]){
+				$filtro="$filtro='".$this->array_dati[$this->curr_record][$filtro]."'";
+			}
+			elseif($_REQUEST[$filtro]){
+				$filtro="$filtro='".$_REQUEST[$filtro]."'";
+			}
+		}
 		$sql.=" where $filtro";
 
 	}
+
 	utils::debug(DEBUG_DIR.'selectdb.debug',$sql);
 	$result = $this->db->sql_query ($sql);
 	if (!$result){
@@ -942,7 +1006,6 @@ function set_elenco_trovati($sql='true',$schema="pe"){
        $sql="SELECT * FROM (SELECT DISTINCT ON (coalesce(soggetti.codfis,soggetti.ragsoc) ) id,coalesce(soggetti.codfis,'') as codfis , coalesce(soggetti.ragsoc,'') as ragsoc,coalesce(datanato::varchar,'') as datanato,coalesce(soggetti.piva,'') as piva,cognome,nome,coalesce(comunato,'') as comunato,
 ((((COALESCE(soggetti.cognome, ''::character varying)::text || COALESCE(' '::text || soggetti.nome::text, ''::text)) ||coalesce(' C.F. '||codfis,'')|| COALESCE(' '::text || soggetti.titolo::text, ''::text)) || COALESCE(' '::text || soggetti.ragsoc::text, ''::text)) || coalesce(' P.I. '||piva,'') || COALESCE(' '::text || soggetti.indirizzo::text, ''::text)) || COALESCE((' ('::text || soggetti.prov::text) || ')'::text, ''::text) AS soggetto
 	FROM $schema.soggetti where $sql ORDER BY coalesce(soggetti.codfis,ragsoc),id DESC ) X WHERE coalesce(coalesce(codfis,piva),'')<>'' ORDER BY lower(cognome),lower(nome),datanato,lower(ragsoc);";
-	//echo($sql);
 	if (!isset($this->db)) $this->connettidb();
 	$result = $this->db->sql_query($sql);
 	return $this->db->sql_numrows();
@@ -967,6 +1030,18 @@ function elenco_trovati($pratica,$schema="pe"){
 	</tr>";
 	}
 	print "</table>";
+}
+function getLabels($table,$key,$label,$filter){
+	$sql="SELECT $key,$label FROM $table WHERE $filter";
+	$result=Array();
+	if (!isset($this->db)) $this->connettidb();
+	if ($this->db->sql_query($sql)){
+		$res = $this->db->sql_fetchrowset();
+		for($i=0;$i<count($res);$i++){
+			$result[$res[$i][$key]]= $res[$i][$label];
+		}
+	}
+	return $result;
 }
 /*function elenco_rif($fields,$tab,$filter){
 	$campi=implode(",",$fields);

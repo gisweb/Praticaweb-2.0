@@ -38,16 +38,16 @@ if ($_POST["azione"]!="Elimina"){
 	$C2=$_POST["c2"];
 	$C3=$_POST["c3"];
 	$C4=$_POST["c4"];
-        $C5=$_POST["c5"];
+    $C5=$_POST["c5"];
 	$D1=$_POST["d1"];
 	$D2=$_POST["d2"];
 	$n=$_POST["n"];
-        $n1=$_POST["n1"];
-        $nn=(($n1-$n)/$n);
+    $n1=$_POST["n1"];
+    $nn=(($n1-$n)/$n);
 
 	$K = $tariffa["k"];
 	$A = $tariffa["a"];
-        $tariffa["tr"]=($C5>0)?($tariffa["tr"]*$C5/100):($tariffa["tr"]);
+    $tariffa["tr"]=($C5>0)?($tariffa["tr"]*$C5/100):($tariffa["tr"]);
 	$B = $tariffa["tr"]-$A;
 	$IE= $tariffa["ie"];
 	$B1=$B*$IE/100;
@@ -124,10 +124,51 @@ if ($_POST["azione"]!="Elimina"){
 	elseif($intervento >= 200 and $intervento < 300){	// Articolo 39 comma 3 Legge Regionale 16/2008  (Aggiunto per Sanremo)
 		if($perc==0)
 			$perc=100;
-                $CC = 0;
+        $CC = 0;
 		$B1 = $K * $perc * ((100 - ($C2 + $C3 + $C4) + $D2) * $B1) / 1000000;
 		$B2 = $K * $perc * ((100 - ($C1 + $C2 + $C3 + $C4) + $D2) * $B2) / 1000000;
-	}	
+	}
+	elseif($intervento >=300 && $intervento < 400){		 //Fedele Ricostruzione
+		$perc = $intervento - 300.0;
+		$CC = $K * $perc * ((100 + $D1) * $A) / 1000000;
+		$B1 = 0;
+		$B2 = 0;
+		
+	}
+	elseif($intervento==400){		//Mutamento di destinazione d'uso senza opere
+			
+		$sql="select tr,a,ie,k from oneri.e_tariffe where tabella='".$_POST["tabella_old"]."' and anno=" .$_POST["anno"] ;
+		$result = $db->sql_query ($sql);
+		if (!$result){
+			return;
+		}
+		//echo "<p>$sql</p>";
+	
+		$tariffa_old = $db->sql_fetchrow();
+		$K_OLD = $tariffa_old["k"];
+		$A_OLD = $tariffa_old["a"];
+		$tariffa_old["tr"]=($C5>0)?($tariffa_old["tr"]*$C5/100):($tariffa_old["tr"]);
+		$B_OLD = $tariffa_old["tr"]-$A_OLD;
+		$IE_OLD = $tariffa_old["ie"];
+		$B1_OLD =$B_OLD*$IE_OLD/100;
+		$B2_OLD=$B_OLD - $B1_OLD;
+		
+		$perc=60.0;
+		
+		$CC = 0;
+		$CC_OLD = 0;
+		$B1 = ($K * $perc  * $B1) / 10000;
+		$B2 = ($K * $perc  * $B2) / 10000;
+		
+		$B1_OLD = ($K_OLD * $perc * $B1_OLD) / 10000;
+		$B2_OLD = ($K_OLD * $perc * $B2_OLD) / 10000;
+		
+		$B1_NEW = ((($B1 + $B2)- ($B1_OLD + $B2_OLD)) > 0)?($B1 - $B1_OLD):(0);
+		$B2_NEW = ((($B1 + $B2)- ($B1_OLD + $B2_OLD)) > 0)?($B2 - $B2_OLD):(0);
+		
+		$B1=$B1_NEW;
+		$B2=$B2_NEW;
+	}
 	else{
 		if($perc==0)
 			$perc=$intervento;
@@ -167,7 +208,7 @@ if ($_POST["azione"]=="Elimina"){
 $sql="SELECT count(*) as num from oneri.totali where pratica=".$_POST["pratica"];
 if(!$db->sql_query($sql)) print_debug($sql);
 $totali=$db->sql_fetchfield("num");
-    $sql=(!$totali)?("insert into oneri.totali (pratica,cc,b1,b2,calcolo) select pratica,sum(cc),sum(b1),sum(b2),1 from oneri.calcolati where pratica=".$_POST["pratica"]." group by pratica;"):("update oneri.totali set cc=(select sum(calcolati.cc) from oneri.calcolati where pratica=".$_POST["pratica"]."),b1=(select sum(calcolati.b1) from oneri.calcolati where pratica=".$_POST["pratica"]."),b2=(select sum(calcolati.b2) from oneri.calcolati where pratica=".$_POST["pratica"]."),calcolo=1 where pratica=".$_POST["pratica"]);
+$sql=(!$totali)?("insert into oneri.totali (pratica,cc,b1,b2,calcolo) select pratica,sum(cc),sum(b1),sum(b2),1 from oneri.calcolati where pratica=".$_POST["pratica"]." group by pratica;"):("update oneri.totali set cc=(select sum(calcolati.cc) from oneri.calcolati where pratica=".$_POST["pratica"]."),b1=(select sum(calcolati.b1) from oneri.calcolati where pratica=".$_POST["pratica"]."),b2=(select sum(calcolati.b2) from oneri.calcolati where pratica=".$_POST["pratica"]."),calcolo=1 where pratica=".$_POST["pratica"]);
 //echo "<p>$sql</p>";
 if(!$db->sql_query($sql)) print_debug($sql);
 

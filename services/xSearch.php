@@ -18,7 +18,7 @@ $queryOP=($op=='AND')?('INTERSECT'):('UNION');
 $page = isset($_POST['page']) ? intval($_POST['page']) : 1;
 $rows = isset($_POST['rows']) ? intval($_POST['rows']) : 10;
 $offset = ($page-1)*$rows;
-$order = isset($_POST['sort']) ? ("ORDER BY ".$_POST['sort']) : "ORDER BY data_prot";
+$order = isset($_POST['sort']) ? ("ORDER BY ".$_POST['sort']) : "ORDER BY data_presentazione";
 $orderType = isset($_POST['order']) ? ($_POST['order']) : "DESC";
 $groupBy=isset($_POST['field']) ? ($_POST['field']) : "civico";
 $result=Array();
@@ -92,6 +92,25 @@ switch($action){
         //utils::debug(DEBUG_DIR."groupby.debug",$result);
         break;
     default:
+        $app = $_REQUEST["application"];
+        switch($app){
+            case "ce":
+                $queryName="search-ce";
+                $order="ORDER BY data_convocazione";
+                break;
+            case "cdu":
+                $queryName="search-cdu";
+                break;
+            case "vigi":
+                $queryName="search-vigi";
+                break;
+            case "agi":
+                $queryName="search-agi";
+                break;
+            default:
+                $queryName="default";
+                break;
+        }
         foreach($data as $key=>$value){
             $q[]="(SELECT DISTINCT pratica FROM $key WHERE ".implode(" $op ",$value).")";
         }
@@ -102,11 +121,10 @@ switch($action){
             $listId[]=$tmp[$i]['pratica'];
         }
         $total=count($listId);
-        $sql=sprintf($query["default"],$filter,$order,$orderType,$rows,$offset);
+        $sql=sprintf($query[$queryName],$filter,$order,$orderType,$rows,$offset);
         utils::debug(DEBUG_DIR."search.debug",$sql);
         $res=$db->fetchAll($sql);
         $result=Array("total"=>$total,"rows"=>$res,"filter"=>$filter,"sql"=>$sql,"elenco_id"=>$listId);
-        break;
 }
 header('Content-Type: application/json');
 print json_encode($result);

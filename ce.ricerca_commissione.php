@@ -45,9 +45,9 @@ if ($_POST["pag"]){
 			echo "Commissione $idpratica";
 			?><html><body>
 				<script language="javascript">
-					document.location='praticaweb.php?<?=$commissione?>=1&pratica=<?=$idpratica?>';
+					document.location='praticaweb.php?<?php echo $commissione?>=1&pratica=<?php echo $idpratica?>';
 				</script></body></html>
-		<?	
+		<?php	
 			exit;
 		}
 		$pages=intval($totrec/$pratichexpagina); 
@@ -77,32 +77,32 @@ function paginasucc(pg){
 
 <?php include "./inc/inc.page_header.php";?>
 
-<H2 class=blueBanner>Esito della ricerca&nbsp;&nbsp;<font size=-1 color=#000000>Risultati <b><?=$offset+1?></b> - <b><?=$prat_max?></b> su <?=$totrec?> <b></b></font></H2>
-<p><font size="-2"><b>criteri di ricerca:</b> <?=$criterio?></font></p>
+<H2 class=blueBanner>Esito della ricerca&nbsp;&nbsp;<font size=-1 color=#000000>Risultati <b><?php echo $offset+1?></b> - <b><?php echo $prat_max?></b> su <?php echo $totrec?> <b></b></font></H2>
+<p><font size="-2"><b>criteri di ricerca:</b> <?php echo $criterio?></font></p>
 
 <form name="result" method="post" action="ce.ricerca_commissione.php">	
 	<?php include "ce.elenco_commissioni.php";?>
 	<input type="hidden" name="pag"> 
-	<input type="hidden" name="xpag" value="<?=$pratichexpagina?>">
-	<input type="hidden" name="elenco" value="<?=$elenco?>">
-	<input type="hidden" name="criterio" value="<?=$criterio?>">
-	<input type="hidden" name="mode" value="<?=$modo?>">
-       <input type="hidden" name="<?=$commissione?>" value="1">
+	<input type="hidden" name="xpag" value="sphp echo $pratichexpagina?>">
+	<input type="hidden" name="elenco" value="<?php echo $elenco?>">
+	<input type="hidden" name="criterio" value="<?php echo $criterio?>">
+	<input type="hidden" name="mode" value="<?php echo $modo?>">
+       <input type="hidden" name="<?php echo $commissione?>" value="1">
 	<table border=0 cellpadding=0 width=1% cellspacing=4 align=center>
 	<tr>
 	<td valign="bottom" nowrap class="selezione">Pagina dei risultati:&nbsp;<td>
-	<?for ($i=1;$i<$pages+1;$i++){
+	<?php for ($i=1;$i<$pages+1;$i++){
 		if ($i==$pagenum)
 			$numpag="<font color=#FF0000>$i</font>";
 		else
 			$numpag=$i;
 		?> 
-		<td><a href="javascript:paginasucc(<?=$i?>)"><br><?=$numpag?></a></td>
+		<td><a href="javascript:paginasucc(<?php echo $i?>)"><br><?php echo $numpag?></a></td>
 		<?php }?>
 	</tr>
 	</table>
-	<?if ($modo=="cancella") {?><input class="hexfield" type="submit" name="azione" value="Cancella" onclick="return confirm('Sicuro di voler procedere con l\'eliminazione ?');"><?php }?>
-	<input  class="hexfield"  type="button" value="Annulla" onClick="javascript: document.location='ce.ricerca_commissione.php?<?=$commissione?>=1<?if ($_REQUEST["mode"]=="cancella") print("&mode=cancella");?>'" >
+	<?php if ($modo=="cancella") {?><input class="hexfield" type="submit" name="azione" value="Cancella" onclick="return confirm('Sicuro di voler procedere con l\'eliminazione ?');"><?php }?>
+	<input  class="hexfield"  type="button" value="Annulla" onClick="javascript: document.location='ce.ricerca_commissione.php?<?php echo $commissione?>=1<?if ($_REQUEST["mode"]=="cancella") print("&mode=cancella");?>'" >
 	</form>
 	
       <IMG height=1 src="images/gray_light.gif" width="100%"  vspace=1><BR>      
@@ -143,7 +143,7 @@ function paginasucc(pg){
 	}
 	?>
  	<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">		
-		<FORM id="ricerca" name="ricerca" method="post" action="<?=$self?>">		  
+		<FORM id="ricerca" name="ricerca" method="post" action="<?php echo $self?>">		  
 		  <tr> 
 			<td> 
 			<!-- intestazione-->
@@ -165,7 +165,7 @@ function paginasucc(pg){
 
 				</td>
 		  </tr>
-			<?//if ($modo=="cancella") 
+			<?php//if ($modo=="cancella") 
 				print("\n<tr>\n<td><input name=\"all\" type=\"checkbox\"><b>Seleziona tutte le commissioni</b>\n</td>\n</tr>\n")
 			?>
 		  <tr> 
@@ -192,9 +192,9 @@ function paginasucc(pg){
 					</select>
 				</td>
 				<td>
-                                          <input type="hidden" name="<?=$commissione?>" value="1">
-						<input class="textbox" name="xpag" type="text" size="3" value="<?=$pratichexpagina?>">
-						<input name="azione" style="width=120px" type="submit" class="hexfield1" tabindex="14" value="Avvia ricerca >>>">
+                                          <input type="hidden" name="<?php echo $commissione?>" value="1">
+						<input class="textbox" name="xpag" type="text" size="3" value="<?php echo $pratichexpagina?>">
+						<input name="azione" style="width:120px" type="submit" class="hexfield1" tabindex="14" value="Avvia ricerca >>>">
 				</td>
 			</tr>
 			<tr>
@@ -202,9 +202,9 @@ function paginasucc(pg){
 				<input  name=""  id="" class="hexfield1"  type="button" value="  Esci  " onClick="javascript:window.open('index.php','indexPraticaweb');window.opener.focus();window.close()"> </td>
 			<td></td>
 			</tr>
-			<input type="hidden" name="mode" value="<?=$modo?>">
+			<input type="hidden" name="mode" value="<?php echo $modo?>">
 		</FORM>	
 		</table>	
-		<?php include "./inc/inc.window.php"; // contiene la gesione della finestra popup?>
+
 </body>
 </html>

@@ -1,4 +1,6 @@
 <?php
+
+
 /*
 Descrizione della classe e dei metodi
 
@@ -283,13 +285,17 @@ EOT;
 					$sql=($this->table_list)?("select $this->elenco_campi,id from $this->tabelladb $data $ord"):("select $this->elenco_campi,id,pratica,chk from $this->tabelladb $data $ord");	//aggiungo sempre il campo chk per il controllo della concorrenza
 			//echo("<p>$sql</p>");
 			//print_debug($this->config_file."\n".$sql,NULL,"tabella");
-                        utils::debug(DEBUG_DIR.$_SESSION["USER_ID"]."_".'tabella.debug', $sql);
+                    utils::debug(DEBUG_DIR.$_SESSION["USER_ID"]."_".'tabella.debug', $sql);
 			if ($this->db->sql_query(trim($sql))){
 				$this->array_dati=$this->db->sql_fetchrowset();
 				$this->num_record=$this->db->sql_numrows();
 			}
-			else
+			else{
 				$this->num_record=0;
+				if ($_SESSION["USER_ID"]==1){
+					echo "<p>$sql</p>";
+				}
+			}
 			$this->curr_record=0;	
 			return  $this->num_record;	
 		}
@@ -450,102 +456,67 @@ EOT;
 	function checkPermission($cfg){
 		/*TODO   AUTORIZZAZIONE NON SUI GRUPPI MA SUI RUOLI*/
 		
-		$db=$this->get_db();
+		if($_SESSION["PERMESSI"]<2 ) {
+			$this->editable = true;
+			$this->viewable = true;
+			return;
+		}
+		
+		$db = $this->get_db();
+		$dsn = sprintf('pgsql:dbname=%s;host=%s;port=%s',DB_NAME,DB_HOST,DB_PORT);
+        $conn = new PDO($dsn, DB_USER, DB_PWD);
 		list($schema,$table)=explode('.',$this->tabelladb);
 		switch($schema){
-			case "cdu":		//Caso del CDU
-				//Verifico il responsabile del Servizio
-				$sql="SELECT userid FROM admin.users WHERE (SELECT DISTINCT id::varchar FROM admin.groups WHERE nome='cdu')=ANY(string_to_array(coalesce(gruppi,''),','));";
-				$db->sql_query($sql);
-				$idCDU=$db->sql_fetchlist('userid');
-				$editor=$idCDU;
-			break;
+			case "oneri":
+			case "ragioneria":
+			case "stp":
+				$sql = "SELECT role FROM pe.ruoli_pratica WHERE pratica=? and userid=?;";
+				break;
 			default:		//Caso delle pratiche Edilizie
-				//Verifico il responsabile del procedimento
-				$sql="SELECT resp_proc FROM pe.avvioproc WHERE pratica=".$this->idpratica;
-				$db->sql_query($sql);
-				$rdp=$db->sql_fetchfield('resp_proc');
-				
-				//Verifico il dirigente
-				$sql="SELECT userid FROM admin.users WHERE (SELECT DISTINCT id::varchar FROM admin.groups WHERE nome='dirigenza')=ANY(string_to_array(coalesce(gruppi,''),','));";
-				$db->sql_query($sql);
-				$idDiri=$db->sql_fetchfield('userid');
-				
-				//Verifico il responsabile del Servizio
-				$sql="SELECT userid FROM admin.users WHERE (SELECT DISTINCT id::varchar FROM admin.groups WHERE nome='rds')=ANY(string_to_array(coalesce(gruppi,''),','));";
-				$db->sql_query($sql);
-				$idRds=$db->sql_fetchfield('userid');
-				
-				//Verifico gli archivisti
-				$sql="SELECT userid FROM admin.users WHERE (SELECT DISTINCT id::varchar FROM admin.groups WHERE nome='archivio')=ANY(string_to_array(coalesce(gruppi,''),','));";
-				$db->sql_query($sql);
-				$idArch=$db->sql_fetchlist('userid');
-				
-				//Array con tutti i ruoli
-				$ris=Array($rdp,$idRds,$idDiri);
-				
-				$sql="SELECT role,utente FROM pe.wf_roles WHERE pratica=".$this->idpratica;
-			   
-				if ($db->sql_query($sql)){
-					$res=$db->sql_fetchrowset();
-					$roles[$idDiri]=Array('dir');
-					$roles[$idRds]=Array('rds');
-					for($i=0;$i<count($idArch);$i++) {
-						$roles[$idArch[$i]][]="archivio";
-						$ris[]=$idArch[$i];
-					}
-					for($i=0;$i<count($res);$i++){
-						$r=$res[$i];
-						$roles[$r['utente']][]=$r['role'];
-						$ris[]=$r['utente'];
-					}
-					if (in_array($_SESSION["USER_ID"],$ris))
-						$owner=1;
-					else
-						$owner=2;
-				}
-				else
-					$owner=3;
-				$editor=Array($rdp,$idRds,$idDiri);
+                $sql = "SELECT role FROM $schema.ruoli_pratica WHERE pratica=? and userid=?;";
+
 			break;
 		}
-        if($_SESSION["PERMESSI"]<2 ) $owner=1;
         
-        /*$result = appUtils::getPraticaRole($cfg,$this->idpratica);
-        $roles=$result["roles"];
-        $editor=$result["editor"];
-        $owner=$result["owner"];*/
+        $stmt = $conn->prepare($sql);
+		if(!$stmt->execute(Array($this->idpratica,$_SESSION["USER_ID"]))){
+			$err = $conn->errorInfo();
+		}
+		$roles = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
         //print_array($roles);
-		if (!$cfg['viewable'] or $_SESSION["PERMESSI"]<3 || ALWAYS_VIEWABLE==1){
+		
+		/*Verifica della visibilità delle pratica*/
+		if (!$cfg['viewable'] || $_SESSION["PERMESSI"]< 4 || ALWAYS_VIEWABLE==1){
 			$this->viewable=true;
 		}
 		else{
 			$vroles=explode(';',$cfg['viewable']);
-			if (count(array_intersect($vroles,$roles[$_SESSION["USER_ID"]]))>0){
+			if (count(array_intersect($vroles,$roles)) > 0){
 				$this->viewable=true;
 			}
-			else
+			else{
 				$this->viewable=false;
+			}
 		}
-                
-		if ((!$cfg['editable'] or $_SESSION["PERMESSI"]<2) && in_array($owner,Array(1,3)) || ALWAYS_EDITABLE==1){
+        if ($_SESSION["PERMESSI"]>= 4){
+			$this->editable=false;
+		}        
+		elseif ((!$cfg['editable']) || ALWAYS_EDITABLE==1){
 			$this->editable=true;
 		}
 		else{
-			$groles=explode(';',$cfg['editable']);
-
-			if (((count(array_intersect($groles,$roles[$_SESSION["USER_ID"]]))>0)  && $owner==1) || (in_array($_SESSION["USER_ID"],$editor))){
+			$stdRoles=Array("dirigente","rds","ruo","rdp");
+			$groles=array_merge(explode(';',$cfg['editable']),$stdRoles);
+			print_array($groles);
+			print_array($roles);
+			if (((count(array_intersect($groles,$roles))>0)) ){
 				$this->editable=true;
 			}
-			else
-				$this->editable=false;
+			else{
+                $this->editable=false;
+			}
 		}
-
-		//$sql="SELECT * FROM pe.assegnazione_pratiche WHERE pratica=$this->idpratica";
-		//if($this->db->sql_query($sql)){
-		//	$ris=$this->db->sql_fetchrowset();
-		//}
-		
+		//print_array(Array("VIEWABLE"=>(string)$this->viewable,"EDITABLE"=>(string)$this->editable));
 	}
 	function print_titolo(){
 		print "<div class=\"titolo\" style=\"width:90%\">".ucfirst(strtolower($this->titolo))."</div>";
@@ -577,6 +548,8 @@ function elenco_stampe ($form){
 	$procedimento=$this->array_dati[$this->curr_record]["id"];		
 	$sql="select id,file_doc,file_pdf,utente_pdf from stp.stampe where (pratica=$this->idpratica) and (form='$form') and ((char_length(file_doc)>0 or (char_length(file_pdf)>0)));";
 	if ($this->debug) echo ("<p>$sql</p>");
+	
+	if (!$this->db) $this->connettidb();
 	$this->db->sql_query($sql);
 	$elenco = $this->db->sql_fetchrowset();
 	$nrighe=$this->db->sql_numrows();

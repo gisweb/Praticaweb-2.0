@@ -82,13 +82,13 @@ function elimina(id){
 				
 				
 <?php
-		if($modo=='edit'){
-			$numrows=$tabellah->set_dati("pratica=$idpratica");
-			$tabellah->elenco();
-		}
-		else{
-			$tabellah->edita();
-		}
+			if($modo=='edit'){
+				$numrows=$tabellah->set_dati("pratica=$idpratica");
+				$tabellah->elenco();
+			}
+			else{
+				$tabellah->edita();
+			}
 ?>
 				
 				<!-- fine contenuto-->
@@ -136,6 +136,7 @@ function elimina(id){
 				</td>
 		  </tr>
 		</TABLE>
+		<input name="progetto" type="hidden" value="1">
 		<input name="active_form" type="hidden" value="pe.progetto.php">
 		<input name="pratica" type="hidden" value="<?php echo($idpratica);?>">				
 		<input type="hidden" name="mode" value="<?php echo $modo;?>"></td>

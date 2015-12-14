@@ -1,7 +1,8 @@
 <?php
     function loadLibs(){
-        $libs=Array("pratica.class.php","app.utils.class.php","utils.class.php","menu.class.php");
+        $libs=Array("pratica.class.php","app.utils.class.php","utils.class.php","menu.class.php","mail.class.php");
         foreach($libs as $lib){
+	    
             if (file_exists(LOCAL_LIB.$lib)){
                 require_once LOCAL_LIB.$lib;
             }
@@ -12,7 +13,7 @@
         }
     };
     error_reporting(E_ERROR);
-
+    
 	if (!session_id())
 	session_start();
         
@@ -23,16 +24,18 @@
         define('DATA_DIR',$dataDir);
         define('APPS_DIR',$appsDir);
 
-	include_once DATA_DIR.'config.php';
-        loadLibs();
 
+
+	if (!file_exists(DATA_DIR.'config.php')) die("Nessun file di configurazione trovato!");
+        require_once DATA_DIR.'config.php';
+        loadLibs();
 	if ((defined('UPDATE_SW') && UPDATE_SW==1 && $_SESSION["USER_ID"]>4)){
             require_once "aggiornamento.php";
             exit;
         }
 	//per il debug
 	$dbconn=new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
-	if(!$dbconn->db_connect_id)  die( "Impossibile connettersi al database");
+	if(!$dbconn->db_connect_id)  die( "Impossibile connettersi al database ".DB_NAME." sulla porta ".DB_PORT);
 	//Se sto validando l'utente includo la validazione, se va male esco altrimenti continuo a caricare la pagina stessa
 	
 	if(isset($_POST['entra'])){

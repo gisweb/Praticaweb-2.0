@@ -34,7 +34,7 @@ if ($_POST["azione"]){
 <html>
 <head>
 
-<title>Vincoli - <?=$titolo?></title>
+<title>Vincoli - <?php echo $titolo?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
@@ -126,7 +126,7 @@ if (($modo=="edit") or ($modo=="new")){
 		<TR> 
 			<td> 
 			<!-- intestazione-->
-				<H2 class="blueBanner">Modifica elenco vincoli associati alla particella <?=$sparticella?></H2>
+				<H2 class="blueBanner">Modifica elenco vincoli associati alla particella <?php echo $sparticella?></H2>
 			<!-- fine intestazione-->
 			</td>
 		  </TR>
@@ -135,7 +135,7 @@ if (($modo=="edit") or ($modo=="new")){
 				<!-- contenuto-->
 
 				<input type="hidden" name="idriga" id="idriga" value="0">
-				<input type="hidden" name="part" id="part" value="<?=$curr_part?>">				
+				<input type="hidden" name="part" id="part" value="<?php echo $curr_part?>">				
 				<input name="active_form" type="hidden" value="cdu.vincoli.php">
 				<input name="cdu" type="hidden" value="1"></td>
 				<input type="hidden" name="mode" value="new">
@@ -154,7 +154,7 @@ if (($modo=="edit") or ($modo=="new")){
 <p>&nbsp;</p>
 	<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">	
 		
-	<?$db=$tabellah->get_db();
+	<?php $db=$tabellah->get_db();
 		$db->sql_query ("select * from vincoli.vincolo order by ordine;");
 		
 		$elenco_vincoli = $db->sql_fetchrowset(); 
@@ -269,7 +269,7 @@ $req="mode=edit&pratica=$idpratica";
     utils::loadJS();
     utils::loadCss();
 ?>
-<title>Raffronto<?=$titolo?></title>
+<title>Raffronto<?php echo $titolo?></title>
 <style>
 
     td.titolo-vincoli{
@@ -314,7 +314,7 @@ $req="mode=edit&pratica=$idpratica";
 </head>
 <body>
 
-<?//include "./inc/page_header.inc";
+<?php
 /*********************************************************************************************************/    
 //                              MODIFICA TEMPORANEA PER GIRARE VINCOLI E PARTICELLE
 /*********************************************************************************************************/
@@ -380,12 +380,12 @@ else{
     <td colspan=2 width="140" rowspan="2"  valign="middle" align="center">
 		<font face="Verdana" color="#ffffff" size="1"><b>Vincoli</b></font>
 	</td>
-	<td colspan="<?=$npiani?>" align="center"><font face="Verdana" color="#ffffff" size="1"><b>Vincoli</b></font></td>		
+	<td colspan="<?php echo $npiani?>" align="center"><font face="Verdana" color="#ffffff" size="1"><b>Vincoli</b></font></td>		
 </tr>
 <tr bgColor=#728bb8>
-	<?for($i=0;$i<$npiani;$i++){?>	
+	<?php for($i=0;$i<$npiani;$i++){?>	
 		<td height="15"  align="center">
-			<font face="Verdana" color="#ffffff" size="1"><b><?=$piani[$i]["descrizione"]?></b></font>
+			<font face="Verdana" color="#ffffff" size="1"><b><?php echo $piani[$i]["descrizione"]?></b></font>
 		</td>
 	<?php }?>
 </tr>
@@ -401,11 +401,11 @@ for($i=0;$i<count($array_mappali);$i++){
 		$particella=' F. '. $ar_particella[1].' M. '. $ar_particella[2];
 	$url="cdu.vincoli.php?pratica=$idpratica&mode=edit&part=$idparticella";?>
 <tr>
-	<td><a href="<?=$url?>" target="_parent"><img src="images/propri.gif" border=0></a></td>
+	<td><a href="<?php echo $url?>" target="_parent"><img src="images/propri.gif" border=0></a></td>
 	<td height="15"  align="center">
-		<font face="Verdana"  size="1"><b><?=$particella?></b></font>
+		<font face="Verdana"  size="1"><b><?php echo $particella?></b></font>
 	</td>
-	<?for($j=0;$j<$npiani;$j++){
+	<?php for($j=0;$j<$npiani;$j++){
 	
 		$piano=$piani[$j]["nome_tavola"]; 
 		$zona=$array_zone[$idparticella][$piano]; 
@@ -413,13 +413,13 @@ for($i=0;$i<count($array_mappali);$i++){
 			if(!$zona) $zona="---";
 		?>	
 		<td height="15"  align="left">
-			<font face="Verdana" size="1"><b><?=$zona?></b></font>
+			<font face="Verdana" size="1"><b><?php echo $zona?></b></font>
 	</td>
 	<?php }?>
 </tr>
 <?php }?>
 
-<?//Aggiungo i mappali senza vincoli
+<?php //Aggiungo i mappali senza vincoli
 	for($i=0;$i<count($mappali);$i++){
 		$idparticella=$mappali[$i]['particella'];
 		$ar_particella=explode(',',$mappali[$i]["particella"]); 
@@ -430,12 +430,12 @@ for($i=0;$i<count($array_mappali);$i++){
 		$url="cdu.vincoli.php?pratica=$idpratica&mode=edit&part=$idparticella"; 
 		?>
 		<tr>
-	<td><a href="<?=$url?>" target="_parent"><img src="images/propri.gif" border=0></a></td>
+	<td><a href="<?php echo $url?>" target="_parent"><img src="images/propri.gif" border=0></a></td>
 	<td height="15"  align="center">
-		<font face="Verdana"  size="1"><b><?=$particella?></b></font>
+		<font face="Verdana"  size="1"><b><?php echo $particella?></b></font>
 		</b></font>
 	</td>
-	<?for($j=0;$j<$npiani;$j++){?>
+	<?php for($j=0;$j<$npiani;$j++){?>
 		<td height="15"  align="left">
 			<font face="Verdana" size="1"><b>---</b></font>
 	</td>

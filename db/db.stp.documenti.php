@@ -2,7 +2,7 @@
 
 $azione=  strtolower($_REQUEST["azione"]);
 $modo=($_REQUEST["mode"])?($_REQUEST["mode"]):('view');
-$pr=new pratica($idpratica);
+$pr=new pratica($idpratica,$app);
 
 if (in_array($azione, Array("salva","elimina"))){
     
@@ -11,7 +11,7 @@ if (in_array($azione, Array("salva","elimina"))){
     if ($azione=='elimina'){
         require_once 'db.savedata.php';
         $fName=$_REQUEST['file_doc'];
-        $r=unlink (DOCUMENTI. $fName);
+        $r=unlink ($pr->documenti. $fName);
         
     }
     elseif ($_FILES['file']['tmp_name']){
@@ -37,5 +37,9 @@ if (in_array($azione, Array("salva","elimina"))){
 elseif($azione=="annulla"){
     $modo='list';
 }
+if ($is_cdu) $active_form="cdu.iter.php?pratica=$idpratica";
+elseif($is_ce) $active_form="ce.iter.php?pratica=$idpratica";
+elseif($is_vigi) $active_form="vigi.iter.php?pratica=$idpratica";
+else
 $active_form="stp.documenti.php?mode=$modo&pratica=$idpratica";
 ?>

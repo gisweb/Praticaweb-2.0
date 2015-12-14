@@ -20,6 +20,14 @@
 		$db=$prPrec->db1;
 		$pratPrec=$db->fetchAssoc("SELECT * FROM pe.avvioproc WHERE pratica=?",Array($idpratica));
         }
+        
+        if (file_exists(DATA_DIR."praticaweb/db/db.pe.avvioproc.before.php")){
+            $dataprot = $_REQUEST["data_prot"];
+            $prot = $_REQUEST["protocollo"];
+            require_once DATA_DIR."praticaweb/db/db.pe.avvioproc.before.php";
+            $_REQUEST["data_prot"]=$dataprot;
+            $_REQUEST["protocollo"]=$prot;
+        }
 	//Modulo condiviso per la gestione dei dati
 	include_once "./db/db.savedata.php";
 	
@@ -66,8 +74,8 @@
 	//IN TUTTI I db.mioform.php risetto i parametri per active_form da passare all'iframe
 	//$active_form.="?pratica=$idpratica&id=$id&ruolo=$ruolo";
 	
-	if (file_exists(DATA_DIR."praticaweb/db/db.pe.avvioproc.php")){
-            require_once DATA_DIR."praticaweb/db/db.pe.avvioproc.php";
-       }
+	if (file_exists(DATA_DIR."praticaweb/db/db.pe.after.avvioproc.php")){
+            require_once DATA_DIR."praticaweb/db/db.pe.after.avvioproc.php";
+        }
 	
 ?>

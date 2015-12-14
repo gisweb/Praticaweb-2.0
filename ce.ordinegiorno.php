@@ -15,7 +15,7 @@ include_once "./lib/tabella_v.class.php";
 ?>
 <html>
 <head>
-<title>Ordine del Giorno - <?=$titolo?></title>
+<title>Ordine del Giorno - <?php echo $titolo?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
@@ -50,6 +50,7 @@ function show(id){
 
 		}
 		//Pagina di ricerca delle pratiche
+                
 		else{
 			$modo="edit";
 			$ric=1;
@@ -59,16 +60,16 @@ function show(id){
 			$tabella->get_titolo();
 			?>
 		<form name="ricerca" method="post" action="ce.ordinegiorno.php">
-			<?$tabella->edita();?>
+			<?php $tabella->edita();?>
 		<table>
 			<tr>
 				<td>
 					<input name="active_form" type="hidden" value="ce.ordinegiorno.php">
-					<input name="mode" type="hidden" value="<?=$modo?>">
+					<input name="mode" type="hidden" value="<?php echo $modo?>">
 					<input name="comm" type="hidden" value=1>
 					<input name="tiporicerca" type="hidden" value="1">
-					<input name="ricerca" type="hidden" value="<?=$ric?>">
-					<input name="pratica" type="hidden" value="<?=$idcomm?>">
+					<input name="ricerca" type="hidden" value="<?php echo $ric?>">
+					<input name="pratica" type="hidden" value="<?php echo $idcomm?>">
 					<input name="data" type="hidden" value="avvioproc.data_presentazione">
 				</td>
 				<td valign="bottom"><input name="azione" id="close" type="button" tabindex="14" value="Annulla"></td>
@@ -96,7 +97,7 @@ function show(id){
 		</script>
 	</form>
 		
-		<?	// Eseguo cancellazione della pratica dalla commissione
+		<?php	// Eseguo cancellazione della pratica dalla commissione
 			if ($idpratica) {
 				$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
 				if(!$db->db_connect_id)  die( "Impossibile connettersi al database");	
@@ -109,15 +110,15 @@ function show(id){
 			$tabella_h->get_titolo();
 			$tabella_h->set_dati("pratica > 0");?>
 	<form name="cancella" method="post" action="ce.ordinegiorno.php">
-			<?$tabella_h->elenco();?>
+			<?php $tabella_h->elenco();?>
 		<table>
 			<tr>
 				<td>
 					<input name="active_form" type="hidden" value="ordinegiorno.php">
-					<input name="mode" type="hidden" value="<?=$modo?>">
+					<input name="mode" type="hidden" value="<?php echo $modo?>">
 					<input name="comm" type="hidden" value=1>
-					<input name="ricerca" type="hidden" value="<?=$ric?>">
-					<input name="pratica" type="hidden" value="<?=$idcomm?>">
+					<input name="ricerca" type="hidden" value="<?php echo $ric?>">
+					<input name="pratica" type="hidden" value="<?php echo $idcomm?>">
                                   <input name="tiporicerca" type="hidden" value="1">
 					<input name="idelete" type="hidden">
 				</td>

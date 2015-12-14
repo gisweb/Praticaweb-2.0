@@ -60,8 +60,13 @@ if (($modo=="edit") || ($modo=="new")) {
 				elseif ($modo=="edit"){	
 					$tabella->set_dati("id=$id");
 				}
+				if (file_exists(LOCAL_INCLUDE."pe.proroga.edit.before.php") && $tab=="proroga"){
+					$html="";
+					include_once LOCAL_INCLUDE."pe.proroga.edit.before.php";
+					print $html;
+				}
 				$tabella->edita();
-                                ?>			  
+                ?>			  
 			</td>
 		  </tr>
 		</TABLE>

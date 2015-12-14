@@ -1,4 +1,4 @@
-<? 
+<?php
 $active_form="cdu.vincoli.php?pratica=$idpratica";
 function setData($val){
 	if (strlen($val)>0){
@@ -65,14 +65,14 @@ else {		// EDIT MAPPALI
 
 		$result=$db->sql_query ($sql);
 		//echo "<p>$sql</p>";
-		$err=$db->sql_error();
+		//$err=$db->sql_error();
 		print_debug($sql); 
-		$numrows=$db->sql_affectedrows();
+		//$numrows=$db->sql_affectedrows();
 
-		if($numrows===0 or $err["message"]){
+		//if($numrows===0 or $err["message"]){
 		$sql="insert into cdu.mappali (pratica,sezione,foglio,mappale) values ($idpratica,$sezione,$foglio,$mappale)";
 		$result=$db->sql_query ($sql); 
-		}
+		//}
 	}
 	
 }

@@ -13,14 +13,15 @@ $titolo=$_SESSION["TITOLO_$idcomm"];
 $file_config="$tabpath/convocazione";
 $title="Commissione Edilizia";
 $membri="$tabpath/membri.tab";
-
+$pr=new pratica($idcomm,2);
+$pr->createStructure();
 include "./lib/tabella_v.class.php";
 include "./lib/tabella_h.class.php";
 
 ?>
 <html>
 <head>
-<title>Convocazione Commmissione- <?=$titolo?></title>
+<title>Convocazione Commmissione- <?php echo $titolo?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
@@ -29,7 +30,7 @@ include "./lib/tabella_h.class.php";
 ?>
 <SCRIPT language=javascript>
 function link(id){
-	loc="ce.schedamembro.php?mode=view&comm=1&pratica=<?=$idcomm?>&id_persona="+id;
+	loc="ce.schedamembro.php?mode=view&comm=1&pratica=<?php echo $idcomm?>&id_persona="+id;
 	window.parent.location=loc;
 	//window.open(pagina,'new',"HEIGHT=160,WIDTH=400,menubar=false,toolbar=false,scrollbars=false,title=false,resizable=false");
 }
@@ -51,7 +52,7 @@ if (($modo=="edit") or ($modo=="new")) {
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN EDITING  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 		
 		
-		<H2 class="blueBanner">Creazione o modifica della  <?=$title?></H2>
+		<H2 class="blueBanner">Creazione o modifica della  <?php echo $title?></H2>
 			<!-- fine intestazione-->
 	<FORM name="commissione" method="post" action="praticaweb.php">
 				<!-- contenuto-->
@@ -79,10 +80,10 @@ if (($modo=="edit") or ($modo=="new")) {
 
 				
 		<input name="active_form" type="hidden" value="ce.commissione.php">
-		<input name="mode" type="hidden" value="<?=$modo?>">
+		<input name="mode" type="hidden" value="<?php echo $modo?>">
 		<input name="comm" type="hidden" value=1>
-		<input name="id" type="hidden" value="<?=$idcomm?>">
-		<input name="pratica" type="hidden" value="<?=$idcomm?>">
+		<input name="id" type="hidden" value="<?php echo $idcomm?>">
+		<input name="pratica" type="hidden" value="<?php echo $idcomm?>">
 		<input name="membro" type="hidden">
 				
 	</FORM>	
@@ -96,10 +97,11 @@ include "./inc/inc.window.php"; // contiene la gestione della finestra popup
 ?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 <body>
-		<H2 class="blueBanner"> <?=$title?></H2>
+		<H2 class="blueBanner"> <?php echo $title?></H2>
 		
 			<!-- contenuto-->
-				<?$tabella->set_titolo("Dati della commissione","modifica",Array("tipo"=>$tipo));
+				<?php
+                                $tabella->set_titolo("Dati della commissione","modifica",Array("tipo"=>$tipo));
 				$tabella->set_dati("pratica=$idcomm"); 
 				$tabellah->set_titolo("Soggetti partecipanti");
 				$tabellah->set_dati("commissione=$idcomm order by id_ruolo");

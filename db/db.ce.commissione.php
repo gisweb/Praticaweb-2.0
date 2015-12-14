@@ -1,4 +1,4 @@
-<? 
+<?PHP
        
 	include_once "./db/db.savedata.php";
 	if ($_POST["mode"]=="new") {

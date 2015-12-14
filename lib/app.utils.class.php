@@ -332,8 +332,16 @@ class generalAppUtils {
 
         if (!$_REQUEST["pratica"]) return "";
         $pr=$_REQUEST["pratica"];
-        if ($_REQUEST["cdu"]){
+        $filename=basename(__FILE__, '.php');
+
+        if ($_REQUEST["cdu"] || strpos($filename,'cdu.')!==FALSE){
             $sql="SELECT 'Certificato di Destinazione Urbanitica Prot n° '||protocollo as titolo FROM cdu.richiesta WHERE pratica=?";
+        }
+        elseif ($_REQUEST["vigi"] || strpos($filename,'vigi.')!==FALSE){
+            $sql="SELECT B.nome|| ' n° '||A.numero as titolo FROM vigi.avvioproc A INNER JOIN vigi.e_tipopratica B ON(A.tipo=B.id)  WHERE pratica=?;";
+        }
+        elseif($_REQUEST["agi"] || strpos($filename,'agi.')!==FALSE){
+            $sql="SELECT B.nome|| coalesce(' - '||C.nome,'') ||' n° '||A.numero as titolo FROM agi.avvioproc A INNER JOIN agi.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN agi.e_categoriapratica C ON (coalesce(A.categoria,0)=C.id)  WHERE pratica=?;";
         }
         else{
             $sql="SELECT B.nome|| coalesce(' - '||C.nome,'') ||' n° '||A.numero as titolo FROM pe.avvioproc A INNER JOIN pe.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN pe.e_categoriapratica C ON (coalesce(A.categoria,0)=C.id)  WHERE pratica=?;";
@@ -412,5 +420,103 @@ class generalAppUtils {
         $stmt=$conn->prepare($sql);
         $stmt->execute(Array($id,$frm,$user));
     }
+    static function getNotifiche($userId){
+            $conn=utils::getDb();
+            //DETTAGLI DELLE SCADENZE
+            $lLimit=(defined('LOWER_LIMIT'))?(LOWER_LIMIT):(5);
+            $uLimit=(defined('UPPER_LIMIT'))?(UPPER_LIMIT):(3);
+            $sql="select A.id,A.pratica,B.numero,B.data_prot,testo as oggetto,ARRAY[soggetto_notificato] as interessati from pe.notifiche A inner join pe.avvioproc B using(pratica) where soggetto_notificato=$userId and visionato=0;";
+            
+            $stmt=$conn->prepare($sql);
+            if(!$stmt->execute()){
+                return Array("errore"=>1,"query"=>$sql);
+            }
+            else{
+                $res=$stmt->fetchAll(PDO::FETCH_ASSOC);
+                return Array("totali"=>count($res),"data"=>$res);
+            }
+    }
+    static function getInterventiOneri(){
+    	$db = self::getDB();
+    	$sql="SELECT * FROM oneri.e_interventi order by tabella,descrizione";
+    	$res=$db->fetchAll($sql);
+    	foreach($res as $val){
+    		$result[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
+    	}
+    	return $result;
+    }
+    static function getTariffeOneri(){
+    	$db = self::getDB();
+	    $sql="SELECT * FROM oneri.e_tariffe order by anno,tabella,descrizione";
+	    $res=$db->fetchAll($sql);
+	    foreach($res as $val){
+	    	$result[$val["anno"]][]=Array("id"=>$val["tabella"],"opzione"=>$val["descrizione"]);
+	    }
+	    return $result;
+    }
+    static function getC1Oneri(){
+    	$db = self::getDB();
+    	$sql="SELECT * FROM oneri.e_c1 order by tabella,descrizione";
+    	$res=$db->fetchAll($sql);
+    	foreach($res as $val){
+    		$result[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
+    	}
+    	return $result;
+    }
+    static function getC2Oneri(){
+    	$db = self::getDB();
+    	$sql="SELECT * FROM oneri.e_c2 order by tabella,descrizione";
+    	$res=$db->fetchAll($sql);
+    	foreach($res as $val){
+    		$result[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
+    	}
+    	return $result;
+    }
+    static function getC3Oneri(){
+    	$db = self::getDB();
+    	$sql="SELECT * FROM oneri.e_c3 order by tabella,descrizione";
+    	$res=$db->fetchAll($sql);
+    	foreach($res as $val){
+    		$result[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
+    	}
+    	return $result;
+    }
+    static function getC4Oneri(){
+    	$db = self::getDB();
+    	$sql="SELECT * FROM oneri.e_c4 order by tabella,descrizione";
+    	$res=$db->fetchAll($sql);
+    	foreach($res as $val){
+    		$result[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
+    	}
+    	return $result;
+    }
+    static function getC5Oneri(){
+    	$db = self::getDB();
+    	$sql="SELECT * FROM oneri.e_c5 order by tabella,descrizione";
+    	$res=$db->fetchAll($sql);
+    	foreach($res as $val){
+    		$result[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
+    	}
+    	return $result;
+    }
+    static function getD1Oneri(){
+    	$db = self::getDB();
+    	$sql="SELECT * FROM oneri.e_d1 order by tabella,descrizione";
+    	$res=$db->fetchAll($sql);
+    	foreach($res as $val){
+    		$result[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
+    	}
+    	return $result;
+    }
+    static function getD2Oneri(){
+    	$db = self::getDB();
+    	$sql="SELECT * FROM oneri.e_d2 order by tabella,descrizione";
+    	$res=$db->fetchAll($sql);
+    	foreach($res as $val){
+    		$result[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
+    	}
+    	return $result;
+    }
 }
+
 ?>

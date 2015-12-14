@@ -16,12 +16,12 @@ $id=$_REQUEST["id"];
 unset($_SESSION["ADD_NEW"]);
 $titolo=$_SESSION["TITOLO_$idpratica"];
 $tabpath="oneri";
-
+/*
 $db=appUtils::getDB();
 $sql="SELECT * FROM oneri.e_interventi order by tabella,descrizione";
 $res=$db->fetchAll($sql);
 foreach($res as $val){
-    $interventi[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
+    $interventi[$val["tabella"]][$val["anno"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
 }
 $sql="SELECT * FROM oneri.e_tariffe order by anno,tabella,descrizione";
 $res=$db->fetchAll($sql);
@@ -32,40 +32,50 @@ foreach($res as $val){
 $sql="SELECT * FROM oneri.e_c1 order by tabella,descrizione";
 $res=$db->fetchAll($sql);
 foreach($res as $val){
-    $c1[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
+    $c1[$val["tabella"]][$val["anno"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
 }
 $sql="SELECT * FROM oneri.e_c2 order by tabella,descrizione";
 $res=$db->fetchAll($sql);
 foreach($res as $val){
-    $c2[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
+    $c2[$val["tabella"]][$val["anno"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
 }
 $sql="SELECT * FROM oneri.e_c3 order by tabella,descrizione";
 $res=$db->fetchAll($sql);
 foreach($res as $val){
-    $c3[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
+    $c3[$val["tabella"]][$val["anno"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
 }
 $sql="SELECT * FROM oneri.e_c4 order by tabella,descrizione";
 $res=$db->fetchAll($sql);
 foreach($res as $val){
-    $c4[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
+    $c4[$val["tabella"]][$val["anno"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
 }
 $sql="SELECT * FROM oneri.e_c5 order by tabella,descrizione";
 $res=$db->fetchAll($sql);
 foreach($res as $val){
-    $c5[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
+    $c5[$val["tabella"]][$val["anno"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
 }
 
 $sql="SELECT * FROM oneri.e_d1 order by tabella,descrizione";
 $res=$db->fetchAll($sql);
 
 foreach($res as $val){
-    $d1[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
+    $d1[$val["tabella"]][$val["anno"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
 }
 $sql="SELECT * FROM oneri.e_d2 order by tabella,descrizione";
 $res=$db->fetchAll($sql);
 foreach($res as $val){
-    $d2[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
+    $d2[$val["tabella"]][$val["anno"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
 }
+*/
+$interventi = appUtils::getInterventiOneri();
+$tariffe = appUtils::getTariffeOneri();
+$c1 = appUtils::getC1Oneri();
+$c2 = appUtils::getC2Oneri();
+$c3 = appUtils::getC3Oneri();
+$c4 = appUtils::getC4Oneri();
+$c5 = appUtils::getC5Oneri();
+$d1 = appUtils::getD1Oneri();
+$d2 = appUtils::getD2Oneri();
 //print_array($el);
 ?>
 
@@ -117,7 +127,21 @@ foreach($res as $val){
     }
     $(document).ready(function(){
         if ($('#mode').val()=='new') $('#anno').trigger('change');
+		
         set_perc();
+
+		if ($('#tabella_old').length > 0) {
+			$('#intervento').bind('change',function(event){
+				if($(this).val()== 400){
+					$(this).closest('tr').prev().prev().show();
+				}
+				else{
+					$(this).closest('tr').prev().prev().hide();
+				}
+			});
+			$('#intervento').trigger('change');
+		}
+		
     });
     
 </script>
@@ -158,17 +182,18 @@ if (($modo=="new") or ($modo=="edit")){
 			<?php
                 
                 if(isset($Errors) && $Errors){
-					$tabella->set_errors($Errors);
-					$tabella->set_dati($_POST);
+                    $tabella->set_errors($Errors);
+                    $tabella->set_dati($_POST);
 				}
-				elseif ($modo=="edit"){	
-					$tabella->set_dati("id=$id");
-				}
+                elseif ($modo=="edit"){	
+                    $tabella->set_dati("id=$id");
+                }
                 else{
                     $pr=new pratica($idpratica);
                     $request["anno"]=appUtils::getAnnoOneri(idPratica,$pr->info['data_presentazione']);
                     $tabella->set_dati($request);
                 }
+
 				$tabella->edita();?>
 				<!-- fine contenuto-->
 			</td>
