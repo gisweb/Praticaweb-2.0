@@ -3,50 +3,75 @@
 include_once("login.php");
 $tabpath="pe";
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
-$file_config="$tabpath/avvio_procedimento_amb";
-//print_array($_REQUEST);
-$idpratica=$_REQUEST["pratica"];
-$titolo=$_SESSION["TITOLO_$idpratica"];
-if ($modo=='new'){
-	$intestazione='Nuova pratica';
-	if ($_POST["infogruppo"])
-		$intestazione.=" - Riferimento ".$_POST["infogruppo"] ." " .$_POST["infopratica"];
-	elseif ($_POST["riferimento"])
-		$intestazione.=" - Nuovo riferimento $newref";
-}
-else
-	$intestazione='Avvio del procedimento e comunicazione responsabile';
+$idpratica=isset($_REQUEST["pratica"])?($_REQUEST["pratica"]):('');
+$pr=new pratica($idpratica);
+$pr->createStructure();
+
+$intestazione='Avvio del procedimento e comunicazione responsabile';
 include "./lib/tabella_v.class.php";
-appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
+$db=appUtils::getDB();
+$sql="SELECT A.id,B.id as tipo,A.nome,B.nome as tipopratica FROM pe.e_categoriapratica A inner join pe.e_tipopratica B ON(tipo=tipologia) WHERE A.enabled=1 AND B.enabled=1;";
+$res=$db->fetchAll($sql);
+foreach($res as $val){
+    $categoria[$val["tipo"]][]=Array("id"=>$val["id"],"opzione"=>$val["nome"]);
+    $tipopratica[$val["tipo"]]=$val["tipopratica"];
+}
+$file_config="$tabpath/avvio_procedimento_ambientale";
+appUtils::setVisitata($idpratica,basename('pe.avvioproc.php', '.php'),$_SESSION["USER_ID"]);
 
 ?>
-
 <html>
 <head>
-    <title>Avvio Procedimento - <?=$_SESSION[$idpratica]["TITOLO"]?></title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Avvio Procedimento - <?php echo $_SESSION["TITOLO_".$idpratica];?></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <script>
+        var selectdb = new Object;
+        selectdb['categoria'] = <?php print json_encode($categoria)?>;
+        selectdb['tipo'] = <?php print json_encode($tipopratica)?>;
+    </script>
 <?php
-	utils::loadJS();
-	utils::loadCss();
+    utils::loadJS(Array('form/pe.avvioproc'));
+    utils::loadCss();
+
 ?>
+
+    
 </head>
 
-<?if (($modo=="edit") or ($modo=="new")) {
+<body>
+<?php
+ 		if (($modo=="edit") or ($modo=="new")) {if ($_REQUEST["dati_chiusura_pa_amb"]){
+            $file_config="$tabpath/chiusura_pa";
+            $intestazione='Dati di chiusura del procedimento amministrativo - Avvenuta Verifica Atti';            
+        }
+        else{
+           
+             $file_config="$tabpath/avvio_procedimento_ambientale";
+            $intestazione='Avvio del procedimento e comunicazione responsabile';
+        }
 
 	$tabella=new Tabella_v($file_config,$modo);					
 	unset($_SESSION["ADD_NEW"]);	
-	include "./inc/inc.page_header.php";?>
+	include "./inc/inc.page_header.php";
+?>
 	
-	<body  background=""  <?=$event?>>
+
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN EDITING  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
+		<FORM id="form-avvioproc" name="avvioproc" method="post" action="praticaweb.php">
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">		
-		<FORM id="" name="avvioproc" method="post" action="praticaweb.php">		  
+				  
 		  <tr> 
 			<td> 
-				<H2 class="blueBanner"><?=$intestazione?></H2>
+				<H2 class="blueBanner"><?php echo $intestazione;?></H2>
+                                
 				<?php
-				if($Errors){
+					if (file_exists(LOCAL_INCLUDE."pe.avvioproc.edit.before.php")){
+						$html="";
+						include_once LOCAL_INCLUDE."pe.avvioproc.edit.before.php";
+						print $html;
+					}
+				if(isset($Errors) && $Errors){
 					$tabella->set_errors($Errors);
 					$tabella->set_dati($_POST);
 				}
@@ -56,54 +81,48 @@ appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]
 				$tabella->edita();?>			  
 			</td>
 		  </tr>
-		  <tr> 
-				<!-- riga finale -->
-				<td align="left"><img src="images/gray_light.gif" height="2" width="90%"></td>
-		   </tr>  
+
 		</TABLE>
-		<table>
-			<tr>
-				<td>
-				<input name="active_form" type="hidden" value="pe.avvioproc_amb.php">				
-				<input name="refpratica" type="hidden" value="<?=$_POST["refpratica"]?>">
-				<input name="riferimento" type="hidden" value="<?=$_POST["riferimento"]?>">				
-				<input name="via" type="hidden" value="<?=$_POST["via"]?>">
-				<input name="civico" type="hidden" value="<?=$_POST["civico"]?>">
-				<input name="ctsezione" type="hidden" value="<?=$_POST["ctsezione"]?>">
-				<input name="ctfoglio" type="hidden" value="<?=$_POST["ctfoglio"]?>">
-				<input name="ctmappale" type="hidden" value="<?=$_POST["ctmappale"]?>">
-				<input name="oldtipo" type="hidden" value="<?=$tabella->get_campo("tipo")?>">
-				<input name="mode" type="hidden" value="<?=$modo?>">
-				</td>
-				
-				<td valign="bottom"><input name="azione" type="submit" class="hexfield" tabindex="14" value="Salva"></td>
-				<?if ($modo=="new"){?>
-				<td valign="bottom"><input name="close" type="button" class="hexfield" tabindex="14" value="Annulla" onclick="javascript:NewWindow('index.php','indexPraticaweb',0,0,'yes');window.close();"></td>
-				<?php }else{?>
-				<td valign="bottom"><input name="azione" type="submit" class="hexfield" tabindex="14" value="Annulla"></td>
-				<?php }?>
-			</tr>
-		</FORM>	
-		</table>	
-<?//include "./inc/inc.window.php"; // contiene la gesione della finestra popup
+<input name="active_form" type="hidden" value="pe.avvioproc_amb.php">				
+<input name="oldtipo" type="hidden" value="<?php echo $tabella->get_campo("tipo");?>">
+
+<input name="mode" type="hidden" id="mode" value="<?php echo $modo;?>">
+</FORM>
+<div id="result" style="width:800px;height:600px;display:none;"></div>
+<div id="waiting"></div>
+<?php
+//include "./inc/inc.window.php"; // contiene la gesione della finestra popup
 }else{
 ?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
-		<body>
+
 		<H2 class="blueBanner">Avvio del procedimento e comunicazione responsabile</H2>
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
 		  <TR> 
 			<TD> 
 			<!-- contenuto-->
-				<?$tabella=new tabella_v($file_config);
-				$tabella->set_titolo("Dati della pratica","modifica");
-				$nrec=$tabella->set_dati("pratica=$idpratica");
-				$tabella->elenco();
-				$tabella->close_db();?>
+				<?php
+                $pr=new pratica($idpratica);
+                $tabella=new tabella_v($file_config,"view");
+                $tabella->set_titolo("Dati della pratica","modifica");
+                $nrec=$tabella->set_dati("pratica=$idpratica");
+                $tabella->elenco();
+                $tabella->close_db();
+                if (file_exists(TAB."$tabpath/chiusura_pa_amb.tab")){
+                    $tabella=new tabella_v("$tabpath/chiusura_pa","view");
+                    $tabella->set_titolo("Dati di chiusura della procedimento amministrativo - Avvenuta Verifica Atti","modifica",Array("dati_chiusura_pa_amb"=>1));
+                    $nrec=$tabella->set_dati("pratica=$idpratica");
+                    $tabella->elenco();
+                }
+
+                ?>
 			<!-- fine contenuto-->
 			 </TD>
 	      </TR>
 		</TABLE>
-<?php }?>
+                <input name="mode" type="hidden" id="mode" value="<?php echo $modo;?>">
+<?php
+}
+?>
 </body>
 </html>
