@@ -46,7 +46,7 @@ if (($modo=="edit") or ($modo=="new")){
     //$filetab="$tabpath/istruttoria";
     if ($modo=="edit"){
             $id=$_POST["id"];
-            $titolo="Parere Ufficio Tecnico";
+            $titolo="Istruttoria";
             $filtro="id=$id";
     }
     else{
@@ -88,7 +88,7 @@ if (($modo=="edit") or ($modo=="new")){
 	}else{
 		$tabella=new tabella_v($filetab);
 		$tabella->set_errors($errors);
-		$numrec=$tabella->set_dati("pratica=$idpratica and ente in (1,48)");?>
+		$numrec=$tabella->set_dati("pratica=$idpratica");?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 		<H2 class="blueBanner">Elenco pareri</H2>
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">
@@ -101,7 +101,7 @@ if (($modo=="edit") or ($modo=="new")){
 						$tabella->get_titolo();
 				}
 				else{
-						$tabella->set_titolo("Parere Ufficio Tecnico","modifica",array("nome_ente"=>"","id"=>""));
+						$tabella->set_titolo("Istruttoria","modifica",array("nome_ente"=>"","id"=>""));
 						$tabella->get_titolo();
 						$tabella->tabella();
 				}	
