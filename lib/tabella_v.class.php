@@ -557,9 +557,8 @@ function get_dato($tipo,$w,$campo,$html5Attr){
 				$key=$size[2];
 				$lbl =$size[3];
 				//$values=explode(',',str_replace(Array('{','}'),'',$dati[$campo]));
-				$values = json_encode($dati[$campo]);
-				$labels=$this->getlabels($table,$key,$lbl,"pratica IN (".implode(',',$values).")");
-				
+				$values = str_replace(Array('{','}'),"",$dati[$campo]);
+				$labels=$this->getlabels($table,$key,$lbl,"pratica IN (".$values.")");
 				foreach($labels as $k=>$v){
 					$retval .=<<<EOT
 		<span id="$campo-$i" $html5Attr data-$key="$k"><span class="underline-cursor">$v</span><span class="ui-icon ui-icon-link" style="display:inline-block;margin-left:1px;"/></span>
