@@ -98,7 +98,9 @@ if (($modo=="edit") or ($modo=="new")){
 					</td>
 				</tr>
 			</table>
+			<div id="message-dialog"></div>
 			<div class="button_line"></div>
+	
 			<div>	
 				<span id="associa"> </span>
 				<span id="close"> </span>

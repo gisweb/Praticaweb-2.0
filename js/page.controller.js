@@ -122,13 +122,33 @@ $(document).ready(function(){
         
         $("[data-plugins='inserisci-associazione-doc']").each(function(k,v){
             $(v).attr("title","Assegna documento ad una pratica edilizia");
+	    var dd = $(v).data();
+	    var id = dd['value'];
             $('#associa').button({
                 label:"Collega alla Pratica",
                 icons:{
                     primary:"ui-icon-disk"
                 }
             }).bind('click',function(event){
-                alert('pippo');
+		var n = $('#numero').val();
+		if (!n) {
+ 		    alert('Inserire un numero di pratica');
+		    return;
+		}
+                $.ajax({
+		    url:'/services/xServer.php',
+		    method:'POST',
+		    data:{'numero_pratica':n,'action':'invia_documento','id':id},
+		    success:function(data){
+			if(data["success"]==1){
+			    $('#message-dialog').html();
+			    $('#associa-pratica').dialog('close');
+  			}
+			else{
+			    $('#message-dialog').html(data['message']);
+			}
+		    }
+		});
             });
             $(v).bind('click',function(event){
                 event.preventDefault();

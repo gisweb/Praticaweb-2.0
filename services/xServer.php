@@ -5,6 +5,7 @@ $db=  appUtils::getDB();
 
 $result=Array();
 $action=(isset($_REQUEST["action"]) && $_REQUEST["action"])?($_REQUEST["action"]):("");
+
 switch($action) {
         case "list-pratiche-folder":
             $sql="SELECT pratica,B.nome as tipo,A.numero,coalesce(data_presentazione,data_prot) as data FROM pe.avvioproc A INNER JOIN pe.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN pe.e_categoriapratica C ON (coalesce(A.categoria,0)=C.id)  WHERE cartella=? AND pratica <> ? ORDER BY data_presentazione DESC;";
@@ -210,6 +211,28 @@ switch($action) {
             //DETTAGLI SULLE VERIFICHE
             //$result["query"]=$sql;
             break;
+	case "invia_documento":
+		$conn = utils::getDB();
+		$numero = $_REQUEST["numero_pratica"];
+		$idDoc = $_REQUEST["id"];
+		$sql = "SELECT pratica FROM pe.avvioproc WHERE numero=?";
+		$stmt = $conn->prepare($sql);
+		if($stmt->execute(Array($numero))){
+		    $res = $stmt->fetchColumn();
+		    if ($res){
+			$sql="INSERT INTO storage.associazioni(documento,pratica) VALUES(?,?)";
+			$stmt = $conn->prepare($sql);
+			$stmt->execute(Array($idDoc,$res));
+ 		        $result = Array("success"=>1,"message"=>"Documento inviato alla pratica con successo");
+		    }
+		    else{
+			$result = Array("success"=>-1,"message"=>"Nessuna pratica trovata");
+		    }
+		}
+		else{
+		    $result=Array("success"=>-1,"message"=>$stmt->errorInfo());
+		}
+		break;
 	default:
 		break;
 }

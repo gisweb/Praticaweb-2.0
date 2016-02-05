@@ -7,7 +7,10 @@ $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 if ($_POST["azione"]=="Salva"){
     if($_REQUEST["mode"]=="new") {
         if ($_FILES["file_allegato"]["name"]){
-            $filedata = base64_encode(stream_get_contents($_FILES["file_allegato"]["tmp_name"]));
+	    $f = fopen($_FILES["file_allegato"]["tmp_name"],'r');
+	    $ff = fread($f,filesize($_FILES["file_allegato"]["tmp_name"]));
+	    fclose(f);
+	    $filedata = base64_encode($ff);
             $data = Array($_REQUEST["pratica"],$_REQUEST["descrizione"],$_REQUEST["note"],$_FILES["file_allegato"]["name"],$_FILES["file_allegato"]["type"],$_FILES["file_allegato"]["size"],$filedata,1,$_SESSION["USERID"],time());
 
             $sql = "INSERT INTO storage.documentazione_inviata( pratica, descrizione, note, filename, filetype, filesize, filedata, chk, uidins, tmsins) VALUES ( ?,  ?, ?, ?, ?, ?, ?, ?, ?, ?);";
@@ -29,7 +32,11 @@ if ($_POST["azione"]=="Salva"){
     }
     else{
         if ($_FILES["file_allegato"]["name"]){
-            $filedata = base64_encode(stream_get_contents($_FILES["file_allegato"]["tmp_name"]));
+	    $f = fopen($_FILES["file_allegato"]["tmp_name"],'r');
+            $ff = fread($f,filesize($_FILES["file_allegato"]["tmp_name"]));
+            fclose(f);
+            $filedata = base64_encode($ff);
+
             $data = Array($_REQUEST["descrizione"],$_REQUEST["note"],$_FILES["file_allegato"]["name"],$_FILES["file_allegato"]["size"],$_FILES["file_allegato"]["type"],$filedata,$_REQUEST["chk"]+1,$_SESSION["USERID"],time(),$_REQUEST["id"]);
             $sql = "UPDATE storage.documentazione_inviata SET descrizione=?, note=?, filename=?, filesize=?, filetype=?, filedata=?, chk=?, uidupd=?, tmsupd=? WHERE id = ?;";
             $stmt =  $conn->prepare($sql);

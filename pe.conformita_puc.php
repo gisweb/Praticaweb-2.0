@@ -6,7 +6,7 @@ $idpratica=$_REQUEST["pratica"];
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $filetab="$tabpath/conformita_puc";
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
-$titolo = "Conformità Urbanistica ed Edilizia";
+$titolo = "Verifica Finale Conformità";
 ?>
 <html>
 <head>
@@ -67,7 +67,6 @@ if (($modo=="edit")){
 
 		$numrec=$tabella->set_dati("pratica=$idpratica AND tipo = (SELECT id FROM pe.e_conformita WHERE codice = 'ptcp')");?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
-		<H2 class="blueBanner">Elenco pareri</H2>
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">
 		  <TR> 
 			<TD> 
