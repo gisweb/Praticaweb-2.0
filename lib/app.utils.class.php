@@ -343,6 +343,9 @@ class generalAppUtils {
         elseif($_REQUEST["agi"] || strpos($filename,'agi.')!==FALSE){
             $sql="SELECT B.nome|| coalesce(' - '||C.nome,'') ||' n° '||A.numero as titolo FROM agi.avvioproc A INNER JOIN agi.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN agi.e_categoriapratica C ON (coalesce(A.categoria,0)=C.id)  WHERE pratica=?;";
         }
+		elseif($_REQUEST["storage"] || strpos($filename,'storage.')!==FALSE){
+            $sql="SELECT 'Documentazione inviata il '||data_invio|| ' da '||cognome||' '||nome as titolo FROM storage.invio  WHERE pratica=?;";
+        }
         else{
             $sql="SELECT B.nome|| coalesce(' - '||C.nome,'') ||' n° '||A.numero as titolo FROM pe.avvioproc A INNER JOIN pe.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN pe.e_categoriapratica C ON (coalesce(A.categoria,0)=C.id)  WHERE pratica=?;";
         }

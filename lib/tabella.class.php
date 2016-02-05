@@ -362,9 +362,6 @@ EOT;
             label:"$text"
         }).click(function(){
             if ($check){
-                //$.each($('#btn_azione'),function(k,v){
-                //    $(v).val('$text');
-                //});
                 $(this).parents('form:first').append('<input type="hidden" name="azione" value="$text"/>');
                 $(this).parents('form:first').submit();
             }
@@ -384,7 +381,8 @@ EOT;
             label:"$text"
         }).click(function(){
             $onclick(this);
-            
+            $(this).parents('form:first').append('<input type="hidden" name="azione" value="$text"/>');
+            $(this).parents('form:first').submit();
         });
     </script>
 EOT;
@@ -539,6 +537,21 @@ EOT;
         
         return Array("size"=>$size,"form"=>$form,"params"=>$params);
     }
+	
+	function getHTML5Attr($html5Data){
+        $d=explode('#',$html5Data);
+        for($k=0;$k<count($d);$k++){
+			list($key,$v)=explode('=',$d[$k]);
+			if(strpos($v, '@')===0){
+				$html5Attr[]=sprintf('%s="%s"',$key,$this->array_dati[$nriga][str_replace('@', '', $v)]);
+			}
+			else{
+				$html5Attr[]=sprintf('%s="%s"',$key,$v);
+			}
+		}
+		$html5Attr=implode(" ",$html5Attr);
+        return $html5Attr;
+	}
 	
 function elenco_stampe ($form){
 //elenco degli elaborati in modo vista: solo i pdf

@@ -181,4 +181,14 @@ LEFT JOIN admin.users O ON(A.resp_it=O.userid)
 WHERE pratica IN (%s)
 %s %s LIMIT %s OFFSET %s                 
 EOT;
+
+$query["storage"]=<<<EOT
+SELECT DISTINCT
+A.pratica,A.data_invio,A.numero,A.protocollo,A.data_protocollo, coalesce(cognome,'')||' '||coalesce(nome,'') || coalesce(' - '||ragsoc,'') as soggetto,A.codfis, A.piva,A.oggetto
+FROM storage.invio A LEFT JOIN
+storage.documentazione_inviata B USING(pratica) LEFT JOIN
+storage.associazioni C USING (pratica)
+WHERE pratica IN (%s)
+%s %s LIMIT %s OFFSET %s  
+EOT;
 ?>

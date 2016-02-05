@@ -114,7 +114,36 @@ $(document).ready(function(){
             });
             $('#submitFrm',window.parent.document).submit();
         });
+        
+        $("[data-class]").each(function(k,v){
+            var data = $(v).data();
+            $(v).addClass(data['class']);
+        });
+        
+        $("[data-plugins='inserisci-associazione-doc']").each(function(k,v){
+            $(v).attr("title","Assegna documento ad una pratica edilizia");
+            $('#associa').button({
+                label:"Collega alla Pratica",
+                icons:{
+                    primary:"ui-icon-disk"
+                }
+            }).bind('click',function(event){
+                alert('pippo');
+            });
+            $(v).bind('click',function(event){
+                event.preventDefault();
+
+               $('#associa-pratica').dialog({
+                    title: "Collega documento a pratica",
+                    height: 300,
+                    width:400
+                });
+            });
+        });
+        $("[data-plugins='elimina-associazione-doc']").each(function(k,v){
             
+            
+        });
         $("[data-plugins='field-disabled']").each(function(k,v){
             var params=$(v).data();
             var id = 'edit-' + $(v).attr('id');

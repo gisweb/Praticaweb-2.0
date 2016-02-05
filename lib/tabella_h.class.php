@@ -32,6 +32,7 @@ function get_cella($row,$col){
 	$valore=htmlspecialchars($this->array_dati[$row][$nome], ENT_QUOTES,"UTF-8");//valore del campo
 	$w=$this->def_col[$col][2];//larghezza del campo
 	$tipo=trim($this->def_col[$col][3]);//tipo del campo
+	$html5Attr = $this->getHTML5Attr($this->def_col[$col][4]);
 	$classe=($this->array_dati[$row]["row_class"])?(' class="'.$this->array_dati[$row]["row_class"].'"'):("");
 	$dati=$this->array_dati[$row];
 
@@ -106,6 +107,15 @@ function get_cella($row,$col){
 			//if ($nome=="id") $selezionato="checked";
 			(($valore=="t") or ($valore==1))?($selezionato="checked"):($selezionato="");
 			$retval="<td align=\"center\" valign=\"middle\" width=\"7\"><input width=\"7\" type=\"radio\" name=\"$id\" value=\"$nome\" $selezionato></td>\n";
+			break;
+		case "btn":
+			$prms=$this->getParams($row,$w);
+			$obj=json_encode($prms['params']);
+			$retval = <<<EOT
+	<td align="center" valign="middle"  class="printhide" style="width:$prms[size]">
+		<div class="ui-icon" data-value="$valore" $html5Attr></div>
+	</td>
+EOT;
 			break;
 		case "btn_edit":
 			$prms=$this->getParams($row,$w);

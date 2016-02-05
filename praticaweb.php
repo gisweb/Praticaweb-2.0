@@ -8,6 +8,7 @@ $is_cdu=isset($_REQUEST["cdu"])?($_REQUEST["cdu"]):(0);
 $is_ce=isset($_REQUEST["comm"])?($_REQUEST["comm"]):(0);
 $is_vigi=isset($_REQUEST["vigi"])?($_REQUEST["vigi"]):(0);
 $is_agi=isset($_REQUEST["agi"])?($_REQUEST["agi"]):(0);
+$is_storage=isset($_REQUEST["storage"])?($_REQUEST["storage"]):(0);
 if($is_cdu==1){
  	$tipomenu="cdu";
 	$path="cdu";
@@ -21,12 +22,17 @@ elseif($is_ce==1){
 elseif($is_vigi==1){
  	$tipomenu="vigilanza";
 	$path="vigi";
-        $app=3;
+    $app=3;
 }
 elseif($is_agi==1){
     $tipomenu="agibilita";
     $path="agi";
     $app=4;
+}
+elseif($is_storage==1){
+	$tipomenu="storage";
+    $path="storage";
+    $app=5;
 }
 else{
 	$tipomenu="pratica";
@@ -49,12 +55,13 @@ if(isset($_POST["stampe"])){
 		elseif($is_commissione_paesaggio) 
 			$active_form="ce.commissione_paesaggio.php?pratica=$idpratica&comm_paesaggio=1";
 		else*/
-		if ($is_cdu) $active_form="cdu.iter.php?pratica=$idpratica";
-                elseif($is_ce) $active_form="ce.iter.php?pratica=$idpratica";
-                elseif($is_vigi) $active_form="vigi.iter.php?pratica=$idpratica";
-                else {
-                    $active_form="pe.iter.php?pratica=$idpratica";
-		}
+	if ($is_cdu) $active_form="cdu.iter.php?pratica=$idpratica";
+	elseif($is_ce) $active_form="ce.iter.php?pratica=$idpratica";
+	elseif($is_vigi) $active_form="vigi.iter.php?pratica=$idpratica";
+	elseif($is_storage) $active_form="storage.iter.php?pratica=$idpratica";
+	else {
+		$active_form="pe.iter.php?pratica=$idpratica";
+	}
 }
 elseif (isset($active_form) && $active_form){
 //per la gestione dei salvataggi
@@ -73,8 +80,10 @@ elseif (isset($active_form) && $active_form){
 }
 else{
 	if ($is_cdu) $active_form="cdu.iter.php?pratica=$idpratica";
-                elseif($is_ce) $active_form="ce.iter.php?pratica=$idpratica";
-                elseif($is_vigi) $active_form="vigi.iter.php?pratica=$idpratica";
+    elseif($is_ce) $active_form="ce.iter.php?pratica=$idpratica";
+    elseif($is_vigi) $active_form="vigi.iter.php?pratica=$idpratica";
+	elseif($is_storage) $active_form="storage.iter.php?pratica=$idpratica";
+
 	else {
 		$active_form="pe.iter.php?pratica=$idpratica";
 		include "./db/db.pe.recenti.php";

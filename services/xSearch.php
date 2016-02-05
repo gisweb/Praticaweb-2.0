@@ -107,6 +107,10 @@ switch($action){
             case "agi":
                 $queryName="search-agi";
                 break;
+            case "storage":
+                $queryName="storage";
+                $order="ORDER BY data_invio";
+                break;
             default:
                 $queryName="default";
                 break;
