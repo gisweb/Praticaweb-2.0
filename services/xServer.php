@@ -215,25 +215,36 @@ switch($action) {
 		$conn = utils::getDB();
 		$numero = $_REQUEST["numero_pratica"];
 		$idDoc = $_REQUEST["id"];
+		$table = $_REQUEST["assoc_table"];
+		$schema = $_REQUEST["assoc_schema"];
 		$sql = "SELECT pratica FROM pe.avvioproc WHERE numero=?";
 		$stmt = $conn->prepare($sql);
 		if($stmt->execute(Array($numero))){
 		    $res = $stmt->fetchColumn();
 		    if ($res){
-				$sql="INSERT INTO storage.associazioni(documento,pratica) VALUES(?,?)";
+				$sql="INSERT INTO storage.associazioni(documento,pratica,assoc_schema,assoc_table) VALUES(?,?,?,?)";
 				$stmt = $conn->prepare($sql);
-				if($stmt->execute(Array($idDoc,$res))){
+				if($stmt->execute(Array($idDoc,$res,$schema,$table))){
 				    $sql = "SELECT filedata,filename FROM storage.documentazione_inviata WHERE id = ?";
                     $stmt = $conn->prepare($sql);
                     $stmt->execute(Array($idDoc));
-                    $file = base64_decode($stmt->fetchColumn());
-                    $filename = $stmt->fetchColumn(1);
+					list($ff,$filename) = $stmt->fetch();
+                    $file = base64_decode($ff);
+                    
                     $pr = new pratica($res);
-                    $fname = sprintf("%s%s",$pr->allegati,$filename);
+					$fname = sprintf("%s%s",$pr->allegati,$filename);
                     $f = fopen($fname,'w');
-                    fwrite($f,$file);
-                    fclose($f);
-				    $result = Array("success"=>1,"message"=>"Documento inviato alla pratica con successo");
+                    if ($f){
+						if (fwrite($f,$file))
+						    $result = Array("success"=>1,"message"=>"Documento inviato alla pratica con successo e scritto in $fname");
+						else
+						    $result = Array("success"=>-1,"message"=>"Impossibile scrivere il documento $fname");
+						fclose($f);
+					}
+					else{
+						$result = Array("success"=>-1,"message"=>"Impossibile aprire il documento $fname");
+					}
+				    
 				}
 				else{
 				    

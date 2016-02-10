@@ -122,8 +122,6 @@ $(document).ready(function(){
         
         $("[data-plugins='inserisci-associazione-doc']").each(function(k,v){
             $(v).attr("title","Assegna documento ad una pratica edilizia");
-            
-            
             $(v).bind('click',function(event){
             console.log($(this));
             event.preventDefault();
@@ -140,6 +138,17 @@ $(document).ready(function(){
         $("[data-plugins='elimina-associazione-doc']").each(function(k,v){
             
             
+        });
+        $("[data-plugins='openDocument']").bind('click',function(event){
+            var data = $(this).data();
+            if (!$('#frm-plugin').length) 
+                $('body').append('<form target="_new" id="frm-plugin" method="POST" action=""></form>');
+            $('#frm-plugin').html('');
+            $.each(data,function(k,v){
+                  $('#frm-plugin').append(sprintf('<input type="hidden" name="%s" value="%s"/>',k,v));
+            });
+            $('#frm-plugin').attr('action',data['url']);
+            $('#frm-plugin').submit();
         });
         
         $('#associa').button({
@@ -162,7 +171,7 @@ $(document).ready(function(){
             $.ajax({
                 url:'/services/xServer.php',
                 method:'POST',
-                data:{'numero_pratica':n,'action':'invia_documento','id':id,'documento':documento},
+                data:{'numero_pratica':n,'action':'invia_documento','id':id,'documento':documento,'assoc_schema':'pe','assoc_table':'allegati'},
                 success:function(data){
                     if(data["success"]==1){
                         $('#message-dialog').html();

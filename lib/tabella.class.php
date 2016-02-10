@@ -538,7 +538,7 @@ EOT;
         return Array("size"=>$size,"form"=>$form,"params"=>$params);
     }
 	
-	function getHTML5Attr($html5Data){
+	function getHTML5Attr($html5Data,$nriga){
         $d=explode('#',$html5Data);
         for($k=0;$k<count($d);$k++){
 			list($key,$v)=explode('=',$d[$k]);

@@ -636,7 +636,7 @@ function get_riga_edit($nriga,$frozen_cols=Array()){
             $html5Attr=Array();
             //Raccolgo gli HTML5 Attributes (sono nella forma data1=val1#data2=val2....)
             if ($html5Data){
-                $html5Attr = $this->getHTML5Attr($html5Data);
+                $html5Attr = $this->getHTML5Attr($html5Data,$i);
             }
             $tipo=trim($tipo);
             if(($tipo!="button") and ($tipo!="submit"))

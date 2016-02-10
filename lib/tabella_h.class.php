@@ -32,7 +32,7 @@ function get_cella($row,$col){
 	$valore=htmlspecialchars($this->array_dati[$row][$nome], ENT_QUOTES,"UTF-8");//valore del campo
 	$w=$this->def_col[$col][2];//larghezza del campo
 	$tipo=trim($this->def_col[$col][3]);//tipo del campo
-	$html5Attr = $this->getHTML5Attr($this->def_col[$col][4]);
+	$html5Attr = $this->getHTML5Attr($this->def_col[$col][4],$row);
 	$classe=($this->array_dati[$row]["row_class"])?(' class="'.$this->array_dati[$row]["row_class"].'"'):("");
 	$dati=$this->array_dati[$row];
 
@@ -372,6 +372,12 @@ EOT;
 				}
 			$obj=json_encode($params);
 			$retval=($dati[$campo])?("<td$classe valign=\"middle\" width=\"$size[0]\"><a href=\"#\" id=\"$campo\" style=\"text-decoration:none;\" $h>$testo &nbsp;<span style=\"display:inline-block\" class=\"ui-icon $class\"></a></td>"):('<td>&nbsp;</td>');
+			break;
+		case "widget":
+			$id = $nome.="[".$this->array_dati[$row]["id"]."]";
+			$retval=<<<EOT
+	<td style="width:$w"><span id="$id" $html5Attr>$valore</span></td>
+EOT;
 			break;
 	}
 	return $retval;
