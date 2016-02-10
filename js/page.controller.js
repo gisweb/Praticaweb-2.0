@@ -122,47 +122,57 @@ $(document).ready(function(){
         
         $("[data-plugins='inserisci-associazione-doc']").each(function(k,v){
             $(v).attr("title","Assegna documento ad una pratica edilizia");
-	    var dd = $(v).data();
-	    var id = dd['value'];
-            $('#associa').button({
-                label:"Collega alla Pratica",
-                icons:{
-                    primary:"ui-icon-disk"
-                }
-            }).bind('click',function(event){
-		var n = $('#numero').val();
-		if (!n) {
- 		    alert('Inserire un numero di pratica');
-		    return;
-		}
-                $.ajax({
-		    url:'/services/xServer.php',
-		    method:'POST',
-		    data:{'numero_pratica':n,'action':'invia_documento','id':id},
-		    success:function(data){
-			if(data["success"]==1){
-			    $('#message-dialog').html();
-			    $('#associa-pratica').dialog('close');
-  			}
-			else{
-			    $('#message-dialog').html(data['message']);
-			}
-		    }
-		});
-            });
+            
+            
             $(v).bind('click',function(event){
-                event.preventDefault();
-
-               $('#associa-pratica').dialog({
+            console.log($(this));
+            event.preventDefault();
+            var dd = $(this).data();
+            var id = dd['value'];
+            $('#storage-documento').val(id);   
+                $('#associa-pratica').dialog({
                     title: "Collega documento a pratica",
-                    height: 300,
-                    width:400
+                    height: 600,
+                    width:800
                 });
             });
         });
         $("[data-plugins='elimina-associazione-doc']").each(function(k,v){
             
             
+        });
+        
+        $('#associa').button({
+            label:"Collega alla Pratica",
+            icons:{
+                primary:"ui-icon-disk"
+            }
+        }).bind('click',function(event){
+            var n = $('#numero').val();
+            var documento = $('#documento').val();
+            var id = $('#storage-documento').val();
+            if (!n) {
+                alert('Inserire un numero di pratica');
+                return;
+            }
+            if (!documento) {
+                alert('Attenzione selezionare una tipologia di documento');
+                return;
+            }
+            $.ajax({
+                url:'/services/xServer.php',
+                method:'POST',
+                data:{'numero_pratica':n,'action':'invia_documento','id':id,'documento':documento},
+                success:function(data){
+                    if(data["success"]==1){
+                        $('#message-dialog').html();
+                        $('#associa-pratica').dialog('close');
+                    }
+                    else{
+                        $('#message-dialog').html(data['message']);
+                    }
+                }
+            });
         });
         $("[data-plugins='field-disabled']").each(function(k,v){
             var params=$(v).data();

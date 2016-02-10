@@ -220,13 +220,28 @@ switch($action) {
 		if($stmt->execute(Array($numero))){
 		    $res = $stmt->fetchColumn();
 		    if ($res){
-			$sql="INSERT INTO storage.associazioni(documento,pratica) VALUES(?,?)";
-			$stmt = $conn->prepare($sql);
-			$stmt->execute(Array($idDoc,$res));
- 		        $result = Array("success"=>1,"message"=>"Documento inviato alla pratica con successo");
+				$sql="INSERT INTO storage.associazioni(documento,pratica) VALUES(?,?)";
+				$stmt = $conn->prepare($sql);
+				if($stmt->execute(Array($idDoc,$res))){
+				    $sql = "SELECT filedata,filename FROM storage.documentazione_inviata WHERE id = ?";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->execute(Array($idDoc));
+                    $file = base64_decode($stmt->fetchColumn());
+                    $filename = $stmt->fetchColumn(1);
+                    $pr = new pratica($res);
+                    $fname = sprintf("%s%s",$pr->allegati,$filename);
+                    $f = fopen($fname,'w');
+                    fwrite($f,$file);
+                    fclose($f);
+				    $result = Array("success"=>1,"message"=>"Documento inviato alla pratica con successo");
+				}
+				else{
+				    
+				    $result=Array("success"=>-1,"message"=>$stmt->errorInfo());
+				}
 		    }
 		    else{
-			$result = Array("success"=>-1,"message"=>"Nessuna pratica trovata");
+				$result = Array("success"=>-1,"message"=>"Nessuna pratica trovata");
 		    }
 		}
 		else{

@@ -72,7 +72,22 @@ if (($modo=="edit") or ($modo=="new")){
 		
 	}else{
 		$tabella=new tabella_h($filetab,"view");
-        $numrec=$tabella->set_dati("pratica=$idpratica");?>
+        $numrec=$tabella->set_dati("pratica=$idpratica");
+		$conn= utils::getDB();
+		$sql= "SELECT A.id, format('%s - %s',B.nome,A.nome) as testo FROM pe.e_documenti A INNER JOIN pe.e_iter B ON(A.iter=B.id) ORDER BY B.ordine,A.nome";
+		$stmt = $conn->prepare($sql);
+		$stmt->execute();
+		$res = $stmt->fetchAll();
+		$options=<<<EOT
+		<option value="">Seleziona una tipologia di documento</option>	
+EOT;
+		for($i=0;$i<count($res);$i++){
+			list($id,$nome)=$res[$i];
+			$options.=<<<EOT
+		<option value="$id">$nome</option>		
+EOT;
+		}
+		?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 		<H2 class="blueBanner">Documenti Inviati</H2>
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">
@@ -94,10 +109,20 @@ if (($modo=="edit") or ($modo=="new")){
 				<tr>
 					<td class="label" width="200">Numero Pratica</td>
 					<td valign="middle"><input type="text" value="" id="numero" name="numero" size="20" maxlength="15" class="textbox">
-						&nbsp;&nbsp;
+					</td>
+				</tr>
+				<tr>
+					<td class="label" width="200">Tipo di Documento</td>
+					<td valign="middle">
+						<select id="documento" class="textbox">
+							<?php
+								print $options;
+							?>
+						</select>
 					</td>
 				</tr>
 			</table>
+			<input type="hidden" name="storage-documento" id="storage-documento" value=""/>
 			<div id="message-dialog"></div>
 			<div class="button_line"></div>
 	
