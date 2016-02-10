@@ -215,6 +215,7 @@ switch($action) {
 		$conn = utils::getDB();
 		$numero = $_REQUEST["numero_pratica"];
 		$idDoc = $_REQUEST["id"];
+		$idAllegato = $_REQUEST['documento'];
 		$table = $_REQUEST["assoc_table"];
 		$schema = $_REQUEST["assoc_schema"];
 		$sql = "SELECT pratica FROM pe.avvioproc WHERE numero=?";
@@ -222,9 +223,9 @@ switch($action) {
 		if($stmt->execute(Array($numero))){
 		    $res = $stmt->fetchColumn();
 		    if ($res){
-				$sql="INSERT INTO storage.associazioni(documento,pratica,assoc_schema,assoc_table) VALUES(?,?,?,?)";
+				$sql="INSERT INTO storage.associazioni(documento,pratica,id_allegato,assoc_schema,assoc_table) VALUES(?,?,?,?,?)";
 				$stmt = $conn->prepare($sql);
-				if($stmt->execute(Array($idDoc,$res,$schema,$table))){
+				if($stmt->execute(Array($idDoc,$res,$idAllegato,$schema,$table))){
 				    $sql = "SELECT filedata,filename FROM storage.documentazione_inviata WHERE id = ?";
                     $stmt = $conn->prepare($sql);
                     $stmt->execute(Array($idDoc));
@@ -248,7 +249,7 @@ switch($action) {
 				}
 				else{
 				    
-				    $result=Array("success"=>-1,"message"=>$stmt->errorInfo());
+				    $result=Array("success"=>-1,"query"=>$sql,"message"=>$stmt->errorInfo());
 				}
 		    }
 		    else{
