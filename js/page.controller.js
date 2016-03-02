@@ -26,7 +26,7 @@ $(document).ready(function(){
        $(v).bind('click',function(event){
            event.preventDefault();
            var d=$(this).data();
-           var url=d['url']+'?random='+rnd;
+           var url=encodeURIComponent(d['url'])+'?random='+rnd;
            window.open(window.parent.url_documenti+url,'stampe');
        });
    });
