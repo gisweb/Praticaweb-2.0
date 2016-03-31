@@ -556,7 +556,7 @@ function zoomto_gc($tabella,$id){
 			$result = $this->db->sql_query($sql);
 			$indi=$this->db->sql_fetchrow();
 			if ($indi){
-				$via=$indi["via"];
+				$via=addslashes($indi["via"]);
 				$civico=$indi["civico"];
 				//
 				$sql="SELECT A.gid from civici.pe_civici A inner join civici.pe_vie B on(id=strada) where nome ilike '$via' and label='$civico';";
