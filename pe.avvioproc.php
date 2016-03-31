@@ -6,7 +6,7 @@ $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $idpratica=isset($_REQUEST["pratica"])?($_REQUEST["pratica"]):('');
 $pr=new pratica($idpratica);
 $pr->createStructure();
-$file_config="$tabpath/avvio_procedimento";
+
 $intestazione='Avvio del procedimento e comunicazione responsabile';
 include "./lib/tabella_v.class.php";
 $db=appUtils::getDB();
@@ -16,6 +16,7 @@ foreach($res as $val){
     $categoria[$val["tipo"]][]=Array("id"=>$val["id"],"opzione"=>$val["nome"]);
     $tipopratica[$val["tipo"]]=$val["tipopratica"];
 }
+$file_config="$tabpath/avvio_procedimento";
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
 ?>

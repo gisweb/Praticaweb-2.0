@@ -17,6 +17,7 @@ list($tipo,$pag)=explode(".",$form);
 $condono=($tipo=="cn")?(1):(0);
 $ce=($tipo=="ce")?(1):(0);
 $cdu=($tipo=="cdu")?(1):(0);
+$vigi=($tipo=="vigi")?(1):(0);
 $active_form=$form.".php";
 $tab_err=array();
 $hidden="hidden";
@@ -143,6 +144,7 @@ EOT;
 	<input type="hidden" name="condono" value="<?=$condono?>">
 	<input type="hidden" name="cdu" value="<?=$cdu?>">
 	<input type="hidden" name="comm" value="<?=$ce?>">
+	<input type="hidden" name="vigi" value="<?=$vigi?>">
 	<input type="hidden" name="active_form" value="<?php echo $active_form?>">
 	<input type="hidden" name="stampe" value="1">
 	<input type="hidden" name="id" id="id_mod" value="">

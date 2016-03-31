@@ -127,9 +127,10 @@ class wordDoc {
                          }
                         break;
 		}
-                array_walk_recursive($customData, 'decode');
-		$this->data=$customData;
-                print_debug($this->data,null,'STAMPE');
+            array_walk_recursive($customData, 'decode');
+			$this->data=$customData;
+			
+            print_debug($this->data,null,'STAMPE');
 	}
         private function getFields(){
 		$db=$this->db;
@@ -168,7 +169,7 @@ class wordDoc {
 	function createDoc($test=0){
 		$TBS = new clsTinyButStrong; // new instance of TBS
 		$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
-
+		$TBS->VarRef['data'] = date("d/m/Y");
 		$this->getData();
 		foreach($this->data as $k=>$v){
 			$TBS->VarRef[$k]=$v;
@@ -178,14 +179,18 @@ class wordDoc {
 		$TBS->SetOption('noerr',true);
 		
 		$this->substFields($TBS);
+		/*$TBS->PlugIn(OPENTBS_SELECT_HEADER,OPENTBS_DEFAULT);
+		$TBS->substFields($TBS);
+		$TBS->PlugIn(OPENTBS_SELECT_FOOTER,OPENTBS_DEFAULT);
+		$TBS->substFields($TBS);*/
         /*Check if exists header and footer */
-		/*$files=$TBS->PlugIn(OPENTBS_GET_HEADERS_FOOTERS);
-		for($i=0;$i<count($files);$i++){
-			$TBS->LoadTemplate($files[$i],OPENTBS_ALREADY_XML);
-			echo $files[$i];
+		//$files=$TBS->PlugIn(OPENTBS_GET_HEADERS_FOOTERS);
+		/*for($i=0;$i<count($files);$i++){
+			$TBS->LoadTemplate($files[$i]);
+			//echo $files[$i];
 			$TBS->substFields($TBS);
-		}
-		$TBS->PlugIn(OPENTBS_SELECT_MAIN);*/
+		}*/
+		/*$TBS->PlugIn(OPENTBS_SELECT_MAIN);*/
         /*if($TBS->Plugin(OPENTBS_FILEEXISTS, "styles.xml")){
             $TBS->LoadTemplate("#styles.xml");
             foreach($this->data as $tb=>$data){

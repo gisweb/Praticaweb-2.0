@@ -95,7 +95,7 @@ class generalPratica {
             $numero=appUtils::normalizeNumero($this->info['numero']);
             $tmp=explode('-',$numero);
             if (count($tmp)==2 && preg_match("|([A-z0-9]+)|",$tmp[0])){
-                    $tmp[0]=(preg_match("|^[89]|",$tmp[0]))?("19".$tmp[0]):($tmp[0]);
+                    //$tmp[0]=(preg_match("|^[89]|",$tmp[0]))?("19".$tmp[0]):($tmp[0]);
                     $numero=implode('-',$tmp);
             }
             $anno=($r['anno'])?($r['anno']):($tmp[0]);
@@ -156,7 +156,7 @@ class generalPratica {
             $numero=appUtils::normalizeNumero($this->info['numero']);
             $tmp=explode('-',$numero);
             if (count($tmp)==2 && preg_match("|([A-z0-9]+)|",$tmp[0])){
-                    $tmp[0]=(preg_match("|^[89]|",$tmp[0]))?("19".$tmp[0]):($tmp[0]);
+                    //$tmp[0]=(preg_match("|^[89]|",$tmp[0]))?("19".$tmp[0]):($tmp[0]);
                     $numero=implode('-',$tmp);
             }
             $anno=($r['anno'])?($r['anno']):($tmp[0]);

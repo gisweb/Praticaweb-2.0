@@ -557,9 +557,8 @@ function get_dato($tipo,$w,$campo,$html5Attr){
 				$key=$size[2];
 				$lbl =$size[3];
 				//$values=explode(',',str_replace(Array('{','}'),'',$dati[$campo]));
-				$values = json_encode($dati[$campo]);
-				$labels=$this->getlabels($table,$key,$lbl,"pratica IN (".implode(',',$values).")");
-				
+				$values = str_replace(Array('{','}'),"",$dati[$campo]);
+				$labels=$this->getlabels($table,$key,$lbl,"pratica IN (".$values.")");
 				foreach($labels as $k=>$v){
 					$retval .=<<<EOT
 		<span id="$campo-$i" $html5Attr data-$key="$k"><span class="underline-cursor">$v</span><span class="ui-icon ui-icon-link" style="display:inline-block;margin-left:1px;"/></span>
@@ -637,19 +636,7 @@ function get_riga_edit($nriga,$frozen_cols=Array()){
             $html5Attr=Array();
             //Raccolgo gli HTML5 Attributes (sono nella forma data1=val1#data2=val2....)
             if ($html5Data){
-                $d=explode('#',$html5Data);
-                //$d=(is_array($d))?($d):(Array($d));
-                for($k=0;$k<count($d);$k++){
-                    list($key,$v)=explode('=',$d[$k]);
-                    if(strpos($v, '@')===0){
-                        $html5Attr[]=sprintf('%s="%s"',$key,$this->array_dati[$nriga][str_replace('@', '', $v)]);
-                    }
-                    else{
-                        $html5Attr[]=sprintf('%s="%s"',$key,$v);
-                    }
-                    
-                }
-                $html5Attr=implode(" ",$html5Attr);
+                $html5Attr = $this->getHTML5Attr($html5Data,$i);
             }
             $tipo=trim($tipo);
             if(($tipo!="button") and ($tipo!="submit"))

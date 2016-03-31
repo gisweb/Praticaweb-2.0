@@ -5,6 +5,7 @@ $db=  appUtils::getDB();
 
 $result=Array();
 $action=(isset($_REQUEST["action"]) && $_REQUEST["action"])?($_REQUEST["action"]):("");
+
 switch($action) {
         case "list-pratiche-folder":
             $sql="SELECT pratica,B.nome as tipo,A.numero,coalesce(data_presentazione,data_prot) as data FROM pe.avvioproc A INNER JOIN pe.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN pe.e_categoriapratica C ON (coalesce(A.categoria,0)=C.id)  WHERE cartella=? AND pratica <> ? ORDER BY data_presentazione DESC;";
@@ -25,6 +26,10 @@ switch($action) {
                 case "agibi":
                     $sql=sprintf("SELECT count(*) as sorteggiato FROM pe.verifiche WHERE tipo IN (%s) and date_part('month',data_sorteggio)=date_part('month',$dataSorteggio) AND date_part('year',data_sorteggio)=date_part('year',$dataSorteggio);",$idTipo);
                     break;
+		case "agibi-sanremo":
+                    $sql=sprintf("SELECT count(*) as sorteggiato FROM pe.verifiche WHERE tipo IN (%s) AND date_part('year',data_sorteggio)=date_part('year',$dataSorteggio)-1;",$idTipo);
+                    break;
+
                 case "dia":
                 case "scia":    
                 case "pratica":
@@ -41,6 +46,9 @@ switch($action) {
                 case "agibi":
                     $sql=sprintf("SELECT count(*)  FROM pe.elenco_pratiche_sorteggi WHERE  date_part('month',data_agibilita)=date_part('month',$dataSorteggio)-1 AND date_part('year',data_agibilita)=date_part('year',$dataSorteggio) AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice='%s');",$tipo);
                     break;
+		case "agibi-sanremo":
+		    $sql=sprintf("SELECT count(*)  FROM pe.elenco_pratiche_sorteggi WHERE date_part('year',data_agibilita)=date_part('year',$dataSorteggio)-1 AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice='%s');",$tipo);
+		    break;
                 case "com":
                     $sql=sprintf("SELECT count(*)  FROM pe.elenco_pratiche_sorteggi WHERE tipologia ilike 'com%' AND  date_part('month',il)=date_part('month',$dataSorteggio)-1 AND date_part('year',il)=date_part('year',$dataSorteggio) AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice='%s');",$tipo);
                     break;
@@ -78,6 +86,9 @@ switch($action) {
                     $sql=sprintf("SELECT pratica FROM pe.abitabi WHERE date_part('month',data_agibilita)=date_part('month',$dataSorteggio)-1 AND date_part('year',data_agibilita)=date_part('year',$dataSorteggio) AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice='%s') AND %s;",$tipo);
                     $perc=0.1;
                     break;
+		case "agibi-sanremo":
+		    $sql=sprintf("SELECT pratica FROM pe.elenco_pratiche_sorteggi WHERE date_part('year',data_agibilita)=date_part('year',$dataSorteggio)-1 AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice='%s') AND %s;",$tipo,$filterTipi);
+                    break;
                 case "dia":
                     $sql=sprintf("SELECT pratica FROM pe.elenco_pratiche_sorteggi WHERE pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice='%s') AND tipologia='dia' AND  date_part('month',il)=date_part('month',$dataSorteggio)-1 AND date_part('year',il)=date_part('year',$dataSorteggio)  AND %s;",$tipo,$filterTipi);
                     break;
@@ -94,7 +105,8 @@ switch($action) {
             utils::debug(DEBUG_DIR.$_SESSION["USER_ID"]."_draw.debug",$sql);
             $stmt=$conn->prepare($sql);
             if(!$stmt->execute()){
-                $result=Array("success"=>0,"message"=>"draw_select_error","query"=>$sql);
+                $error = $stmt->errorInfo();
+		$result=Array("success"=>0,"message"=>"draw_select_error","query"=>$sql,"error"=>$error[2]);
                 break;
             }
             $res=$stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -199,6 +211,55 @@ switch($action) {
             //DETTAGLI SULLE VERIFICHE
             //$result["query"]=$sql;
             break;
+	case "invia_documento":
+		$conn = utils::getDB();
+		$numero = $_REQUEST["numero_pratica"];
+		$idDoc = $_REQUEST["id"];
+		$idAllegato = $_REQUEST['documento'];
+		$table = $_REQUEST["assoc_table"];
+		$schema = $_REQUEST["assoc_schema"];
+		$sql = "SELECT pratica FROM pe.avvioproc WHERE numero=?";
+		$stmt = $conn->prepare($sql);
+		if($stmt->execute(Array($numero))){
+		    $pratica = $stmt->fetchColumn();
+		    if ($pratica){
+				$sql="INSERT INTO storage.associazioni(documento,pratica,id_allegato,assoc_schema,assoc_table) VALUES(?,?,?,?,?)";
+				$stmt = $conn->prepare($sql);
+				if($stmt->execute(Array($idDoc,$pratica,$idAllegato,$schema,$table))){
+				    $sql = "SELECT filedata,filename FROM storage.documentazione_inviata WHERE id = ?";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->execute(Array($idDoc));
+					list($ff,$filename) = $stmt->fetch();
+                    $file = base64_decode($ff);
+                    
+                    $pr = new pratica($res);
+					$fname = sprintf("%s%s",$pr->allegati,$filename);
+                    $f = fopen($fname,'w');
+                    if ($f){
+						if (fwrite($f,$file))
+						    $result = Array("success"=>1,"message"=>"Documento inviato alla pratica con successo e scritto in $fname");
+						else
+						    $result = Array("success"=>-1,"message"=>"Impossibile scrivere il documento $fname");
+						fclose($f);
+					}
+					else{
+						$result = Array("success"=>-1,"message"=>"Impossibile aprire il documento $fname");
+					}
+				    
+				}
+				else{
+				    
+				    $result=Array("success"=>-1,"query"=>$sql,"message"=>$stmt->errorInfo());
+				}
+		    }
+		    else{
+				$result = Array("success"=>-1,"message"=>"Nessuna pratica trovata");
+		    }
+		}
+		else{
+		    $result=Array("success"=>-1,"message"=>$stmt->errorInfo());
+		}
+		break;
 	default:
 		break;
 }

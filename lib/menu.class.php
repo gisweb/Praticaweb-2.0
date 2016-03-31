@@ -26,6 +26,9 @@ class Menu{
 			case "cdu":
 				$this->schema="cdu";
 				break;
+			case "":
+				$this->schema="storage";
+				break;
 			default:
 				$this->schema="pe";
 				break;
@@ -68,6 +71,13 @@ class Menu{
 					$menu_pratica[]=explode(",",$riga);
 				}
 				$mnu="condono";
+			}
+			elseif ($this->tipo=="storage"){
+				$menu_settings=@file(MENU."storage.mnu");
+				foreach ($menu_settings as $riga){
+					$menu_pratica[]=explode(",",$riga);
+				}
+				$mnu="storage";
 			}
 			elseif ($this->tipo=="vigilanza"){// menu per la commissione
                             //menu per le pratiche

@@ -10,7 +10,7 @@ $azione=$_POST["azione"];
 $procedimento=$_POST["procedimento"];
 $id_modello=$_POST["id"];
 list($schema_iter,$nomeform)=explode(".",$form);
-if ($schema_iter=="oneri" || $schema_iter=="vigi") $schema_iter="pe";	//Redirigo gli schemi collegati a PE
+if ($schema_iter=="oneri") $schema_iter="pe";	//Redirigo gli schemi collegati a PE
 $db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
 if(!$db->db_connect_id)  die( "Impossibile connettersi al database ".DB_NAME);
 $db=appUtils::getDB();

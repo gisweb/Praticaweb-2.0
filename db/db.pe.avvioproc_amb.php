@@ -5,7 +5,7 @@
 	//UTILIZZARE UNA TRANSAZIONE PER L'EREDITARIETA DEI DATI DELLA NUOVA PRATICA
 	
 	//se ho annullato esco
-	if ($_POST["azione"]=="Annulla"){
+	if ($_POST["azione"]=="Annulla" || !isset($_POST["azione"])){
 		$active_form.="?pratica=$idpratica";
 		return;
 	}
@@ -13,88 +13,69 @@
 	if (($_POST["mode"]=="new") && ($_SESSION["ADD_NEW"])){
 		$idpratica=$_SESSION["ADD_NEW"];
 		$ERRMSG= "Il record " . $_SESSION["ADD_NEW"] . " è già stato inserito! ";
-		//echo $ERRMSG;
 		return;
 	}
-		
+	if($_REQUEST['mode']=='edit'){
+		$prPrec=new pratica($idpratica);
+		$db=$prPrec->db1;
+		$pratPrec=$db->fetchAssoc("SELECT * FROM pe.avvioproc WHERE pratica=?",Array($idpratica));
+        }
+        
+        if (file_exists(DATA_DIR."praticaweb/db/db.pe.avvioproc_amb.before.php")){
+            $dataprot = $_REQUEST["data_prot"];
+            $prot = $_REQUEST["protocollo"];
+            require_once DATA_DIR."praticaweb/db/db.pe.avvioproc_amb.before.php";
+            $_REQUEST["data_prot"]=$dataprot;
+            $_REQUEST["protocollo"]=$prot;
+        }
 	//Modulo condiviso per la gestione dei dati
 	include_once "./db/db.savedata.php";
-		
-	if ($_POST["mode"]=="new"){
-		$idpratica= $_SESSION["ADD_NEW"];
-		$db->sql_query ("update pe.avvioproc set pratica=id where id=$idpratica");	
-		
-		//numerazione automatica per savona
-		//$db->sql_query ("update pe.avvioproc set numero=protocollo || '/' || substr(date_part('year',data_presentazione),3,2) where id=$idpratica");				 
-		
-		//numerazione automatica
-		$data_presentazione=$_POST["data_presentazione"];
-		$tipo_pratica=$_POST["tipo"];
-		if(!$_POST["numero"]){
-			$sql="update pe.avvioproc set numero= pe.nuovo_numero('$data_presentazione'::date,$tipo_pratica) where pratica=$idpratica;";
-			if (DEBUG) echo $sql;
-			$db->sql_query ($sql);	
-		}
+	
+	$d_resp=($_REQUEST['data_resp'])?($_REQUEST['data_resp']):("now");
+	$d_respIT=($_REQUEST['data_resp_it'])?($_REQUEST['data_resp_it']):("now");
+	$d_respIA=($_REQUEST['data_resp_ia'])?($_REQUEST['data_resp_ia']):("now");
+	
+	if ($_REQUEST["mode"]=="new"){
+            $idpratica=$_SESSION["ADD_NEW"];
 
-		//Aggiungo il menù della nuova pratica alla tabella menu	
-		$menu->list_menu($idpratica,$_POST["tipo"]);
+            $pr=new pratica($idpratica);
+            $pr->addRecenti();
+            $pr->nuovaPratica(Array("data_resp"=>$d_resp,"data_resp_it"=>$d_respIT,"data_resp_ia"=>$d_respIA));
+            //numerazione automatica
+            $data_presentazione=$_POST["data_presentazione"];
+            $tipo_pratica=$_POST["tipo"];
+            $resp_proc=$_POST['resp_proc'];	
+            $menu->list_menu($idpratica,$_POST["tipo"]);
 		
-		//inserisco i dati relativi ai riferimenti: 
-		if ($_POST["refpratica"]){
-			//esiste la pratica di riferimento importo tutti i dati della pratica di riferimento
-			include ("db.pe.importa_pratica.php");
-		}
-		elseif ($_POST["riferimento"]){
-			$newref=$_POST["riferimento"];
-			$newref=addslashes($newref);
-			//aggiungo il riferimento e lo assegno alla pratica
-			$db->sql_query ("insert into pe.riferimenti (descrizione) values ('$newref')");
-			$idref=$db->sql_nextid();
-			$db->sql_query ("update pe.avvioproc set riferimento=$idref where pratica=$idpratica");
-			//aggiungo i riferimenti territoriali inseriti: via e civico
-			if($_POST["via"]){
-				$sqlcampi="via";
-				$sqlvalori="'".htmlentities(addslashes($_POST["via"]))."'";
-				if($_POST["civico"]){
-					$sqlcampi.=",civico";
-					$sqlvalori.=",'".htmlentities(addslashes($_POST["civico"]))."'";
-				}
-				$sql="insert into pe.indirizzi (pratica,$sqlcampi,uidins,tmsins) values ($idpratica,$sqlvalori,".$_SESSION["USER_ID"].",".time().")"; 
-				if(DEBUG) echo $sql;
-				$db->sql_query($sql);
-			}
-			//aggiungo i riferimenti territoriali inseriti: catasto terreni
-			if($_POST["ctfoglio"]){
-				$sqlcampi="foglio";
-				$sqlvalori="'".htmlentities(addslashes($_POST["ctfoglio"]))."'";
-				if($_POST["ctsezione"]){
-					$sqlcampi.=",sezione";
-					$sqlvalori.=",'".htmlentities(addslashes($_POST["ctsezione"]))."'";
-				}
-				if($_POST["ctmappale"]){
-					$sqlcampi.=",mappale";
-					$sqlvalori.=",'".htmlentities(addslashes($_POST["ctmappale"]))."'";					
-				}
-				$sql="insert into pe.cterreni (pratica,$sqlcampi,uidins,tmsins) values ($idpratica,$sqlvalori,".$_SESSION["USER_ID"].",".time().")"; 
-				if(DEBUG) echo $sql;
-				$db->sql_query($sql);
-			}
-		}
+		
+		
 	}//fine sezione nuova pratica
 	
 	//aggiorno una pratica esistente
 	elseif($_POST["mode"]=="edit"){
-		//devo solo controllare se è stato cambiato il tipo di pratica: in questo caso aggiorno il menu
-		$tipo=$_POST["tipo"];
-		$oldtipo=$_POST["oldtipo"];
-		if ($tipo!=$oldtipo)
-			$menu->change_menu($idpratica,$oldtipo,$tipo);
-		$menu->add_menu($idpratica,60);
+            $pr=new pratica($idpratica);
+            //devo solo controllare se è stato cambiato il tipo di pratica: in questo caso aggiorno il menu
+            $tipo=$_POST["tipo"];
+            $oldtipo=$_POST["oldtipo"];
+            if ($tipo!=$oldtipo)
+            	$menu->change_menu($idpratica,$oldtipo,$tipo);
+            $menu->add_menu($idpratica,60);
+            
+		
+            if($pratPrec['resp_proc']!=$pr->info["resp_proc"]) 
+                    $pr->addTransition(Array('codice'=>'rardp',"utente_fi"=>$pr->info["resp_proc"],"data"=>$d_resp));	
+            if($pratPrec['resp_it']!=$_REQUEST['resp_it'])
+                    $pr->addTransition(Array('codice'=>'raitec',"utente_fi"=>$pr->info["resp_it"],"data"=>$d_respIT));	
+            if($pratPrec['resp_ia']!=$_REQUEST['resp_ia']) 
+                    $pr->addTransition(Array('codice'=>'raiamm',"utente_fi"=>$pr->info["resp_ia"],"data"=>$d_respIA));	
 	}
 	$db->sql_close();
+	$active_form.="?pratica=$idpratica";  
 	//IN TUTTI I db.mioform.php risetto i parametri per active_form da passare all'iframe
 	//$active_form.="?pratica=$idpratica&id=$id&ruolo=$ruolo";
-	$active_form.="?pratica=$idpratica";
 	
+	if (file_exists(DATA_DIR."praticaweb/db/db.pe.after.avvioproc_amb.php")){
+            require_once DATA_DIR."praticaweb/db/db.pe.after.avvioproc_amb.php";
+        }
 	
 ?>
