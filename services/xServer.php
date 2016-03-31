@@ -221,11 +221,11 @@ switch($action) {
 		$sql = "SELECT pratica FROM pe.avvioproc WHERE numero=?";
 		$stmt = $conn->prepare($sql);
 		if($stmt->execute(Array($numero))){
-		    $res = $stmt->fetchColumn();
-		    if ($res){
+		    $pratica = $stmt->fetchColumn();
+		    if ($pratica){
 				$sql="INSERT INTO storage.associazioni(documento,pratica,id_allegato,assoc_schema,assoc_table) VALUES(?,?,?,?,?)";
 				$stmt = $conn->prepare($sql);
-				if($stmt->execute(Array($idDoc,$res,$idAllegato,$schema,$table))){
+				if($stmt->execute(Array($idDoc,$pratica,$idAllegato,$schema,$table))){
 				    $sql = "SELECT filedata,filename FROM storage.documentazione_inviata WHERE id = ?";
                     $stmt = $conn->prepare($sql);
                     $stmt->execute(Array($idDoc));
