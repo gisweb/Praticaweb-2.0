@@ -325,11 +325,17 @@ function valida_dato($field,$value,$valid,$row,$tmp){
 			}
 			break;
                 //Partita Iva Obbligatoria
-                case 21:
+        case 21:
 			if (trim($value) && !controllaPIVA(trim($value)))
 				$out=Array("valido"=>1,"campo"=>$field,"valore"=>$value);
 			else
 				$out=Array("valido"=>0,"campo"=>$field,"valore"=>$value,"active_form"=>$valid["active_form"],"param"=>Array("id=$id","ruolo=$ruolo"),"id"=>$row["id_soggetto"],"pratica"=>$row["id_pratica"]);
+			break;
+		case 30:
+			$out=Array("valido"=>1,"campo"=>$field,"valore"=>$value);
+			break;
+		case 31:
+			$out=Array("valido"=>1,"campo"=>$field,"valore"=>$value);
 			break;
 		default:
 			$out=Array("valido"=>1,"campo"=>$field,"valore"=>$value);
@@ -457,7 +463,7 @@ function scrivi_file($arr,$filename="anagrafe_tributaria.txt",$dir=STAMPE){
     $sep_record=Array("testa"=>"Record Testa\n","richiesta"=>"Record Richiesta\n","beneficiari"=>"Record Beneficiari\n","dati_catastali"=>"Record Dati Catastali\n","professionisti"=>"Record Professionisti\n","imprese"=>"Record Imprese\n","coda"=>"Record Coda\n");
     $handle=fopen($dir.$filename,'a+');
     if(!$handle){
-        utils::debug(DEBUG_DIR."SCRIVI_FILE.txt", "Impossibile aprire il file ".$dir."ana_trib");
+//        utils::debug(DEBUG_DIR."SCRIVI_FILE.txt", "Impossibile aprire il file ".$dir."ana_trib");
         return -1;
     }
     //
@@ -477,10 +483,33 @@ function scrivi_file($arr,$filename="anagrafe_tributaria.txt",$dir=STAMPE){
             $rows[]=implode("",$tmp);
         }
     }
-    utils::debug(DEBUG_DIR."SCRIVI_FILE.txt", $rows);
-    fwrite($handle,implode("",$rows));
+//    utils::debug(DEBUG_DIR."SCRIVI_FILE.txt", $rows);
+	$testo = implode("",$rows);
+	$subst = array(
+        '/[áàâãªä]/u'   =>   'a',
+        '/[ÁÀÂÃÄ]/u'    =>   'A',
+        '/[ÍÌÎÏ]/u'     =>   'I',
+        '/[íìîï]/u'     =>   'i',
+        '/[éèêë]/u'     =>   'e',
+        '/[ÉÈÊË]/u'     =>   'E',
+        '/[óòôõºö]/u'   =>   'o',
+        '/[ÓÒÔÕÖ]/u'    =>   'O',
+        '/[úùûü]/u'     =>   'u',
+        '/[ÚÙÛÜ]/u'     =>   'U',
+        '/ç/'           =>   'c',
+        '/Ç/'           =>   'C',
+        '/ñ/'           =>   'n',
+        '/Ñ/'           =>   'N',
+        '/–/'           =>   '-', // UTF-8 hyphen to "normal" hyphen
+        '/[’‘‹›‚]/u'    =>   ' ', // Literally a single quote
+        '/[“”«»„]/u'    =>   ' ', // Double quote
+        '/ /'           =>   ' ', // nonbreaking space (equiv. to 0x160)
+		"/´/"			=>	 "'"
+    );
+	$testo = preg_replace(array_keys($subst),array_values($subst),$testo);
+    if (!fwrite($handle,$testo)) return -2;
     fclose($handle);
-    return $error;
+    return 1;
 }
 function compara_file($filename1,$filename2) {
 	if(!file_exists($filename1)){
