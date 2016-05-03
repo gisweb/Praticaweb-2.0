@@ -174,7 +174,7 @@ class wordDoc {
 		foreach($this->data as $k=>$v){
 			$TBS->VarRef[$k]=$v;
 		}
-        $TBS->LoadTemplate($this->modelliDir.$this->modello,OPENTBS_ALREADY_XML);
+	        $TBS->LoadTemplate($this->modelliDir.$this->modello,OPENTBS_ALREADY_XML);
 
 		$TBS->SetOption('noerr',true);
 		
