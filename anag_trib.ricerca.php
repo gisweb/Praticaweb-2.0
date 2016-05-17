@@ -122,6 +122,7 @@ else{
 		}
 		elseif($generaFile==1){
 			$a = scrivi_file($r);
+			//print "<p>$i : $a</p>";
 		}
 		elseif($genefaFile == 2 && !$errore){
 			$a = scrivi_file($r);
