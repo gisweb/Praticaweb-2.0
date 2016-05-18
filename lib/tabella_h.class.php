@@ -540,7 +540,7 @@ function zoomto_gc($tabella,$id){
 	$msgerr="Oggetto non presente in cartografia";
 
 	switch ($tabella){
-		
+		case "vigi.ct_info":
 		case "pe.cu_info":
 		case "pe.ct_info":
 		case "cdu.vista_mappali": 
@@ -564,7 +564,7 @@ function zoomto_gc($tabella,$id){
                             
 			return $func;
 			break;
-		
+		case "vigi.indirizzi":
 		case "pe.indirizzi":
 			$buff=50;
 			$sql = "SELECT via,civico from pe.indirizzi where id=$id;"; 
