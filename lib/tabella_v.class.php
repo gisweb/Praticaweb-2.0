@@ -209,7 +209,7 @@ EOT;*/
 			break;	
 		case "textarea":
 			$size=explode("x",$w);
-			$retval="<textarea cols=\"$size[0]\" rows=\"$size[1]\" name=\"$campo\" id=\"$campo\" $title $html5Attr $disabilitato>$dato</textarea>";
+			$retval="<textarea class=\"$class\" cols=\"$size[0]\" rows=\"$size[1]\" name=\"$campo\" id=\"$campo\" $title $html5Attr $disabilitato>$dato</textarea>$help";
 			break;
 		case "richtext":
 			$size=explode("x",$w);
