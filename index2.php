@@ -4,7 +4,7 @@
 
 include_once ("login.php");
 
-$file = TAB_ELENCO."elenco_index.tab";
+$file = TAB_ELENCO."index.json";
 $menu=0;
 $last_change=shell_exec("git log -1 --pretty=format:'%ci'");
 ?>

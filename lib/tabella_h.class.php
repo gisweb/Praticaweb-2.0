@@ -125,7 +125,7 @@ EOT;
 			
 			if ($this->editable){
 				$retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
-				$retval.="<a href='javascript:linkToEdit(\"$destination\",$obj)'><img title=\"Modifica\" src=\"images/edit.png\" border=\"0\"></a>";
+				$retval.="<a href='javascript:linkToEdit(\"$destination\",$obj)'><img title=\"Modifica\" src=\"/images/edit.png\" border=\"0\"></a>";
 				$retval.="</td>\n";
 			}
 			break;
@@ -135,7 +135,7 @@ EOT;
 			$retval="";
 			if ($this->viewable){
 				$retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
-				$retval.="<a href='javascript:loadInto(\"".$prms['form']."\",$obj)'><img title=\"Visualizza\" src=\"images/view.png\" border=\"0\"></a>";
+				$retval.="<a href='javascript:loadInto(\"".$prms['form']."\",$obj)'><img title=\"Visualizza\" src=\"/images/view.png\" border=\"0\"></a>";
 				$retval.="</td>\n";
 			}
 			break;
@@ -146,7 +146,7 @@ EOT;
 			$destination=($this->array_dati[$row]["row_form"])?($this->array_dati[$row]["row_form"]):($prms['form']);
 			if ($this->viewable){
 				$retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
-				$retval.="<a href='javascript:linkToView(\"$destination.php\",$obj)'><img title=\"Visualizza\" src=\"images/view.png\" border=\"0\"></a>";
+				$retval.="<a href='javascript:linkToView(\"$destination.php\",$obj)'><img title=\"Visualizza\" src=\"/images/view.png\" border=\"0\"></a>";
 				$retval.="</td>\n";
 			}
 			break;
@@ -157,7 +157,7 @@ EOT;
 			$destination=($this->array_dati[$row]["row_form"])?($this->array_dati[$row]["row_form"]):($prms['form']);
 			if ($this->viewable){
 				$retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
-				$retval.="<a href='javascript:linkToList(\"$destination.php\",$obj)'><img title=\"Visualizza\" src=\"images/view.png\" border=\"0\"></a>";
+				$retval.="<a href='javascript:linkToList(\"$destination.php\",$obj)'><img title=\"Visualizza\" src=\"/images/view.png\" border=\"0\"></a>";
 				$retval.="</td>\n";
 			}
 			break;
@@ -167,7 +167,7 @@ EOT;
 			$retval="";
 			if ($this->editable){
 				$retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
-				$retval.="<a href='javascript:linkToDelete(\"".$prms['form'].".php\",$obj)'><img title=\"Elimina\" src=\"images/delete.png\" border=\"0\"></a>";
+				$retval.="<a href='javascript:linkToDelete(\"".$prms['form'].".php\",$obj)'><img title=\"Elimina\" src=\"/images/delete.png\" border=\"0\"></a>";
 				$retval.="</td>\n";
 			}
 			break;
@@ -177,7 +177,7 @@ EOT;
             $retval="";
             if ($this->viewable){
                 $retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
-                $retval.="<a href='javascript:linkToView(\"".$prms['form'].".php\",$obj)'><img title=\"Visualizza\" src=\"images/word.gif\" border=\"0\"></a>";
+                $retval.="<a href='javascript:linkToView(\"".$prms['form'].".php\",$obj)'><img title=\"Visualizza\" src=\"/images/word.gif\" border=\"0\"></a>";
                 $retval.="</td>\n";
             }
             break;
@@ -185,8 +185,8 @@ EOT;
             $prms=$this->getParams($row,$w);
             $obj=json_encode($prms['params']);
             $retval="<td align=\"center\" valign=\"middle\"  class=\"printhide\">";
-            $retval.="<a href='javascript:linkToView(\"".$prms['form'].".php\",$obj)'><img title=\"Visualizza\" src=\"images/view.png\" border=\"0\"></a>";
-            if ($this->editable) $retval.="<a href='javascript:linkToEdit(\"".$prms['form'].".php\",$obj)'><img title=\"Modifica\" src=\"images/edit.png\" border=\"0\"></a>";
+            $retval.="<a href='javascript:linkToView(\"".$prms['form'].".php\",$obj)'><img title=\"Visualizza\" src=\"/images/view.png\" border=\"0\"></a>";
+            if ($this->editable) $retval.="<a href='javascript:linkToEdit(\"".$prms['form'].".php\",$obj)'><img title=\"Modifica\" src=\"/images/edit.png\" border=\"0\"></a>";
             $retval.="</td>\n";
             break;
         case "btn_modelli":
@@ -225,7 +225,7 @@ EOT;
             else
                     $jslink="link('$valore')";
 
-            $retval="<td align=\"center\" valign=\"middle\"  class=\"printhide\"><a href=\"javascript:$jslink\"><img src=\"images/view.png\" border=\"0\"></a></td>\n";
+            $retval="<td align=\"center\" valign=\"middle\"  class=\"printhide\"><a href=\"javascript:$jslink\"><img src=\"/images/view.png\" border=\"0\"></a></td>\n";
             break;
 			
 		case "info0":
@@ -249,7 +249,7 @@ EOT;
 			$args='';
 			if($this->array_dati[$row][$this->tag]){
 				$jslink="link1('$valore',$pratica,'$target')";
-				$retval="<td align=\"center\" valign=\"middle\" width=\"$w\" class=\"printhide\"><a href=\"javascript:$jslink\"><img src=\"images/info.gif\" border=\"0\"></a></td>\n";
+				$retval="<td align=\"center\" valign=\"middle\" width=\"$w\" class=\"printhide\"><a href=\"javascript:$jslink\"><img src=\"/images/info.gif\" border=\"0\"></a></td>\n";
 			}
 			else{
 					$retval="<td></td>\n";
@@ -259,17 +259,17 @@ EOT;
 			break;
 			
 		case "upload":
-			$retval="<td align=\"center\" valign=\"middle\"  width=\"$w\"><a href=\"upload.php?id=$valore\"><img src=\"images/upload.gif\" border=\"0\"></a></td>\n";
+			$retval="<td align=\"center\" valign=\"middle\"  width=\"$w\"><a href=\"upload.php?id=$valore\"><img src=\"/images/upload.gif\" border=\"0\"></a></td>\n";
 			break;		
 		
 		case "zoom":
 			$jslink=$this->zoomto(trim($this->tabelladb),$valore);
-			$retval="<td align=\"center\" valign=\"middle\" width=\"$w\" class=\"printhide\"><a href=\"javascript:$jslink\"><img src=\"images/zoom.gif\" border=\"0\"></a></td>\n";
+			$retval="<td align=\"center\" valign=\"middle\" width=\"$w\" class=\"printhide\"><a href=\"javascript:$jslink\"><img src=\"/images/zoom.gif\" border=\"0\"></a></td>\n";
 			break;
 
 		case "zoom_gc":
 			$jslink=$this->zoomto_gc(trim($this->tabelladb),$valore);
-			$retval="<td align=\"center\" valign=\"middle\" width=\"$w\" class=\"printhide\"><a href=\"javascript:$jslink\"><img src=\"images/zoom.gif\" border=\"0\"></a></td>\n";
+			$retval="<td align=\"center\" valign=\"middle\" width=\"$w\" class=\"printhide\"><a href=\"javascript:$jslink\"><img src=\"/images/zoom.gif\" border=\"0\"></a></td>\n";
 			break;
 
 		case "yesno":
@@ -286,12 +286,12 @@ EOT;
 			else{
 				$jslink="elimina('$valore')";
 			}
-			$retval="<td  align=\"center\" valign=\"middle\"  width=\"$w\"  class=\"printhide\" ><a href=\"javascript:$jslink;\"><img src=\"images/delete16.gif\" border=\"0\"></a></td>\n";
+			$retval="<td  align=\"center\" valign=\"middle\"  width=\"$w\"  class=\"printhide\" ><a href=\"javascript:$jslink;\"><img src=\"/images/delete16.gif\" border=\"0\"></a></td>\n";
 			break;
 			
 		case "semaforo":
 			($valore)?($img="frossa"):($img="fblu");
-			$retval="<td  align=\"center\" valign=\"middle\"  width=\"$w\"  class=\"printhide\" ><img src=\"images/$img.gif\" border=\"0\"></td>\n";
+			$retval="<td  align=\"center\" valign=\"middle\"  width=\"$w\"  class=\"printhide\" ><img src=\"/images/$img.gif\" border=\"0\"></td>\n";
 			
 			break;
 			
@@ -341,13 +341,13 @@ EOT;
 			
 		case "punto":
 			$p_image=$this->img_punto;
-			$retval="<td align=\"center\" valign=\"middle\" width=\"$w\"><img src=\"images/$p_image.gif\" border=\"0\"></td>\n";
+			$retval="<td align=\"center\" valign=\"middle\" width=\"$w\"><img src=\"/images/$p_image.gif\" border=\"0\"></td>\n";
 			break;	
 		//crea  un array di text area con associata un'immagine che permette di visualizzare le text area. Di default è nascosta
 		case "nota":
 			$nome.="[".$this->array_dati[$row]["id"]."]";
 			$imm="imm_".$nome;
-			$retval="<td$classe>&nbsp;&nbsp;<img border=\"0\" id=\"$imm\" height=\"12\" src=\"images/left.gif\" onclick=\"show_note('$nome','$imm')\">&nbsp;<span id=\"$nome\" style=\"display:none\"><textarea name=\"$nome\" cols=\"$w\" rows=\"2\">$valore</textarea>$help</span>"; 
+			$retval="<td$classe>&nbsp;&nbsp;<img border=\"0\" id=\"$imm\" height=\"12\" src=\"/images/left.gif\" onclick=\"show_note('$nome','$imm')\">&nbsp;<span id=\"$nome\" style=\"display:none\"><textarea name=\"$nome\" cols=\"$w\" rows=\"2\">$valore</textarea>$help</span>"; 
 			break;
 		case "selectdb":		//Restituisce il campo descrittivo di un elenco 
 			$size=explode("x",$w);
