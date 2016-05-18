@@ -164,15 +164,26 @@ class Menu{
 			$_SESSION["MENU_".$this->tipo."_$idpratica"]=$menu_pratica;	
 		}
 		$width='150px';
+
 		print("<DIV id='nav-buttons' style='font-size:0px;'>");
 		foreach ($menu_pratica as $menu){
-			if (is_array($menu))
-				print("<A tabIndex=\"0\" rif=\"$menu[3]\" href=\"javascript:pagina('".$menu[2]."',$idpratica)\">".$menu[1]."</A>\n");
+			if (is_array($menu)){
+				list($idMenu,$label,$app,$page,$grps) = $menu;
+				$grps = trim($grps);
+				$mnu=<<<EOT
+		<A tabIndex="0" href="#" data-groups="$grps" data-plugins="menu" data-app="$app" data-page="$page" data-pratica="$idpratica">$label</A>");
+EOT;
+			}
 			elseif($menu=='separatore-sezioni')
-				print("<IMG style=\"height:1px;width:$width;border:0px;padding:1px;margin:0px;\" src=\"images/gray_light.gif\">");
+				$mnu=<<<EOT
+		<IMG style="height:1px;width:$width;border:0px;padding:1px;margin:0px;" src="images/gray_light.gif">"
+EOT;
 			else{
-                print "<div><a tabIndex=\"0\" class=\"label-button\">".$menu."</a></div>";
+                $mnu=<<<EOT
+		<div><a tabIndex="0" class="label-button">$menu</a></div>
+EOT;
             }
+			echo $mnu;
 		}
 		print ("
 		</DIV>");

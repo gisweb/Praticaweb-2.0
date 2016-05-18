@@ -1,53 +1,51 @@
 <?php
 require_once ("login.php");
-
-
-unset($is_cdu);
-unset($is_ce);
-$is_cdu=isset($_REQUEST["cdu"])?($_REQUEST["cdu"]):(0);
-$is_ce=isset($_REQUEST["comm"])?($_REQUEST["comm"]):(0);
-$is_vigi=isset($_REQUEST["vigi"])?($_REQUEST["vigi"]):(0);
-$is_agi=isset($_REQUEST["agi"])?($_REQUEST["agi"]):(0);
-$is_storage=isset($_REQUEST["storage"])?($_REQUEST["storage"]):(0);
-if($is_cdu==1){
- 	$tipomenu="cdu";
-	$path="cdu";
-        $app=1;
-}
-elseif($is_ce==1){
- 	$tipomenu="commissione";
-	$path="ce";
-    $app=2;
-}
-elseif($is_vigi==1){
- 	$tipomenu="vigilanza";
-	$path="vigi";
-    $app=3;
-}
-elseif($is_agi==1){
-    $tipomenu="agibilita";
-    $path="agi";
-    $app=4;
-}
-elseif($is_storage==1){
-	$tipomenu="storage";
-    $path="storage";
-    $app=5;
-}
-else{
-	$tipomenu="pratica";
-	$path="pe";
-        $app=0;
-}
-
-$menu=new Menu($tipomenu,$path);
+$appName = ($_REQUEST["app"])?($_REQUEST["app"]):("pe");
 $active_form=(isset($_REQUEST["active_form"]))?($_REQUEST["active_form"]):('');
 $idpratica=(isset($_REQUEST["pratica"]))?($_REQUEST["pratica"]):('');
+
+switch($appName){
+	case "agi":
+		$tipomenu = "agibilita";
+		$path = "agi";
+		$app = 4;
+		break;
+	case "cdu":
+		$tipomenu = "cdu";
+		$path = "cdu";
+		$app = 1;
+		break;
+	case "ce":
+		$tipomenu = "commissione";
+		$path = "ce";
+		$app = 2;
+		break;
+	case "storage":
+		$tipomenu = "storage";
+		$path = "storage";
+		$app = 5;
+		break;
+	case "vigi":
+		$tipomenu = "vigilanza";
+		$path = "vigi";
+		$app = 3;
+		break;
+	default:
+		$tipomenu = "pratica";
+		$path = "pe";
+		$app = 0;
+		break;
+}
+
+
+
+$menu=new Menu($tipomenu,$path);
+
 $id=(isset($_REQUEST["id"]))?($_REQUEST["id"]):('');
 if (isset($_REQUEST["active_form_param"])){
 	$active_form=$_REQUEST["active_form"].".php?pratica=$idpratica&".@implode("&",$_REQUEST["active_form_param"]);
 }
-
+echo APPS_DIR."db/$appName/db.$active_form";
 if(isset($_POST["stampe"])){
 	include "./db/db.stp.stampe.php";
 		/*if($is_commissione) 
@@ -55,22 +53,18 @@ if(isset($_POST["stampe"])){
 		elseif($is_commissione_paesaggio) 
 			$active_form="ce.commissione_paesaggio.php?pratica=$idpratica&comm_paesaggio=1";
 		else*/
-	if ($is_cdu) $active_form="cdu.iter.php?pratica=$idpratica";
-	elseif($is_ce) $active_form="ce.iter.php?pratica=$idpratica";
-	elseif($is_vigi) $active_form="vigi.iter.php?pratica=$idpratica";
-	elseif($is_storage) $active_form="storage.iter.php?pratica=$idpratica";
-	else {
-		$active_form="pe.iter.php?pratica=$idpratica";
-	}
+	 $active_form="iter.php?pratica=$idpratica";
+
 }
 elseif (isset($active_form) && $active_form){
 //per la gestione dei salvataggi
     if (!isset($_REQUEST["ext"])){
-            if (file_exists(DATA_DIR."db".DIRECTORY_SEPARATOR."db.$active_form")){
-                include_once DATA_DIR."db".DIRECTORY_SEPARATOR."db.$active_form";
+            if (file_exists(DATA_DIR."db".DIRECTORY_SEPARATOR."$appName/db.$active_form")){
+                include_once DATA_DIR."db".DIRECTORY_SEPARATOR."$appName/db.$active_form";
             }
             else{
-                include (APPS_DIR."db/db.$active_form");
+				
+                include (APPS_DIR."db/$appName/db.$active_form");
             }
 
             $titolo=$_SESSION["TITOLO_$idpratica"];
@@ -79,15 +73,12 @@ elseif (isset($active_form) && $active_form){
 		$active_form.="?pratica=$idpratica";
 }
 else{
-	if ($is_cdu) $active_form="cdu.iter.php?pratica=$idpratica";
-    elseif($is_ce) $active_form="ce.iter.php?pratica=$idpratica";
-    elseif($is_vigi) $active_form="vigi.iter.php?pratica=$idpratica";
-	elseif($is_storage) $active_form="storage.iter.php?pratica=$idpratica";
+	$active_form="iter.php?pratica=$idpratica";
 
-	else {
+	/*else {
 		$active_form="pe.iter.php?pratica=$idpratica";
 		include "./db/db.pe.recenti.php";
-	}
+	}*/
 }
 
 list($visitedForm,$prms) = explode('?',$active_form);
@@ -105,18 +96,15 @@ $_SESSION["TITOLO_".$idpratica]=  appUtils::titoloPratica($_REQUEST);
 		<?php
                 utils::loadJS();
                 utils::loadCss();
-                ?>
-
-		<SCRIPT language=javascript src="src/iframe.js" type="text/javascript"></SCRIPT>
-
+        ?>
 </HEAD>
 <BODY >
     
     
 <script language="javascript">
 	window.name='praticaweb';
-        var url_documenti='<?php echo $pr->url_documenti;?>';
-        var url_allegati='<?php echo $pr->url_allegati;?>';
+	var url_documenti='<?php echo $pr->url_documenti;?>';
+	var url_allegati='<?php echo $pr->url_allegati;?>';
 </script>
 
 
@@ -154,7 +142,7 @@ include "./inc/inc.page_header.php";
   	<!-- *** cella contenuti dinamici caricati nell'iframe *** -->
 		<TD  height="100" width="97%" valign="top">
 			<!-- *** MY IFRAME ********************************************* -->
-		<IFRAME id=myframe style="DISPLAY: none; OVERFLOW: visible; WIDTH: 97%" marginWidth=0  marginHeight=0 src="<?php echo $active_form?>" frameBorder=0 scrolling=no ></IFRAME>	
+		<IFRAME id=myframe style="DISPLAY: none; OVERFLOW: visible; WIDTH: 97%" marginWidth=0  marginHeight=0 src="<?php echo "forms/".$appName."/".$active_form?>" frameBorder=0 scrolling=no ></IFRAME>	
 		</TD>
 	</TR>
 	

@@ -139,6 +139,14 @@ $(document).ready(function(){
             
             
         });
+        $("[data-plugins='menu']").bind('click',function(event){
+            event.preventDefault();
+            
+            var url = sprintf("/forms/%(app)s/%(page)s.php?pratica=%(pratica)s",$(this).data());
+            $("#myframe").attr('src',url);
+            resizeCaller()
+            scroll(0,0)
+        });
         $("[data-plugins='openDocument']").bind('click',function(event){
             var data = $(this).data();
             if (!$('#frm-plugin').length) 
