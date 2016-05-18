@@ -5,6 +5,6 @@ if (($_POST["azione"]=="Salva") || ($_POST["azione"]=="Elimina") ){
     $modo="list";
 }
 	
-$active_form="vigi.scadenze.php?pratica=$idpratica";
+$active_form="vigi.scadenze.php?pratica=$idpratica&vigi=1";
 	
 ?>
