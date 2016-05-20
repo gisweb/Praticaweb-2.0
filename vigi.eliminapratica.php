@@ -10,18 +10,11 @@ include_once "./lib/tabella_v.class.php";
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
-    utils::loadJS(Array('easyloader','init.search.vigi'));
+
+    utils::loadJS(Array("jquery.easyui.min","locale/easyui-lang-it",'init.search.vigi','form/vigi.eliminapratica'));
     utils::loadCss(Array("default/easyui","icon"));
 ?>
-<script>
-        easyloader.base='./js/';
-        easyloader.css=false;
-        easyloader.load('datagrid');
-        easyloader.locale='it';     
-</script>
-<?php
-    utils::loadJS(Array('form/vigi.eliminapratica'));
-?>
+
 </head>
 <body>
 
