@@ -11,6 +11,7 @@
             disabled: true
         }).bind('click',function(event){
             event.preventDefault();
+            var sk = $("#schema").val();
             var d = $("input[type=radio]:checked").data();
             var pr = $("input[type=radio]:checked").attr('id');
             var t = sprintf(pwMessage['delete_pratica'],d);
@@ -27,7 +28,7 @@
                         $.ajax({
                             url:serverUrl,
                             type    : 'POST',
-                            data    : {action:'delete-pratica',pratica:pr},
+                            data    : {action:'delete-pratica',pratica:pr,schema:sk},
                             dataType:'json',
                             success : function(data, textStatus, jqXHR){
                                 $('#result-table').datagrid('reload');

@@ -38,6 +38,7 @@ include "./inc/inc.page_header.php";
 ?>
         </div>
         <div style="margin-top:20px;">
+            <input type="hidden" id="schema" value="vigi"/>
               <select id="op" class="textbox">
                   <option value="AND">Tutte le opzioni devono essere verificate</option>
                   <option value="OR">Almeno una opzione deve essere verificata</option>
