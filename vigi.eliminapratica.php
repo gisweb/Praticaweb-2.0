@@ -10,7 +10,7 @@ include_once "./lib/tabella_v.class.php";
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
-    utils::loadJS(Array('easyloader','init.vigi.search'));
+    utils::loadJS(Array('easyloader','init.search.vigi'));
     utils::loadCss(Array("default/easyui","icon"));
 ?>
 <script>
