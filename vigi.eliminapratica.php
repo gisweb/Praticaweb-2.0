@@ -11,7 +11,7 @@ include_once "./lib/tabella_v.class.php";
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
 
-    utils::loadJS(Array("jquery.easyui.min","locale/easyui-lang-it",'init.search.vigi','form/vigi.eliminapratica'));
+    utils::loadJS(Array("jquery.easyui.min","locale/easyui-lang-it",'init.search.vigi','form/eliminapratica'));
     utils::loadCss(Array("default/easyui","icon"));
 ?>
 
