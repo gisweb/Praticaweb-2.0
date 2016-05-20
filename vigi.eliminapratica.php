@@ -10,7 +10,7 @@ include_once "./lib/tabella_v.class.php";
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
-    utils::loadJS(Array('easyloader','init.search'));
+    utils::loadJS(Array('easyloader','init.vigi.search'));
     utils::loadCss(Array("default/easyui","icon"));
 ?>
 <script>
@@ -20,7 +20,7 @@ include_once "./lib/tabella_v.class.php";
         easyloader.locale='it';     
 </script>
 <?php
-    utils::loadJS(Array('form/pe.eliminapratica'));
+    utils::loadJS(Array('form/vigi.eliminapratica'));
 ?>
 </head>
 <body>
@@ -33,7 +33,7 @@ include "./inc/inc.page_header.php";
         <H2 class="blueBanner">Ricerca pratiche da eliminare</H2>
         <div>
 <?php
-    $tabella=new tabella_v("pe/ricerca.tab",'standard');
+    $tabella=new tabella_v("vigi/ricerca.tab",'standard');
     $tabella->edita();
 ?>
         </div>
