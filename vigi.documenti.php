@@ -91,6 +91,11 @@ else{
 
 		
 		?>
+				<tr>
+					<td>
+						<p style="font-weight:bold;color:red;">Attenzione non caricare file con "/" nel nome</p>
+					</td>
+				</tr>
                 <tr> 
                   <td> 
                   <!--  intestazione-->
