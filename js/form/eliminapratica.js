@@ -63,6 +63,7 @@
 
             event.preventDefault();
             var oper=$('#op').val();
+            var sk = $("#schema").val();
             dataPost=getSearchFilter();
             $('#ricerca').hide('slide',500);
             $('#result-container').show('slide',500);
@@ -76,7 +77,7 @@
                 pagination:true,
                 autoRowHeight:true,
 
-                queryParams:{data:dataPost,action:'search',op:oper},
+                queryParams:{data:dataPost,action:'search',op:oper,application:sk},
                 /*view: myview,
                 detailFormatter:function(index,row){
                     return '<div class="ddv" style="padding:5px 0;background-color:#EEF7FF"></div>';
