@@ -52,7 +52,11 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
 <!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN EDITING  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 	<FORM id="" ENCTYPE="multipart/form-data" name="modelli" method="post" action="praticaweb.php" >
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">		
-				  
+		  <tr>
+					<td>
+						<p style="font-weight:bold;color:red;">Attenzione non caricare file con "/" nel nome</p>
+					</td>
+				</tr>		  
 		  <tr> 
 			<td> 
 				<H2 class="blueBanner"><?=$intestazione?></H2>
@@ -91,11 +95,7 @@ else{
 
 		
 		?>
-				<tr>
-					<td>
-						<p style="font-weight:bold;color:red;">Attenzione non caricare file con "/" nel nome</p>
-					</td>
-				</tr>
+				
                 <tr> 
                   <td> 
                   <!--  intestazione-->
