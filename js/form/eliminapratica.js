@@ -15,31 +15,38 @@
             var d = $("input[type=radio]:checked").data();
             var pr = $("input[type=radio]:checked").attr('id');
             var t = sprintf(pwMessage['delete_pratica'],d);
-            $("#delete-dialog").html(t);
-            $("#delete-dialog").dialog({
+            var dialog = $("#delete-dialog");
+            dialog.html(t);
+            dialog.dialog({
                 title:"Conferma la cancellazione",
                 resizable: false,
                 width:600,
                 height:200,
-                modal: true,
-                buttons: {
-                    Elimina: function() {
-                      var pr = $("input[type=radio]:checked").attr('id');
+                modal: true
+                ,
+                buttons: [{
+                    text: 'Elimina',
+                    handler : function() {
+                        
+                      //var pr = $("input[type=radio]:checked").attr('id');
                         $.ajax({
-                            url:serverUrl,
+                            url     : serverUrl,
                             type    : 'POST',
-                            data    : {action:'delete-pratica',pratica:pr,schema:sk},
+                            data    : {'action':'delete-pratica','pratica':pr,'schema':sk},
                             dataType:'json',
                             success : function(data, textStatus, jqXHR){
                                 $('#result-table').datagrid('reload');
                                 $("#delete-dialog").dialog('close');
                             }
                         });
-                    },
-                    Annulla: function() {
-                      $( this ).dialog( "close" );
                     }
-                }
+                },
+                {
+                    text    : 'Annulla',
+                    handler : function() {
+                       $("#delete-dialog").dialog( "close" );
+                    }
+                }]
             });
             
         });
