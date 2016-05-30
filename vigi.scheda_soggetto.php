@@ -137,6 +137,7 @@ switch ($modo) {
 	<input name="mode" type="hidden" value="new">
 	<input name="active_form" type="hidden" value="vigi.scheda_soggetto.php">
 	<input name="pratica" type="hidden" value="<?php print $idpratica;?>">
+	<input name="vigi" type="hidden" value="1">
 				
 	</FORM>	
 		<?php
