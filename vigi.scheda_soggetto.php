@@ -125,7 +125,7 @@ switch ($modo) {
 				//$trovati=1;
 				$tabella->set_dati($_POST);
 				$tabella->edita();
-				$tabella->elenco_trovati($idpratica);?>
+				$tabella->elenco_trovati($idpratica,"vigi");?>
 				<!-- fine contenuto-->
 			</td>
 		  </tr>

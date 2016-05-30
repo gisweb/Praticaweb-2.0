@@ -8,6 +8,7 @@ $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $id=(isset($_REQUEST["id"]))?($_REQUEST["id"]):(null);
 $idpratica=$_REQUEST["pratica"];
 $file_config="$tabpath/documenti";
+$form=$_REQUEST["form"];
 
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
@@ -66,10 +67,12 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
 		  </tr>
 
 		</TABLE>
+		
         <input name="active_form" type="hidden" value="vigi.documenti.php">				
         <input name="mode" type="hidden" value="<?=$modo?>">
         <input name="id" type="hidden" value="<?=$id?>">
 		<input type="hidden" name="vigi" value="1"/>
+		<input type="hidden" name="form" value="<?php echo $form;?>"/> 
     </FORM>
 <?php
 }
