@@ -30,9 +30,13 @@ if (in_array($azione, Array("salva","elimina"))){
         
         if (!@move_uploaded_file($_FILES['file']['tmp_name'], $pr->documenti. $fName)) { 
           print("***ERROR: Non è possibile copiare il file.<br />\n". $pr->documenti. $fName); 
-	} 
+		} 
     }
+	else{
+		require_once 'db.savedata.php';
+	}
      $modo='list';
+	}
 }
 elseif($azione=="annulla"){
     $modo='list';
