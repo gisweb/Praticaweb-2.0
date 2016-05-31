@@ -33,10 +33,10 @@ if (in_array($azione, Array("salva","elimina"))){
 		} 
     }
 	else{
-		require_once 'db.savedata.php';
+		//require_once 'db.savedata.php';
 	}
-     $modo='list';
-	}
+    $modo='list';
+	
 }
 elseif($azione=="annulla"){
     $modo='list';

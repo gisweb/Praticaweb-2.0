@@ -72,7 +72,7 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
         <input name="mode" type="hidden" value="<?=$modo?>">
         <input name="id" type="hidden" value="<?=$id?>">
 		<input type="hidden" name="vigi" value="1"/>
-		<input type="hidden" name="form" value="<?php echo $form;?>"/> 
+		
     </FORM>
 <?php
 }
