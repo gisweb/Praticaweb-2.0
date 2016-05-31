@@ -244,6 +244,7 @@ function valida_campi($arr){
 	
 	if ($azione=="Elimina"){
 		$sql="delete from $tabelladb where id=$idrow;";
+		print_debug($sql,null,'deletedata');
 		$db->sql_query ($sql);
 		return;
 	}
