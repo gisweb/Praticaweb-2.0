@@ -9,6 +9,7 @@ $modo=isset($_REQUEST["mode"])?($_REQUEST["mode"]):('view');
 $errors=null;
 
 $idpratica=$_REQUEST["pratica"];
+$schema = ($_REQUEST["schema"])?($_REQUEST["schema"]):("vigi");
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
 if(substr($ruolo,0,1)=='v'){
@@ -105,7 +106,7 @@ switch ($modo) {
 		if (strlen($sql)>5){
 			$sql=substr($sql,0,strlen($sql)-4);  // taglio l'ultimo "and "
 			$tabella=new tabella_v("$tabpath/soggetto",'search');	
-			if ($tabella->set_elenco_trovati($sql)){ //se trovo un nome corrispondente ai criteri imposto la pagina con i risultati
+			if ($tabella->set_elenco_trovati($sql,'vigi')){ //se trovo un nome corrispondente ai criteri imposto la pagina con i risultati
 			include "./inc/inc.page_header.php";?>	
 	<FORM id="" name="find" method="post" action="vigi.scheda_soggetto.php">		
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">		
@@ -163,7 +164,7 @@ switch ($modo) {
 			if (isset($errors))
 				$dataset=$_POST;
 			else
-				$dataset="id = $idsoggetto";
+				$dataset="id = $idsoggetto AND schema='$schema'";
 		}
 		else{
 			$dataset=$_POST;
@@ -183,8 +184,8 @@ switch ($modo) {
 			<td> 
 				<!-- contenuto-->
 				<?php
-                                $tabella->set_dati($dataset);
-				$tabella->edita();
+					$tabella->set_dati($dataset);
+					$tabella->edita();
 				?>
 				<!-- fine contenuto-->
 			</td>
