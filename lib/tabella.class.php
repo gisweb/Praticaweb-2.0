@@ -68,6 +68,7 @@ class Tabella{
             $this->debug=null;
             $this->tabelladb=$lay['table'];
             $this->tabella_ref_db=(isset($lay['ref_table']))?($lay['ref_table']):($lay['table']);
+			$this->tabella_save_db=(isset($lay['save_table']))?($lay['save_table']):($lay['table']);
             $this->function_prms=(isset($lay['function_prms']) && $lay['function_prms'])?($lay['function_prms']):(null);
             $this->campi_obbl=(isset($lay['campi_obbligatori']) && $lay['campi_obbligatori'])?(explode(';',$lay['campi_obbligatori'])):(null);
             $this->campi_ord=(isset($lay['campi_ordinamento']) && $lay['campi_ordinamento'])?(explode(';',$lay['campi_ordinamento'])):(null);
