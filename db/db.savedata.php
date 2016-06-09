@@ -231,8 +231,8 @@ function valida_campi($arr){
 	}
 
 	$tb=new Tabella($config_file,$modo);
-	$tabelladb=$tb->tabelladb;
-        $ref_table=$tb->tabella_ref_db;
+	$tabelladb=$tb->tabella_save_db;
+    $ref_table=$tb->tabella_ref_db;
 	$campi_obbl=$tb->campi_obbl;
 	$array_config=$tb->tab_config;
 	
