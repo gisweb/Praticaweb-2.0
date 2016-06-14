@@ -163,6 +163,8 @@ switch ($modo) {
 		if($idsoggetto){
 			if (isset($errors))
 				$dataset=$_POST;
+			else if ($modo=="edit")
+				$dataset="id = $idsoggetto";
 			else
 				$dataset="id = $idsoggetto AND schema='$schema'";
 		}
