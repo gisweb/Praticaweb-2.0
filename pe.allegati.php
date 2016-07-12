@@ -103,23 +103,23 @@ $tabella_allegati=new Tabella_h("$tabpath/doc_allegati");
 $tabella_mancanti=new Tabella_h("$tabpath/doc_mancanti");
 $tabella_mancanti->set_color("#FFFFFF","#FF0000",0,0);
 $db=$tabella_allegati->get_db();
-$db->sql_query ("select * from pe.e_iter order by ordine;");
-$elenco_iter = $db->sql_fetchrowset();
+$sql = "SELECT DISTINCT protocollo,data_protocollo FROM pe.files WHERE pratica=$idpratica and coalesce(protocollo,'')<>''";
+$db->sql_query($sql);
+$res = $db->sql_fetchrowset();
 ?>
-
     <H2 class="blueBanner">Elenco documenti allegati alla pratica</H2>
     <TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
 
 <?php	
-    foreach ($elenco_iter as $row){
-        $iter=$row["id"];
-        $nomeiter=$row["nome"];
+for($i=0;$i<count($res);$i++){
+	$prot = $res[$i]["protocollo"];
+	$data = $res[$i]["data_protocollo"];
         //Visualizzare solo quelli inerenti il tipo di pratica e opzioni (es se richiesta voltura)
-        $num_allegati=$tabella_allegati->set_dati("pratica=$idpratica and iter=$iter and (allegato=1 or integrato=1)");
-        $num_mancanti=$tabella_mancanti->set_dati("pratica=$idpratica and iter=$iter and mancante=1");
-        $tabella_allegati->set_titolo($nomeiter,"modifica",array("iter"=>$iter,"nomeiter"=>$nomeiter));
+        $num_allegati=$tabella_allegati->set_dati("protocollo='$prot' and pratica=$idpratica and (allegato=1 or integrato=1)");
+        $num_mancanti=$tabella_mancanti->set_dati("pratica=$idpratica and mancante=1");
+        $tabella_allegati->set_titolo("Elenco dei Documenti presentati il $data con Protocollo $prot","modifica");
         $tabella_allegati->set_tag($idpratica);
-        $tabella_mancanti->set_tag($idpratica);
+        //$tabella_mancanti->set_tag($idpratica);
         print <<<EOT
         <TR>
             <TD>
@@ -128,15 +128,15 @@ EOT;
         if ($num_allegati) 
             $tabella_allegati->elenco();
         else
-        print "<p><b>Nessun Documento Allegato</b></p>";
-        if ($num_mancanti) 
-            $tabella_mancanti->elenco();
+		// print "<p><b>Nessun Documento Allegato</b></p>";
+		//if ($num_mancanti) 
+        //    $tabella_mancanti->elenco();
         print <<<EOT
             <BR>
             </TD>
         </TR>
 EOT;
-    }
+}
 	
 // end for
     if ($tabella_allegati->editable) 
