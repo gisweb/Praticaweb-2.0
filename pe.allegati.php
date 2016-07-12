@@ -103,7 +103,7 @@ $tabella_allegati=new Tabella_h("$tabpath/doc_allegati");
 $tabella_mancanti=new Tabella_h("$tabpath/doc_mancanti");
 $tabella_mancanti->set_color("#FFFFFF","#FF0000",0,0);
 $db=$tabella_allegati->get_db();
-$sql = "SELECT DISTINCT protocollo,data_protocollo FROM pe.files WHERE pratica=$idpratica and coalesce(protocollo,'')<>''";
+$sql = "SELECT DISTINCT protocollo,data_protocollo FROM pe.files WHERE pratica=$idpratica and coalesce(protocollo,'')<>''  order by 2";
 $db->sql_query($sql);
 $res = $db->sql_fetchrowset();
 ?>
