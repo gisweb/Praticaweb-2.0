@@ -128,9 +128,9 @@ EOT;
         if ($num_allegati) 
             $tabella_allegati->elenco();
         else
-		// print "<p><b>Nessun Documento Allegato</b></p>";
-		//if ($num_mancanti) 
-        //    $tabella_mancanti->elenco();
+			print "<p><b>Nessun Documento Allegato</b></p>";
+		if ($num_mancanti) 
+            $tabella_mancanti->elenco();
         print <<<EOT
             <BR>
             </TD>
