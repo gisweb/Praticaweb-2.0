@@ -14,7 +14,7 @@ resp_abuso AS (
 select pratica,array_to_string(array_agg(DISTINCT coalesce(ragsoc,coalesce(cognome||' '||nome))),',') as "Responsabile Abuso" from vigi.soggetti where resp_abuso=1 and voltura=0 group by pratica
 ),
 violazioni as (
-select pratica,array_to_string(array_agg(DISTINCT coalesce(ragsoc,coalesce(cognome||' '||nome))),',') as "Violazioni" from vigi.infrazioni A inner join vigi.e_infrazioni B on A.tipo=B.id group by pratica
+select A.pratica,ARRAY_TO_STRING(ARRAY_AGG(B.descrizione),'\\n ') as "Violazioni" from vigi.infrazioni A inner join vigi.e_violazioni B on A.tipo=B.id left join vigi.ordinanze C on A.id= C.infrazione group by A.pratica
 ),
 ct AS (
 SELECT pratica,array_to_string(array_agg('Sezione:'||sezione||' Foglio:'||foglio||coalesce(' Mappale:'||mappale,'')||coalesce(' Sub:'||sub,'')),',') "Catasto Terreni" FROM vigi.cterreni group by pratica
