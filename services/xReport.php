@@ -25,7 +25,13 @@ SELECT pratica,array_to_string(array_agg(via || coalesce(' '||civico,'')),',') a
 titolo AS(
 select pratica,titolo as "Titolo",to_char(data_rilascio,'dd/mm/YYYY') as "Data Rilascio" from pe.titolo
 )
-select * from pratica left join resp_abuso using(pratica)  left join ct using(pratica) left join ubicazione using(pratica)  left join titolo using(pratica) where pratica in ($_REQUEST[elenco]);
+select * from
+pratica left join
+resp_abuso using(pratica)  left join
+violazioni using(pratica) left join
+ubicazione using(pratica)  left join
+--titolo using(pratica)
+where pratica in ($_REQUEST[elenco]);
 EOT;
         break;
     default:
