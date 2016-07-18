@@ -8,7 +8,7 @@ switch($type){
     case "vigi":
         $sql = <<<EOT
 WITH pratica AS (
-select pratica,numero as "Numero",protocollo as "Protocollo",to_char(coalesce(data_prot,data_presentazione),'dd/mm/YYYY') as "Data Protocollo",oggetto as "Descrizione",to_char(coalesce(data_verbale,''),'dd/mm/YYYY') as "Data Verbale",note as "Note" from vigi.avvioproc A 
+select pratica,numero as "Numero",protocollo as "Protocollo",to_char(coalesce(data_prot,data_presentazione),'dd/mm/YYYY') as "Data Protocollo",oggetto as "Descrizione",to_char(coalesce(data_verbale,NULL::date),'dd/mm/YYYY') as "Data Verbale",note as "Note" from vigi.avvioproc A 
 ),
 resp_abuso AS (
 select pratica,array_to_string(array_agg(DISTINCT coalesce(ragsoc,coalesce(cognome||' '||nome))),',') as "Responsabile Abuso" from vigi.soggetti where resp_abuso=1 and voltura=0 group by pratica
