@@ -11,14 +11,16 @@ $flag_mancante=$insert=null;
 if ($modo=="new") $integrazione=$_SESSION["ADD_NEW"];
 if (isset($integrazione)) $integrazione=",integrazione=$integrazione";
 if (isset($_POST["azione"]) && $_POST["azione"]=="Salva"){
+	$prot = ($_REQUEST["protocollo"])?(sprintf("'%s'",$_REQUEST["protocollo"])):("NULL::varchar");
+	$data_prot = ($_REQUEST["data_protocollo"])?(sprintf("'%s'::date",$_REQUEST["data_protocollo"])):("NULL::date");
 	foreach ($_POST as $key=>$value){
 		$id=substr($key,4);
 		$tab=substr($key,0,3);
 		if ($tab=="all"){
 			if($value=="allegato")
-				$sql="update pe.allegati set allegato=1,mancante=0,sostituito=0,integrato=0,uidupd=".$_SESSION["USER_ID"].",tmsupd=".time()." where id=$id";
+				$sql="update pe.allegati set protocollo=$prot,data_protocollo=$data_prot, allegato=1,mancante=0,sostituito=0,integrato=0,uidupd=".$_SESSION["USER_ID"].",tmsupd=".time()." where id=$id";
 			elseif($value=="integrato")
-				$sql="update pe.allegati set allegato=0,mancante=0,sostituito=0,integrato=1 $integrazione ,uidupd=".$_SESSION["USER_ID"].",tmsupd=".time()." where id=$id";	
+				$sql="update pe.allegati set protocollo=$prot,data_protocollo=$data_prot,allegato=0,mancante=0,sostituito=0,integrato=1 $integrazione ,uidupd=".$_SESSION["USER_ID"].",tmsupd=".time()." where id=$id";	
 			elseif($value=="sostituito")
 				$sql="update pe.allegati set allegato=0,mancante=0,sostituito=1,integrato=0 $integrazione ,uidupd=".$_SESSION["USER_ID"].",tmsupd=".time()." where id=$id";			
 			elseif($value=="mancante"){
@@ -28,12 +30,13 @@ if (isset($_POST["azione"]) && $_POST["azione"]=="Salva"){
 			elseif($value=="id")
 				$sql="delete from pe.allegati where id=$id";
 			$db->sql_query ($sql);
+			echo "<p>$sql</p>";
 		}
 		elseif ($tab=="doc"){			
 			$insert=1;
 			if (!$_SESSION["ADD_NEW"]){//inserisco solo se non ho già inserito il dato
-				$sql="insert into pe.allegati (pratica,documento,$value,chk,uidins,tmsins) values ($idpratica,$id,1,1,".$_SESSION["USER_ID"].",".time().");";
-				//print_debug($sql);
+				$sql="insert into pe.allegati (pratica,documento,protocollo,data_protocollo,$value,chk,uidins,tmsins) values ($idpratica,$id,$prot,$data_prot,1,1,".$_SESSION["USER_ID"].",".time().");";
+				echo "<p>$sql</p>";
 				$db->sql_query ($sql);
 				if ($value=="mancante")
 					$flag_mancante=1;
