@@ -29,8 +29,7 @@ select * from
 pratica left join
 resp_abuso using(pratica)  left join
 violazioni using(pratica) left join
-ubicazione using(pratica)  left join
---titolo using(pratica)
+ubicazione using(pratica)  
 where pratica in ($_REQUEST[elenco]);
 EOT;
         break;
