@@ -206,9 +206,7 @@ class Menu{
 		//$db->sql_query ("update pe.menu set menu_list=menu_list || ',#$idmenu' where strpos(menu_list,'#$idmenu')=0 and pratica=$idpratica;");
 		//echo $sql;
 		$db->sql_query($sql);
-		$menu = $_SESSION["MENU_".$this->tipo."_$idpratica"];
-		
-		$_SESSION["MENU_".$this->tipo."_$idpratica"] = sprintf("%s,%s",$menu,$idmenu);
+		unset($_SESSION["MENU_".$this->tipo."_$idpratica"]);
 		//$db->sql_close();	
 	}
 	
