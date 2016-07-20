@@ -1,10 +1,12 @@
 <?php
 include "./db/db.savedata.php";
 require_once LIB."menu.class.php";
+
 $modo=(isset($_REQUEST["mode"]) && $_REQUEST["mode"])?($_REQUEST["mode"]):('view');
 if($_REQUEST['azione']=='Salva'){
-	$menu = new Menu("pe","pratica");
+	$menu = new Menu("pratica","pe");
 	$menu->add_menu($idpratica,45);
+	
 	$integrazione=($modo=='new')?($_SESSION['ADD_NEW']):($_REQUEST['integrazione']);
 	$prot = ($_REQUEST["prot_integ"])?(sprintf("'%s'",$_REQUEST["prot_integ"])):("NULL::varchar");
 	$data_prot = ($_REQUEST["data_integ"])?(sprintf("'%s'::date",$_REQUEST["data_integ"])):("NULL::date");
