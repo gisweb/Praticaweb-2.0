@@ -8,7 +8,7 @@ switch($type){
     case "vigi":
         $sql = <<<EOT
 WITH pratica AS (
-select pratica,numero as "Numero",protocollo as "Protocollo",to_char(coalesce(data_prot,data_presentazione),'dd/mm/YYYY') as "Data Protocollo",oggetto as "Descrizione",to_char(coalesce(data_verbale,NULL::date),'dd/mm/YYYY') as "Data Verbale",note as "Note" from vigi.avvioproc A 
+select pratica,oggetto as "Descrizione",to_char(coalesce(data_verbale,NULL::date),'dd/mm/YYYY') as "Data Relazione Tecnica",numero_verbale as "Numero Relazione Tecnica",data_preliminare_esposto as "Data Com. Polizia Giudiziaria",protocollo_preliminare_esposto as "Numero Com. Pol.Giudiziaria",note as "Note" from vigi.avvioproc A 
 ),
 resp_abuso AS (
 select pratica,array_to_string(array_agg(DISTINCT coalesce(ragsoc,coalesce(cognome||' '||nome))),',') as "Responsabile Abuso" from vigi.soggetti where resp_abuso=1 and voltura=0 group by pratica
@@ -16,20 +16,22 @@ select pratica,array_to_string(array_agg(DISTINCT coalesce(ragsoc,coalesce(cogno
 violazioni as (
 select A.pratica,ARRAY_TO_STRING(ARRAY_AGG(B.descrizione),'\\n ') as "Violazioni" from vigi.infrazioni A inner join vigi.e_violazioni B on A.tipo=B.id left join vigi.ordinanze C on A.id= C.infrazione group by A.pratica
 ),
-ct AS (
-SELECT pratica,array_to_string(array_agg('Sezione:'||sezione||' Foglio:'||foglio||coalesce(' Mappale:'||mappale,'')||coalesce(' Sub:'||sub,'')),',') "Catasto Terreni" FROM vigi.cterreni group by pratica
-),
 ubicazione AS(
 SELECT pratica,array_to_string(array_agg(via || coalesce(' '||civico,'')),',') as "Indirizzo" FROM vigi.indirizzi group by pratica
 ),
-titolo AS(
-select pratica,titolo as "Titolo",to_char(data_rilascio,'dd/mm/YYYY') as "Data Rilascio" from pe.titolo
+sospensioni AS (
+    SELECT pratica,array_to_string(array_agg(to_char(coalesce(data_prot_sospensione,NULL::date),'dd/mm/YYYY')),'\\n') as "Data Sospensione Lavori",array_to_string(array_agg(numero_prot_sospensione),'\\n') as "Protocollo Sospensione Lavori" FROM vigi.sospensioni where tipo = 1 grouped by pratica
+),
+demolizioni AS (
+    SELECT pratica FROM vigi.ordinanze
 )
 select * from
 pratica left join
 resp_abuso using(pratica)  left join
 violazioni using(pratica) left join
-ubicazione using(pratica)  
+ubicazione using(pratica) left join
+sospensioni using(pratica) left join
+demolizioni using (pratica)
 where pratica in ($_REQUEST[elenco]);
 EOT;
         break;
