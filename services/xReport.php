@@ -20,10 +20,10 @@ ubicazione AS(
 SELECT pratica,array_to_string(array_agg(via || coalesce(' '||civico,'')),',') as "Indirizzo" FROM vigi.indirizzi group by pratica
 ),
 sospensioni AS (
-    SELECT pratica,array_to_string(array_agg(to_char(coalesce(data_prot_sospensione,NULL::date),'dd/mm/YYYY')),'\\n') as "Data Sospensione Lavori",array_to_string(array_agg(numero_prot_sospensione),'\\n') as "Protocollo Sospensione Lavori" FROM vigi.sospensioni where tipo = 1 grouped by pratica
+    SELECT pratica,array_to_string(array_agg(to_char(coalesce(data_sospensione,NULL::date),'dd/mm/YYYY')),'\\n') as "Data Sospensione Lavori",array_to_string(array_agg(prot_sospensione),'\\n') as "Protocollo Sospensione Lavori" FROM vigi.sospensioni where tipo = 1 group by pratica
 ),
 demolizioni AS (
-    SELECT pratica FROM vigi.ordinanze
+    SELECT pratica,array_to_string(array_agg(to_char(coalesce(data_demolizione,NULL::date),'dd/mm/YYYY')),'\\n') as "Data Demolizione",array_to_string(array_agg(protocollo),'\\n') as "Protocollo Demolizioni" FROM vigi.ordinanze group by pratica
 )
 select * from
 pratica left join
