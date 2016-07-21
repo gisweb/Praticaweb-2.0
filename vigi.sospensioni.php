@@ -42,10 +42,10 @@ if (($modo=="edit") or ($modo=="new")){
         unset($_SESSION["ADD_NEW"]);
         if ($modo=="edit"){
             $filtro="id=$id";
-            $titolo="Modifica Dati Sospensione - Diffida";
+            $titolo="Modifica Dati Sospensione";
         }
         else{
-            $titolo="Inserisci nuova Sospensione - Diffida";
+            $titolo="Inserisci nuova Sospensione";
         }
 
 		//aggiungendo un nuovo parere uso pareri_edit che contiene anche l'elenco degli ENTI
@@ -97,9 +97,8 @@ if (($modo=="edit") or ($modo=="new")){
 		<?php
                     
                     for($i=0;$i<$numrec;$i++){
-                        $tit = ($tabella->array_dati[$i]['tipo']==1)?("Sospensione"):("Diffida");
-                        $titolo = sprintf("%s prot. %s del %s",$tit,$tabella->array_dati[$i]["prot_sospensione"],$tabella->array_dati[$i]["data_sospensione"]);
-                        $tabella->set_titolo($titolo,"modifica",array("tipo_sanzione"=>"","id"=>""));
+                        $titolo = sprintf("Sospensione prot. %s del %s",$tabella->array_dati[$i]["prot_sospensione"],$tabella->array_dati[$i]["data_sospensione"]);
+                        $tabella->set_titolo($titolo,"modifica");
                             $tabella->curr_record=$i;
                             $tabella->idtabella=$tabella->array_dati[$i]['id'];
                             $tabella->get_titolo();
@@ -107,7 +106,7 @@ if (($modo=="edit") or ($modo=="new")){
                     }
 		print "</td></tr><tr><td>";
                 
-                $tabella->set_titolo("Aggiungi una nuova Sospensione / Diffida","nuovo");
+                $tabella->set_titolo("Aggiungi una nuova Sospensione","nuovo");
                 $tabella->get_titolo();
                 print "<BR>";
 		if ($tabella->editable) print($tabella->elenco_stampe());
