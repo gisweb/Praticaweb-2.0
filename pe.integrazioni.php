@@ -100,10 +100,11 @@ if ($num_mancanti or $num_integrazioni) $flag=1;
 for($i=0;$i<$num_integrazioni;$i++){
 	$tabella_integrazione->curr_record=$i;
 	$data=$tabella_integrazione->get_data("data_integ");
-	$tabella_integrazione->set_titolo("$data Integrazione documenti","modifica");
+	$id_integrazione=$tabella_integrazione->get_campo("id");
+	$tabella_integrazione->set_titolo("$data Integrazione documenti","modifica",Array("id"=>""));
 	$tabella_integrazione->get_titolo();
 	$tabella_integrazione->tabella();
-	$id_integrazione=$tabella_integrazione->get_campo("id");
+	
 	$num_integrati=$tabella_integrati->set_dati("integrazione=$id_integrazione and mancante=0");
 	//$tabella_integrazione->elenco_stampe($form);		
 	if ($num_integrati) 
