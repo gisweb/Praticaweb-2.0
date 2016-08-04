@@ -8,24 +8,32 @@ switch($type){
     case "vigi":
         $sql = <<<EOT
 WITH pratica AS (
-select pratica,oggetto as "Descrizione",to_char(coalesce(data_verbale,NULL::date),'dd/mm/YYYY') as "Data Relazione Tecnica",numero_verbale as "Numero Relazione Tecnica",data_preliminare_esposto as "Data Com. Polizia Giudiziaria",protocollo_preliminare_esposto as "Numero Com. Pol.Giudiziaria",note as "Note" from vigi.avvioproc A 
+select pratica,oggetto,to_char(coalesce(data_verbale,NULL::date),'dd/mm/YYYY') as data_relazione_tecnica,numero_verbale,data_preliminare_esposto,protocollo_preliminare_esposto,note from vigi.avvioproc A 
 ),
 resp_abuso AS (
-select pratica,array_to_string(array_agg(DISTINCT coalesce(ragsoc,coalesce(cognome||' '||nome))),',') as "Responsabile Abuso" from vigi.soggetti where resp_abuso=1 and voltura=0 group by pratica
+select pratica,array_to_string(array_agg(DISTINCT coalesce(ragsoc,coalesce(cognome||' '||nome))),',') as resp_abuso from vigi.soggetti where resp_abuso=1 and voltura=0 group by pratica
 ),
 violazioni as (
-select A.pratica,ARRAY_TO_STRING(ARRAY_AGG(B.descrizione),'\\n ') as "Violazioni" from vigi.infrazioni A inner join vigi.e_violazioni B on A.tipo=B.id left join vigi.ordinanze C on A.id= C.infrazione group by A.pratica
+select A.pratica,ARRAY_TO_STRING(ARRAY_AGG(B.descrizione),'\\n ') as violazioni from vigi.infrazioni A inner join vigi.e_violazioni B on A.tipo=B.id left join vigi.ordinanze C on A.id= C.infrazione group by A.pratica
 ),
 ubicazione AS(
-SELECT pratica,array_to_string(array_agg(via || coalesce(' '||civico,'')),',') as "Indirizzo" FROM vigi.indirizzi group by pratica
+SELECT pratica,array_to_string(array_agg(via || coalesce(' '||civico,'')),',')  as ubi FROM vigi.indirizzi group by pratica
 ),
 sospensioni AS (
-    SELECT pratica,array_to_string(array_agg(to_char(coalesce(data_sospensione,NULL::date),'dd/mm/YYYY')),'\\n') as "Data Sospensione Lavori",array_to_string(array_agg(prot_sospensione),'\\n') as "Protocollo Sospensione Lavori" FROM vigi.sospensioni where tipo = 1 group by pratica
+    SELECT pratica,array_to_string(array_agg(to_char(coalesce(data_sospensione,NULL::date),'dd/mm/YYYY')),'\\n') as data_sosp,array_to_string(array_agg(prot_sospensione),'\\n') as prot_sosp FROM vigi.sospensioni where tipo = 1 group by pratica
 ),
 demolizioni AS (
-    SELECT pratica,array_to_string(array_agg(to_char(coalesce(data_demolizione,NULL::date),'dd/mm/YYYY')),'\\n') as "Data Demolizione",array_to_string(array_agg(protocollo),'\\n') as "Protocollo Demolizioni" FROM vigi.ordinanze group by pratica
+    SELECT pratica,array_to_string(array_agg(to_char(coalesce(data_demolizione,NULL::date),'dd/mm/YYYY')),'\\n') as data_dem,array_to_string(array_agg(protocollo),'\\n') as prot_dem FROM vigi.ordinanze group by pratica
 )
-select * from
+SELECT
+    ROW_COUNT() as "Progr.",protocollo_preliminare_esposto as "Numero Com. Pol.Giudiziaria",
+    data_preliminare_esposto as "Data Com. Polizia Giudiziaria",data_relazione_tecnica as"Data Relazione Tecnica",
+    numero_verbale as "Numero Relazione Tecnica",violazioni as "Violazioni",resp_abuso as "Responsabile Abuso",
+    oggetto as "Descrizione",ubi as "Ubicazione",
+    prot_sosp as "Protocollo Sospensione Lavori",data_sosp as "Data Sospensione Lavori",
+    prot_dem as "Protocollo Demolizioni",data_dem as "Data Demolizione",
+    note as "Note"
+FROM
 pratica left join
 resp_abuso using(pratica)  left join
 violazioni using(pratica) left join
