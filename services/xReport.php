@@ -26,7 +26,7 @@ demolizioni AS (
     SELECT pratica,array_to_string(array_agg(to_char(coalesce(data_demolizione,NULL::date),'dd/mm/YYYY')),'\\n') as data_dem,array_to_string(array_agg(protocollo),'\\n') as prot_dem FROM vigi.ordinanze group by pratica
 )
 SELECT
-    ROW_COUNT() as "Progr.",protocollo_preliminare_esposto as "Numero Com. Pol.Giudiziaria",
+    ROW_NUMBER() over() as "Progr.",protocollo_preliminare_esposto as "Numero Com. Pol.Giudiziaria",
     data_preliminare_esposto as "Data Com. Polizia Giudiziaria",data_relazione_tecnica as"Data Relazione Tecnica",
     numero_verbale as "Numero Relazione Tecnica",violazioni as "Violazioni",resp_abuso as "Responsabile Abuso",
     oggetto as "Descrizione",ubi as "Ubicazione",
