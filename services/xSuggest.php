@@ -262,7 +262,7 @@ switch($field) {
             break;
     case 'numero-pratica':
     case "rif_pratica":    
-        $sql="SELECT numero as valore, 'Pratica n° '|| coalesce(numero,'') ||  coalesce(' del ' ||to_char(data_prot,'DD/MM/YYYY'),'') as label,B.nome as categoria,coalesce(data_prot,data_presentazione) as data_prot,pratica FROM pe.avvioproc A left join pe.e_tipopratica B on (A.tipo=B.id) WHERE numero ilike '$value%' order by 3,4;";
+        $sql="SELECT numero as valore, B.nome||' n° '|| coalesce(numero,'') ||  coalesce(' del ' ||to_char(data_prot,'DD/MM/YYYY'),'') as label,B.nome as categoria,coalesce(data_prot,data_presentazione) as data_prot,pratica FROM pe.avvioproc A left join pe.e_tipopratica B on (A.tipo=B.id) WHERE numero ilike '$value%' order by 3,4;";
         if($db->sql_query($sql)){
             $res=$db->sql_fetchrowset();
             for($i=0;$i<count($res);$i++){
@@ -270,7 +270,8 @@ switch($field) {
                     "id"=>$res[$i]["pratica"],
                     "value"=>$res[$i]["valore"],
                     "label"=>$res[$i]["label"],
-                    "category"=>$res[$i]["categoria"]
+                    "category"=>$res[$i]["categoria"],
+					"child"=>Array("riferimento"=>$res[$i]["pratica"])
                 );
 
             }
