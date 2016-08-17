@@ -11,7 +11,7 @@ WITH pratica AS (
 select pratica,oggetto,to_char(coalesce(data_verbale,NULL::date),'dd/mm/YYYY') as data_relazione_tecnica,numero_verbale,data_preliminare_esposto,protocollo_preliminare_esposto,note from vigi.avvioproc A 
 ),
 resp_abuso AS (
-select pratica,array_to_string(array_agg(DISTINCT coalesce(ragsoc,coalesce(cognome||' '||nome))),',') as resp_abuso from vigi.soggetti where resp_abuso=1 and voltura=0 group by pratica
+select pratica,array_to_string(array_agg(DISTINCT coalesce(ragsoc,coalesce(coalesce(cognome,'')||' '||coalesce(nome,'')))),',') as resp_abuso from vigi.soggetti where resp_abuso=1 and voltura=0 group by pratica
 ),
 violazioni as (
 select A.pratica,ARRAY_TO_STRING(ARRAY_AGG(B.descrizione),'\\n ') as violazioni from vigi.infrazioni A inner join vigi.e_violazioni B on A.tipo=B.id left join vigi.ordinanze C on A.id= C.infrazione group by A.pratica
