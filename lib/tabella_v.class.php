@@ -990,14 +990,23 @@ function get_multiselectdb_value($val,$fld,$tab,$campo){
 
 function set_elenco_trovati($sql='true',$schema="pe"){
 	
-       $sql="(SELECT 'pe' as schema,* FROM (SELECT DISTINCT ON (coalesce(soggetti.codfis,soggetti.ragsoc) ) id,coalesce(soggetti.codfis,'') as codfis , coalesce(soggetti.ragsoc,'') as ragsoc,coalesce(datanato::varchar,'') as datanato,coalesce(soggetti.piva,'') as piva,cognome,nome,coalesce(comunato,'') as comunato,
+       $sql="(select 
+id,schema,coalesce(soggetti.codfis,'') as codfis ,
+ coalesce(soggetti.ragsoc,'') as ragsoc,coalesce(datanato::varchar,'') as datanato,
+ coalesce(soggetti.piva,'') as piva,cognome,nome,coalesce(comunato,'') as comunato,
 ((((COALESCE(soggetti.cognome, ''::character varying)::text || COALESCE(' '::text || soggetti.nome::text, ''::text)) ||coalesce(' C.F. '||codfis,'')|| COALESCE(' '::text || soggetti.titolo::text, ''::text)) || COALESCE(' '::text || soggetti.ragsoc::text, ''::text)) || coalesce(' P.I. '||piva,'') || COALESCE(' '::text || soggetti.indirizzo::text, ''::text)) || COALESCE((' ('::text || soggetti.prov::text) || ')'::text, ''::text) AS soggetto
-	FROM pe.soggetti where $sql ORDER BY coalesce(soggetti.codfis,ragsoc),id DESC ) X WHERE coalesce(coalesce(codfis,piva),'')<>'' ORDER BY lower(cognome),lower(nome),datanato,lower(ragsoc))
+,last_upd
+ FROM pe.ricerca_soggetti as soggetti where $sql order by last_upd desc)
 UNION ALL
-(SELECT '$schema' as schema,* FROM (SELECT DISTINCT ON (coalesce(soggetti.codfis,soggetti.ragsoc) ) id,coalesce(soggetti.codfis,'') as codfis , coalesce(soggetti.ragsoc,'') as ragsoc,coalesce(datanato::varchar,'') as datanato,coalesce(soggetti.piva,'') as piva,cognome,nome,coalesce(comunato,'') as comunato,
+(
+select 
+id,schema,coalesce(soggetti.codfis,'') as codfis ,
+ coalesce(soggetti.ragsoc,'') as ragsoc,coalesce(datanato::varchar,'') as datanato,
+ coalesce(soggetti.piva,'') as piva,cognome,nome,coalesce(comunato,'') as comunato,
 ((((COALESCE(soggetti.cognome, ''::character varying)::text || COALESCE(' '::text || soggetti.nome::text, ''::text)) ||coalesce(' C.F. '||codfis,'')|| COALESCE(' '::text || soggetti.titolo::text, ''::text)) || COALESCE(' '::text || soggetti.ragsoc::text, ''::text)) || coalesce(' P.I. '||piva,'') || COALESCE(' '::text || soggetti.indirizzo::text, ''::text)) || COALESCE((' ('::text || soggetti.prov::text) || ')'::text, ''::text) AS soggetto
-	FROM $schema.soggetti where $sql ORDER BY coalesce(soggetti.codfis,ragsoc),id DESC ) X WHERE coalesce(coalesce(codfis,piva),'')<>'' ORDER BY lower(cognome),lower(nome),datanato,lower(ragsoc))
-ORDER BY soggetto;";
+,last_upd
+ FROM vigi.ricerca_soggetti as soggetti where $sql order by last_upd desc
+)";
 	
 	//echo "<p>$sql</p>";
 	if (!isset($this->db)) $this->connettidb();
