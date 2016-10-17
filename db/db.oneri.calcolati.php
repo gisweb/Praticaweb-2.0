@@ -18,7 +18,7 @@ include_once "./db/db.savedata.php";
 
 if ($_POST["azione"]!="Elimina"){
 	//Dopo aver salvato i dati passo al calcolo e aggiorno i dati dei campi calcolati
-	$sql="select tr,a,ie,k from oneri.e_tariffe where tabella='".$_POST["tabella"]."' and anno=" .$_POST["anno"] ;
+	$sql="select tr,a,ie,k from oneri.e_tariffe where tabella='".$_POST["tabella"]."' and anno::varchar = '" .$_POST["anno"]."'" ;
 	$result = $db->sql_query ($sql);
 	if (!$result){
 		return;
