@@ -2,7 +2,7 @@
 $query=Array();
 $query["default"]=<<<EOT
 SELECT DISTINCT 
-    A.pratica,A.numero,A.protocollo,A.data_prot,A.data_presentazione,A.oggetto,
+    A.pratica,coalesce(coalesce(data_prot,data_presentazione),'01/01/1970'::date) as data_ordinamento,A.numero,A.protocollo,A.data_prot,A.data_presentazione,A.oggetto,";
     B.nome as tipo_pratica,C.descrizione as tipo_intervento,coalesce(D.nome,'non assegnata') as responsabile,
     E.richiedente,F.progettista,L.esecutore,G.elenco_ct,H.elenco_cu,I.ubicazione,
     CASE WHEN (coalesce(A.resp_it,coalesce(A.resp_ia,0)) = 0) THEN 0 ELSE 1 END as assegnata_istruttore
@@ -25,7 +25,7 @@ admin.users D ON(A.resp_proc=D.userid) LEFT JOIN
 LEFT JOIN admin.users O ON(A.resp_it=O.userid)
 --LEFT JOIN (SELECT id,pratica,tipo as tipo_verifica,data_avvio as data_avvio_verifica,esito FROM pe.verifiche AP INNER JOIN pe.e_verifiche BP ON(AP.tipo = BP.id)) P USING(pratica) 
 --LEFT JOIN admin.users P ON(A.resp_ia=D.userid)
-WHERE pratica IN (%s)
+WHERE pratica IN (%s) 
 %s %s LIMIT %s OFFSET %s                 
 EOT;
 /*QUERY per la ricerca e il raggruppamento dei civici*/
