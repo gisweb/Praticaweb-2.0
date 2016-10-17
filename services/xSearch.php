@@ -113,6 +113,7 @@ switch($action){
                 break;
             default:
                 $queryName="default";
+                $order = "ORDER BY coalesce(coalesce(data_prot,data_presentazione),'01/01/1970'::date) DESC";
                 break;
         }
         foreach($data as $key=>$value){
