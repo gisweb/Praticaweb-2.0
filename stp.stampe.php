@@ -21,8 +21,13 @@ $vigi=($tipo=="vigi")?(1):(0);
 $active_form=$form.".php";
 $tab_err=array();
 $hidden="hidden";
-if($_POST["azione"])
-	include("./db/db.stp.stampe.php");
+if($_POST["azione"]){
+	if(PRINT_VERSION == 1)
+		include("./db/db.stp.stampeV1.php");
+	else
+		include("./db/db.stp.stampe.php");
+		
+}
 ?>
 <html>
 <head>

@@ -105,7 +105,7 @@ $_SESSION["TITOLO_".$idpratica]=  appUtils::titoloPratica($_REQUEST);
 		<?php
                 utils::loadJS();
                 utils::loadCss();
-                ?>
+        ?>
 
 		<SCRIPT language=javascript src="src/iframe.js" type="text/javascript"></SCRIPT>
 
@@ -114,7 +114,7 @@ $_SESSION["TITOLO_".$idpratica]=  appUtils::titoloPratica($_REQUEST);
     
     
 <script language="javascript">
-	window.name='praticaweb';
+		window.name='praticaweb';
         var url_documenti='<?php echo $pr->url_documenti;?>';
         var url_allegati='<?php echo $pr->url_allegati;?>';
 </script>
@@ -163,8 +163,9 @@ include "./inc/inc.page_header.php";
 		<TD height="200" valign="top" colspan=3>
 			<table cellSpacing=0 cellPadding=0 width="100%" border="0">
 				<tr>
-					<td align="left"><P style="MARGIN-TOP: 0.3em; FONT-SIZE: 11px; MARGIN-BOTTOM: 0.8em; COLOR: black; LINE-HEIGHT: 1.4em; FONT-FAMILY: Verdana, Geneva, Arial, sans-serif;paddding-bottom: .1em;color:red"><b>
-					</b></P></td>
+					<td align="left">
+						<P style="MARGIN-TOP: 0.3em; FONT-SIZE: 11px; MARGIN-BOTTOM: 0.8em; COLOR: black; LINE-HEIGHT: 1.4em; FONT-FAMILY: Verdana, Geneva, Arial, sans-serif;paddding-bottom: .1em;color:red"></P>
+					</td>
 					<td align="right">
 						<!--<P class=footerlinks>
 							 &nbsp; &nbsp;			

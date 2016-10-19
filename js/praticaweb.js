@@ -6,10 +6,13 @@ var suggestUrl=appBaseUrl+'/services/xSuggest.php';
 
 
 function setDatiAutoSuggest(event,ui){
+    console.log(ui);
     if (typeof(ui.item.child)!='undefined'){
         $.each(ui.item.child,function(k,v){
-            $('#'+k).val(v);  
+            $('#'+k).val(v);
+            
         });
+        
     }
 }
 

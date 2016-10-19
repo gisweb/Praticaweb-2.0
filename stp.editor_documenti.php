@@ -4,7 +4,7 @@ include "login.php";
 
 /*GESTIONE DEL FILE*/
 if ($_REQUEST["id_doc"]){
-	$db = new sql_db(DB_HOST,DB_USER,DB_PWD,DB_NAME, false);
+	$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
 	if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
 	$sql="SELECT file_doc,definizione,css.nome,print_type FROM stp.stampe left join stp.e_modelli on(stampe.modello=e_modelli.id) left join stp.css on(css_id=css.id) WHERE stampe.id=".$_REQUEST['id_doc'];
 	$db->sql_query($sql);
@@ -46,13 +46,14 @@ $testo="<html><head></head><body>$testo</body></html>";
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<link href="./css/screen.css" rel="stylesheet" type="text/css">
-<LINK media="screen" href="./css/modelli.css" type="text/css" rel="stylesheet">
-<LINK media="screen" href="./css/styles.css" type="text/css" rel="stylesheet">
 
-<script language="javascript" type="text/javascript" src="./js/LoadLibs.js"></script>
-<script language="javascript" type="text/javascript" src="./js/tinymce/jquery.tinymce.js"></script>
+<?php
+	utils::loadJS(Array("tinymce/tinymce.min","tinymce/jquery.tinymce.min"));
+	utils::loadCss(Array("modelli","styles","screen"));
+?>
 <script>
+	window.name = 'PW_Editor';
+	var w = window.open("", "praticaweb");
 	var ed;
 	function saveData(){
 		$.ajax({
@@ -74,10 +75,10 @@ $testo="<html><head></head><body>$testo</body></html>";
 		ed=$('textarea.tinymce').tinymce({
 		//ed=new tinymce.Editor('elm1',{
 			// Location of TinyMCE script
-			script_url : '/js/tinymce/tiny_mce.js',
+			script_url : '/js/tinymce/tinymce.js',
 
 			// General options
-			theme : "advanced",
+			/*theme : "advanced",
 			plugins : "autolink,lists,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,advlist,example",
 			language : 'it',
 			// Theme options
@@ -99,7 +100,7 @@ $testo="<html><head></head><body>$testo</body></html>";
 			external_image_list_url : "lists/image_list.js",
 			media_external_list_url : "lists/media_list.js",
 			theme_advanced_font_sizes : "3pt,4pt,5pt,6pt,7pt,8pt,9pt,10pt,11pt,12pt,13pt,14pt,15pt,16pt,17pt,18pt,19pt,20pt",
-			
+			*/
 			save_onsavecallback : 'saveData',
 			save_oncancelcallback : function(v){
 				window.blur();
@@ -121,7 +122,7 @@ $testo="<html><head></head><body>$testo</body></html>";
 </style>
 </head>
 <body>
-<?//echo "<pre>";print_r($cols);?>
+
 <div class="content">
 	<form method="post" name="dati" action="">
 	<form name="dati">
@@ -155,7 +156,7 @@ $testo="<html><head></head><body>$testo</body></html>";
 								icons:{primary:'ui-icon-close'}
 							}).click(function(){
 								window.blur();
-								(window.open(window.opener.location, window.opener.name) || window).focus();
+								w.focus();
 								window.close();
 							});
 						</script>

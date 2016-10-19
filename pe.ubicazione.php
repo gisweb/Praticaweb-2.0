@@ -63,11 +63,12 @@ if (($modo=="edit") or ($modo=="new")){
 				
 				if($Errors){
 					$tabellav->set_errors($Errors);
-					$tabellav->set_dati($_POST);
 				}
-				
-                elseif($id){
+                if($id){
                     $numrows=$tabellav->set_dati("id=$id");
+				}
+				else{
+					$tabellav->set_dati($_POST);
 				}
 				//print_array($tabellav);
 				$tabellav->edita();
@@ -97,7 +98,7 @@ for($i=0;$i<3;$i++){
     print "<tr><td>";
     $tabella=new Tabella_h("$tabpath/$file_tab");
 
-    $tabella->set_titolo($titolo,"nuovo",array("titolo"=>$titolo,"tab"=>$file_tab));
+    $tabella->set_titolo($titolo,"nuovo",array("titolo"=>$titolo,"tab"=>$file_tab,"cod_belfiore"=>$_REQUEST["cod_belfiore"]));
 
     $numrows=$tabella->set_dati("pratica=$idpratica;");
     $tabella->get_titolo();

@@ -1,4 +1,6 @@
-<?
+<?php
+require_once LOCAL_LIB."dompdf/autoload.inc.php";
+use Dompdf\Dompdf;
 //IMPORATNTE : Nei documenti non si può utilizzare il tag <span> perchè è dedicato ai campi unione!!!!!!
 class stampe {
 	
@@ -16,7 +18,7 @@ class stampe {
 	var $valori;//Tabella con tutti tutti i valori (campi uno a unoi)
 	var $errors;//Tabella con gli errori riscontrati
 	var $path_in=MODELLI;//path
-	var $path_out=STAMPE;
+	var $path_out;
 	var $ciclo;
 	var $tag;
 	var $finali; //Terminatore del campo da ripetere
@@ -42,7 +44,8 @@ class stampe {
 	var $debug_file;
 /*METODI DELLA CLASSE*/	
 	/*Inizializzatore della Classe*/
-	function stampe($pr,$idmodello,$out,$schema="stp",$d=0,$mod_write=0){
+	function stampe($pr,$path,$idmodello,$out,$schema="stp",$d=0,$mod_write=0){
+		$this->path_out = rtrim($path,"/")."/";
 		/*INIZIALIZZAZIONI DEI CAMPI DELLA CLASSE*/
 		$this->pratica=$pr;
 		$this->get_db();
@@ -438,7 +441,7 @@ class stampe {
 		// Full path to the file to be converted
 		$htmlFile = $this->documento;
 		$defaultDomain = '';
-		$pdfFile = STAMPE.$this->nome_pdf;
+		$pdfFile = $this->path_out.$this->nome_pdf;
 		system("rm $pdfFile");
 		/*MODIFICHE */
 		$handle=fopen(LIB."HTML_ToPDF.conf","r");
@@ -468,7 +471,6 @@ class stampe {
 		$standardMem=ini_get('memory_limit');
 		ini_set('max_execution_time',600);
 		ini_set('memory_limit','512M');
-		require_once LIB."dompdf_config.inc.php"; 
 		$sql="SELECT script,definizione,dimensione,orientamento FROM stp.e_modelli inner join stp.css on(css_id=css.id) WHERE e_modelli.id=$this->idmodello";
 		print_debug($sql,null,"STP");
 		$this->db->sql_query($sql);
@@ -476,7 +478,7 @@ class stampe {
 		$script=$this->db->sql_fetchfield('script');
 		$size=$this->db->sql_fetchfield('dimensione');
 		$orient=$this->db->sql_fetchfield('orientamento');
-		$pdfFile = STAMPE.$this->nome_pdf; 
+		$pdfFile = $this->path_out.$this->nome_pdf; 
 		@unlink($pdfFile);
 		$html="<html>
 	<head>
@@ -489,7 +491,9 @@ class stampe {
 </html>";
 		print_debug($html,null,"STP");
 		/*MODIFICHE */
-		$dompdf = new DOMPDF(); 
+
+		
+		$dompdf = new Dompdf();
 		$dompdf->set_paper($size,$orient);
 		$dompdf->load_html($html);
 		$dompdf->render();
@@ -658,7 +662,7 @@ class stampe {
 	}
 	
 	function connettidb(){
-		$this->db = new sql_db(DB_HOST,DB_USER,DB_PWD,DB_NAME, false);
+		$this->db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
 		if(!$this->db->db_connect_id)  die( "Impossibile connettersi al database");
 	}
 	

@@ -1,6 +1,7 @@
 <?php
 use Doctrine\Common\ClassLoader;
 require_once APPS_DIR.'plugins/Doctrine/Common/ClassLoader.php';
+require_once LIB."utils.class.php";
 
 
 
@@ -86,6 +87,25 @@ class generalAppUtils {
         $id=$db->fetchColumn("SELECT id FROM pe.e_transizioni WHERE codice=?",Array($m),0);
         return $id;
     }
+	
+   static function getCodBelfiore($pratica){
+	  if (defined('COD_BELFIORE') && COD_BELFIORE){
+		 return COD_BELFIORE;   
+	  }
+	  elseif(in_array("cod_belfiore",$_REQUEST) && $_REQUEST["cod_belfiore"]){
+		 return $_REQUEST["cod_belfiore"];
+	  }
+	  else{
+		 $db = utils::getDb();
+		 $sql="SELECT cod_belfiore FROM pe.avvioproc WHERE pratica=?;";
+		 $stmt=$db->prepare($sql);
+		 $cod = '';
+		 if($stmt->execute(Array($pratica))){
+			$cod = $stmt->fetchColumn();
+		 }
+		 return $cod;
+	  }
+	}
 /*--------------------------------------------------------------------------------------------*/  
     static function getPraticaRole($cfg,$pratica){
         $db=self::getDB();
