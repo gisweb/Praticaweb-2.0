@@ -1,6 +1,8 @@
 <?php
 require_once LOCAL_LIB."dompdf/autoload.inc.php";
 use Dompdf\Dompdf;
+use Dompdf\Options;
+
 //IMPORATNTE : Nei documenti non si può utilizzare il tag <span> perchè è dedicato ai campi unione!!!!!!
 class stampe {
 	
@@ -493,7 +495,9 @@ class stampe {
 		/*MODIFICHE */
 
 		
-		$dompdf = new Dompdf();
+		$options = new Options();
+		$options->set('isRemoteEnabled', 'true');
+		$dompdf = new Dompdf($options);
 		$dompdf->set_paper($size,$orient);
 		$dompdf->load_html($html);
 		$dompdf->render();

@@ -62,17 +62,17 @@ class Tabella{
             $lay=$cfg[$mode];
             $this->table_list=(isset($cfg['general']['table_list']) && $cfg['general']['table_list'])?(1):(0);
             $this->printForm = (isset($cfg['general']['print_form']) && $cfg['general']['print_form'])?($cfg['general']['print_form']):(null);
-			if (isset($cfg['general']['print_prms']) && $cfg['general']['print_prms']){
+	    if (isset($cfg['general']['print_prms']) && $cfg['general']['print_prms']){
 				
-				$tmp = explode(";",$cfg['general']['print_prms']);
-				foreach($tmp as $el){
-					list($key,$val)=explode("=",$el);
-					$this->printPrms[$key]=$val;
-				}
-			}
-			else{
-				$this->printPrms=Array();
-			}
+	        $tmp = explode(";",$cfg['general']['print_prms']);
+	        foreach($tmp as $el){
+	            list($key,$val)=explode("=",$el);
+		    $this->printPrms[$key]=$val;
+	        }
+	    }
+	    else{
+	        $this->printPrms=Array();
+	    }
             $ncol=count($lay['data']);
             $this->mode=$mode;
             $this->debug=null;
@@ -584,7 +584,7 @@ function elenco_stampe ($form){
 		$form=($form)?($form):($this->printForm);
 		list($schema,$f)=explode(".",$form);
 		$this->printPrms["procedimento"]=$procedimento;
-		$this->printPrms["pratica"]=$this->pratica;
+		$this->printPrms["pratica"]=$this->idpratica;
 		$this->printPrms["form"]=$form;
 		$this->printPrms["tipo_pratica"]=$tipo_pratica;
 		foreach($this->printPrms as $k=>$v) $r[]=<<<EOT

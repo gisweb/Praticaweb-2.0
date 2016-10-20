@@ -51,7 +51,6 @@ if ($_POST["azione"]==="Crea Documento") {	//	Creo un nuovo documento
 					list($sc,$f)=explode(".",$form);
 					$schema=($sc=="cn")?("stp_condono"):("stp");
 					$pr=new pratica($idpratica,0);
-					echo "<p>".$pr->documenti."</p>";
 					$m=new stampe($idpratica,$pr->documenti ,$id_modello,$nome,$schema,1,1);
 					$m->sostituisci_valori();
 					$m->crea_documento();
