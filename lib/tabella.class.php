@@ -62,7 +62,17 @@ class Tabella{
             $lay=$cfg[$mode];
             $this->table_list=(isset($cfg['general']['table_list']) && $cfg['general']['table_list'])?(1):(0);
             $this->printForm = (isset($cfg['general']['print_form']) && $cfg['general']['print_form'])?($cfg['general']['print_form']):(null);
-
+			if (isset($cfg['general']['print_prms']) && $cfg['general']['print_prms']){
+				
+				$tmp = explode(";",$cfg['general']['print_prms']);
+				foreach($tmp as $el){
+					list($key,$val)=explode("=",$el);
+					$this->printPrms[$key]=$val;
+				}
+			}
+			else{
+				$this->printPrms=Array();
+			}
             $ncol=count($lay['data']);
             $this->mode=$mode;
             $this->debug=null;
@@ -571,25 +581,29 @@ function elenco_stampe ($form){
        $sql="select e_tipopratica.nome as tipo from pe.avvioproc left join pe.e_tipopratica on (avvioproc.tipo=e_tipopratica.id) where pratica=$this->idpratica";
        $this->db->sql_query($sql);
        $tipo_pratica=$this->db->sql_fetchfield("tipo");
-	$form=($form)?($form):($this->printForm);
-	list($schema,$f)=explode(".",$form);
-		$tabella="
-			<hr>
-			<form method=\"post\" target=\"_parent\" action=\"stp.stampe.php\">
-				<input type=\"hidden\" name=\"form\" value=\"$form\">
-				<input type=\"hidden\" name=\"procedimento\" value=\"$procedimento\">
-				<input type=\"hidden\" name=\"pratica\" value=\"$this->idpratica\">
-                            <input type=\"hidden\" name=\"tipo_pratica\" value=\"$tipo_pratica\">
-                           
-
-				<table class=\"stiletabella\" width=\"90%\" border=0>
-					<tr>
-						<td align=\"right\" valign=\"bottom\">
-							<input type=\"image\" src=\"images/printer_edit.png\" alt=\"Modifica elaborati\">
-						</td>
-					</tr>
-				</table>
-			</form>";  
+		$form=($form)?($form):($this->printForm);
+		list($schema,$f)=explode(".",$form);
+		$this->printPrms["procedimento"]=$procedimento;
+		$this->printPrms["pratica"]=$this->pratica;
+		$this->printPrms["form"]=$form;
+		$this->printPrms["tipo_pratica"]=$tipo_pratica;
+		foreach($this->printPrms as $k=>$v) $r[]=<<<EOT
+			<input type="hidden" name="$k" value="$v"/>		
+EOT;
+		$prms=implode("",$r);
+		$tabella=<<<EOT
+		<hr>
+		<form method="post" target="_parent" action="stp.stampe.php">
+$prms
+			<table class="stiletabella" width="90%" border=0>
+				<tr>
+					<td align="right" valign="bottom">
+						<input type="image" src="images/printer_edit.png" alt="Modifica elaborati">
+					</td>
+				</tr>
+			</table>
+		</form>
+EOT;
 
 		return $tabella;
 	}
