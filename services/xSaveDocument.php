@@ -10,14 +10,14 @@ if($_REQUEST['id_doc']){
 	$idDoc=$_REQUEST['id_doc'];
 	$testo=$_REQUEST['testo'];
 	$testo=html_entity_decode($testo);
-	$sqlFind="SELECT file_doc,definizione,css.nome,print_type,stampe.form,stampe.pratica FROM stp.stampe left join stp.e_modelli on(stampe.modello=e_modelli.id) left join stp.css on(css_id=css.id)  WHERE stampe.id=$idDoc;";
+	$sqlFind="SELECT file_doc,definizione,css.nome,print_type,stampe.form,stampe.pratica,css.script FROM stp.stampe left join stp.e_modelli on(stampe.modello=e_modelli.id) left join stp.css on(css_id=css.id)  WHERE stampe.id=$idDoc;";
 	$dbconn->sql_query($sqlFind);
 	$pratica=$dbconn->sql_fetchfield('pratica');
 	$file=$dbconn->sql_fetchfield('file_doc');
 	$definizione=$dbconn->sql_fetchfield('definizione');
 	$css_name=$dbconn->sql_fetchfield('nome');
 	$form=$dbconn->sql_fetchfield('form');
-
+	$script = $dbconn->sql_fetchfield('script');
 	$is_cdu=($form=='cdu.vincoli')?(1):(0);
 	$pr=new pratica($pratica,$is_cdu);
 	
@@ -35,7 +35,7 @@ if($_REQUEST['id_doc']){
 		$error=1;
 		//print json_encode($dbconn->sql_error());
 	}
-	$html="<html><head><style>$definizione</style></head><body>$testo</body></html>";
+	$html="<html><head><style>$definizione</style></head><body>$script <br> $testo</body></html>";
 	$html=str_replace("<!-- pagebreak -->","<pagebreak />",stripslashes($html));
 	//$html=str_replace('src="images/alghero.png"','src="http://'.$_SERVER["SERVER_NAME"].'/images/alghero.png"',$html);
 	

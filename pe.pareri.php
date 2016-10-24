@@ -82,7 +82,7 @@ if (($modo=="edit") or ($modo=="new")){
 	}else{
 		$tabella=new tabella_v("$tabpath/pareri");
 		$tabella->set_errors($errors);
-		$numrec=$tabella->set_dati("pratica=$idpratica AND NOT ente IN (SELECT id FROM pe.e_enti WHERE codice='ut')");?>
+		$numrec=$tabella->set_dati("pratica=$idpratica");?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 		<H2 class="blueBanner">Elenco pareri</H2>
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">
