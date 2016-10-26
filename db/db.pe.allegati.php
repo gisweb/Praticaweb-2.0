@@ -30,7 +30,7 @@ if (isset($_POST["azione"]) && $_POST["azione"]=="Salva"){
 			elseif($value=="id")
 				$sql="delete from pe.allegati where id=$id";
 			$db->sql_query ($sql);
-			echo "<p>$sql</p>";
+//			echo "<p>$sql</p>";
 		}
 		elseif ($tab=="doc"){			
 			$insert=1;
