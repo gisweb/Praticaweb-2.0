@@ -36,7 +36,7 @@ if (isset($_POST["azione"]) && $_POST["azione"]=="Salva"){
 			$insert=1;
 			if (!$_SESSION["ADD_NEW"]){//inserisco solo se non ho già inserito il dato
 				$sql="insert into pe.allegati (pratica,documento,protocollo,data_protocollo,$value,chk,uidins,tmsins) values ($idpratica,$id,$prot,$data_prot,1,1,".$_SESSION["USER_ID"].",".time().");";
-				echo "<p>$sql</p>";
+				//echo "<p>$sql</p>";
 				$db->sql_query ($sql);
 				if ($value=="mancante")
 					$flag_mancante=1;
