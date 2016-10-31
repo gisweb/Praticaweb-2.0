@@ -108,13 +108,13 @@ appUtils::setVisitata($idpratica,basename('pe.avvioproc.php', '.php'),$_SESSION[
                 $nrec=$tabella->set_dati("pratica=$idpratica");
                 $tabella->elenco();
                 $tabella->close_db();
-                if (file_exists(TAB."$tabpath/chiusura_pa_amb.tab")){
+                if (file_exists(TAB."$tabpath/chiusura_pa.tab")){
                     $tabella=new tabella_v("$tabpath/chiusura_pa","view");
                     $tabella->set_titolo("Dati di chiusura della procedimento amministrativo - Avvenuta Verifica Atti","modifica",Array("dati_chiusura_pa_amb"=>1));
                     $nrec=$tabella->set_dati("pratica=$idpratica");
                     $tabella->elenco();
                 }
-
+		if ($tabella->editable) print($tabella->elenco_stampe("pe.avvioproc"));
                 ?>
 			<!-- fine contenuto-->
 			 </TD>
