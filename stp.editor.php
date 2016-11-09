@@ -2,7 +2,7 @@
 include "login.php";
 include("./src/fckeditor/fckeditor.php") ;
 
-$db = new sql_db(DB_HOST,DB_USER,DB_PWD,DB_NAME, false);
+$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
 if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
 //if($_SESSION["PERMESSI"]==1) print_array($_REQUEST);
 
@@ -14,20 +14,8 @@ $css_id=$db->sql_fetchlist('id');
 for($i=0;$i<count($css_desc);$i++) $css_desc[$i]=addslashes(trim($css_desc[$i]));
 
 /*GESTIONE DEL FILE*/
-if ($_REQUEST["file"]){
-	$file=$_REQUEST["file"];
-	$tipo=$_REQUEST["tipo"];
-}
-elseif ($_REQUEST["id_doc"]){
-	$sql="SELECT file_doc FROM stp.stampe WHERE id=".$_REQUEST['id_doc'];
-	$db->sql_query($sql);
-	$file=$db->sql_fetchfield('file_doc');
-	$tipo="documenti";
-	$id_doc=$_REQUEST["id_doc"];
-	$id=$_REQUEST["id"];
-}
-elseif($_REQUEST["id_modelli"]){
-	$id_modelli=$_REQUEST["id_modelli"];
+if($_REQUEST["id"]){
+	$id_modelli=$_REQUEST["id"];
 	$sql="SELECT e_modelli.nome,form,testohtml,css_id,definizione,css.descrizione as css_desc FROM stp.e_modelli LEFT JOIN stp.css on (css_id=css.id) WHERE e_modelli.id=$id_modelli";
 	$db->sql_query($sql);
 	$file=$db->sql_fetchfield('nome');
@@ -43,7 +31,7 @@ if ($_REQUEST["form"]) $form=$_REQUEST["form"];
 if ($tipo=="modelli"){
 	
 	/*SELEZIONE DELLE VISTE DAL DATABASE*/
-	$db = new sql_db(DB_HOST,DB_USER,DB_PWD,DB_NAME, false);
+	$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
 	if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
 	$sql="(SELECT 'Seleziona -->' as nome,'' as tipo,'Seleziona -->' as alias_nome,'' as descrizione,1 as ord) UNION (SELECT DISTINCT nome_vista as nome,tipo,alias_nome_vista,descrizione_vista,2 as ord FROM stp.colonne) order by ord,nome;";
 	$db->sql_query($sql);
@@ -65,10 +53,9 @@ if ($tipo=="modelli"){
 		}
 	}
 }
-
+;
 $dir=($tipo=="modelli")?(MODELLI):(STAMPE);
-$action=($tipo=="modelli")?("window.location='stp.elenco_modelli.php?tipo=html'"):("document.forms['dati'].action='stp.stampe.php';document.forms['dati'].submit();");
-
+$action="window.location='stp.modelli.php?tipo=html&mode=list'";
 if ($_POST["azione"] and $_POST["azione"]!=="Annulla" ){
 	include "./db/db.stp.editor.php";
 }
@@ -146,18 +133,17 @@ if ($cols) foreach($cols as $key=>$value){
 $colonne=substr($colonne,0,-1);
 ?>
 <script>
-	var colonne= new Array(<?=$colonne?>);
+	var colonne= new Array(<?php echo $colonne; ?>);
 </script>
 </head>
-<body onload="<?=$body_onload?>">
-<?//echo "<pre>";print_r($colonne);?>
+<body onload="<?php echo $body_onload; ?>">
 <div class="content">
 	<form method="post" name="dati" id="modello" action="stp.editor.php">
 		<h2 class="blueBanner"><?php print "Modello ".basename($file)." - Form ".array_pop(explode('.',$form));?></h2>
 		<table width="100%">
 			<tr>
 				<td valign="top" width="60%">
-					<?if ($tipo=="modelli"){?><div style="background-color:rgb(240,240,238);width:557pt;border-color:rgb(204,204,204); border-width:1 1 0 1px; border-style:solid;font-family:sans serif;padding:3 0 3 0px;">
+					<?php if ($tipo=="modelli"){?><div style="background-color:rgb(240,240,238);width:557pt;border-color:rgb(204,204,204); border-width:1 1 0 1px; border-style:solid;font-family:sans serif;padding:3 0 3 0px;">
 						<table>
 							<tr>
 								<td width="20%" valign="bottom" class="intestazione">Tabella</td>
@@ -201,14 +187,14 @@ $colonne=substr($colonne,0,-1);
 								<td>
 									<b>Foglio di stile</b>
 									<select name="css" id="css" onchange="javascript:xGetElementById('desc').innerHTML=desc[this.selectedIndex];">
-			<? for($i=0;$i<count($css_nome);$i++){if($css_modello==$css_id[$i]) {$tmp[]="<option value=\"".$css_id[$i]."\" selected>".$css_nome[$i]."</option>";} else {$tmp[]="<option value=\"".$css_id[$i]."\">".$css_nome[$i]."</option>";} }
+			<?php for($i=0;$i<count($css_nome);$i++){if($css_modello==$css_id[$i]) {$tmp[]="<option value=\"".$css_id[$i]."\" selected>".$css_nome[$i]."</option>";} else {$tmp[]="<option value=\"".$css_id[$i]."\">".$css_nome[$i]."</option>";} }
 			echo @implode("",$tmp);  
 			?>
 									</select>  
 								</td>
 								<!--<td colspan="5">
 									<button onclick="javascript:preview('idpratica','modello');"><img src="./images/preview.gif" border="0" alt="Anteprima" align="middle"></button>&nbsp;<b>NÂ° Pratica</b><input type="text" style="margin-left:5px;" value="" name="idpratica" id="idpratica">-->
-								<td width="50%"  colspan="1" rowspan="2"><div id="desc" class="descrizione"><?=$messaggio?></div></td>
+								<td width="50%"  colspan="1" rowspan="2"><div id="desc" class="descrizione"><?php echo $messaggio;?></div></td>
 							</tr> 
 						</table>
 					</div><?php }
@@ -220,14 +206,14 @@ $colonne=substr($colonne,0,-1);
 					
 					<hr>
 					<div style="margin-top:10px;">
-						<?if ($file){?><input type="submit" class="hexfield" style="background-color:rgb(204,204,204);margin:0px 0px 0px 10px;" name="azione" value="Salva" onclick="return confirm('Sei sicuro di voler sovrascrivere il modello corrente?')">
+						<?php if ($file){?><input type="submit" class="hexfield" style="background-color:rgb(204,204,204);margin:0px 0px 0px 10px;" name="azione" value="Salva" onclick="return confirm('Sei sicuro di voler sovrascrivere il modello corrente?')">
 						<?php }
 						else{?>
 						Nome del File <input type="hidden" name="file" value="<?=$file?>">  
 						<input type="text" class="stiletabella" style="border:1px solid rgb(204,204,204);margin:4px 0px 0px 10px;" name="file" size="40" id="" value="<?=$file?>">
 						<input type="submit" class="hexfield" style="background-color:rgb(204,204,204);margin:0px 0px 0px 10px;" name="azione" value="Salva">
 						<?php }?>
-						<?if ($_REQUEST["id_modelli"]){?><input type="submit" name="azione" class="hexfield" style="background-color:rgb(204,204,204);margin:0px 0px 0px 10px;" value="Elimina" onclick="return confirm('Sei sicuro di voler eliminare il modello corrente?')"><?php }?>
+						<?php if ($_REQUEST["id"]){?><input type="submit" name="azione" class="hexfield" style="background-color:rgb(204,204,204);margin:0px 0px 0px 10px;" value="Elimina" onclick="return confirm('Sei sicuro di voler eliminare il modello corrente?')"><?php }?>
 						<input type="button" class="hexfield" style="background-color:rgb(204,204,204);margin:0px 0px 0px 10px;" value="Chiudi" onclick="<?=$action?>">
 					</div>
 				</td>

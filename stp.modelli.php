@@ -171,7 +171,8 @@ elseif($modo=="view"){
 <?php
 }
 else{
-    $tabella_modelli=new Tabella_h("$tabpath/modelli",'list');
+	$file_tab = ($_REQUEST["tipo"]=='html')?('modelli_html'):('modelli');
+    $tabella_modelli=new Tabella_h("$tabpath/$file_tab",'list');
     
     $sql="select distinct opzione,form,stampa from stp.e_form order by stampa;";
     $db->sql_query ($sql);
