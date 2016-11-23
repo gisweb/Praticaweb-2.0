@@ -1,0 +1,63 @@
+------- DEBUG DEL 03/11/2016 03:17:19 -------
+DELETE FROM oneri.rate WHERE pratica=8370 and rata in (1,2,3,4);
+INSERT INTO oneri.rate(pratica,rata,totale,versato,uidins,tmsins) (
+(SELECT 8370 as pratica,1 as rata,totale*0.4,totale*0.4,75,1478182639 FROM oneri.vista_totali WHERE pratica=8370)
+UNION
+(SELECT 8370 as pratica,2 as rata,totale*0.2,totale*0.2,75,1478182639 FROM oneri.vista_totali WHERE pratica=8370)
+UNION
+(SELECT 8370 as pratica,3 as rata,totale*0.2,totale*0.2,75,1478182639 FROM oneri.vista_totali WHERE pratica=8370)
+)
+UNION
+(SELECT 8370 as pratica,4 as rata,totale*0.2,totale*0.2,75,1478182639 FROM oneri.vista_totali WHERE pratica=8370)
+;
+-------------------------
+------- DEBUG DEL 04/11/2016 11:07:09 -------
+DELETE FROM oneri.rate WHERE pratica=17214 and rata in (1,2,3,4);
+INSERT INTO oneri.rate(pratica,rata,totale,versato,uidins,tmsins) (SELECT 17214 as pratica,5 as rata,totale,totale,71,1478254029 FROM oneri.vista_totali WHERE pratica=17214);
+-------------------------
+------- DEBUG DEL 04/11/2016 11:08:01 -------
+DELETE FROM oneri.rate WHERE pratica=8370 and rata in (1,2,3,4);
+INSERT INTO oneri.rate(pratica,rata,totale,versato,uidins,tmsins) (
+(SELECT 8370 as pratica,1 as rata,totale*0.4,totale*0.4,75,1478254081 FROM oneri.vista_totali WHERE pratica=8370)
+UNION
+(SELECT 8370 as pratica,2 as rata,totale*0.2,totale*0.2,75,1478254081 FROM oneri.vista_totali WHERE pratica=8370)
+UNION
+(SELECT 8370 as pratica,3 as rata,totale*0.2,totale*0.2,75,1478254081 FROM oneri.vista_totali WHERE pratica=8370)
+)
+UNION
+(SELECT 8370 as pratica,4 as rata,totale*0.2,totale*0.2,75,1478254081 FROM oneri.vista_totali WHERE pratica=8370)
+;
+-------------------------
+------- DEBUG DEL 04/11/2016 03:04:00 -------
+DELETE FROM oneri.rate WHERE pratica=52724 and rata in (1,2,3,4);
+INSERT INTO oneri.rate(pratica,rata,totale,versato,uidins,tmsins) (SELECT 52724 as pratica,5 as rata,totale,totale,1,1478268240 FROM oneri.vista_totali WHERE pratica=52724);
+-------------------------
+------- DEBUG DEL 07/11/2016 10:39:27 -------
+DELETE FROM oneri.rate WHERE pratica=17805 and rata in (1,2,3,4);
+INSERT INTO oneri.rate(pratica,rata,totale,versato,uidins,tmsins) (
+(SELECT 17805 as pratica,1 as rata,totale*0.4,totale*0.4,71,1478511567 FROM oneri.vista_totali WHERE pratica=17805)
+UNION
+(SELECT 17805 as pratica,2 as rata,totale*0.2,totale*0.2,71,1478511567 FROM oneri.vista_totali WHERE pratica=17805)
+UNION
+(SELECT 17805 as pratica,3 as rata,totale*0.2,totale*0.2,71,1478511567 FROM oneri.vista_totali WHERE pratica=17805)
+)
+UNION
+(SELECT 17805 as pratica,4 as rata,totale*0.2,totale*0.2,71,1478511567 FROM oneri.vista_totali WHERE pratica=17805)
+;
+-------------------------
+------- DEBUG DEL 07/11/2016 12:35:02 -------
+DELETE FROM oneri.rate WHERE pratica=17154 and rata in (1,2,3,4);
+INSERT INTO oneri.rate(pratica,rata,totale,versato,uidins,tmsins) (SELECT 17154 as pratica,5 as rata,totale,totale,71,1478518502 FROM oneri.vista_totali WHERE pratica=17154);
+-------------------------
+------- DEBUG DEL 21/11/2016 04:29:50 -------
+DELETE FROM oneri.rate WHERE pratica=13997 and rata in (1,2,3,4);
+INSERT INTO oneri.rate(pratica,rata,totale,versato,uidins,tmsins) (SELECT 13997 as pratica,5 as rata,totale,totale,76,1479742190 FROM oneri.vista_totali WHERE pratica=13997);
+-------------------------
+------- DEBUG DEL 23/11/2016 11:30:04 -------
+DELETE FROM oneri.rate WHERE pratica=1014527 and rata in (1,2,3,4);
+INSERT INTO oneri.rate(pratica,rata,totale,versato,uidins,tmsins) (SELECT 1014527 as pratica,5 as rata,totale,totale,76,1479897003 FROM oneri.vista_totali WHERE pratica=1014527);
+-------------------------
+------- DEBUG DEL 23/11/2016 11:38:46 -------
+DELETE FROM oneri.rate WHERE pratica=1014527 and rata in (1,2,3,4);
+INSERT INTO oneri.rate(pratica,rata,totale,versato,uidins,tmsins) (SELECT 1014527 as pratica,5 as rata,totale,totale,76,1479897526 FROM oneri.vista_totali WHERE pratica=1014527);
+-------------------------

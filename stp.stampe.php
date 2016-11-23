@@ -16,7 +16,7 @@ list($tipo,$pag)=explode(".",$form);
 $tipo=$_REQUEST["tipo"];
 $condono=($tipo=="cn")?(1):(0);
 $ce=($tipo=="ce")?(1):(0);
-$cdu=($tipo=="cdu")?(1):(0);
+$cdu=($tipo=="cdu" || $form=='cdu.vincoli')?(1):(0);
 $vigi=($tipo=="vigi")?(1):(0);
 $active_form=$form.".php";
 $tab_err=array();

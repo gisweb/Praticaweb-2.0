@@ -4,7 +4,7 @@ require_once ("login.php");
 
 unset($is_cdu);
 unset($is_ce);
-$is_cdu=isset($_REQUEST["cdu"])?($_REQUEST["cdu"]):(0);
+$is_cdu=((isset($_REQUEST["cdu"]) && $_REQUEST["cdu"])|| $_REQUEST["form"]=="cdu.vincoli")?(1):(0);
 $is_ce=isset($_REQUEST["comm"])?($_REQUEST["comm"]):(0);
 $is_vigi=isset($_REQUEST["vigi"])?($_REQUEST["vigi"]):(0);
 $is_agi=isset($_REQUEST["agi"])?($_REQUEST["agi"]):(0);

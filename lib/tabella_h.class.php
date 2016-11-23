@@ -557,7 +557,7 @@ function zoomto_gc($tabella,$id){
                
                    			
                     if ($map){ 
-				$func=(GC_VERSION==2)?("ApriMappa('".MAPSETID."','".TEMPLATE."','qt=".QTID_PARTICELLE."&objid=$map[gid]')"):("openMap(".MAPSETID.",'gisclient','&extent=$map[xmin],$map[ymin],$map[xmax],$map[ymax]')");
+				$func=(GC_VERSION==2)?("ApriMappa('".CDUMAPSETID."','".TEMPLATE."','qt=".QTID_PARTICELLE."&objid=$map[gid]')"):("openMap(".CDUMAPSETID.",'gisclient','&extent=$map[xmin],$map[ymin],$map[xmax],$map[ymax]')");
 			}else{
 				$func= "alert('$msgerr')";
 			}
