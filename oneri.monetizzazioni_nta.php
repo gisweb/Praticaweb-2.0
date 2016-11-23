@@ -6,7 +6,7 @@ $idpratica=$_REQUEST["pratica"];
 $titolo=$_SESSION["TITOLO_$idpratica"];
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $tabpath="oneri";
-$titolo="Monetizzazione art.24 delle nta";
+$titolo=($_REQUEST["tabella"]=="monetizzazione_nta")?("Monetizzazione art.24 delle nta"):("Monetizzazione Standard Urbanistici DM 1444/68");
 $file_conf=$tabpath."/".$_REQUEST["tabella"].".tab";
 $elimina="<td valign=\"bottom\"><input name=\"azione\" type=\"submit\" class=\"hexfield\" tabindex=\"14\" value=\"Elimina\"></td>";
 $Errors=$array_dati["errors"];
@@ -36,7 +36,7 @@ else
 </HTML>
  <?php
  if (($modo=="edit") or ($modo=="new")) {
-	$tabella=new tabella_v($file_conf,"edit");
+	$tabella=new tabella_v($file_conf,$modo);
 	unset($_SESSION["ADD_NEW"]);	
 	include "./inc/inc.page_header.php";
 ?>
@@ -66,10 +66,6 @@ else
 ?>	
 			</td>
 		  </tr>
-		  <tr> 
-				<!-- riga finale -->
-				<td align="left"><img src="images/gray_light.gif" height="2" width="90%"></td>
-		   </tr>  
 		</TABLE>
 		<div>
 			<input name="active_form" type="hidden" value="oneri.monetizzazioni_nta.php">
@@ -106,6 +102,7 @@ else
 	else{// se non c'e un calcolo fatto propongo il menu nuovo 
 		$tabellav->set_titolo("Monetizzazione Standard Urbanistici DM 1444/68 >>>","nuovo",array("tabella"=>"monetizzazione_standard"));			 
 		$tabellav->get_titolo();
+		echo "<p><b>Nessun dato presente</b></p>";
 	}
 ?>
 <!--  fine tabella monetizzazione-->
@@ -128,6 +125,7 @@ else
 	else{// se non c'e un calcolo fatto propongo il menu nuovo 
 		$tabellah->set_titolo("Monetizzazione Art.24 delle NTA >>>","nuovo",array("tabella"=>"monetizzazione_nta"));			 
 		$tabellah->get_titolo();
+		echo "<p><b>Nessun dato presente</b></p>";
 	}
 ?>
 <!--  fine tabella monetizzazione-->
