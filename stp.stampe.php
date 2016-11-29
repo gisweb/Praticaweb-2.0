@@ -13,7 +13,7 @@ $file=$_POST["file"];
 $azione=$_POST["azione"];
 $procedimento=$_POST["procedimento"];
 list($tipo,$pag)=explode(".",$form);
-$tipo=$_REQUEST["tipo"];
+//$tipo=$_REQUEST["tipo"];
 $condono=($tipo=="cn")?(1):(0);
 $ce=($tipo=="ce")?(1):(0);
 $cdu=($tipo=="cdu" || $form=='cdu.vincoli')?(1):(0);

@@ -539,7 +539,13 @@ EOT;
         $size=array_shift($prms);
         $form=array_shift($prms);
         for($i=0;$i<count($prms);$i++){
-            $params[$prms[$i]]=$this->array_dati[$row][$prms[$i]];
+	    if (in_array(array_keys($this->array_dati[$row]))){
+		$params[$prms[$i]]=$this->array_dati[$row][$prms[$i]];
+	    }
+	    else{
+		list($key,$val)=explode(":",$prms[$i]);
+		$params[$key]=$val;
+	    }
         }
         if (isset($this->params))
             foreach($this->params as $k=>$v){

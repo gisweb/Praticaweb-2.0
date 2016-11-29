@@ -224,7 +224,7 @@ function valida_campi($arr){
 	
 	$config_file=$_POST["config_file"];
 	$modo=$_REQUEST['mode'];
-	//**********ERRORE DA GESTIRE UN PO' MEGLIO
+	//**********ERRORE DA GESTIRE UN PO' MEGLIO*/
 	if (!isset($config_file)){
 		echo ("Manca il file di definizione del form, non è possibile continuare");
 		exit;
@@ -244,6 +244,7 @@ function valida_campi($arr){
 	
 	if ($azione=="Elimina"){
 		$sql="delete from $tabelladb where id=$idrow;";
+//		echo "<p>$sql</p>";
 		print_debug($sql,null,'deletedata');
 		$db->sql_query ($sql);
 		return;
