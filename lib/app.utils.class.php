@@ -3,7 +3,7 @@ use Doctrine\Common\ClassLoader;
 require_once APPS_DIR.'plugins/Doctrine/Common/ClassLoader.php';
 require_once LIB."utils.class.php";
 require_once APPS_DIR.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'app.utils.class.php';
-class appUtils extends generalAppUtils {
+class generalAppUtils {
    static function getDB(){
 		$classLoader = new ClassLoader('Doctrine', APPS_DIR.'plugins/');
 		$classLoader->register();
