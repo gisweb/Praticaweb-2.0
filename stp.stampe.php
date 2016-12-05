@@ -95,9 +95,11 @@ function formatLink(value,rowData,rowIndex){
 <body>
 
 <?php
-	include "./inc/inc.page_header.php";
+    if (PRINT_VERSION==1)
+        $arrFiltri["tipo"]= "A.nome ilike '%.html'";
+    include "./inc/inc.page_header.php";
     $pr=new pratica($idpratica);
-    $arrFiltri=Array();
+    //$arrFiltri=Array();
     if ($cdu) $arrFiltri["form"]="form='$form'";
     $arrFiltri["utente"]="(coalesce(proprietario,'pubblico')='pubblico' or proprietario='$usr')";
     //$arrFiltri["tipopratica"]="(coalesce(tipo_pratica,'0')='0' or '".floor((double)$pr->info['tipo']/100)."'=ANY(string_to_array(coalesce(tipo_pratica,''),',')) or '".$pr->info['tipo']."'=ANY(string_to_array(coalesce(tipo_pratica,''),',')))";
@@ -111,8 +113,8 @@ function formatLink(value,rowData,rowIndex){
     $filtro=implode(" AND ",$arrFiltri);
     $sql="select coalesce(B.id::varchar,'')||'#'||coalesce(A.id::varchar,'') as codice,A.id,coalesce(B.id::varchar,'tutti') as idtipo,A.nome as modello,coalesce(B.nome,'Tutti i tipi di pratica') as tipo_pratica,form from stp.e_modelli A left join pe.e_tipopratica B on (B.id::varchar =ANY(string_to_array(tipo_pratica,','))) WHERE $filtro order by tipo_pratica,modello;";
     $db=appUtils::getDb();
-    $res=$db->fetchAll($sql);
-    //print_array($res);
+    $res=$db->fetchAll($sql);    
+//print_array($res);
     $modelli=  json_encode(appUtils::groupData("modelli",$res));
    // print_array($modelli);
     echo <<<EOT
