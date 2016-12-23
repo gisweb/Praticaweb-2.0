@@ -4,8 +4,14 @@ $azione=  strtolower($_REQUEST["azione"]);
 $modo=($_REQUEST["mode"])?($_REQUEST["mode"]):('view');
 if (in_array($azione, Array("salva"))){
     if(!$_POST["nome"]){
-        $_POST["nome"]=$_FILES['file']["name"];
-        $_REQUEST["nome"]=$_FILES['file']["name"];
+        if (!$_FILES['file']["name"]){
+		$_POST["nome"]=$_POST["nome_old"];
+		$_REQUEST["nome"]=$_POST["nome_old"];
+        }
+	else{
+		$_POST["nome"]=$_FILES['file']["name"];
+        	$_REQUEST["nome"]=$_FILES['file']["name"];
+	}
     }
  
     require_once 'db.savedata.php';

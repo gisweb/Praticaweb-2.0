@@ -83,6 +83,7 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
         <input name="active_form" type="hidden" value="stp.modelli.php">				
         <input name="mode" type="hidden" value="<?=$modo?>">
         <input name="id" type="hidden" value="<?=$id?>">
+	<input name="nome_old" type="hidden" value="<?php echo $tabella->array_dati[0]['nome'];?>">
     </FORM>
 <?php
 }
