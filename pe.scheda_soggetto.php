@@ -99,7 +99,7 @@ switch ($modo) {
 		for($i=0;$i<5;$i++){
 		//crea la stringa sql per i campi passati
 		if ($valori[$i])
-			$sql.="$campi[$i] ilike '".$valori[$i]."%' and ";
+			$sql.="$campi[$i] ilike '%".$valori[$i]."%' and ";
 		}
 		//se almeno un campo è stato compilato faccio la ricerca altrimenti passo al form di inserimento vuoto
 		if (strlen($sql)>5){
