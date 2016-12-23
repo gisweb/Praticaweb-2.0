@@ -1042,7 +1042,23 @@ id,schema,coalesce(soggetti.codfis,'') as codfis ,tipo,
 ((((COALESCE(soggetti.cognome, ''::character varying)::text || COALESCE(' '::text || soggetti.nome::text, ''::text)) ||coalesce(' C.F. '||codfis,'')|| COALESCE(' '::text || soggetti.titolo::text, ''::text)) || COALESCE(' '::text || soggetti.ragsoc::text, ''::text)) || coalesce(' P.I. '||piva,'') || COALESCE(' '::text || soggetti.indirizzo::text, ''::text)) || COALESCE((' ('::text || soggetti.prov::text) || ')'::text, ''::text)||' - Direttore Lavori' AS soggetto
 ,last_upd
  FROM vigi.ricerca_soggetti as soggetti where $sql and tipo='direttore' order by soggetto asc,last_upd desc)
-
+UNION ALL
+ (select 
+id,schema,coalesce(soggetti.codfis,'') as codfis ,tipo,
+ coalesce(soggetti.ragsoc,'') as ragsoc,coalesce(datanato::varchar,'') as datanato,
+ coalesce(soggetti.piva,'') as piva,cognome,nome,coalesce(comunato,'') as comunato,
+((((COALESCE(soggetti.cognome, ''::character varying)::text || COALESCE(' '::text || soggetti.nome::text, ''::text)) ||coalesce(' C.F. '||codfis,'')|| COALESCE(' '::text || soggetti.titolo::text, ''::text)) || COALESCE(' '::text || soggetti.ragsoc::text, ''::text)) || coalesce(' P.I. '||piva,'') || COALESCE(' '::text || soggetti.indirizzo::text, ''::text)) || COALESCE((' ('::text || soggetti.prov::text) || ')'::text, ''::text)||' - Esecutore Lavori' AS soggetto
+,last_upd
+ FROM pe.ricerca_soggetti as soggetti where $sql and tipo='esecutore' order by soggetto asc,last_upd desc)
+UNION ALL
+(
+select 
+id,schema,coalesce(soggetti.codfis,'') as codfis ,tipo,
+ coalesce(soggetti.ragsoc,'') as ragsoc,coalesce(datanato::varchar,'') as datanato,
+ coalesce(soggetti.piva,'') as piva,cognome,nome,coalesce(comunato,'') as comunato,
+((((COALESCE(soggetti.cognome, ''::character varying)::text || COALESCE(' '::text || soggetti.nome::text, ''::text)) ||coalesce(' C.F. '||codfis,'')|| COALESCE(' '::text || soggetti.titolo::text, ''::text)) || COALESCE(' '::text || soggetti.ragsoc::text, ''::text)) || coalesce(' P.I. '||piva,'') || COALESCE(' '::text || soggetti.indirizzo::text, ''::text)) || COALESCE((' ('::text || soggetti.prov::text) || ')'::text, ''::text)||' - Esecutore Lavori' AS soggetto
+,last_upd
+ FROM vigi.ricerca_soggetti as soggetti where $sql and tipo='esecutore' order by soggetto asc,last_upd desc)
 ";
 		//echo "<p>$sql</p>";
 	if (!isset($this->db)) $this->connettidb();
