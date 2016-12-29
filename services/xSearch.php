@@ -117,7 +117,7 @@ switch($action){
                 break;
         }
         foreach($data as $key=>$value){
-            $q[]="(SELECT DISTINCT pratica FROM $key WHERE ".implode(" $op ",$value).")";
+            $q[]="(SELECT DISTINCT pratica FROM $key WHERE ".implode(" $op ",str_replace($value,"'","''")).")";
         }
         $listId=Array();
         $filter=implode(" $queryOP ",$q);
