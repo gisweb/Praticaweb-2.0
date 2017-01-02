@@ -324,7 +324,7 @@ function selectOneriIntervento(){
                     filter=name+" = '"+val+"'::date";
                 }
                 else if (t=='text'){
-                    filter=name+"::varchar ilike '"+ val.replace("'","\'") +"'";
+                    filter=name+"::varchar ilike '"+ val.replace(/'/gi,"''") +"'";
                     
                 }
                 else{
@@ -352,13 +352,13 @@ function selectOneriIntervento(){
                 }
             }
             else if(opValue == 'contains'){
-                filter=name+" ilike '%"+$('#1_'+id).val().replace("'","\'")+"%'";
+                filter=name+" ilike '%"+$('#1_'+id).val().replace(/'/gi,"''")+"%'";
             }
             else if(opValue == 'startswith'){
-                 filter=name+" ilike '"+$('#1_'+id).val().replace("'","\'")+"%'";
+                 filter=name+" ilike '"+$('#1_'+id).val().replace(/'/gi,"''")+"%'";
             }
             else if(opValue == 'endswith'){
-                 filter=name+" ilike '%"+$('#1_'+id).val().replace("'","\'")+"'";
+                 filter=name+" ilike '%"+$('#1_'+id).val().replace(/'/gi,"''")+"'";
             }
             else if(opValue == 'in'){
                 var res = [];
