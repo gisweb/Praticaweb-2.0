@@ -28,6 +28,7 @@ var colsDef={
         {title:'Tipo Pratica',field:'tipo_pratica',sortable:true,width:200,styler: function(value,row,index){return 'font-size:11px;';}},
         {title:'Numero',field:'numero',sortable:true,width:70,styler: function(value,row,index){return 'font-size:11px;';}},
         {title:'Data Pres.',sortable:true,field:'data_presentazione',width:100,styler: function(value,row,index){return 'font-size:11px;';}},
+        {title:'Prot.',sortable:true,field:'protocollo',width:100,styler: function(value,row,index){return 'font-size:11px;';}},
         {title:'Data Prot.',sortable:true,field:'data_prot',width:100,styler: function(value,row,index){return 'font-size:11px;';}},
         //{title:'Intervento',sortable:true,field:'tipo_intervento',width:150,formatter: function(value,row,index){if (value) return value; else return 'Da Definire';},styler: function(value,row,index){return 'font-size:11px;';}},
         {title:'Oggetto',sortable:true,field:'oggetto',width:150,styler: function(value,row,index){return 'font-size:11px;';}},
