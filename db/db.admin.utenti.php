@@ -9,6 +9,7 @@ $nominativo = (isset($_POST['nominativo']))?(stripslashes($_POST['nominativo']))
 $app = (isset($_POST['app']))?(stripslashes($_POST['app'])):(null);
 $username = (isset($_POST['username']))?(stripslashes($_POST['username'])):(null);
 $tel=(isset($_POST["num_tel"]))?($_POST["num_tel"]):(null);
+$mail = (isset($_POST["mail"]))?($_POST["mail"]):(null);
 $info=(isset($_POST['info']))?(addslashes($_POST['info'])):(null);
 $enc_pwd=md5($pwd);
 $gc=($_REQUEST['gisclient'])?('1'):('0');
@@ -42,7 +43,7 @@ elseif($azione=="Salva"){
 			}
 		}
 		else{
-			$sql="INSERT INTO admin.users(app,cognome,nominativo,username,pwd,enc_pwd,permessi,attivato,num_tel,info,gruppi,data_creazione,gisclient) VALUES('$app','$cognome','$nominativo','$username','$pwd','$enc_pwd',$livello_utente,$attivato,'$tel','$info','$gruppi',now(),$gc);";
+			$sql="INSERT INTO admin.users(app,cognome,nominativo,username,pwd,enc_pwd,permessi,attivato,num_tel,mail,info,gruppi,data_creazione,gisclient) VALUES('$app','$cognome','$nominativo','$username','$pwd','$enc_pwd',$livello_utente,$attivato,'$tel','$mail','$info','$gruppi',now(),$gc);";
             
 			if (!$errors){ 
 				$db->sql_query($sql);
@@ -52,7 +53,7 @@ elseif($azione=="Salva"){
 		}
 	}
 	else{
-		$sql="UPDATE admin.users SET app='$app',nominativo='$nominativo',cognome='$cognome',username='$username',pwd='$pwd',enc_pwd='$enc_pwd',gruppi='$gruppi',permessi='$livello_utente',attivato='$attivato',num_tel='$tel',info='$info',data_modifica=now(),gisclient=$gc WHERE userid=$id";
+		$sql="UPDATE admin.users SET app='$app',nominativo='$nominativo',cognome='$cognome',username='$username',pwd='$pwd',enc_pwd='$enc_pwd',gruppi='$gruppi',permessi='$livello_utente',attivato='$attivato',num_tel='$tel',info='$info',data_modifica=now(),mail='$mail',gisclient=$gc WHERE userid=$id";
 		if (!$errors) $db->sql_query($sql);	
 	}
 	if (!$errors) $modo="view";

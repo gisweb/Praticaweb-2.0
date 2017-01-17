@@ -324,7 +324,7 @@ function selectOneriIntervento(){
                     filter=name+" = '"+val+"'::date";
                 }
                 else if (t=='text'){
-                    filter=name+"::varchar ilike '"+ val.replace(/'/gi,"''") +"'";
+                    filter=name+"::varchar ilike '"+ val +"'";
                     
                 }
                 else{
