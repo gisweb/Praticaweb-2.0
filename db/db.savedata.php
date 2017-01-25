@@ -333,7 +333,7 @@ function valida_campi($arr){
 		if(!$sth->execute()){
 			$arr = $sth->errorInfo();
 			if($arr[0]=="23505"){
-                $Errors["protocollo"]=$arr[2];
+                $Errors["protocollo"]=addslashes($arr[2]);
                 include $active_form;
                 exit;
 			}
