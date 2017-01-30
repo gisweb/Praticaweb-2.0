@@ -42,5 +42,5 @@
 
 		$active_form="pe.elenco_soggetti.php?pratica=$idpratica";
 	}
-
+	$active_form="pe.elenco_soggetti.php?pratica=$idpratica";
 ?>
