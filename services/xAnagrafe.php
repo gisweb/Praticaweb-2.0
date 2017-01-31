@@ -156,7 +156,7 @@ switch($mode){
                     else {
                         utils::debug(DEBUG_DIR."anagrafe.debug",$sql);
                         $discarded=1;
-                        $message[]="Errore nell'esecuzione della query \"".$arr_sql[$v["nome"]]."\"";
+                        $message[]="Errore 1 nell'esecuzione della query \"".$arr_sql[$v["nome"]]."\"";
                     }
                     /*$str=sprintf("%d) Query \"%s\" : %d ms",$i,$sql,(getmicrotime()-$t2)*1000);
                     utils::debug(DEBUG_DIR."time-".(string)$offset.".debug",$str);*/
@@ -167,7 +167,7 @@ switch($mode){
                 else {
                     utils::debug(DEBUG_DIR."anagrafe.debug",$sql);
                     $discarded=1;
-                    $message[]="Errore nell'esecuzione della query \"$sql\"";
+                    $message[]="Errore 2 nell'esecuzione della query \"$sql\"";
                     //header('Content-Type: application/json; charset=utf-8');
                     //print json_encode($result);
                 } 
