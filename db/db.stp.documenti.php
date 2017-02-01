@@ -29,7 +29,8 @@ if (in_array($azione, Array("salva","elimina"))){
         
         if (!@move_uploaded_file($_FILES['file']['tmp_name'], $pr->documenti. $fName)) { 
           print("***ERROR: Non è possibile copiare il file.<br />\n". $pr->documenti. $fName); 
-	}
+	    }
+    }
 	elseif ($_REQUEST["file_doc"] && $_REQUEST["old_name"]){
             $newName=$pr->documenti.$_REQUEST['file_doc'];
             $oldName=$pr->documenti.$_REQUEST['old_name'];
@@ -46,7 +47,7 @@ EOT;
 
 
     }
-        }
+
      $modo='list';
 }
 elseif($azione=="annulla"){
