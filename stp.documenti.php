@@ -77,7 +77,7 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
         <input name="active_form" type="hidden" value="stp.documenti.php">				
         <input name="mode" type="hidden" value="<?=$modo?>">
         <input name="id" type="hidden" value="<?=$id?>">
-        <input name="old_nome" type="hidden" value="<?php echo $tabella->array_dati[0]["file_doc"];?>">
+        <input name="old_name" type="hidden" value="<?php echo $tabella->array_dati[0]["file_doc"];?>">
     </FORM>
 <?php
 }
