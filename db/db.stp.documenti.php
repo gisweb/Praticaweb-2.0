@@ -5,7 +5,6 @@ $modo=($_REQUEST["mode"])?($_REQUEST["mode"]):('view');
 $pr=new pratica($idpratica,$app);
 
 if (in_array($azione, Array("salva","elimina"))){
-    
     $modo=($azione=='elimina')?("list"):("view");
     $id=($_SESSION["ADD_NEW"])?($_SESSION["ADD_NEW"]):($_REQUEST["id"]);
     if ($azione=='elimina'){
@@ -30,8 +29,24 @@ if (in_array($azione, Array("salva","elimina"))){
         
         if (!@move_uploaded_file($_FILES['file']['tmp_name'], $pr->documenti. $fName)) { 
           print("***ERROR: Non è possibile copiare il file.<br />\n". $pr->documenti. $fName); 
-	} 
+	}
+	elseif ($_REQUEST["file_doc"] && $_REQUEST["old_name"]){
+            $newName=$pr->documenti.$_REQUEST['file_doc'];
+            $oldName=$pr->documenti.$_REQUEST['old_name'];
+            if (rename($oldName,$newName)){
+                require_once 'db.savedata.php';
+            }
+            else{
+                $message=<<<EOT
+<p style="color:red;font-weight: bold;">ERRORE: Non è possibile rinominare il file %s in %s</p>
+EOT;
+                $message=sprintf($message,$oldName,$fName);
+                print $message;
+            }
+
+
     }
+        }
      $modo='list';
 }
 elseif($azione=="annulla"){

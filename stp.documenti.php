@@ -44,7 +44,7 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
     }
     elseif ($modo=="edit"){	
         $tabella->set_dati("id=$id");
-        $intestazione="Documento ".$tabella->array_dati[0]["nome"];
+        $intestazione="Documento ".$tabella->array_dati[0]["file_doc"];
         
     }
     else{
@@ -68,15 +68,16 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
 
 		</TABLE>
         <input type="hidden" name="pratica" value="<?php echo $idpratica;?>">
-                <input type="hidden" name="agi" value="<?php echo $is_agi;?>"/>
-                <input type="hidden" name="cdu" value="<?php echo $is_cdu;?>"/>
-                <input type="hidden" name="ce" value="<?php echo $is_ce;?>"/>
-                <input type="hidden" name="storage" value="<?php echo $is_storage;?>"/>
-                <input type="hidden" name="vigi" value="<?php echo $is_vigi;?>"/>
+        <input type="hidden" name="agi" value="<?php echo $is_agi;?>"/>
+        <input type="hidden" name="cdu" value="<?php echo $is_cdu;?>"/>
+        <input type="hidden" name="ce" value="<?php echo $is_ce;?>"/>
+        <input type="hidden" name="storage" value="<?php echo $is_storage;?>"/>
+        <input type="hidden" name="vigi" value="<?php echo $is_vigi;?>"/>
 		<input type="hidden" name="comm" value="<?php echo $is_ce;?>"/>
         <input name="active_form" type="hidden" value="stp.documenti.php">				
         <input name="mode" type="hidden" value="<?=$modo?>">
         <input name="id" type="hidden" value="<?=$id?>">
+        <input name="old_nome" type="hidden" value="<?php echo $tabella->array_dati[0]["file_doc"];?>">
     </FORM>
 <?php
 }
