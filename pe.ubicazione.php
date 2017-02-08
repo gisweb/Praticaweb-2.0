@@ -34,7 +34,7 @@ if (($modo=="edit") or ($modo=="new")){
     $id=$_REQUEST["id"];
     
     //$tab_edit=$_POST["tab_edit"].".tab";
-    $titolo=($_REQUEST["tab"]=='indirizzi')?("Indirizzi"):(($tab=='catasto_terreni')?('Catasto Terreni'):('Catasto Urbano'));	
+    $titolo=($_REQUEST["tab"]=='indirizzi')?("Indirizzi"):(($_REQUEST["tab"]=='catasto_terreni')?('Catasto Terreni'):('Catasto Urbano'));
 	$tab=$tabpath."/".$_REQUEST["tab"].".tab";
     include "./inc/inc.page_header.php";
     $tabellav=new tabella_v($tab,$modo);
@@ -52,7 +52,7 @@ if (($modo=="edit") or ($modo=="new")){
 		  <tr> 
 			<td> 
 				<!-- contenuto-->
-                                <form method=post id="ubicazione" action="praticaweb.php">
+             <form method=post id="ubicazione" action="praticaweb.php">
 				<input type="hidden" name="id" id="id" value="<?php echo $id;?>">
 				<input type="hidden" name="mode" value="<?php echo $modo;?>">
 				<input name="active_form" type="hidden" value="pe.ubicazione.php">
