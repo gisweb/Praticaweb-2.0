@@ -420,7 +420,17 @@ class generalAppUtils {
     }
     
     static function chooseRespVerifiche($tipo){
-        return 'NULL';
+        $sql = "SELECT resp_proc FROM pe.e_verifiche WHERE id=?";
+        $conn=utils::getDb();
+        $stmt=$conn->prepare($sql);
+        if(!$stmt->execute(Array($tipo))){
+            return -1;
+        }
+        else{
+            $res=$stmt->fetchColumn();
+            return $res;
+        }
+
     }
     
     static function getAnnoOneri($id,$data){
