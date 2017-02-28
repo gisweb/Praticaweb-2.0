@@ -5,7 +5,7 @@ $(document).ready(function(){
         title:'Finestra di caricamento dei dati',
         width:600,
         height:200
-    })
+    });
     var progressbar = $( "#progressbar" ),
         progressLabel = $( ".progress-label" );
     $( "#progressbar" ).progressbar({
