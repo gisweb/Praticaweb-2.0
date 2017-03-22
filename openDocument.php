@@ -25,6 +25,7 @@ else{
     $fName=$db->fetchColumn($sql, array($id));
     $url=SMB_MODELLI.$fName;
 }
+$fName = sprintf("%d-%s",rand(10000,99999),$fName);
 //echo $url;exit;
 header("Content-type: $fType");
 header('Content-Disposition: inline; filename="'.$fName.'"');
