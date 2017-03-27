@@ -95,11 +95,16 @@ else {
                 <?php
                 $tabella->set_titolo("Posizione in mappa","modifica",array("tabella"=>"posizione","id"=>""));
                 $tabella->get_titolo();
+                echo <<<EOT
+                <div id="map"></div>
+                <div id="coords"></div>
+EOT;
+
+
                 $tabella->tabella();
 
                 ?>
-                <div id="map"></div>
-                <div id="coords"></div>
+
             </TD>
         </TR>
     </TABLE>
