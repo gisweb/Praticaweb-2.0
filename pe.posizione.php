@@ -5,7 +5,7 @@ include "./lib/tabella_v.class.php";
 $tabpath="pe";
 $idpratica=$_REQUEST["pratica"];
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
-$filetab="$tabpath/posizione";
+$file_config="$tabpath/posizione";
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
 ?>
@@ -43,11 +43,11 @@ appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]
 <?php
 
 
-$form="posizione";
+$tabella=new Tabella_v($file_config,$modo);
 if (($modo=="edit") or ($modo=="new")) {
     include "./inc/inc.page_header.php";
     unset($_SESSION["ADD_NEW"]);
-
+    $id=$_POST["id"];
 
     //aggiungendo un nuovo parere uso pareri_edit che contiene anche l'elenco degli ENTI
     ?>
@@ -55,13 +55,22 @@ if (($modo=="edit") or ($modo=="new")) {
     <FORM height=0 method="post" action="praticaweb.php">
         <TABLE cellPadding=0 cellspacing=0 border=0 class="stiletabella" width="99%" align="center">
             <TR> <!-- intestazione-->
-                <TD><H2 class="blueBanner"><?= $titolo ?></H2></TD>
+                <TD><H2 class="blueBanner">Posizione in mappa</H2></TD>
             </TR>
             <TR>
                 <td>
+                    <div id="map"></div>
+                    <div id="coords"></div>
                     <!-- contenuto-->
                     <?php
-
+                    if($Errors){
+                        $tabella->set_errors($Errors);
+                        $tabella->set_dati($_POST);
+                    }
+                    elseif ($modo=="edit"){
+                        $tabella->set_dati("id=$id");
+                    }
+                    $tabella->edita();
                     ?>
                     <!-- fine contenuto-->
                 </TD>
@@ -84,19 +93,14 @@ else {
             <TD>
                 <div id="map"></div>
                 <div id="coords"></div>
-                <form>
-                    <p>
-                        <label for="coordx">Coordinata X</label>
-                        <input type="text" name="coordx" id="coordx"/>
-                        <label for="coordy">Coordinata Y</label>
-                        <input type="text" name="coordy" id="coordy"/>
-                    </p>
-                    <p>
-                        <label for="note_geometry">Annotazioni</label>
-                        <textarea name="note_geometry" id="note_geometry" rows="4" cols="50"></textarea>
-                    </p>
-                    <input type="text" name="geometry" id="geometry" value="9.151762 44.350338"/>
-                </form>
+                <?php
+                $tabella=new Tabella_v("$tabpath/lavori");
+                $tabella->set_titolo("Posizione in mappa","modifica",array("tabella"=>"posizione","id"=>""));
+                $tabella->get_titolo();
+                $tabella->tabella();
+
+                ?>
+
             </TD>
         </TR>
     </TABLE>
