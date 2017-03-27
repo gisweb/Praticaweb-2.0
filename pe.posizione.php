@@ -94,7 +94,7 @@ else {
                 <div id="map"></div>
                 <div id="coords"></div>
                 <?php
-                $tabella=new Tabella_v("$tabpath/lavori");
+                $tabella=new Tabella_v("$tabpath/$file_config");
                 $tabella->set_titolo("Posizione in mappa","modifica",array("tabella"=>"posizione","id"=>""));
                 $tabella->get_titolo();
                 $tabella->tabella();
