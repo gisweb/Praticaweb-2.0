@@ -4,6 +4,7 @@ include_once("login.php");
 include "./lib/tabella_v.class.php";
 $tabpath="pe";
 $idpratica=$_REQUEST["pratica"];
+
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $file_config="$tabpath/posizione";
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
@@ -42,13 +43,14 @@ appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]
 <body  background="">
 <?php
 
+$id=$_REQUEST["id"];
 
-$tabella=new Tabella_v($file_config,$modo);
 if (($modo=="edit") or ($modo=="new")) {
     include "./inc/inc.page_header.php";
     unset($_SESSION["ADD_NEW"]);
-    $id=$_POST["id"];
 
+    if(!$id) $modo ="new";
+    $tabella=new Tabella_v($file_config,$modo);
     //aggiungendo un nuovo parere uso pareri_edit che contiene anche l'elenco degli ENTI
     ?>
     <!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN EDITING  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
@@ -93,6 +95,7 @@ else {
             <TD>
 
                 <?php
+                $tabella=new Tabella_v($file_config,$modo);
                 $tabella->set_titolo("Posizione in mappa","modifica",array("tabella"=>"posizione","id"=>""));
                 $tabella->get_titolo();
                 echo <<<EOT
