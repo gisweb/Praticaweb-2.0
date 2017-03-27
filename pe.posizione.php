@@ -93,7 +93,6 @@ else {
             <TD>
 
                 <?php
-                $tabella=new Tabella_v("$tabpath/$file_config");
                 $tabella->set_titolo("Posizione in mappa","modifica",array("tabella"=>"posizione","id"=>""));
                 $tabella->get_titolo();
                 $tabella->tabella();
