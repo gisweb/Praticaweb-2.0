@@ -91,8 +91,7 @@ else {
     <TABLE cellPadding=0 cellspacing=0 border=0 class="stiletabella" width="100%">
         <TR>
             <TD>
-                <div id="map"></div>
-                <div id="coords"></div>
+
                 <?php
                 $tabella=new Tabella_v("$tabpath/$file_config");
                 $tabella->set_titolo("Posizione in mappa","modifica",array("tabella"=>"posizione","id"=>""));
@@ -100,7 +99,8 @@ else {
                 $tabella->tabella();
 
                 ?>
-
+                <div id="map"></div>
+                <div id="coords"></div>
             </TD>
         </TR>
     </TABLE>
