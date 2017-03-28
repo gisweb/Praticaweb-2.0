@@ -70,7 +70,7 @@ if (($modo=="edit") or ($modo=="new")) {
                         $tabella->set_dati($_POST);
                     }
                     elseif ($modo=="edit"){
-                        $tabella->set_dati("id=$id");
+                        $tabella->set_dati("pratica=$idpratica");
                     }
                     $tabella->edita();
                     ?>
@@ -96,11 +96,28 @@ else {
 
                 <?php
                 $tabella=new Tabella_v($file_config,$modo);
-                $tabella->set_titolo("Posizione in mappa","modifica",array("tabella"=>"posizione","id"=>""));
+                $tabella->set_dati("pratica=$idpratica");
+                if($tabella->num_record){
+                    $btn="modifica";
+                    $geom = $tabella->array_dati[0]["geometry"];
+                    $x = $tabella->array_dati[0]["coordx"];
+                    $y = $tabella->array_dati[0]["coordy"];
+                }
+                else{
+                    $geom = "";
+                    $x = "";
+                    $y = "";
+                    $btn="nuovo";
+                }
+                $tabella->set_titolo("Posizione in mappa",$btn,array("tabella"=>"posizione","id"=>""));
+
                 $tabella->get_titolo();
-                echo <<<EOT
+	        echo <<<EOT
                 <div id="map"></div>
                 <div id="coords"></div>
+                <input type="hidden" name="geometry" id="geometry" value="$geom">
+                <input type="hidden" name="coordx" id="coordx" value="$x">
+                <input type="hidden" name="coordy" id="coordy" value="$y">
 EOT;
 
 
