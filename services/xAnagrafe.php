@@ -135,6 +135,8 @@ switch($mode){
         for($i=0;$i<count($res);$i++){		//CICLO SU TUUTE LE PRATICHE TROVATE
            $discarded=0;
            list($pratica,$num_pr,$data_pres,$tipo)=array_values($res[$i]);
+            utils::debug(DEBUG_DIR."DATI-ANAGRAFE.debug",$res[$i]);
+
            /*Per ogni tipo di record*/
             foreach($rec as $v){    
                 $t1=  getmicrotime();
