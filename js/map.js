@@ -66,8 +66,8 @@
 
         function initMap() {
             var map = new google.maps.Map(document.getElementById('map'), {
-                center: {lat: 44.35, lng: 9.18},
-                zoom: 12,
+                center: {lat: 44.332, lng: 9.18},
+                zoom: 13,
                 minZomm: 8
             });
             google.maps.event.addListener(map, 'mousemove', onMouseMove);
@@ -107,6 +107,8 @@
                     mapMarker = new google.maps.Marker(mapMarkerOptions);
                     mapMarker.setPosition(position);
                     mapMarker.setMap(map);
+                    map.setCenter(position);
+                    map.setZoom(18);
                 }
                 google.maps.event.addListener(mapMarker, 'dragend', function() {
                     writePosition(mapMarker);
