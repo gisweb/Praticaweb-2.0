@@ -112,7 +112,7 @@ include "./inc/inc.window.php"; // contiene la gestione della finestra popup
 				
 				
 				$tabellav=new tabella_v("$tabpath/stampa.tab");
-				$tabellav->set_dati("id>0");
+				$tabellav->set_dati("true");
 				//print($tabellav->elenco_stampe("ce.commissione"));
 				}
 			
