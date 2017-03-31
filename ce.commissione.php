@@ -101,7 +101,7 @@ include "./inc/inc.window.php"; // contiene la gestione della finestra popup
 		
 			<!-- contenuto-->
 				<?php
-                                $tabella->set_titolo("Dati della commissione","modifica",Array("tipo"=>$tipo));
+                $tabella->set_titolo("Dati della commissione","modifica",Array("tipo"=>$tipo));
 				$tabella->set_dati("pratica=$idcomm"); 
 				$tabellah->set_titolo("Soggetti partecipanti");
 				$tabellah->set_dati("commissione=$idcomm order by id_ruolo");
@@ -110,9 +110,7 @@ include "./inc/inc.window.php"; // contiene la gestione della finestra popup
 				$tabellah->get_titolo();
 				$tabellah->elenco();
 				
-				
-				$tabellav=new tabella_v("$tabpath/stampa.tab");
-				$tabellav->set_dati("true");
+
 				//print($tabellav->elenco_stampe("ce.commissione"));
 				}
 			
