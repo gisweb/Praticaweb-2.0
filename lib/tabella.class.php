@@ -275,7 +275,9 @@ EOT;
 	}
 	// >>>>>>>>>>>>>>>>>>>>>>>>>ATTENZIONE OGNI TABELLA DEVE AVERE I CAMPI ID PRATICA E CHK<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	function set_dati($data=0,$mode=null){
-		//se passo un array questo Ã¨ l'array di POST altrimenti Ã¨ il filtro - per default filtra su idpratica se settato
+        $time_start = microtime(true);
+
+        //se passo un array questo Ã¨ l'array di POST altrimenti Ã¨ il filtro - per default filtra su idpratica se settato
 		if (is_array($data)){		
 			$this->array_dati=array(0=>$data);
 			$this->num_record=1;
@@ -303,11 +305,13 @@ EOT;
 			}
 			else{
 				$this->num_record=0;
-				if ($_SESSION["USER_ID"]==1){
-					echo "<p>$sql</p>";
-				}
 			}
-			$this->curr_record=0;	
+            $time_end = microtime(true);
+            $time = $time_end - $time_start;
+            if ($_SESSION["USER_ID"]==1){
+                echo "<p>Execution of query :$sql in  $time seconds</p>";
+            }
+            $this->curr_record=0;
 			return  $this->num_record;	
 		}
 	}
