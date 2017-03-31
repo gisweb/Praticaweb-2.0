@@ -20,7 +20,11 @@ foreach($res as $val){
 }
 $file_config="$tabpath/avvio_procedimento";
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
-
+$time_end = microtime(true);
+$time = $time_end - $time_start;
+if ($_SESSION["USER_ID"]==1){
+    echo "<p>Print Page  in  $time seconds</p>";
+}
 ?>
 <html>
 <head>
@@ -135,11 +139,7 @@ appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]
                 <input name="mode" type="hidden" id="mode" value="<?=$modo?>">
 <?php
 }
-$time_end = microtime(true);
-$time = $time_end - $time_start;
-if ($_SESSION["USER_ID"]==1){
-    echo "<p>Print Page  in  $time seconds</p>";
-}
+
 ?>
 </body>
 </html>
