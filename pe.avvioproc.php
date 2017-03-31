@@ -1,6 +1,8 @@
 <?php
 //Nota conservo il tipo per poter verificere se Ãš cambiato
 include_once("login.php");
+$time_start = microtime(true);
+
 $tabpath="pe";
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $idpratica=isset($_REQUEST["pratica"])?($_REQUEST["pratica"]):('');
@@ -132,6 +134,11 @@ appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]
 		</TABLE>
                 <input name="mode" type="hidden" id="mode" value="<?=$modo?>">
 <?php
+}
+$time_end = microtime(true);
+$time = $time_end - $time_start;
+if ($_SESSION["USER_ID"]==1){
+    echo "<p>Print Page  in  $time seconds</p>";
 }
 ?>
 </body>

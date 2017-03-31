@@ -146,14 +146,14 @@ class utils {
     }
     static function debug($file,$data,$mode='a+'){
         $now=self::now();
-        /*$f=fopen($file,$mode);
+        $f=fopen($file,$mode);
         ob_start();
             echo "------- DEBUG DEL $now -------\n";
         print_r($data);
         $result=ob_get_contents();
         ob_end_clean();
         fwrite($f,$result."\n-------------------------\n");
-        fclose($f);*/
+        fclose($f);
     }
     static function postRequest($url,$fields){
 
