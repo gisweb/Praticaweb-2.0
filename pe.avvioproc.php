@@ -1,7 +1,6 @@
 <?php
 //Nota conservo il tipo per poter verificere se Ãš cambiato
 include_once("login.php");
-$time_start = microtime(true);
 
 $tabpath="pe";
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
@@ -40,6 +39,7 @@ $time = $time_end - $time_start;
 /*if ($_SESSION["USER_ID"]==1){
     echo "<p>Print Page  in  $time seconds</p>";
 }*/
+
 ?>
 
     
