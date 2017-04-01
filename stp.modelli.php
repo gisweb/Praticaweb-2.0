@@ -127,17 +127,15 @@ elseif($modo=="view"){
             $("#message").html("").hide();
             $('#n-pratica').val('');
             var num = $('#numero').val();
-            var d = {};
-            $("div#divPreview :input").each(function(){
-                d[this.id]=$(this).val();
-            });
-            console.log(d);
+            var d = {"mode":"preview"};
+            $("div#divPreview :input").each(function(){d[this.id]=$(this).val();});
+
             $.ajax({
                 url:'./services/xSuggest.php',
                 dataType:'JSON',
                 type:'POST',
                 async:false,
-                data:{field:'numero-pratica','term':num},
+                data:d,
                 success:function (data,textStatus,jqXHR) {
                     if (data.length==0 || !data[0]['id']){
                         var message=sprintf("<b>La pratica n° %s non esiste<b/>",num);
