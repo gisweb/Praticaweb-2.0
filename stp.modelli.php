@@ -100,7 +100,10 @@ elseif($modo=="view"){
         $pr=new pratica($idpratica);
         $tabella=new tabella_v($file_config,"view");
         $nrec=$tabella->set_dati("id=$id");
-        $tabella->set_titolo("Modello ".$tabella->array_dati[0]["nome"],"modifica",Array("id"=>""));
+        list($schema,$form)=explode(".",$tabella->array_dati[0]["form"]);
+        $app = (in_array($schema,Array("pe","cdu","ce","vigi")))?($schema):("pe");
+        $modello=$tabella->array_dati[0]["nome"];
+        $tabella->set_titolo("Modello ".$modello,"modifica",Array("id"=>""));
         $tabella->get_titolo();
         $tabella->tabella();
 ?>
@@ -109,21 +112,11 @@ elseif($modo=="view"){
          </TD>
       </TR>
     </TABLE>
-	
 
-    <div id="divPreview" style="display:none;">
-        <fieldset>
-            <legend>Numero Pratica</legend>
-            <input type="text" id="numero" style="width:200px;" value=""/>
-            <input type="hidden" id="n-pratica" value="">
-            <input type="hidden" id="modello" value="<?php echo $id;?>">
-        </fieldset>
-        <hr>
-        <div id="message" style="display:none;margin: 10px;"></div>
-        <div id="btn-preview"></div>
-                
-        
-    </div>
+<?php
+    include_once "inc/$app.preview.php";
+?>
+
 	
     <script>	
         $('#btn-preview').button({
@@ -203,8 +196,8 @@ else{
                   <td> 
                   <!--  intestazione-->
                       <?php
-			$tabella_modelli->get_titolo();
-                          if ($num_modelli) 
+                          $tabella_modelli->get_titolo();
+                          if ($num_modelli)
                               $tabella_modelli->elenco();
                           else
                               print ("<p><b>Nessun Modello per questo Form</b></p>");
