@@ -138,7 +138,7 @@ elseif($modo=="view"){
                 data:d,
                 success:function (data,textStatus,jqXHR) {
                     if (data.length==0 || !data[0]['id']){
-                        var message=sprintf("<b>La pratica n° %s non esiste<b/>",num);
+                        var message=sprintf("<b>%s<b/>",data[0]["message"]);
                         
                         $("#message").html(message).show();
                         
