@@ -303,14 +303,14 @@ switch($field) {
         //$sql="SELECT numero as valore, B.nome||' n° '|| coalesce(numero,'') ||  coalesce(' del ' ||to_char(data_prot,'DD/MM/YYYY'),'') as label,B.nome as categoria,coalesce(data_prot,data_presentazione) as data_prot,pratica FROM pe.avvioproc A left join pe.e_tipopratica B on (A.tipo=B.id) WHERE numero ilike '$value%' order by 3,4;";
         $stmt = $dbh->prepare($sql);
         if($stmt->execute($data)){
-            $res = $stmt->fetchAll();
-            if (count($res)==0){
-                $res=Array("id"=>0,"message"=>$message);
+            $result = $stmt->fetchAll();
+            if (count($result)==0){
+                $result=Array("id"=>0,"message"=>$message);
             }
 
         }
         else{
-            $res=Array("id"=>0,"message"=>"Si è verificato un errore nella ricerca");
+            $result=Array("id"=>0,"message"=>"Si è verificato un errore nella ricerca");
         }
 
         $query=1;
