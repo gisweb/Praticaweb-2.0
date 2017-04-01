@@ -127,7 +127,7 @@ elseif($modo=="view"){
             $("#message").html("").hide();
             $('#n-pratica').val('');
             var num = $('#numero').val();
-            var d = {"mode":"preview"};
+            var d = {"field":"stp-preview"};
             $("div#divPreview :input").each(function(){d[this.id]=$(this).val();});
 
             $.ajax({
