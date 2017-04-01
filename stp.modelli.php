@@ -127,6 +127,11 @@ elseif($modo=="view"){
             $("#message").html("").hide();
             $('#n-pratica').val('');
             var num = $('#numero').val();
+            var d = {};
+            $("div#divPreview :input").each(function(){
+                d[this.id]=$(this).val();
+            });
+            console.log(d);
             $.ajax({
                 url:'./services/xSuggest.php',
                 dataType:'JSON',
