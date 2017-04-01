@@ -305,12 +305,12 @@ switch($field) {
         if($stmt->execute($data)){
             $result = $stmt->fetchAll();
             if (count($result)==0){
-                $result=Array("id"=>0,"message"=>$message);
+                $result=Array(Array("id"=>0,"message"=>$message));
             }
 
         }
         else{
-            $result=Array("id"=>0,"message"=>"Si è verificato un errore nella ricerca");
+            $result=Array(Array("id"=>0,"message"=>"Si è verificato un errore nella ricerca");
         }
 
         $query=1;
