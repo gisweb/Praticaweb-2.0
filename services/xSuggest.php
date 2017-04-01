@@ -310,7 +310,7 @@ switch($field) {
 
         }
         else{
-            $result=Array(Array("id"=>0,"message"=>"Si è verificato un errore nella ricerca");
+            $result=Array(Array("id"=>0,"message"=>"Si è verificato un errore nella ricerca"));
         }
 
         $query=1;
