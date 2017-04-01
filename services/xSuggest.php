@@ -278,6 +278,34 @@ switch($field) {
         }
 		$query=1;
         break;
+    case "stp-preview":
+        $dbh = utils::getDb();
+        $app = $_REQUEST["app"];
+        switch($app){
+            case "cdu":
+                $data=Array($_REQUEST["protocollo"],$_REQUEST["data_protocollo"]);
+                $sql="SELECT protocollo as value,format('CDU protocollo n. %s richesto da %s',protocollo,coalesce(richiedente,'')) as label,pratica as id FROM cdu.richiesta WHERE protocollo=? and data = ?;";
+                break;
+            case "vigi":
+                break;
+            case "ce":
+                break;
+            default:
+                $data = Array($_REQUEST["numero"]);
+                $sql="SELECT numero as value, B.nome||' n° '|| coalesce(numero,'') ||  coalesce(' del ' ||to_char(data_prot,'DD/MM/YYYY'),'') as label,pratica as id FROM pe.avvioproc A left join pe.e_tipopratica B on (A.tipo=B.id) WHERE numero ilike ? order by 3,4;";
+                break;
+        }
+        //$sql="SELECT numero as valore, B.nome||' n° '|| coalesce(numero,'') ||  coalesce(' del ' ||to_char(data_prot,'DD/MM/YYYY'),'') as label,B.nome as categoria,coalesce(data_prot,data_presentazione) as data_prot,pratica FROM pe.avvioproc A left join pe.e_tipopratica B on (A.tipo=B.id) WHERE numero ilike '$value%' order by 3,4;";
+        $stmt = $dbh->prepare($sql);
+        if($stmt->execute($data)){
+            $res = $stmt->fetchAll();
+        }
+        else{
+            $res = Array();
+        }
+
+        $query=1;
+        break;
 	case "infrazione":
 	case "esposto":    
         $sql="SELECT numero as valore, nome||' n° '|| coalesce(numero,'') ||  coalesce(' del ' ||to_char(data_prot,'DD/MM/YYYY'),'') as label,
