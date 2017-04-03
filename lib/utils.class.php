@@ -76,7 +76,7 @@ class utils {
                 $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsURL,$js);
                 if (file_exists($jsLocalPath.DIRECTORY_SEPARATOR.$js.".js"))
                     $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsLocalURL);
-                if (file_exists($jsPath.DIRECTORY_SEPARATOR.$js.".js"))
+                elseif (file_exists($jsPath.DIRECTORY_SEPARATOR.$js.".js"))
                     $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsURL);
                 else
                     $tag="";
@@ -90,7 +90,7 @@ class utils {
                 $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsURL,$js);
                 if (file_exists($jsLocalPath.DIRECTORY_SEPARATOR.$js.".js"))
                     $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsLocalURL);
-                if (file_exists($jsPath.DIRECTORY_SEPARATOR.$js.".js"))
+                elseif (file_exists($jsPath.DIRECTORY_SEPARATOR.$js.".js"))
                     $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsURL);
                 else
                     $tag="";
