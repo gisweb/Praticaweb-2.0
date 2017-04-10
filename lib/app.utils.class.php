@@ -356,7 +356,7 @@ class generalAppUtils {
             $sql="SELECT 'Certificato di Destinazione Urbanitica Prot n° '||protocollo as titolo FROM cdu.richiesta WHERE pratica=?";
         }
         elseif ($_REQUEST["comm"] || strpos($filename,'ce.')!==FALSE){
-            $sql="SELECT B.nome|| ' del '|| to_char(data_convocazione,'DD/MM/YYYY') as titolo FROM ce.commissione A INNER JOIN ce.e_tipopratica B ON(A.tipo=B.id)  WHERE pratica=?;";
+            $sql="SELECT B.nome|| ' del '|| to_char(data_convocazione,'DD/MM/YYYY') as titolo FROM ce.commissione A INNER JOIN ce.e_tipopratica B ON(A.tipo_comm=B.id)  WHERE pratica=?;";
         }
         elseif ($_REQUEST["vigi"] || strpos($filename,'vigi.')!==FALSE){
             $sql="SELECT B.nome|| ' n° '||A.numero as titolo FROM vigi.avvioproc A INNER JOIN vigi.e_tipopratica B ON(A.tipo_comm=B.id)  WHERE pratica=?;";
