@@ -13,7 +13,7 @@ if ($mode == "anagrafe_tributaria"){
     $doc=fread($f,filesize($url));
     $fName = sprintf("%d-%s",rand(10000,99999),"ANAGRAFE-TRIBUTARIA.txt");
 }
-if ($pratica!="null" && $pratica){
+elseif ($pratica!="null" && $pratica){
     $conn=utils::getDB();
     $sql="SELECT nome_file,tipo_file FROM pe.file_allegati WHERE id=?";
    
@@ -36,9 +36,11 @@ else{
     $fName = sprintf("%d-%s",rand(10000,99999),$fName);
 }
 
+$st ="Content-Disposition: $contentDisposition; filename=\"$fName\"";
+
 //echo $url;exit;
 header("Content-type: $fType");
-header('Content-Disposition: '.$contentDisposition.'; filename="'.$fName.'"');
+header($st);
 //@header("Location: $url") ;
 print $doc;
 ?>
