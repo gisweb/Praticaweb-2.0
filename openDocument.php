@@ -11,6 +11,7 @@ if ($mode == "anagrafe_tributaria"){
     $contentDisposition="download";
     $f=fopen($url,'r');
     $doc=fread($f,filesize($url));
+    $fName = sprintf("%d-%s",rand(10000,99999),"ANAGRAFE-TRIBUTARIA.txt");
 }
 if ($pratica!="null" && $pratica){
     $conn=utils::getDB();
@@ -25,15 +26,16 @@ if ($pratica!="null" && $pratica){
     $url=(defined('LOCAL_DOCUMENT') && LOCAL_DOCUMENT)?($pr->smb_allegati.$fName):($pr->allegati.$fName);
     $f=fopen($url,'r');
     $doc=fread($f,filesize($url));
-    
+    $fName = sprintf("%d-%s",rand(10000,99999),$fName);
 }
 else{
     $db=appUtils::getDB();
     $sql="SELECT nome FROM stp.e_modelli WHERE id=?";
     $fName=$db->fetchColumn($sql, array($id));
     $url=SMB_MODELLI.$fName;
+    $fName = sprintf("%d-%s",rand(10000,99999),$fName);
 }
-$fName = sprintf("%d-%s",rand(10000,99999),$fName);
+
 //echo $url;exit;
 header("Content-type: $fType");
 header('Content-Disposition: '.$contentDisposition.'; filename="'.$fName.'"');
