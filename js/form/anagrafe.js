@@ -101,7 +101,7 @@ $(document).ready(function(){
         $(this).removeAttr('disabled');
         $('#btn-close').removeAttr('disabled');
         $( "#dialog" ).dialog( "close" );
-        $("#file").attr('href','/documenti/'+filename).html("File dell'Anagrafe Triburia");
+        $("#file").attr('href','./openDocument.php?mode=anagrafe_tributaria&filename='+filename).html("File dell'Anagrafe Triburia");
     return;
         
     });

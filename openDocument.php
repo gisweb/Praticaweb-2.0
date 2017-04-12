@@ -3,7 +3,15 @@ require_once "login.php";
 $id=$_REQUEST["id"];
 $pratica=$_REQUEST["pratica"];
 $t=$_REQUEST["type"];
-
+$mode = $_REQUEST["mode"];
+$contentDisposition="inline";
+if ($mode == "anagrafe_tributaria"){
+    $fName=$_REQUEST["filename"];
+    $url=STAMPE.$fName;
+    $contentDisposition="download";
+    $f=fopen($url,'r');
+    $doc=fread($f,filesize($url));
+}
 if ($pratica!="null" && $pratica){
     $conn=utils::getDB();
     $sql="SELECT nome_file,tipo_file FROM pe.file_allegati WHERE id=?";
@@ -28,7 +36,7 @@ else{
 $fName = sprintf("%d-%s",rand(10000,99999),$fName);
 //echo $url;exit;
 header("Content-type: $fType");
-header('Content-Disposition: inline; filename="'.$fName.'"');
+header('Content-Disposition: '.$contentDisposition.'; filename="'.$fName.'"');
 //@header("Location: $url") ;
 print $doc;
 ?>
