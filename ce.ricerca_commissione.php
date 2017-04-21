@@ -166,7 +166,7 @@ function paginasucc(pg){
 				</td>
 		  </tr>
 			<?php//if ($modo=="cancella") 
-				print("\n<tr>\n<td><input name=\"all\" type=\"checkbox\"><b>Seleziona tutte le commissioni</b>\n</td>\n</tr>\n")
+				print("\n<tr>\n<td><input name=\"all\" type=\"checkbox\"><b>Seleziona tutte le commissioni</b>\n</td>\n</tr>\n");
 			?>
 		  <tr> 
 				<!-- riga finale -->
