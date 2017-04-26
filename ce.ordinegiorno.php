@@ -99,16 +99,18 @@ function show(id){
 		
 		<?php	// Eseguo cancellazione della pratica dalla commissione
 			if ($idpratica) {
+                               //print_array($_REQUEST);
 				$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
 				if(!$db->db_connect_id)  die( "Impossibile connettersi al database");	
 				$sql="DELETE FROM pe.pareri WHERE ente=(SELECT tipo_comm FROM ce.commissione WHERE id=$idcomm) and data_rich=(SELECT data_convocazione FROM ce.commissione WHERE id=$idcomm) and pratica=$idpratica";
+				$sql = "DELETE FROM pe.pareri WHERE id=$idpratica;";
 				if (!$db->sql_query($sql)) echo "ERRORE NELLA CANCELLAZIONE DELLA PRATICA <br>$sql<br>";
 				print_debug($sql);
 			}
 			$tabella_h=new Tabella_h($file_config,$modo);
 			$tabella_h->set_titolo("Elenco pratiche da discutere");
 			$tabella_h->get_titolo();
-			$tabella_h->set_dati("pratica > 0");?>
+			$tabella_h->set_dati("pratica = $idcomm");?>
 	<form name="cancella" method="post" action="ce.ordinegiorno.php">
 			<?php $tabella_h->elenco();?>
 		<table>
@@ -153,7 +155,7 @@ else{
 		$tabella->get_titolo();
 		$tabella->tabella();
 		$tabellah->set_titolo("Pratiche discusse","modifica");
-		$nprat=$tabellah->set_dati("id>0");
+		$nprat=$tabellah->set_dati("pratica = $idcomm");
 		$tabellah->get_titolo();
 		if ($nprat>0)
 			$tabellah->elenco();

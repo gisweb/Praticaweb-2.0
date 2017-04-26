@@ -296,7 +296,7 @@ switch($field) {
                 break;
             default:
                 $data = Array($_REQUEST["numero"]);
-                $sql="SELECT numero as value, B.nome||' n° '|| coalesce(numero,'') ||  coalesce(' del ' ||to_char(data_prot,'DD/MM/YYYY'),'') as label,pratica as id FROM pe.avvioproc A left join pe.e_tipopratica B on (A.tipo=B.id) WHERE numero ilike ? order by 3,4;";
+                $sql="SELECT numero as value, B.nome||' n° '|| coalesce(numero,'') ||  coalesce(' del ' ||to_char(data_prot,'DD/MM/YYYY'),'') as label,pratica as id FROM pe.avvioproc A left join pe.e_tipopratica B on (A.tipo=B.id) WHERE numero ilike ? order by 1;";
                 $message = sprintf("Nessun pratica con numero %s è stata trovata.",$_REQUEST["numero"]);
                 break;
         }
