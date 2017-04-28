@@ -262,22 +262,20 @@ function valida_campi($arr){
 			include $active_form;			
 			exit;
 		}
-
-//	Validazione Anagrafe Tributaria Soggetti
-		if ($tabelladb=='pe.soggetti'){
-			if ($_SESSION["USER_ID"]==1) {
-                $sql = "SELECT * FROM anagrafe_tributaria.pratiche WHERE pratica= ".$_POST["pratica"];
-                $db->sql_query ($sql);
-                $ris = $db->sql_fetchrowset();
-                if (count($ris)>0){
-                	require_once LIB."anagr_tributaria.php";
-					$Errors = valida_dati_praticaweb($array_dati["data"],$tabelladb);
-					if ($Errors){
-                        include $active_form;
-                        exit;
-					}
+        //	Validazione Anagrafe Tributaria Soggetti
+		if (defined('VALIDATE_ANAGR_TRIB') && VALIDATE_ANAGR_TRIB==1){
+			$sql = "SELECT * FROM anagrafe_tributaria.pratiche WHERE pratica= ".$_POST["pratica"];
+			$db->sql_query ($sql);
+			$ris = $db->sql_fetchrowset();
+			if (count($ris)>0){
+				require_once LIB."anagr_tributaria.php";
+				$Errors = valida_dati_praticaweb($array_dati["data"],$tabelladb);
+				if ($Errors){
+					include $active_form;
+					exit;
 				}
-            }
+			}
+
 		}
 
 		$Dati=valida_campi($array_dati["data"]);
