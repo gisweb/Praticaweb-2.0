@@ -96,6 +96,7 @@ $time = $time_end - $time_start;
 		</TABLE>
 <input name="active_form" type="hidden" value="pe.avvioproc.php">				
 <input name="oldtipo" type="hidden" value="<?=$tabella->get_campo("tipo")?>">
+<input name="oldnumero" type="hidden" value="<?=$tabella->get_campo("numero")?>">
 
 <input name="mode" type="hidden" id="mode" value="<?=$modo?>">
 </FORM>

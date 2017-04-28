@@ -60,6 +60,12 @@
             if ($tipo!=$oldtipo)
                     $menu->change_menu($idpratica,$oldtipo,$tipo);
             $menu->add_menu($idpratica,60);
+
+            if($_POST["oldnumero"] && $_POST["numero"] && $_POST["oldnumero"]!=$_POST["numero"]){
+                //$mex = sprintf("<p>MOVE %s TO %s</p>",$prPrec->documenti,$pr->documenti);
+                //echo $mex;
+                rename($prPrec->documenti,$pr->documenti);
+            }
             
 		
             if($pratPrec['resp_proc']!=$pr->info["resp_proc"]) 

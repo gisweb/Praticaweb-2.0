@@ -306,7 +306,7 @@ EOT;
 			else{
 				$this->num_record=0;
 			}
-            /*$time_end = microtime(true);
+           /* $time_end = microtime(true);
             $time = $time_end - $time_start;
             if ($_SESSION["USER_ID"]==1){
                 echo "<p>Execution of query :$sql in  $time seconds</p>";
