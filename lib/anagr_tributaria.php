@@ -265,8 +265,9 @@ function crea_riga($arr,$pr){
 	return Array("html_code"=>"<tr class=\"dato\">".implode("",$td)."</tr>","err"=>$err);
 }
 
-function valida_dati_praticaweb($row,$table){
+function valida_dati_praticaweb($r,$table){
 	$errors= Array();
+	foreach($r as $key=>$val) $row[$key]=($val=='NULL')?(''):($val);
 	if ($table=="pe.soggetti"){
 		if ($row["richiedente"]==1){
 			if(!$row["codfis"]) $errors["codfis"]=="Campo obbligatorio per Anagrafe Tributaria";
