@@ -262,11 +262,9 @@ function valida_campi($arr){
 			include $active_form;			
 			exit;
 		}
-		if ($_SESSION["USER_ID"]==1) {
-			print_array($array_config);
-		}
+
 //	Validazione Anagrafe Tributaria Soggetti
-		if ($array_config["table"]=='pe.soggetti'){
+		if ($tabelladb=='pe.soggetti'){
 			if ($_SESSION["USER_ID"]==1) {
                 echo "<p>Devo Validare Anagrafe Tributaria</p>";
             }
