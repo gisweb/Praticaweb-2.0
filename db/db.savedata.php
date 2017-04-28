@@ -266,7 +266,17 @@ function valida_campi($arr){
 //	Validazione Anagrafe Tributaria Soggetti
 		if ($tabelladb=='pe.soggetti'){
 			if ($_SESSION["USER_ID"]==1) {
-                echo "<p>Devo Validare Anagrafe Tributaria</p>";
+                $sql = "SELECT * FROM anagrafe_tributaria.pratiche WHERE pratica= ".$_POST["pratica"];
+                $db->sql_query ($sql);
+                $ris = $db->sql_fetchrowset();
+                if (count($ris)>0){
+                	require_once LIB."anagr_tributaria.php";
+					$Errors = valida_dati_praticaweb($array_dati["data"],$tabelladb);
+					if ($Errors){
+                        include $active_form;
+                        exit;
+					}
+				}
             }
 		}
 
