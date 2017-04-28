@@ -73,8 +73,8 @@ switch ($modo) {
 			<td> 
 				<!-- contenuto-->
 				<?php
-                                    $tabella->edita();
-                                ?>
+                    $tabella->edita();
+                ?>
 				<!-- fine contenuto-->
 			</td>
 		  </tr>
@@ -155,11 +155,11 @@ switch ($modo) {
 		if ($voltura==1) $config_file.="_voltura";
 		$tabella=new tabella_v($config_file,$modo);
 
-		$tabella->set_errors($errors);
+		$tabella->set_errors($Errors);
 		(($ruolo=="proprietario") || ($ruolo=="richiedente") || ($ruolo=="concessionario"))?($tit="Sposta in Volture"):($tit="Sposta in Variazioni");
 		//se edito un soggetto esitente passo l'id altrimenti completo il form con i dati passati per la ricerca 
 		if($idsoggetto){
-			if (isset($errors))
+			if (isset($Errors))
 				$dataset=$_POST;
 			else
 				$dataset="id = $idsoggetto";
