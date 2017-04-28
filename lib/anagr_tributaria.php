@@ -264,6 +264,36 @@ function crea_riga($arr,$pr){
 	}
 	return Array("html_code"=>"<tr class=\"dato\">".implode("",$td)."</tr>","err"=>$err);
 }
+
+function valida_dati_praticaweb($row,$table){
+	$errors= Array();
+	if ($table=="pe.soggetti"){
+		if ($row["richiedente"]==1){
+			if(!$row["codfis"]) $errors["codfis"]=="Campo obbligatorio per Anagrafe Tributaria";
+            if(!$row["cognome"]) $errors["cognome"]=="Campo obbligatorio per Anagrafe Tributaria";
+            if(!$row["nome"]) $errors["nome"]=="Campo obbligatorio per Anagrafe Tributaria";
+            if(!$row["sesso"]) $errors["sesso"]=="Campo obbligatorio per Anagrafe Tributaria";
+            if(!$row["comunato"]) $errors["comunato"]=="Campo obbligatorio per Anagrafe Tributaria";
+            if($row["ragsoc"]) {
+                if(!$row["comuned"]) $errors["comuned"]=="Campo obbligatorio per Anagrafe Tributaria";
+            }
+		}
+        if ($row["progettista"]==1 || $row["direttore"]==1){
+            if(!$row["codfis"] && !$row["piva"]) {
+            	$errors["codfis"]=="Codice Fiscale o Partica Iva obbligatorii per Anagrafe Tributaria";
+                $errors["piva"]=="Codice Fiscale o Partica Iva obbligatorii per Anagrafe Tributaria";
+
+            }
+            if(!$row["alboprov"]) $errors["alboprov"]=="Campo obbligatorio per Anagrafe Tributaria";
+            if(!$row["albonumero"]) $errors["albonumero"]=="Campo obbligatorio per Anagrafe Tributaria";
+        }
+        if ($row["esecutore"]==1){
+            if(!$row["piva"]) $errors["piva"]=="Campo obbligatorio per Anagrafe Tributaria";
+            if(!$row["ragsoc"]) $errors["ragsoc"]=="Campo obbligatorio per Anagrafe Tributaria";
+        }
+	}
+	return $errors;
+}
 function valida_dato($field,$value,$valid,$row,$tmp){
 //echo "<pre>$tmp<br>";print_r($valid);echo "<br>";print_r($row);echo "</pre>";
 	if ($tmp=="professionisti"){
