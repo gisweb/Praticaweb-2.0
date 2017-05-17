@@ -295,7 +295,7 @@ class utils {
                     self::recurse_copy($src . '/' . $file,$dst . '/' . $file);
                 }
                 else {
-                    $res = copy($src . '/' . $file,$dst . '/' . $file);
+                    copy($src . '/' . $file,$dst . '/' . $file);
                 }
             }
         }
