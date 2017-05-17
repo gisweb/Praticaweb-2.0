@@ -64,7 +64,8 @@
             if($_POST["oldnumero"] && $_POST["numero"] && $_POST["oldnumero"]!=$_POST["numero"]){
                 //$mex = sprintf("<p>MOVE %s TO %s</p>",$prPrec->documenti,$pr->documenti);
                 //echo $mex;
-                rename($prPrec->documenti,$pr->documenti);
+                copy($prPrec->documenti."/*",$pr->documenti);
+                copy($prPrec->documenti."/allegati/*",$pr->documenti."/allegati/");
             }
             
 		
