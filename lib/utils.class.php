@@ -292,7 +292,7 @@ class utils {
         while(false !== ( $file = readdir($dir)) ) {
             if (( $file != '.' ) && ( $file != '..' )) {
                 if ( is_dir($src . '/' . $file) ) {
-                    recurse_copy($src . '/' . $file,$dst . '/' . $file);
+                    self::recurse_copy($src . '/' . $file,$dst . '/' . $file);
                 }
                 else {
                     $res = copy($src . '/' . $file,$dst . '/' . $file);
