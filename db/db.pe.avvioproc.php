@@ -53,7 +53,8 @@
 	
 	//aggiorno una pratica esistente
 	elseif($_POST["mode"]=="edit"){
-            $pr=new pratica($idpratica);
+            $pr=new pratica($idpratica,$app);
+            $pr->createStructure();
             //devo solo controllare se è stato cambiato il tipo di pratica: in questo caso aggiorno il menu
             $tipo=$_POST["tipo"];
             $oldtipo=$_POST["oldtipo"];
