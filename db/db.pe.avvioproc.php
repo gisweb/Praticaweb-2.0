@@ -63,10 +63,15 @@
             $menu->add_menu($idpratica,60);
 
             if($_POST["oldnumero"] && $_POST["numero"] && $_POST["oldnumero"]!=$_POST["numero"]){
-                //$mex = sprintf("<p>MOVE %s TO %s</p>",$prPrec->documenti,$pr->documenti);
-                //echo $mex;
-                copy($prPrec->documenti."/*",$pr->documenti);
-                copy($prPrec->documenti."/allegati/*",$pr->documenti."/allegati/");
+
+                $res = copy($prPrec->documenti."/*",$pr->documenti);
+                $cp1 = (string)$res;
+                $res = copy($prPrec->documenti."/allegati/*",$pr->documenti."/allegati/");
+                $cp2 = (string)$res;
+                if ($_SESSION["USER_ID"]==1){
+                    $mex = sprintf("<p>Copying file from %s to %s with result : %s</p>",$prPrec->documenti."/allegati/*",$pr->documenti."/allegati/",$cp2);
+                    print $mex;
+                }
             }
             
 		
