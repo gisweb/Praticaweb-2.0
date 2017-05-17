@@ -64,10 +64,9 @@
 
             if($_POST["oldnumero"] && $_POST["numero"] && $_POST["oldnumero"]!=$_POST["numero"]){
 
-                $res = copy($prPrec->documenti."/*",$pr->documenti);
-                $cp1 = (string)$res;
-                $res = copy($prPrec->documenti."/allegati/*",$pr->documenti."/allegati/");
-                $cp2 = (string)$res;
+
+                $res = utils::recurse_copy($prPrec->documenti,$pr->documenti);
+
                 if ($_SESSION["USER_ID"]==1){
                     $mex = sprintf("<p>Copying file from %s to %s with result : %s</p>",$prPrec->documenti."/allegati/*",$pr->documenti."/allegati/",$cp2);
                     print $mex;
