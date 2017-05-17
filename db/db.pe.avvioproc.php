@@ -3,7 +3,21 @@
 	//per ora calcolo qui il nuovo numero pratica senza controlli
 	//CREARE UN TRIGGER CHE AGGIORNA PRATICA A ID NELLA TABELLA AVVIOPROC 
 	//UTILIZZARE UNA TRANSAZIONE PER L'EREDITARIETA DEI DATI DELLA NUOVA PRATICA
-	
+function recurse_copy($src,$dst) {
+    $dir = opendir($src);
+    @mkdir($dst);
+    while(false !== ( $file = readdir($dir)) ) {
+        if (( $file != '.' ) && ( $file != '..' )) {
+            if ( is_dir($src . '/' . $file) ) {
+                recurse_copy($src . '/' . $file,$dst . '/' . $file);
+            }
+            else {
+                copy($src . '/' . $file,$dst . '/' . $file);
+            }
+        }
+    }
+    closedir($dir);
+}
 	//se ho annullato esco
 	if ($_POST["azione"]=="Annulla" || !isset($_POST["azione"])){
 		$active_form.="?pratica=$idpratica";
@@ -65,7 +79,7 @@
             if($_POST["oldnumero"] && $_POST["numero"] && $_POST["oldnumero"]!=$_POST["numero"]){
 
 
-                $res = utils::recurse_copy($prPrec->documenti,$pr->documenti);
+                $res = recurse_copy($prPrec->documenti,$pr->documenti);
 
                 if ($_SESSION["USER_ID"]==1){
                     $mex = sprintf("<p>Copying file from %s to %s with result : %s</p>",$prPrec->documenti."/allegati/*",$pr->documenti."/allegati/",$cp2);
