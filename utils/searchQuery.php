@@ -6,7 +6,7 @@ SELECT DISTINCT
     B.nome as tipo_pratica,C.descrizione as tipo_intervento,coalesce(D.nome,'non assegnata') as responsabile,
     E.richiedente,F.progettista,L.esecutore,G.elenco_ct,H.elenco_cu,I.ubicazione,
     CASE WHEN (coalesce(A.resp_it,coalesce(A.resp_ia,0)) = 0) THEN 0 ELSE 1 END as assegnata_istruttore
-    ,coalesce(O.nome,'non assegnata') as responsabile_it,M.titolo,M.data_rilascio,A.sportello
+    ,coalesce(O.nome,'non assegnata') as responsabile_it,M.titolo,M.data_rilascio,A.sportello,Q.opzione as vincolo_paes
     --,coalesce(P.nome,'non assegnata') as responsabile_ia
 FROM pe.avvioproc A LEFT JOIN 
 pe.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN
@@ -26,6 +26,7 @@ admin.users D ON(A.resp_proc=D.userid) LEFT JOIN
 LEFT JOIN admin.users O ON(A.resp_it=O.userid)
 --LEFT JOIN (SELECT id,pratica,tipo as tipo_verifica,data_avvio as data_avvio_verifica,esito FROM pe.verifiche AP INNER JOIN pe.e_verifiche BP ON(AP.tipo = BP.id)) P USING(pratica) 
 --LEFT JOIN admin.users P ON(A.resp_ia=D.userid)
+LEFT JOIN pe.elenco_opzione_ap Q ON (vincolo_paes=Q.id)
 WHERE pratica IN (%s) 
 %s %s LIMIT %s OFFSET %s                 
 EOT;

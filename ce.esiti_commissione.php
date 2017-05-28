@@ -97,7 +97,7 @@ $tornaacasa="
 		print("<H2 class=\"blueBanner\">Elenco Pareri Espressi</H2>");
 			$tabella=new Tabella_h($file_config,'list');
 			//$tabella->set_tag($idpr);
-			$tabella->set_dati("ente =(SELECT tipo_comm FROM ce.commissione WHERE id=$idcomm) AND data_rich = (SELECT data_convocazione FROM ce.commissione WHERE id=$idcomm);");
+			$tabella->set_dati("ente =(SELECT tipo_comm FROM ce.commissione WHERE id=$idcomm) AND data_rich = (SELECT data_convocazione FROM ce.commissione WHERE id=$idcomm)");
 			
 			$mod=(($parere==0)?("new"):("edit"));
 			//$butt_mod=(($parere==0)?("nuovo"):("modifica"));
