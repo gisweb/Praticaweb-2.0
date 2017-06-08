@@ -1,6 +1,7 @@
 <?php
 $query=Array();
 $query["default"]=<<<EOT
+SELECT
     A.pratica,coalesce(coalesce(data_prot,data_presentazione),'01/01/1970'::date) as data_ordinamento,A.numero,A.protocollo,A.data_prot,A.data_presentazione,A.oggetto,
     B.nome as tipo_pratica,C.descrizione as tipo_intervento,coalesce(D.nome,'non assegnata') as responsabile,
     E.richiedente,F.progettista,L.esecutore,G.elenco_ct,H.elenco_cu,I.ubicazione,
