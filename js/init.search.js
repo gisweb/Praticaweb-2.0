@@ -56,7 +56,7 @@ var colsDef={
         {title:'Data Sorteggio',sortable:true,field:'data_sorteggio',width:100},
         {title:'Data Avvio',sortable:true,field:'data_avvio',width:100},
         {title:'Resp Proc',sortable:true,field:'resp_proc',width:200},
-        
+        {title:'Esito',sortable:true,field:'esito',width:100}
     ]],
     default_cols:[[
         {title:'',sortable:true,field:'',width:100},

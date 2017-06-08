@@ -30,10 +30,10 @@ switch($action){
         $offset = ($page-1)*$rows;
         $order = isset($_POST['sort']) ? ("ORDER BY ".$_POST['sort']) : "ORDER BY data_sorteggio";
         $orderType = isset($_POST['order']) ? ($_POST['order']) : "DESC";
-        $sql="SELECT count(*) as totali FROM pe.verifiche A INNER JOIN pe.avvioproc B USING(pratica) LEFT JOIN pe.e_verifiche E ON(A.tipo=E.id) INNER JOIN pe.e_tipopratica C ON (B.tipo=C.id) LEFT JOIN admin.users F ON (A.resp_proc_verifica=F.userid) LEFT JOIN pe.e_categoriapratica D ON(B.categoria=D.id) WHERE coalesce(B.data_chiusura::varchar,'')='';";
+        $sql="SELECT count(*) as totali FROM pe.verifiche A INNER JOIN pe.avvioproc B USING(pratica) LEFT JOIN pe.e_verifiche E ON(A.tipo=E.id) INNER JOIN pe.e_tipopratica C ON (B.tipo=C.id) LEFT JOIN admin.users F ON (A.resp_proc_verifica=F.userid) LEFT JOIN pe.e_categoriapratica D ON(B.categoria=D.id);";
         $res=$db->fetchAll($sql);
         $total=$res[0]["totali"];
-        $sql=sprintf("SELECT DISTINCT pratica,numero,data_sorteggio,data_avvio,F.nome as resp_proc,C.nome as tipo_pratica,E.nome as tipo FROM pe.verifiche A INNER JOIN pe.avvioproc B USING(pratica) LEFT JOIN pe.e_verifiche E ON(A.tipo=E.id) INNER JOIN pe.e_tipopratica C ON (B.tipo=C.id) LEFT JOIN admin.users F ON (A.resp_proc_verifica=F.userid) LEFT JOIN pe.e_categoriapratica D ON(B.categoria=D.id) WHERE coalesce(B.data_chiusura::varchar,'')='' %s %s LIMIT %s OFFSET %s;",$order,$orderType,$rows,$offset);
+        $sql=sprintf("SELECT DISTINCT pratica,numero,data_sorteggio,data_avvio,F.nome as resp_proc,C.nome as tipo_pratica,E.nome as tipo,coalesce(G.nome,'Da verificare') as esito FROM pe.verifiche A INNER JOIN pe.avvioproc B USING(pratica) LEFT JOIN pe.e_verifiche E ON(A.tipo=E.id) INNER JOIN pe.e_tipopratica C ON (B.tipo=C.id) LEFT JOIN admin.users F ON (A.resp_proc_verifica=F.userid) LEFT JOIN pe.e_categoriapratica D ON(B.categoria=D.id) LEFT JOIN pe.e_esiti G ON(G.id=A.esito) %s %s LIMIT %s OFFSET %s;",$order,$orderType,$rows,$offset);
         $res=$db->fetchAll($sql);
         utils::debug(DEBUG_DIR."draw.debug",$sql);
         $result=Array("total"=>$total,"rows"=>$res,"elenco_id"=>$listId);

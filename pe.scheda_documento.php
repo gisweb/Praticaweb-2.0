@@ -11,7 +11,7 @@ $titolo=$_SESSION["TITOLO_$idpratica"];
 $form=$_POST["form"];
 $dbh=  utils::getDb();
 $sql =  "SELECT 'Elenco Allegati del documento : ' || coalesce(A.nome,'') as titolo,protocollo,data_protocollo FROM pe.e_documenti A INNER JOIN pe.allegati B ON(B.documento=A.id) WHERE B.id=".$idallegato;
-$sth = $dbh->prepare($sql);echo "<p>$sql</p>";
+$sth = $dbh->prepare($sql);
 $sth->execute();
 $res = $sth->fetch();
 $tit = $res[0];
