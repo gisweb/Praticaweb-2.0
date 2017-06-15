@@ -538,18 +538,26 @@ function zoomto($tabella,$id){
 function zoomto_gc($tabella,$id){
 
 	$msgerr="Oggetto non presente in cartografia";
-
+    $pratica = $this->idpratica;
+    if (!isset($this->db)) $this->connettidb();
+    $sql = "SELECT cod_belfiore FROM pe.avvioproc WHERE pratica= $pratica;";
+    $result = $this->db->sql_query($sql);
+    $r=$this->db->sql_fetchrow();
+    $cod = $r["cod_belfiore"];
 	switch ($tabella){
 		case "vigi.ct_info":
 		case "pe.cu_info":
 		case "pe.ct_info":
 		case "cdu.vista_mappali": 
 			$buff=20;
+			if ($cod) {
+			    $filter_comune=" AND comune = '$cod'";
+            }
 			$mappale=explode('@',$id);
             		$sezione='';
 			if ($mappale[2]) $sezione=" and sezione='". $mappale[2] ."'";
-			$sql = "SELECT gid, xmin(box3d(".THE_GEOM."))-50 as xmin, ymin(box3d(".THE_GEOM."))-50 as ymin, xmax(box3d(".THE_GEOM."))+50 as xmax, ymax(box3d(".THE_GEOM."))+50 as ymax FROM nct.particelle where foglio='". $mappale[1] ."' and mappale='" .$mappale[0] . "'"  .$sezione ;
-			if (!isset($this->db)) $this->connettidb();
+			$sql = "SELECT gid, xmin(box3d(".THE_GEOM."))-50 as xmin, ymin(box3d(".THE_GEOM."))-50 as ymin, xmax(box3d(".THE_GEOM."))+50 as xmax, ymax(box3d(".THE_GEOM."))+50 as ymax FROM nct.particelle where foglio='". $mappale[1] ."' and mappale='" .$mappale[0] . "'"  .$sezione .$filter_comune;
+
 			$result = $this->db->sql_query($sql); 
 			$map=$this->db->sql_fetchrow();
 			
