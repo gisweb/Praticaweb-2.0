@@ -20,7 +20,7 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
 $idpratica=$_POST["pratica"];
 $azione=$_POST["azione"];
 //print_array($_POST);
-
+$comune = $_REQUEST["cod_belfiore"];
 if(!$_POST["foglio"] && !$_POST["mappale"])	// EDIT VINCOLI
 {
 	$part=$_POST["part"];
@@ -33,7 +33,7 @@ if(!$_POST["foglio"] && !$_POST["mappale"])	// EDIT VINCOLI
 	$tavola=$_POST["tavola"];
 	$perc=$_POST["perc_area"];
 	$zona=$_POST["zona"];
-    if($azione=="Aggiungi"){ 
+        if($azione=="Aggiungi"){ 
 		$sql_del="delete from cdu.mappali where foglio='$foglio' and mappale='$mappale' and coalesce(vincolo,'')='';";
 		print_debug($sql_del); 
 		$db->sql_query($sql_del); 
@@ -49,6 +49,7 @@ else {		// EDIT MAPPALI
 
 	$sqlmappali="foglio=$foglio and mappale=$mappale";
 	if (isset($_POST["sezione"])) $sqlmappali.=" and sezione=$sezione";
+	if ($comune) $sqlmappali .= " and particelle.comune = '$comune'";
 	if($azione=="Aggiungi"){ 
         $sql="SELECT coalesce(data_certificazione,CURRENT_DATE) as data FROM cdu.richiesta WHERE pratica=$idpratica;";
         $db->sql_query($sql);
@@ -64,7 +65,6 @@ else {		// EDIT MAPPALI
 		group by particelle.sezione,particelle.foglio,particelle.mappale,zona_plg.nome_vincolo,zona_plg.nome_tavola,zona_plg.nome_zona,particelle.".THE_GEOM;
 
 		$result=$db->sql_query ($sql);
-		//echo "<p>$sql</p>";
 		//$err=$db->sql_error();
 		print_debug($sql); 
 		//$numrows=$db->sql_affectedrows();
