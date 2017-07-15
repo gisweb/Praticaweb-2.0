@@ -32,6 +32,7 @@ if($nrec==1){
     $_SESSION['USER_NAME'] = $username;
     $_SESSION['USERNAME'] = $username;
     $_SESSION['PERMESSI']=$permessi;
+	$_SESSION['PERMESSI_OK']=$permessi;
     $_SESSION['USER_ID']=$userid;
     $_SESSION['NOMINATIVO']=trim("$app $cognome $nominativo");
     $_SESSION['GROUPS']=$groups;
