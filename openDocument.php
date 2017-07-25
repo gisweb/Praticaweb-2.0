@@ -4,14 +4,15 @@ $id=$_REQUEST["id"];
 $pratica=$_REQUEST["pratica"];
 $t=$_REQUEST["type"];
 $mode = $_REQUEST["mode"];
-$contentDisposition="inline";
+$contentDisposition=(defined("FILE_DISPOSITION"))?(FILE_DISPOSITION):("inline");
 if ($mode == "anagrafe_tributaria"){
     $fName=$_REQUEST["filename"];
     $url=STAMPE.$fName;
     $contentDisposition="download";
     $f=fopen($url,'r');
-    $doc=fread($f,filesize($url));
-    $fName = sprintf("%d-%s",rand(10000,99999),"ANAGRAFE-TRIBUTARIA.txt");
+    $size=filesize($url);
+    $doc=fread($f,$size);
+    //$fName = sprintf("%d-%s",rand(10000,99999),"ANAGRAFE-TRIBUTARIA.txt");
 }
 elseif ($pratica!="null" && $pratica){
     $conn=utils::getDB();
@@ -25,8 +26,9 @@ elseif ($pratica!="null" && $pratica){
     if($ext=='p7m') $fType="application/pkcs7-mime";
     $url=(defined('LOCAL_DOCUMENT') && LOCAL_DOCUMENT)?($pr->smb_allegati.$fName):($pr->allegati.$fName);
     $f=fopen($url,'r');
-    $doc=fread($f,filesize($url));
-    $fName = sprintf("%d-%s",rand(10000,99999),$fName);
+    $size=filesize($url);
+    $doc=fread($f,$size);
+    //$fName = sprintf("%d-%s",rand(10000,99999),$fName);
 }
 else{
     $db=appUtils::getDB();
@@ -39,8 +41,15 @@ else{
 $st ="Content-Disposition: $contentDisposition; filename=\"$fName\"";
 
 //echo $url;exit;
-header("Content-type: $fType");
+header('Content-Description: File Transfer');
 header($st);
+header('Connection: Keep-Alive');
+header('Expires: 0');
+header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+header('Pragma: public');
+header('Content-Length: ' . $size);
+header("Content-type: $fType");
+
 //@header("Location: $url") ;
 print $doc;
 ?>
