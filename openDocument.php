@@ -28,7 +28,7 @@ elseif ($pratica!="null" && $pratica){
     $f=fopen($url,'r');
     $size=filesize($url);
     $doc=fread($f,$size);
-    //$fName = sprintf("%d-%s",rand(10000,99999),$fName);
+    $fName = sprintf("%d-%s",rand(10000,99999),$fName);
 }
 else{
     $db=appUtils::getDB();
@@ -41,14 +41,23 @@ else{
 $st ="Content-Disposition: $contentDisposition; filename=\"$fName\"";
 
 //echo $url;exit;
-header('Content-Description: File Transfer');
-header($st);
-header('Connection: Keep-Alive');
-header('Expires: 0');
-header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-header('Pragma: public');
-header('Content-Length: ' . $size);
-header("Content-type: $fType");
+if ($contentDisposition=='attachment'){
+    header('Content-Description: File Transfer');
+    header($st);
+    header('Connection: Keep-Alive');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+    header('Pragma: public');
+    header('Content-Length: ' . $size);
+    header("Content-type: $fType");
+}
+else{
+   $st ="Content-Disposition: $contentDisposition; filename=\"$fName\""; 
+    header($st);
+    header("Content-type: $fType");
+
+}
+
 
 //@header("Location: $url") ;
 print $doc;
