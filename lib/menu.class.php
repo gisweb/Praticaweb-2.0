@@ -36,6 +36,12 @@ class Menu{
 	function get_list($idpratica){
 		if (isset($_SESSION["MENU_".$this->tipo."_$idpratica"])){
 			$menu_pratica=$_SESSION["MENU_".$this->tipo."_$idpratica"];
+
+            //$file = 'debug.txt';
+            //$current = file_get_contents($file);
+            //file_put_contents($file, print_r($menu_pratica, true));
+            //file_put_contents($file, "MENU_".$this->tipo."_$idpratica");
+
 		}
 		else{
 			$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);

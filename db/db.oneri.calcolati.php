@@ -2,20 +2,15 @@
 /*
 GESTIONE calcolo oneri:
 dopo aver inserito il record in oneri_calcolati con la libreria savedata faccio qui il calcolo con i parametri passati e aggiorno la tabella con i valori calcolati
-
 */
-
 //print_r($_POST);
-
 //se ho annullato esco
 if ($_POST["azione"]=="Annulla"){
 	$active_form.="?pratica=$idpratica";
 	return;
 }
-
 //Modulo condiviso per la gestione dei dati
 include_once "./db/db.savedata.php";
-
 if ($_POST["azione"]!="Elimina"){
 	//Dopo aver salvato i dati passo al calcolo e aggiorno i dati dei campi calcolati
 	$sql="select tr,a,ie,k from oneri.e_tariffe where tabella='".$_POST["tabella"]."' and anno=" .$_POST["anno"] ;
@@ -24,7 +19,6 @@ if ($_POST["azione"]!="Elimina"){
 		return;
 	}
     //echo "<p>$sql</p>";
-
 	$tariffa = $db->sql_fetchrow();
 	
 	//Recupero l'id di riga del calcolo e le info per il calcolo
@@ -44,7 +38,6 @@ if ($_POST["azione"]!="Elimina"){
 	$n=$_POST["n"];
     $n1=$_POST["n1"];
     $nn=(($n1-$n)/$n);
-
 	$K = $tariffa["k"];
 	$A = $tariffa["a"];
     $tariffa["tr"]=($C5>0)?($tariffa["tr"]*$C5/100):($tariffa["tr"]);
@@ -67,7 +60,6 @@ if ($_POST["azione"]!="Elimina"){
 		$B1=$B1*2;
 		$B2=$B2*2;
 	}
-
 	if ($intervento>900){ 
 		
 		switch ($intervento) {
@@ -148,22 +140,27 @@ if ($_POST["azione"]!="Elimina"){
 		$K_OLD = $tariffa_old["k"];
 		$A_OLD = $tariffa_old["a"];
 		$tariffa_old["tr"]=($C5>0)?($tariffa_old["tr"]*$C5/100):($tariffa_old["tr"]);
-		$B_OLD = $tariffa_old["tr"]-$A;
+		$B_OLD = $tariffa_old["tr"]-$A_OLD;
 		$IE_OLD = $tariffa_old["ie"];
 		$B1_OLD =$B_OLD*$IE_OLD/100;
-		$B2=$B_OLD-$B1_OLD;
-		$perc=100.0;
+		$B2_OLD=$B_OLD - $B1_OLD;
+		
+		$perc=60.0;
 		
 		$CC = 0;
 		$CC_OLD = 0;
-		$B1 = $K * $perc * ((100 - ($C2 + $C3 + $C4) + $D2) * $B1) / 1000000;
-		$B2 = $K * $perc * ((100 - ($C1 + $C2 + $C3 + $C4) + $D2) * $B2) / 1000000;
+		$B1 = ($K * $perc  * $B1) / 10000;
+		$B2 = ($K * $perc  * $B2) / 10000;
 		
-		$B1_OLD = $K_OLD * $perc * ((100 - ($C2 + $C3 + $C4) + $D2) * $B1_OLD) / 1000000;
-		$B2_OLD = $K_OLD * $perc * ((100 - ($C1 + $C2 + $C3 + $C4) + $D2) * $B2_OLD) / 1000000;
+		$B1_OLD = ($K_OLD * $perc * $B1_OLD) / 10000;
+		$B2_OLD = ($K_OLD * $perc * $B2_OLD) / 10000;
 		
-		$B1 = ((($B1 + $B2)- ($B1_OLD + $B2_OLD)) > 0)?($B1 - $B1_OLD):(0);
-		$B2 = ((($B1 + $B2)- ($B1_OLD + $B2_OLD)) > 0)?($B2 - $B2_OLD):(0);
+		$B1_NEW = ((($B1 + $B2)- ($B1_OLD + $B2_OLD)) > 0)?($B1 - $B1_OLD):(0);
+		$B2_NEW = ((($B1 + $B2)- ($B1_OLD + $B2_OLD)) > 0)?($B2 - $B2_OLD):(0);
+		
+		$B1 = $B1_NEW;
+		$B2 = $B2_NEW;
+
 	}
 	else{
 		if($perc==0)
@@ -187,9 +184,6 @@ if ($_POST["azione"]!="Elimina"){
 // Dopo aver aggiornato la tabella oneri.calcolati con l'ultimo calcolo devo aggiornare la tabella oneritotali contenente i dati complessivi
 // se questo Ã¨ il primo calcolo devo aggiungere il record 
 // se ho eliminato l'ultimo calcolo devo eliminare anche il record da oneri.totali
-
-
-
 if ($_POST["azione"]=="Elimina"){
 	$sql="SELECT count(*) as num from oneri.calcolati where pratica=".$_POST["pratica"];
 	//echo $sql;
@@ -200,16 +194,11 @@ if ($_POST["azione"]=="Elimina"){
 		if(!$db->sql_query($sql)) print_debug($sql);
 	}
 }
-
 $sql="SELECT count(*) as num from oneri.totali where pratica=".$_POST["pratica"];
 if(!$db->sql_query($sql)) print_debug($sql);
 $totali=$db->sql_fetchfield("num");
 $sql=(!$totali)?("insert into oneri.totali (pratica,cc,b1,b2,calcolo) select pratica,sum(cc),sum(b1),sum(b2),1 from oneri.calcolati where pratica=".$_POST["pratica"]." group by pratica;"):("update oneri.totali set cc=(select sum(calcolati.cc) from oneri.calcolati where pratica=".$_POST["pratica"]."),b1=(select sum(calcolati.b1) from oneri.calcolati where pratica=".$_POST["pratica"]."),b2=(select sum(calcolati.b2) from oneri.calcolati where pratica=".$_POST["pratica"]."),calcolo=1 where pratica=".$_POST["pratica"]);
 //echo "<p>$sql</p>";
 if(!$db->sql_query($sql)) print_debug($sql);
-
 $active_form.="?pratica=$idpratica";
-
-
-
 ?>

@@ -455,7 +455,7 @@ function calcolacodicefiscale_calcolacomune($com){
 	
 	$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
 	if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
-	$sql="SELECT codice FROM pe.e_comuni WHERE nome ilike '$com'";
+	$sql="SELECT codice FROM pe.e_comuni WHERE nome ilike '".addslashes($com)."'";
 	if ($db->sql_query($sql)){
 		$ris=$db->sql_fetchrowset();
 		if (count($ris)==1)	$cod=$ris[0]['codice'];

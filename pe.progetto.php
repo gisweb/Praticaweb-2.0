@@ -9,6 +9,9 @@ $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $idpratica=$_REQUEST["pratica"];
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
+//Imposto i permessi di default per il modulo
+$_SESSION["PERMESSI"]=$_SESSION["PERMESSI_$idpratica"];
+
 if ($_POST["azione"]){
 	$idrow=$_POST["idriga"];
 	$active_form=$_REQUEST["active_form"];

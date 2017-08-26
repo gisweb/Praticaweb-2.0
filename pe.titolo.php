@@ -12,6 +12,10 @@ if (file_exists(DATA_DIR."praticaweb/include/init.pe.titolo.php")){
     require_once DATA_DIR."praticaweb/include/init.pe.titolo.php";
 }
 
+//Imposto i permessi di default per il modulo
+$_SESSION["PERMESSI"]= min($_SESSION["PERMESSI_$idpratica"],$_SESSION["PERMESSI_A_$idpratica"], $_SESSION["PERMESSI_S_$idpratica"], $_SESSION["PERMESSI_M_$idpratica"]);
+
+
 ?>
 <html>
 <head>

@@ -8,6 +8,9 @@ $host=$_SERVER["HTTP_HOST"];
 $modal=$_POST["modal"];
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
+//Imposto i permessi di default per il modulo
+$_SESSION["PERMESSI"]= min($_SESSION["PERMESSI_$idpratica"],$_SESSION["PERMESSI_C_$idpratica"]);
+
 include "./lib/tabella_v.class.php";
 include "./lib/tabella_h.class.php";
 ?>

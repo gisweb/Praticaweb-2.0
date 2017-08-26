@@ -91,24 +91,28 @@ function formatLink(value,rowData,rowIndex){
 <?php
 	include "./inc/inc.page_header.php";
     $pr=new pratica($idpratica);
+
     $arrFiltri=Array();
     if ($cdu) $arrFiltri["form"]="form='$form'";
     $arrFiltri["utente"]="(coalesce(proprietario,'pubblico')='pubblico' or proprietario='$usr')";
-    //$arrFiltri["tipopratica"]="(coalesce(tipo_pratica,'0')='0' or '".floor((double)$pr->info['tipo']/100)."'=ANY(string_to_array(coalesce(tipo_pratica,''),',')) or '".$pr->info['tipo']."'=ANY(string_to_array(coalesce(tipo_pratica,''),',')))";
     $arrFiltri["disponibili"]="NOT A.id IN (SELECT DISTINCT modello FROM stp.stampe A INNER JOIN stp.e_modelli B ON (B.id=A.modello) WHERE A.pratica=$idpratica and multiple=0) AND form ILIKE '$tipo%'";
-    /*if ($_SESSION["PERMESSI"]<=3) $array_file_tab=(!$condono)?(array("$tabpath/stampe_docx","$tabpath/stampe_rtf","$tabpath/stampe_pdf")):(array("$tabpath/modelli_condono","$tabpath/stampehtml_condono","$tabpath/stampepdf_condono"));
-	else
-		$array_file_tab=(!$condono)?(array("$tabpath/modelli_usr","$tabpath/stampe_rtf","$tabpath/stampe_pdf")):(array("$tabpath/modelli_condono","$tabpath/stampehtml_condono","$tabpath/stampepdf_condono"));
-	*/
     $file_tab="$tabpath/stampe";
     $titolo="Elenco Modelli";
     $filtro=implode(" AND ",$arrFiltri);
     $sql="select coalesce(B.id::varchar,'')||'#'||coalesce(A.id::varchar,'') as codice,A.id,coalesce(B.id::varchar,'tutti') as idtipo,A.nome as modello,coalesce(B.nome,'Tutti i tipi di pratica') as tipo_pratica,form from stp.e_modelli A left join pe.e_tipopratica B on (B.id::varchar =ANY(string_to_array(tipo_pratica,','))) WHERE $filtro;";
     $db=appUtils::getDb();
     $res=$db->fetchAll($sql);
-    //print_array($res);
     $modelli=  json_encode(appUtils::groupData("modelli",$res));
-   // print_array($modelli);
+    $sql="select count(*) from pe.soggetti A WHERE A.pratica=$idpratica;";
+    $db=appUtils::getDb();
+    $res=$db->fetchAll($sql);
+    
+    if ($res[0]['count']==0) {
+       print_array('MANCANO I SOGGETTI');
+       $modelli='';
+    }
+    else {
+    }
     echo <<<EOT
     <script>
         var modelli=$modelli;

@@ -10,6 +10,8 @@ $idpratica=$_REQUEST["pratica"];
 $titolo=$_SESSION["TITOLO_$idpratica"];
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
+//Imposto i permessi di default per il modulo
+$_SESSION["PERMESSI"]=$_SESSION["PERMESSI_$idpratica"];
 
 ?>
 

@@ -12,6 +12,10 @@ $azione=(isset($_POST["azione"]) && $_POST['azione'])?($_POST['azione']):(null);
 $tabpath="pe";
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
+//Imposto i permessi di default per il modulo
+$_SESSION["PERMESSI"]= min($_SESSION["PERMESSI_$idpratica"],$_SESSION["PERMESSI_A_$idpratica"]);
+
+
 ?>
 <html>
 <head>

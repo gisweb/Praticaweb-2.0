@@ -7,6 +7,9 @@ $modo=(isset($_REQUEST["mode"]) && $_REQUEST["mode"])?($_REQUEST["mode"]):('view
 $titolo=$_SESSION["TITOLO_$idpratica"];
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
+//Imposto i permessi di default per il modulo
+$_SESSION["PERMESSI"]= min($_SESSION["PERMESSI_$idpratica"],$_SESSION["PERMESSI_A_$idpratica"],$_SESSION["PERMESSI_G_$idpratica"]);
+
 ?>
 <html>
 <head>

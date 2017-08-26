@@ -34,8 +34,8 @@ var colsDef={
         {title:'Richiedenti',sortable:true,field:'richiedente',width:150,styler: function(value,row,index){return 'font-size:11px;';}},
         {title:'Progettista',sortable:true,field:'progettista',width:150,styler: function(value,row,index){return 'font-size:11px;';}},
         {title:'Responsabile',sortable:true,field:'responsabile',width:150,styler: function(value,row,index){return 'font-size:11px;';}},
-        {title:'Assegnata',sortable:true,field:'assegnata_istruttore',width:70,styler: function(value,row,index){return 'font-size:11px;';},formatter:function(value,row,index){if (value) return 'SI'; else return 'NO';}},
-        {title:'Istruttore',sortable:true,field:'responsabile_it',width:150,styler: function(value,row,index){return 'font-size:11px;';}}
+        {title:'Assegnata',sortable:true,field:'assegnata_responsabile',width:70,styler: function(value,row,index){return 'font-size:11px;';},formatter:function(value,row,index){if (value) return 'SI'; else return 'NO';}},
+        {title:'Vista',sortable:true,field:'vista_responsabile',width:150,styler: function(value,row,index){return 'font-size:11px;';},formatter:function(value,row,index){if (value) return 'SI'; else return 'NO';}}
     ]],
     delete:[[
         {title:'',field:'pratica',sortable:false,width:40,formatter: function(value,row,index){return '<input type="radio" data-testo="' + row['numero'] + '" name="pratica" id="' + value + '"class="textbox delete-radio"/>'}},

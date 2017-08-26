@@ -65,6 +65,14 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
         <input name="mode" type="hidden" value="<?=$modo?>">
         <input name="id" type="hidden" value="<?=$id?>">
     </FORM>
+
+
+    <a href="invia_firma.php"
+       target="popup"
+       onclick="window.open('invia_firma.php?iddoc=<?php echo $id?>&idpratica=<?php echo $idpratica;?>','popup','width=600,height=480 scrollbars=no,resizable=no'); return false;">
+        Firma e invia il documento
+    </a>
+
 <?php
 }
 else{

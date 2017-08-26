@@ -6,8 +6,14 @@ $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $idpratica=isset($_REQUEST["pratica"])?($_REQUEST["pratica"]):('');
 $pr=new pratica($idpratica);
 $pr->createStructure();
+
 $file_config="$tabpath/avvio_procedimento";
 $intestazione='Avvio del procedimento e comunicazione responsabile';
+
+//Imposto i permessi di default per il modulo
+$_SESSION["PERMESSI"]= min($_SESSION["PERMESSI_$idpratica"],$_SESSION["PERMESSI_A_$idpratica"]);
+
+
 include "./lib/tabella_v.class.php";
 $db=appUtils::getDB();
 $sql="SELECT A.id,B.id as tipo,A.nome,B.nome as tipopratica FROM pe.e_categoriapratica A inner join pe.e_tipopratica B ON(tipo=tipologia) WHERE A.enabled=1 AND B.enabled=1;";
@@ -50,8 +56,12 @@ appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]
             $intestazione='Dati di chiusura del procedimento amministrativo - Avvenuta Verifica Atti';            
         }
         else{
-           
-             $file_config="$tabpath/avvio_procedimento";
+            if ($_SESSION["USER_ID"]==52) {
+                $file_config="$tabpath/avvio_procedimento_admin";
+            }
+            else  {
+                $file_config="$tabpath/avvio_procedimento";
+            }
             $intestazione='Avvio del procedimento e comunicazione responsabile';
         }
 
@@ -82,7 +92,8 @@ appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]
 				elseif ($modo=="edit"){	
 					$tabella->set_dati("pratica=$idpratica");
 				}
-				$tabella->edita();?>			  
+                $tabella->edita();
+                ?>
 			</td>
 		  </tr>
 

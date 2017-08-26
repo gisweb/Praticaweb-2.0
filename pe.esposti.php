@@ -7,6 +7,9 @@ $config_file="$tabpath/esposti";
 include "./lib/tabella_v.class.php";
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
+//Imposto i permessi di default per il modulo
+$_SESSION["PERMESSI"]= min($_SESSION["PERMESSI_$idpratica"],$_SESSION["PERMESSI_C_$idpratica"]);
+
 ?>
 <html>
 <head>
