@@ -564,6 +564,7 @@ class generalAppUtils {
             return $res;
         }
     }
+
 }
 
 ?>
