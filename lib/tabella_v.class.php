@@ -893,39 +893,53 @@ function elenco_select($tabella,$selezionato){
 	return $retval;
 }
 
-function elenco_selectdb($tabella,$selezionato,$filtro=''){
+    function elenco_selectdb($tabella,$selezionato,$filtro=''){
 // dalla tabella crea la lista di opzioni per il controllo SELECT
 
-	if (!isset($this->db)) $this->connettidb();
-	$sql="select id,opzione from $tabella";
-	if (trim($filtro)){
-		if (!ereg("=",$filtro)){
-			if ($this->array_dati[$this->curr_record][$filtro]){
-				$filtro="$filtro='".$this->array_dati[$this->curr_record][$filtro]."'";
-			}
-			elseif($_REQUEST[$filtro]){
-				$filtro="$filtro='".$_REQUEST[$filtro]."'";
-			}
-		}
-		$sql.=" where $filtro";
+        if (!isset($this->db)) $this->connettidb();
+        $sql="select * from $tabella";
+        if (trim($filtro)){
+            if (!ereg("=",$filtro)){
+                if ($this->array_dati[$this->curr_record][$filtro]){
+                    $filtro="$filtro='".$this->array_dati[$this->curr_record][$filtro]."'";
+                }
+				elseif($_REQUEST[$filtro]){
+                    $filtro="$filtro='".$_REQUEST[$filtro]."'";
+                }
+            }
+            $sql.=" where $filtro";
 
-	}
+        }
 
-	utils::debug(DEBUG_DIR.'selectdb.debug',$sql);
-	$result = $this->db->sql_query ($sql);
-	if (!$result){
-		return;
-	}
-	$retval="";
-	$elenco = $this->db->sql_fetchrowset();
-	$nrighe=$this->db->sql_numrows();
-	if (!$nrighe) return "\n<option value=\"\">Seleziona =====></option>";
-	for  ($i=0;$i<$nrighe;$i++){
-		(in_array($elenco[$i]["id"],$selezionato))?($selected="selected"):($selected="");
-		$retval.="\n<option value=\"".$elenco[$i]["id"]."\" $selected>".$elenco[$i]["opzione"]."</option>";
-  	}
-	return $retval;
-}
+        utils::debug(DEBUG_DIR.'selectdb.debug',$sql);
+        $result = $this->db->sql_query ($sql);
+        if (!$result){
+            return;
+        }
+        $retval="";
+        $elenco = $this->db->sql_fetchrowset();
+        $nrighe=$this->db->sql_numrows();
+        if (!$nrighe) return "\n<option value=\"\">Seleziona =====></option>";
+        $tmp = Array();
+        for  ($i=0;$i<$nrighe;$i++){
+            $el = $elenco[$i];
+            $prms = Array();
+            foreach($el as $k=>$v){
+                $prms[]=sprintf("data-%s=\"%s\"",$k,$v);
+            }
+            $params= implode(" ",$prms);
+            (in_array($elenco[$i]["id"],$selezionato))?($selected="selected"):($selected="");
+            $id = $elenco[$i]["id"];
+            $opzione = $elenco[$i]["opzione"];
+            //$retval.="\n<option value=\"".$elenco[$i]["id"]."\" $selected>".$elenco[$i]["opzione"]."</option>";
+            $tmp[]=<<<EOT
+<option value="$id" $params $selected >$opzione</option>
+EOT;
+
+        }
+        $retval = implode("",$tmp);
+        return $retval;
+    }
 
 function elenco_select_view($tabella,$filtro){
 	if (!isset($this->db)) $this->connettidb();
