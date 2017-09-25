@@ -204,7 +204,7 @@ select id,pratica,protocollo_fl::varchar as protocollo,data_prot_fl as data_prot
 UNION ALL
 SELECT id,pratica,protocollo::varchar,data_prot as data_protocollo,'Istanza'::varchar as tipo,1 as ordine from pe.avvioproc WHERE online=1)
 SELECT
-    XX.tipo as tipo_istanza,A.pratica,XX.data_protocollo as data_ordinamento,A.numero,A.protocollo,A.data_prot,A.data_presentazione,A.oggetto,1 as online,
+    XX.tipo as tipo_istanza,A.pratica,XX.data_protocollo as data_ordinamento,A.numero,XX.protocollo,XX.data_protocollo as data_prot,A.data_presentazione,A.oggetto,1 as online,
     B.nome as tipo_pratica,C.descrizione as tipo_intervento,coalesce(D.nome,'non assegnata') as responsabile,
     E.richiedente,F.progettista,L.esecutore,G.elenco_ct,H.elenco_cu,I.ubicazione,
     CASE WHEN (coalesce(A.resp_it,coalesce(A.resp_ia,0)) = 0) THEN 0 ELSE 1 END as assegnata_istruttore
