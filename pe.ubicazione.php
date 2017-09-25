@@ -20,7 +20,7 @@ $comune = appUtils::getComune($idpratica);
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
 <?php
-    utils::loadJS(Array('init'));
+    utils::loadJS(Array('init','form/pe.ubicazione'));
     utils::loadCss();
 
 ?>
