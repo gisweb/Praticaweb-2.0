@@ -91,6 +91,29 @@ switch($action){
         $result=appUtils::groupData($groupBy,$res);
         //utils::debug(DEBUG_DIR."groupby.debug",$result);
         break;
+    case "search-online":
+        $queryName="search-online";
+        $order="ORDER BY data_ordinamento";
+        $sql =<<<EOT
+select id,pratica,prot_integ::varchar as protocollo,data_integ as data_protocollo,'Integrazione'::varchar as tipo,2 as ordine from pe.integrazioni where online=1
+UNION ALL
+select id,pratica,protocollo_il::varchar as protocollo,data_prot_il as data_protocollo,'Inizio Lavori'::varchar as tipo,3 as ordine from pe.lavori where il_online=1
+UNION ALL
+select id,pratica,protocollo_fl::varchar as protocollo,data_prot_fl as data_protocollo,'Fine Lavori'::varchar as tipo,4 as ordine from pe.lavori where fl_online=1
+UNION ALL
+SELECT id,pratica,protocollo::varchar,data_prot as data_protocollo,'Istanza'::varchar as tipo,1 as ordine from pe.avvioproc WHERE online=1
+EOT;
+
+
+
+        $tmp=$db->fetchAll($sql);
+        $total=count($tmp);
+        $sql=sprintf($query[$queryName],$order,$orderType,$rows,$offset);
+        utils::debug(DEBUG_DIR."search-online.debug",$sql);
+        $res=$db->fetchAll($sql);
+        $result=Array("total"=>$total,"rows"=>$res,"filter"=>$filter,"sql"=>$sql,"elenco_id"=>Array());
+
+        break;
     default:
         $app = $_REQUEST["application"];
         switch($app){
