@@ -686,6 +686,13 @@ EOT;
 <a href="#" id="$campo" style="text-decoration:none;width:$size" data-pratica="$pr" $html5Attr>$testo &nbsp;<span style="display:inline-block" class="ui-icon $class"></a>
 EOT;
 				break;
+			case "link":
+				$value = $dati[$campo];
+				$retval =<<<EOT
+	<a href="$value" target="iol">$value</a>
+EOT;
+
+
 			
 	}
 	return $retval;
