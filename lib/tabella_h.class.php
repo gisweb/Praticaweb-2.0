@@ -573,6 +573,7 @@ function zoomto_gc($tabella,$id){
 			return $func;
 			break;
 		case "vigi.indirizzi":
+        case "pe.unita_immobiliari":
 		case "pe.indirizzi":
 			$buff=50;
 			$sql = "SELECT via,civico from pe.indirizzi where id=$id;"; 
