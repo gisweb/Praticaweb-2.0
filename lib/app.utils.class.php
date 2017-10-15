@@ -551,6 +551,20 @@ class generalAppUtils {
     	}
     	return $result;
     }
+
+    static function getComune($pratica,$app='pe'){
+        $conn=utils::getDb();
+        $sql = ($app=='cdu')?("SELECT cod_belfiore FROM cdu.richiesta WHERE pratica=?;"):("SELECT cod_belfiore FROM pe.avvioproc WHERE pratica=?;");
+        $stmt=$conn->prepare($sql);
+        if(!$stmt->execute(Array($pratica))){
+            return '';
+        }
+        else{
+            $res=$stmt->fetchColumn();
+            return $res;
+        }
+    }
+
 }
 
 ?>

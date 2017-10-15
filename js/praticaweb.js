@@ -6,13 +6,10 @@ var suggestUrl=appBaseUrl+'/services/xSuggest.php';
 
 
 function setDatiAutoSuggest(event,ui){
-    console.log(ui);
     if (typeof(ui.item.child)!='undefined'){
         $.each(ui.item.child,function(k,v){
             $('#'+k).val(v);
-            
         });
-        
     }
 }
 
@@ -71,8 +68,6 @@ function loadInto(url,prms){
 }
 function linkToEdit(url,prms){
     if (url && url.indexOf('.php')=='-1' && url.indexOf('.docx')=='-1' && url.indexOf('.odt')=='-1') url += '.php';
-    
-    
     var form='<form action="'+url+'" method="POST" id="submitFrm"></form>';
     prms['mode']='edit';
     if (!window.parent){

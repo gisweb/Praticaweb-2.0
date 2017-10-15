@@ -11,7 +11,7 @@ $titolo=$_SESSION["TITOLO_$idpratica"];
 $azione=(isset($_POST["azione"]) && $_POST['azione'])?($_POST['azione']):(null);
 $tabpath="pe";
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
-
+$comune = appUtils::getComune($idpratica);
 ?>
 <html>
 <head>
@@ -20,7 +20,7 @@ appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
 <?php
-    utils::loadJS(Array('init'));
+    utils::loadJS(Array('init','form/pe.ubicazione'));
     utils::loadCss();
 
 ?>
@@ -65,6 +65,7 @@ if (($modo=="edit") or ($modo=="new")){
 				<!-- contenuto-->
              <form method=post id="ubicazione" action="praticaweb.php">
 				<input type="hidden" name="id" id="id" value="<?php echo $id;?>">
+				<input type="hidden" name="cod_belfiore" id="cod_belfiore" value="<?php echo $comune;?>">
 				<input type="hidden" name="mode" value="<?php echo $modo;?>">
 				<input name="active_form" type="hidden" value="pe.ubicazione.php">
 				<input type="hidden" name="tab" value=<?=$_REQUEST["tab"]?>>

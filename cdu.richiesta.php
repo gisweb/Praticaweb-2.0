@@ -101,6 +101,7 @@ function link(id){
 <?php if (($modo=="edit") or ($modo=="new")){
 	//---<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  EDITA MAPPALI ASSERVITI >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>------------------------------>
 	if($_POST["mappali"]){
+		$comune = appUtils::getComune($idpratica,'cdu');
 	//print_r($_POST);
 		$tabellav=new tabella_v("$tabpath/mappali",'new');
 		$tabellah=new tabella_h("$tabpath/mappali",'edit');
@@ -118,7 +119,7 @@ function link(id){
 		  <tr> 
 			<td> 
 				<!-- contenuto-->
-				
+				<input name="cod_belfiore" type="hidden" value="<?php echo $comune;?>">
 				<input type="hidden" name="idriga" id="idriga" value="0">
 				<input name="active_form" type="hidden" value="cdu.richiesta.php">
 				<input type="hidden" name="mode" value="new">

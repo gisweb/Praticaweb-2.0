@@ -262,7 +262,47 @@ EOT;
 			$opzioni=$this->elenco_select_view($size[1],'id in ('. $dati[$campo].')');
 			$retval="<ol>$opzioni</ol>";
 			break;
-		case "selectdb"://elenco preso da query su db
+
+        case "_multiselectdb":
+            $val = $dati[$campo];
+            if ($val && $val!="{}"){
+                $vals = explode(",",str_replace("{","",str_replace("}","",$val)));
+            }
+            else{
+                $vals = Array();
+            }
+            $size=explode("x",$w);
+            if ($size[2]=="pratica"){
+                $filtro = sprintf("(pratica = -1 or pratica = %d)",$this->idpratica);
+            }
+            else{
+                $filtro=$size[2];
+            }
+            $opzioni=$this->elenco_opzioni($size[1],Array($dati[$campo]),isset($size[2])?($filtro):(null));
+            $width = sprintf("%spx;",$size[0]);
+            foreach($opzioni as $opt){
+                $dataParams=Array();
+                $value=$opt["value"];
+                $label = $opt["label"];
+                $params = json_decode($opt["params"]);
+                foreach($params as $k=>$v) $dataParams[]=sprintf("data-%s='%s'",$k,$v);
+                $params=implode(" ",$dataParams);
+                $selezionato = (in_array($value,$vals))?("selected"):("");
+                $fieldName = sprintf("%s[]",$campo);
+                $res[] = <<<EOT
+				<OPTION value="$value" $selezionato $params>$label</OPTION>
+EOT;
+            }
+            $retval =<<<EOT
+			<SELECT class="$class multi" multiple="true" style="width:$width"  name="$fieldName"  id="$campo" $html5Attr $disabilitato>
+				%s
+			</SELECT>
+EOT;
+            $retval = sprintf($retval,implode("\n",$res));
+            break;
+
+
+        case "selectdb"://elenco preso da query su db
 			
 			$size=explode("x",$w);
 			$opzioni=$this->elenco_selectdb($size[1],Array($dati[$campo]),isset($size[2])?($size[2]):(null));
@@ -297,7 +337,43 @@ EOT;
 			if($dati[$campo]==-1) $ch="<font color=\"FF0000\">EX $ch</font>";
 			$retval="<b>$ch</b><input type=\"checkbox\"  name=\"$campo\"  id=\"$campo\" $selezionato $html5Attr $disabilitato>&nbsp;&nbsp;";
 			break;
-		
+        case "_checkbox":
+            $val = $dati[$campo];
+            if ($val && $val!="{}"){
+                $vals = explode(",",str_replace("{","",str_replace("}","",$val)));
+            }
+            else{
+                $vals = Array();
+            }
+            $size=explode("x",$w);
+            if ($size[2]=="pratica"){
+                $filtro = sprintf("(pratica = -1 or pratica = %d)",$this->idpratica);
+            }
+            else{
+                $filtro=$size[2];
+            }
+            $opzioni=$this->elenco_opzioni($size[1],Array($dati[$campo]),isset($size[2])?($filtro):(null));
+            $width = sprintf("%spx;",$size[0]);
+            if (!$opzioni) $res[] ="<p><b>Nessun Elemento Trovato</b></p>";
+            foreach($opzioni as $opt){
+                $dataParams=Array();
+                $value=$opt["value"];
+                $label = $opt["label"];
+                $params = json_decode($opt["params"]);
+                foreach($params as $k=>$v) $dataParams[]=sprintf("data-%s='%s'",$k,$v);
+                $params=implode(" ",$dataParams);
+                $selezionato = (in_array($value,$vals))?("checked"):("");
+                $fieldName = sprintf("%s[]",$campo);
+                $objId = sprintf("%s[%s]",$campo,$value);
+
+                $res[] = <<<EOT
+			<label for="$objId" class="texbox">$label</label>
+			<input type="checkbox" class="textbox" name="$fieldName" id="$objId" value="$value" $html5Attr $params $selezionato $disabilitato />
+EOT;
+            }
+            $retval = implode("\n",$res);
+
+            break;
 		case "radio":
 			(($dati[$campo]=="t") or ($dati[$campo]=="on") or ($dati[$campo]==1))?($selezionato="checked"):($selezionato="");
 			$retval="<input type=\"radio\" name=\"opzioni\"  id=\"$campo\" $selezionato $html5Attr $disabilitato>";
@@ -610,6 +686,13 @@ EOT;
 <a href="#" id="$campo" style="text-decoration:none;width:$size" data-pratica="$pr" $html5Attr>$testo &nbsp;<span style="display:inline-block" class="ui-icon $class"></a>
 EOT;
 				break;
+			case "link":
+				$value = $dati[$campo];
+				$retval =<<<EOT
+	<a href="$value" target="iol">$value</a>
+EOT;
+
+
 			
 	}
 	return $retval;
@@ -817,39 +900,53 @@ function elenco_select($tabella,$selezionato){
 	return $retval;
 }
 
-function elenco_selectdb($tabella,$selezionato,$filtro=''){
+    function elenco_selectdb($tabella,$selezionato,$filtro=''){
 // dalla tabella crea la lista di opzioni per il controllo SELECT
 
-	if (!isset($this->db)) $this->connettidb();
-	$sql="select id,opzione from $tabella";
-	if (trim($filtro)){
-		if (!ereg("=",$filtro)){
-			if ($this->array_dati[$this->curr_record][$filtro]){
-				$filtro="$filtro='".$this->array_dati[$this->curr_record][$filtro]."'";
-			}
-			elseif($_REQUEST[$filtro]){
-				$filtro="$filtro='".$_REQUEST[$filtro]."'";
-			}
-		}
-		$sql.=" where $filtro";
+        if (!isset($this->db)) $this->connettidb();
+        $sql="select * from $tabella";
+        if (trim($filtro)){
+            if (!ereg("=",$filtro)){
+                if ($this->array_dati[$this->curr_record][$filtro]){
+                    $filtro="$filtro='".$this->array_dati[$this->curr_record][$filtro]."'";
+                }
+				elseif($_REQUEST[$filtro]){
+                    $filtro="$filtro='".$_REQUEST[$filtro]."'";
+                }
+            }
+            $sql.=" where $filtro";
 
-	}
+        }
 
-	utils::debug(DEBUG_DIR.'selectdb.debug',$sql);
-	$result = $this->db->sql_query ($sql);
-	if (!$result){
-		return;
-	}
-	$retval="";
-	$elenco = $this->db->sql_fetchrowset();
-	$nrighe=$this->db->sql_numrows();
-	if (!$nrighe) return "\n<option value=\"\">Seleziona =====></option>";
-	for  ($i=0;$i<$nrighe;$i++){
-		(in_array($elenco[$i]["id"],$selezionato))?($selected="selected"):($selected="");
-		$retval.="\n<option value=\"".$elenco[$i]["id"]."\" $selected>".$elenco[$i]["opzione"]."</option>";
-  	}
-	return $retval;
-}
+        utils::debug(DEBUG_DIR.'selectdb.debug',$sql);
+        $result = $this->db->sql_query ($sql);
+        if (!$result){
+            return;
+        }
+        $retval="";
+        $elenco = $this->db->sql_fetchrowset();
+        $nrighe=$this->db->sql_numrows();
+        if (!$nrighe) return "\n<option value=\"\">Seleziona =====></option>";
+        $tmp = Array();
+        for  ($i=0;$i<$nrighe;$i++){
+            $el = $elenco[$i];
+            $prms = Array();
+            foreach($el as $k=>$v){
+                $prms[]=sprintf("data-%s=\"%s\"",$k,$v);
+            }
+            $params= implode(" ",$prms);
+            (in_array($elenco[$i]["id"],$selezionato))?($selected="selected"):($selected="");
+            $id = $elenco[$i]["id"];
+            $opzione = $elenco[$i]["opzione"];
+            //$retval.="\n<option value=\"".$elenco[$i]["id"]."\" $selected>".$elenco[$i]["opzione"]."</option>";
+            $tmp[]=<<<EOT
+<option value="$id" $params $selected >$opzione</option>
+EOT;
+
+        }
+        $retval = implode("",$tmp);
+        return $retval;
+    }
 
 function elenco_select_view($tabella,$filtro){
 	if (!isset($this->db)) $this->connettidb();

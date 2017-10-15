@@ -137,7 +137,8 @@ switch($field) {
         break;
     case "foglio":
         $sezione=($_REQUEST["sezione"])?($_REQUEST["sezione"]):('%');
-        $sql="SELECT DISTINCT foglio as valore,length(foglio) FROM nct.particelle WHERE foglio ilike '%$value%' and (sezione ilike '$sezione' or sezione is null) order by 2,1";
+	$filtroComune = ($_REQUEST["cod_belfiore"])?(" AND comune = '".$_REQUEST["cod_belfiore"]."'"):("");
+        $sql="SELECT DISTINCT foglio as valore,length(foglio) FROM nct.particelle WHERE foglio ilike '%$value%' AND (sezione ilike '$sezione' or sezione is null) $filtroComune order by 2,1";
         if($db->sql_query($sql)){
             $res=$db->sql_fetchrowset();
             for($i=0;$i<count($res);$i++){
@@ -162,8 +163,8 @@ switch($field) {
     case 'mappale':
         $fg=(isset($_REQUEST['foglio']))?(addslashes($_REQUEST['foglio'])):('%');
         $sezione=($_REQUEST["sezione"])?($_REQUEST["sezione"]):('%');
-        $sql="SELECT DISTINCT mappale as valore,CASE WHEN (regexp_replace(mappale,'([^0-9]+)','','g'))='' THEN 0 ELSE regexp_replace(mappale,'([^0-9]+)','','g')::integer end FROM nct.particelle WHERE mappale ilike '$value%' and foglio ilike '$fg' and (sezione ilike '$sezione' or sezione is null) order by 2";
-
+	$filtroComune = ($_REQUEST["cod_belfiore"])?(" AND comune = '".$_REQUEST["cod_belfiore"]."'"):("");
+        $sql="SELECT DISTINCT mappale as valore,CASE WHEN (regexp_replace(mappale,'([^0-9]+)','','g'))='' THEN 0 ELSE regexp_replace(mappale,'([^0-9]+)','','g')::integer end FROM nct.particelle WHERE mappale ilike '$value%' and foglio ilike '$fg' and (sezione ilike '$sezione' or sezione is null) $filtroComune order by 2";
         if($db->sql_query($sql)){
             $res=$db->sql_fetchrowset();
             for($i=0;$i<count($res);$i++){
@@ -184,6 +185,7 @@ switch($field) {
             );
         break;
     case 'via':
+	$filtroComune = ($_REQUEST["cod_belfiore"])?(" AND comune = '".$_REQUEST["cod_belfiore"]."'"):("");
         $sql="SELECT DISTINCT nome as valore FROM civici.pe_vie WHERE nome ilike '%$value%' order by 1";
         if($db->sql_query($sql)){
             $res=$db->sql_fetchrowset();
