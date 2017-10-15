@@ -39,7 +39,7 @@ else{
 }
 
 $st ="Content-Disposition: $contentDisposition; filename=\"$fName\"";
-
+//utils::debug(DEBUG_DIR."/OPENDOCUMENT.debug",$pr);
 //echo $url;exit;
 if ($contentDisposition=='attachment'){
     header('Content-Description: File Transfer');

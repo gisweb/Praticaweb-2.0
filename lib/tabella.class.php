@@ -543,7 +543,7 @@ EOT;
         $size=array_shift($prms);
         $form=array_shift($prms);
         for($i=0;$i<count($prms);$i++){
-	    if (in_array(array_keys($this->array_dati[$row]))){
+	    if (in_array($prms[$i],array_keys($this->array_dati[$row]))){
 		$params[$prms[$i]]=$this->array_dati[$row][$prms[$i]];
 	    }
 	    else{

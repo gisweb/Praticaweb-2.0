@@ -120,6 +120,7 @@ EOT;
 		case "btn_edit":
 			$prms=$this->getParams($row,$w);
 			$obj=json_encode($prms['params']);
+//print_array($w);
 			$destination=($this->array_dati[$row]["row_form"])?($this->array_dati[$row]["row_form"]):($prms['form']);
 			$retval="";
 			
@@ -557,7 +558,6 @@ function zoomto_gc($tabella,$id){
             		$sezione='';
 			if ($mappale[2]) $sezione=" and sezione='". $mappale[2] ."'";
 			$sql = "SELECT gid, xmin(box3d(".THE_GEOM."))-50 as xmin, ymin(box3d(".THE_GEOM."))-50 as ymin, xmax(box3d(".THE_GEOM."))+50 as xmax, ymax(box3d(".THE_GEOM."))+50 as ymax FROM nct.particelle where foglio='". $mappale[1] ."' and mappale='" .$mappale[0] . "'"  .$sezione .$filter_comune;
-
 			$result = $this->db->sql_query($sql); 
 			$map=$this->db->sql_fetchrow();
 			

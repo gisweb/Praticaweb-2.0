@@ -46,7 +46,7 @@ EOT;
     default:
         $sql = <<<EOT
 WITH pratica AS (
-select pratica,B.nome as "Tipo Pratica",numero as "Numero",protocollo as "Protocollo",to_char(coalesce(data_prot,data_presentazione),'dd/mm/YYYY') as "Data Protocollo",oggetto as "Oggetto",note as "Note" from pe.avvioproc A inner join pe.e_tipopratica B on(A.tipo=B.id)
+select pratica,B.nome as "Tipo Pratica",numero as "Numero",protocollo as "Protocollo",to_char(coalesce(data_prot,data_presentazione),'dd/mm/YYYY') as "Data Protocollo",oggetto as "Oggetto",note as "Note",CASE WHEN (vincolo_paes=1) THEN 'SI' ELSE 'NO' END as "Vincolo Paesaggistico" from pe.avvioproc A inner join pe.e_tipopratica B on(A.tipo=B.id)
 ),
 richiedente AS (
 select pratica,array_to_string(array_agg(DISTINCT coalesce(ragsoc,coalesce(cognome||' '||nome))),',') as "Richiedente" from pe.soggetti where richiedente=1 and voltura=0 group by pratica
