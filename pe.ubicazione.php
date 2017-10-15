@@ -103,7 +103,7 @@ if (($modo=="edit") or ($modo=="new")){
 <?php
 $array_file_tab=array("indirizzi","catasto_terreni","catasto_urbano","uiu");
 $array_titolo=array("Indirizzi","Catasto Terreni","Catasto Urbano","Unità Immobiliare");
-for($i=0;$i<3;$i++){
+for($i=0;$i<4;$i++){
 
     $file_tab=$array_file_tab[$i];
     $titolo=$array_titolo[$i];
