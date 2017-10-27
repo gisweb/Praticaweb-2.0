@@ -2,11 +2,12 @@
 $query=Array();
 $query["default"]=<<<EOT
 SELECT
-    A.pratica,coalesce(coalesce(data_prot,data_presentazione),'01/01/1970'::date) as data_ordinamento,A.numero,A.protocollo,A.data_prot,A.data_presentazione,A.oggetto,A.online,
+    A.pratica,coalesce(coalesce(data_prot,data_presentazione),'01/01/1970'::date) as data_ordinamento
+    ,A.numero,A.protocollo,A.data_prot,A.data_presentazione,A.oggetto,A.online,A.sportello,A.note,A.pos_archivio,
     B.nome as tipo_pratica,C.descrizione as tipo_intervento,coalesce(D.nome,'non assegnata') as responsabile,
     E.richiedente,F.progettista,L.esecutore,G.elenco_ct,H.elenco_cu,I.ubicazione,
     CASE WHEN (coalesce(A.resp_it,coalesce(A.resp_ia,0)) = 0) THEN 0 ELSE 1 END as assegnata_istruttore
-    ,coalesce(O.nome,'non assegnata') as responsabile_it,M.titolo,M.data_rilascio,A.sportello,Q.opzione as vincolo_paes
+    ,coalesce(O.nome,'non assegnata') as responsabile_it,M.titolo,M.data_rilascio,Q.opzione as vincolo_paes
     ,coalesce(R.nome,'non assegnata') as responsabile_ia
 FROM pe.avvioproc A LEFT JOIN 
 pe.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN
