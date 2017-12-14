@@ -37,7 +37,7 @@ $(document).ready(function(){
     $('[data-plugins="dynamic-search"]').bind('change',function(event){
         event.preventDefault();
         dataPost=getSearchFilter();
-        $('#result-table').datagrid('load',{data:dataPost});
+        $('#result-table').datagrid('load',{data:dataPost,action:'search-online'});
     });
     var oper='AND';
     var dataPost=getSearchFilter();

@@ -12,11 +12,15 @@ if ($_POST["idpratica"]) {
 	print_debug($sql);
 	$tipo_comm=$db->sql_fetchfield("tipo_comm");
 	$data=$db->sql_fetchfield("data_convocazione");
+        
 	for($i=0;$i<count($pratiche);$i++){
+                $sql= "SELECT max(coalesce(ordine,0))+1 as ordine FROM pe.pareri WHERE data_rich='$data'::date AND ente=$tipo_comm;";
+                $db->sql_query($sql);
+                $ordine = $db->sql_fetchfield("ordine");
 		$tmsins=time();
-		$sql="INSERT INTO pe.pareri(pratica,ente,data_rich,data_ril,uidins,tmsins) VALUES(".$pratiche[$i].",$tipo_comm,'$data'::date,'$data'::date,$uid,$tmsins)";
+		$sql="INSERT INTO pe.pareri(pratica,ente,data_rich,data_ril,ordine,uidins,tmsins) VALUES(".$pratiche[$i].",$tipo_comm,'$data'::date,'$data'::date,$ordine,$uid,$tmsins)";
 		$db->sql_query($sql);
-		print_debug($sql);
+		echo "<p>$sql</p>";
 	}
 }
 $active_form="ce.ordinegiorno_paesaggio.php?comm_paesaggio=1&pratica=$idpratica";
