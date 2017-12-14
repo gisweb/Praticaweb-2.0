@@ -2,6 +2,7 @@
 
 include_once("login.php");
 include "./lib/tabella_v.class.php";
+include "./lib/tabella_h.class.php";
 $tabpath="pe";
 $idpratica=$_REQUEST["pratica"];
 
@@ -21,18 +22,7 @@ appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]
     utils::loadJS();
     ?>
 
-    <script LANGUAGE="JavaScript">
-        function confirmSubmit()
-        {
-            var msg='Sicuro di voler eliminare definitivamente il parere corrente?';
-            var agree=confirm(msg);
-            if (agree)
-                return true ;
-            else
-                return false ;
-        }
-
-    </script>
+    
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBjBtRCk34lZRaccgkAoUvV2JpiZhAnflk&libraries=drawing"></script>
 
     <script type="text/javascript" src="js/proj4js.js"></script>
@@ -65,12 +55,26 @@ if (($modo=="edit") or ($modo=="new")) {
                     <div id="coords"></div>
                     <!-- contenuto-->
                     <?php
+                    
+                    $tabella->set_dati("pratica=$idpratica");
+                    for($i=0;$i<count($tabella->array_dati);$i++){
+                        $points[]=$tabella->array_dati[$i];
+                    }
+                    $geoms = json_encode($points);
+                    echo <<<EOT
+            <div id="map"></div>
+            <div id="coords"></div>
+            <input type="hidden" name="geometry" id="geometry" value="$geom">
+            <input type="hidden" name="coordx" id="coordx" value="$x">
+            <input type="hidden" name="coordy" id="coordy" value="$y">
+            <input type="hidden" name="points" id="points" value="$geoms">   
+EOT;
                     if($Errors){
                         $tabella->set_errors($Errors);
                         $tabella->set_dati($_POST);
                     }
                     elseif ($modo=="edit"){
-                        $tabella->set_dati("pratica=$idpratica");
+                        $tabella->set_dati("pratica=$idpratica and id = $id");
                     }
                     $tabella->edita();
                     ?>
@@ -95,10 +99,16 @@ else {
             <TD>
 
                 <?php
-                $tabella=new Tabella_v($file_config,$modo);
+                $modo="list";
+                $btn="nuovo";
+                $tabella=new Tabella_h($file_config,$modo);
                 $tabella->set_dati("pratica=$idpratica");
-                if($tabella->num_record){
-                    $btn="modifica";
+                for($i=0;$i<count($tabella->array_dati);$i++){
+                    $points[]=$tabella->array_dati[$i];
+                }
+                $geoms = json_encode($points);
+                /*if($tabella->num_record){
+                    
                     $geom = $tabella->array_dati[0]["geometry"];
                     $x = $tabella->array_dati[0]["coordx"];
                     $y = $tabella->array_dati[0]["coordy"];
@@ -108,19 +118,18 @@ else {
                     $x = "";
                     $y = "";
                     $btn="nuovo";
-                }
+                }*/
                 $tabella->set_titolo("Posizione in mappa",$btn,array("tabella"=>"posizione","id"=>""));
-
-                $tabella->get_titolo();
-	        echo <<<EOT
+                echo <<<EOT
                 <div id="map"></div>
                 <div id="coords"></div>
                 <input type="hidden" name="geometry" id="geometry" value="$geom">
                 <input type="hidden" name="coordx" id="coordx" value="$x">
                 <input type="hidden" name="coordy" id="coordy" value="$y">
+                <input type="hidden" name="points" id="points" value="$geoms">   
+                <input type="hidden" id="mode" value="$modo">   
 EOT;
-
-
+                $tabella->get_titolo();
                 $tabella->tabella();
 
                 ?>

@@ -99,7 +99,7 @@
             });
 
             //Aggiungo il marker salvato
-            if($("#geometry").val()){
+            /*if($("#geometry").val()){
                 mapMarker = new google.maps.Marker(mapMarkerOptions);
                 var p = $("#geometry").val().split(' ');
                 if (p.length==2){
@@ -112,6 +112,36 @@
                 }
                 google.maps.event.addListener(mapMarker, 'dragend', function() {
                     writePosition(mapMarker);
+                });
+            }
+            */
+            if($("#points").val()){
+                var id = 0;
+                var mode = $('#mode').val();
+                
+                if (mode != 'list'){
+                    id = $('#id').val();
+                }
+                var values = JSON.parse($("#points").val());
+                $.each(values, function( index, value ) {
+                    mapMarker = new google.maps.Marker(mapMarkerOptions);
+                    var p = value["geometry"].split(' ');
+                    if (p.length==2){
+                        var position = {lat: parseFloat(p[1]), lng: parseFloat(p[0])}
+                        var mapMarkerOptions = {
+                            icon: 'images/marker32.png',
+                            draggable: ((mode=='list' || value['id']!= id) ? false : true),
+                            title: value['annotazioni']
+                        }
+                        mapMarker = new google.maps.Marker(mapMarkerOptions);
+                        mapMarker.setPosition(position);
+                        mapMarker.setMap(map);
+                        map.setCenter(position);
+                        map.setZoom(18);
+                    }
+                    google.maps.event.addListener(mapMarker, 'dragend', function() {
+                        writePosition(mapMarker);
+                    });
                 });
             }
 
