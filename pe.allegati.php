@@ -38,7 +38,10 @@ appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]
         $dummytable=new tabella_h("buttons",'new');
         $num_allegati=$tabella_allegati->set_dati("pratica=$idpratica  and protocollo='$prot' and (allegato=1 or mancante=1)");
         $num_elenco=$tabella_elenco->set_dati("id not in (select 'doc_'||documento::varchar as id from pe.allegati inner join pe.e_documenti on(e_documenti.id=documento) where  (allegato=1 or integrato=1 or mancante=1) and pratica=$idpratica)");
-
+/*if ($_SESSION["USER_ID"]==1) {
+print_array($tabella_elenco);
+echo "<p>PIPPO</p>";
+}*/
         $tabella_allegati->set_titolo($nomeiter);
         $tabella_elenco->set_titolo($nomeiter);
         $tabella_allegati->set_color("#728bb8","#FFFFFF",0,0);

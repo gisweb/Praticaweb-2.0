@@ -9,7 +9,16 @@ $idpratica=$_REQUEST["pratica"];
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $file_config="$tabpath/posizione";
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
-
+$dbh = utils::getDB();
+$sql = "SELECT * FROM pe.posizione WHERE pratica=?";
+$stmt = $dbh->prepare($sql);
+if( $stmt->execute(Array($idpratica))){
+    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+else{
+    $data = Array();
+}
+$geoms = json_encode($data);
 ?>
 <html>
 <head>
@@ -20,15 +29,26 @@ appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]
     <?php
     utils::loadCss();
     utils::loadJS();
+    $jsrand = sprintf("js/map.js");
     ?>
 
     
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBjBtRCk34lZRaccgkAoUvV2JpiZhAnflk&libraries=drawing"></script>
-
+    <script>
+       var map;
+       var bounds;
+    </script>
     <script type="text/javascript" src="js/proj4js.js"></script>
     <script type="text/javascript" src="js/local/layersData.js"></script>
-    <script type="text/javascript" src="js/map.js"></script>
+    <script type="text/javascript" src="<?php echo $jsrand;?>"></script>
     <link rel="stylesheet" type="text/css" media="all" href="css/map.css" />
+    <script>
+        $(document).ready(function(){
+        console.log(bounds);
+        map.fitBounds(bounds);       // auto-zoom
+            map.panToBounds(bounds);     // auto-center
+        });
+    </script>
 </head>
 <body  background="">
 <?php
@@ -44,31 +64,19 @@ if (($modo=="edit") or ($modo=="new")) {
     //aggiungendo un nuovo parere uso pareri_edit che contiene anche l'elenco degli ENTI
     ?>
     <!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN EDITING  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
-    <FORM height=0 method="post" action="praticaweb.php">
+    <FORM height=0  method="post" action="praticaweb.php">
         <TABLE cellPadding=0 cellspacing=0 border=0 class="stiletabella" width="99%" align="center">
             <TR> <!-- intestazione-->
                 <TD><H2 class="blueBanner">Posizione in mappa</H2></TD>
             </TR>
             <TR>
                 <td>
+<!--
                     <div id="map"></div>
                     <div id="coords"></div>
+-->
                     <!-- contenuto-->
                     <?php
-                    
-                    $tabella->set_dati("pratica=$idpratica");
-                    for($i=0;$i<count($tabella->array_dati);$i++){
-                        $points[]=$tabella->array_dati[$i];
-                    }
-                    $geoms = json_encode($points);
-                    echo <<<EOT
-            <div id="map"></div>
-            <div id="coords"></div>
-            <input type="hidden" name="geometry" id="geometry" value="$geom">
-            <input type="hidden" name="coordx" id="coordx" value="$x">
-            <input type="hidden" name="coordy" id="coordy" value="$y">
-            <input type="hidden" name="points" id="points" value="$geoms">   
-EOT;
                     if($Errors){
                         $tabella->set_errors($Errors);
                         $tabella->set_dati($_POST);
@@ -76,7 +84,20 @@ EOT;
                     elseif ($modo=="edit"){
                         $tabella->set_dati("pratica=$idpratica and id = $id");
                     }
-                    $tabella->edita();
+
+                    //for($i=0;$i<count($tabella->array_dati);$i++){
+                    //    $points[]=$tabella->array_dati[$i];
+                    //}
+                    //$geoms = json_encode($points);
+                    echo <<<EOT
+            <div id="map"></div>
+            <div id="coords"></div>
+            <input type="hidden" name="points" id="points" value='$geoms'>
+            <input type="hidden" id="id" value="$id">
+            <div id="coords"></div>
+EOT;
+			$tabella->edita();
+
                     ?>
                     <!-- fine contenuto-->
                 </TD>
@@ -84,7 +105,7 @@ EOT;
 
         </TABLE>
         <input name="active_form" type="hidden" value="pe.posizione.php">
-        <input name="mode" type="hidden" value="<?php echo $modo; ?>">
+        <input id="mode" name="mode" type="hidden" value="<?php echo $modo; ?>">
 
     </FORM>
     <?php
@@ -101,7 +122,7 @@ else {
                 <?php
                 $modo="list";
                 $btn="nuovo";
-                $tabella=new Tabella_h($file_config,$modo);
+                $tabella=new Tabella_h("pe/posizione",$modo);
                 $tabella->set_dati("pratica=$idpratica");
                 for($i=0;$i<count($tabella->array_dati);$i++){
                     $points[]=$tabella->array_dati[$i];
@@ -119,18 +140,18 @@ else {
                     $y = "";
                     $btn="nuovo";
                 }*/
-                $tabella->set_titolo("Posizione in mappa",$btn,array("tabella"=>"posizione","id"=>""));
+                $tabella->set_titolo("Posizione in mappa",$btn,array("tabella"=>"posizione"));
                 echo <<<EOT
                 <div id="map"></div>
                 <div id="coords"></div>
                 <input type="hidden" name="geometry" id="geometry" value="$geom">
                 <input type="hidden" name="coordx" id="coordx" value="$x">
                 <input type="hidden" name="coordy" id="coordy" value="$y">
-                <input type="hidden" name="points" id="points" value="$geoms">   
+                <input type="hidden" name="points" id="points" value='$geoms'/>   
                 <input type="hidden" id="mode" value="$modo">   
 EOT;
                 $tabella->get_titolo();
-                $tabella->tabella();
+                $tabella->elenco();
 
                 ?>
 
