@@ -113,6 +113,7 @@
             });
             // 
 	    bounds = new google.maps.LatLngBounds();
+            console.log(bounds);
             //Aggiungo il marker salvato
             if($("#points").val()){
                 var id = 0;
@@ -185,7 +186,6 @@
 
             }
             var xy = bounds.getCenter();
-            //console.log(xy.toJSON());
             map.fitBounds(bounds);       // auto-zoom
             map.panToBounds(bounds);     // auto-center
             //console.log(map.getCenter().toJSON());

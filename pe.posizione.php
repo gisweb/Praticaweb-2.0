@@ -44,8 +44,7 @@ $geoms = json_encode($data);
     <link rel="stylesheet" type="text/css" media="all" href="css/map.css" />
     <script>
         $(document).ready(function(){
-        console.log(bounds);
-        map.fitBounds(bounds);       // auto-zoom
+            map.fitBounds(bounds);       // auto-zoom
             map.panToBounds(bounds);     // auto-center
         });
     </script>
