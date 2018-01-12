@@ -194,14 +194,12 @@
             }
             if (foundPoints){
 	        var xy = bounds.getCenter();
-        	map.fitBounds(bounds);       // auto-zoom
+                map.fitBounds(bounds);       // auto-zoom
             	map.panToBounds(bounds);     // auto-center
-                console.log("Points Found");
             }
             else{
                 map.setCenter({lat: 44.332, lng: 9.18});
                 map.setZoom(13);
-                console.log("Empty Values")
             }
 
         }//end initMap
