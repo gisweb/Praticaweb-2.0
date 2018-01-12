@@ -68,7 +68,7 @@
             var mode = $('#mode').val();
             var addMarker = false;
             if (mode == 'new'){
-		addMarker = true;
+                addMarker = true;
             }
 
 		
@@ -112,17 +112,23 @@
 //                }
             });
             // 
-	    bounds = new google.maps.LatLngBounds();
-            console.log(bounds);
-            //Aggiungo il marker salvato
-            if($("#points").val()){
+            bounds = new google.maps.LatLngBounds();
+            var simpleValues = $("#points").val();
+            if (simpleValues) {
+                var values = JSON.parse(simpleValues); 
+            }
+            else{
+                var values = [];
+            }
+            //Aggiungo il marker salvato se esiste
+            if(values){
                 var id = 0;
                 var mode = $('#mode').val();
                 
                 if (mode == 'edit'){
                     id = $('#id').val();
                 }
-                var values = JSON.parse($("#points").val());
+                
                 $.each(values, function( index, value ) {
                     mapMarker = new google.maps.Marker(mapMarkerOptions);
                     var p = value["geometry"].split(' ');
@@ -136,8 +142,6 @@
                         mapMarker = new google.maps.Marker(mapMarkerOptions);
                         mapMarker.setPosition(position);
                         mapMarker.setMap(map);
-                        //map.setCenter(position);
-                        //map.setZoom(18);
                         var loc = new google.maps.LatLng(mapMarker.position.lat(), mapMarker.position.lng());
                         bounds.extend(position);
                     }
@@ -145,6 +149,7 @@
                         writePosition(mapMarker);
                      });
                 });
+                
             }
 
             //LAYER DI SFONDO OSM
@@ -188,8 +193,7 @@
             var xy = bounds.getCenter();
             map.fitBounds(bounds);       // auto-zoom
             map.panToBounds(bounds);     // auto-center
-            //console.log(map.getCenter().toJSON());
-            //map.setCenter(xy);
+
         }//end initMap
 
         initMap()
