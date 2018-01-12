@@ -56,7 +56,7 @@ $tornaacasa="
 		print("<H2 class=\"blueBanner\">Parere</H2>");
 		$idpratica=$_REQUEST["id_pratica"];
 		$id_parere=$_REQUEST["id"];
-        $sql = "SELECT codice FROM pe.pareri INNER JOIN pe.e_enti WHERE pareri.id = $id_parere";
+        $sql = "SELECT codice FROM pe.pareri INNER JOIN pe.e_enti ON e_enti.id=pareri.ente WHERE pareri.id = $id_parere";
         $db->sql_query($sql);
 		$codice_ente=$db->sql_fetchfield("codice");
 		$tabella=new Tabella_v($file_config,$modo);
