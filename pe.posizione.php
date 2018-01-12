@@ -29,7 +29,7 @@ $geoms = json_encode($data);
     <?php
     utils::loadCss();
     utils::loadJS();
-    $jsrand = sprintf("js/map.js");
+    $jsrand = sprintf("js/map.js?random=%d",rand(100000,999999));
     ?>
 
     
@@ -44,8 +44,8 @@ $geoms = json_encode($data);
     <link rel="stylesheet" type="text/css" media="all" href="css/map.css" />
     <script>
         $(document).ready(function(){
-            map.fitBounds(bounds);       // auto-zoom
-            map.panToBounds(bounds);     // auto-center
+//            map.fitBounds(bounds);       // auto-zoom
+//            map.panToBounds(bounds);     // auto-center
         });
     </script>
 </head>
