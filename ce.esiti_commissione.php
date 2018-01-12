@@ -21,7 +21,7 @@ $tornaacasa="
 		
 		$sql="SELECT numero FROM pe.pareri left join pe.avvioproc on pareri.pratica=avvioproc.pratica WHERE pareri.id=".$_REQUEST["id"];
 		$db->sql_query($sql);
-		print_debug($sql);
+
 		$num=$db->sql_fetchfield("numero");
 		
 	}
@@ -56,6 +56,9 @@ $tornaacasa="
 		print("<H2 class=\"blueBanner\">Parere</H2>");
 		$idpratica=$_REQUEST["id_pratica"];
 		$id_parere=$_REQUEST["id"];
+        $sql = "SELECT codice FROM pe.pareri INNER JOIN pe.e_enti WHERE pareri.id = $id_parere";
+        $db->sql_query($sql);
+		$codice_ente=$db->sql_fetchfield("codice");
 		$tabella=new Tabella_v($file_config,$modo);
 		$tabella->set_errors($Errors);
 		if ($modo=="edit") {
@@ -77,7 +80,8 @@ $tornaacasa="
 		<input name="pratica" type="hidden" value="<?php echo $idcomm?>">
               <input name="tipo" type="hidden" value="<?php echo $tipo?>">
 		<input name="id" type="hidden" value="<?php echo $id_parere?>">
-		<input name="numero" type="hidden" value=<?php echo $_POST["numero"]?>>
+		<input name="numero" type="hidden" value="<?php echo $_POST["numero"]?>">
+        <input name="codice_ente" type="hidden" value="<?php echo $codice_ente?>">
 		
 	</form>
 		
