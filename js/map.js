@@ -114,14 +114,16 @@
             // 
             bounds = new google.maps.LatLngBounds();
             var simpleValues = $("#points").val();
-            if (simpleValues) {
+            var foundPoints = 0;
+            if (simpleValues && simpleValues != "[]") {
                 var values = JSON.parse(simpleValues); 
             }
             else{
                 var values = [];
             }
             //Aggiungo il marker salvato se esiste
-            if(values){
+            if(Array.isArray(values) && values.length){
+                foundPoints = 1;
                 var id = 0;
                 var mode = $('#mode').val();
                 
@@ -149,7 +151,7 @@
                         writePosition(mapMarker);
                      });
                 });
-                
+                console.log(values);                
             }
 
             //LAYER DI SFONDO OSM
@@ -190,9 +192,17 @@
                 map.overlayMapTypes.setAt(map.overlayMapTypes.length, layer);
 
             }
-            var xy = bounds.getCenter();
-            map.fitBounds(bounds);       // auto-zoom
-            map.panToBounds(bounds);     // auto-center
+            if (foundPoints){
+	        var xy = bounds.getCenter();
+        	map.fitBounds(bounds);       // auto-zoom
+            	map.panToBounds(bounds);     // auto-center
+                console.log("Points Found");
+            }
+            else{
+                map.setCenter({lat: 44.332, lng: 9.18});
+                map.setZoom(13);
+                console.log("Empty Values")
+            }
 
         }//end initMap
 
