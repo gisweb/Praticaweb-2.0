@@ -36,7 +36,7 @@ $tornaacasa="
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
-	utils::loadJS('form/ce.esiti_commissione');
+	utils::loadJS(Array('form/ce.esiti_commissione'));
 	utils::loadCss();
 ?>
 <SCRIPT>
@@ -81,7 +81,7 @@ $tornaacasa="
               <input name="tipo" type="hidden" value="<?php echo $tipo?>">
 		<input name="id" type="hidden" value="<?php echo $id_parere?>">
 		<input name="numero" type="hidden" value="<?php echo $_POST["numero"]?>">
-        <input name="codice_ente" type="hidden" value="<?php echo $codice_ente?>">
+        <input id="codice_ente" type="hidden" value="<?php echo $codice_ente?>">
 		
 	</form>
 		
