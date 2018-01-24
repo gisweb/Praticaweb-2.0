@@ -114,7 +114,7 @@ for($i=0;$i<$db->sql_numfields();$i++) $header[0][]=$db->sql_fieldname($i);
 $ris=$db->sql_fetchrowset();
 
 $result=array_merge($header,$ris);
-
+//if(!$result) echo "<p>$sql</p>";
 require_once APPS_DIR."plugins/PHPExcel.php";
 $objReader = PHPExcel_IOFactory::createReader('Excel2007');
 $objPHPExcel = $objReader->load("report.xlsx");

@@ -38,7 +38,7 @@ if(!$_POST["foglio"] && !$_POST["mappale"])	// EDIT VINCOLI
 		print_debug($sql_del); 
 		$db->sql_query($sql_del); 
 		$sql="insert into cdu.mappali (pratica,sezione,foglio,mappale,vincolo,tavola,zona,perc_area) values($idpratica,'$sezione','$foglio','$mappale','$vincolo','$tavola','$zona','$perc') ;";
-		print "$sql"; 
+//		print "$sql"; 
 		$db->sql_query($sql); 
 	}
 }
@@ -66,7 +66,7 @@ else {		// EDIT MAPPALI
 
 		$result=$db->sql_query ($sql);
 		//$err=$db->sql_error();
-		print_debug($sql); 
+//		print_debug($sql); echo "<p>$sql</p>";
 		//$numrows=$db->sql_affectedrows();
 
 		//if($numrows===0 or $err["message"]){
