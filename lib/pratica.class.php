@@ -70,7 +70,7 @@ class generalPratica {
         $this->user=$stmt->fetchColumn();
     }
     
-    private function initPE(){
+    function initPE(){
         $conn = utils::getDb();
         if ($this->pratica && is_numeric($this->pratica)){
             //INFORMAZIONI SULLA PRATICA
