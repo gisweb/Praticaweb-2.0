@@ -296,7 +296,7 @@ EOT;
 				}
 				else
 					$sql=($this->table_list)?("select $this->elenco_campi,id from $this->tabelladb $data $ord"):("select $this->elenco_campi,id,pratica,chk from $this->tabelladb $data $ord");	//aggiungo sempre il campo chk per il controllo della concorrenza
-			//echo("<p>$sql</p>");
+			if ($_SESSION["USER_ID"]==1) echo("<p>$sql</p>");
 			print_debug($this->config_file."\n".$sql,NULL,"tabella");
 			utils::debug(DEBUG_DIR.$_SESSION["USER_ID"]."_".'tabella.debug', $sql);
 			if ($this->db->sql_query(trim($sql))){

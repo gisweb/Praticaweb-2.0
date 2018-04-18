@@ -8,9 +8,11 @@
 	    
             if (file_exists(LOCAL_LIB.$lib)){
                 require_once LOCAL_LIB.$lib;
+//                if ($_SESSION["USER_ID"]==1) print "<p>Loading ".LOCAL_LIB.$lib."</p>";
             }
             elseif(file_exists(APPS_DIR."lib".DIRECTORY_SEPARATOR.$lib)) {
                 require_once LIB.$lib;
+//                if ($_SESSION["USER_ID"]==1) print "<p>Loading ".LIB.$lib."</p>";
             }
             else die("impossibile caricare la libreria $lib");
         }
