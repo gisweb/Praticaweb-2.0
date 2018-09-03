@@ -80,11 +80,28 @@ function get_controllo($label,$tipo,$w,$campo,$html5Attr,$frozen=0){
 					$dato="0,00";
 			$retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$w\" name=\"$campo\" id=\"$campo\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
 			break;
+//		case "upload":
+//			$size=intval($w+($w/5));
+//						$testo=stripslashes($dato);
+//
+//			$retval="<INPUT class=\"$class\" type=\"file\" maxLength=\"$w\" size=\"$size\" name=\"$campo\" id=\"$campo\" value=\"$testo\" $html5Attr $disabilitato>$help";
+//			break;
 		case "upload":
-			$size=intval($w+($w/5));
-						$testo=stripslashes($dato);
-
-			$retval="<INPUT class=\"$class\" type=\"file\" maxLength=\"$w\" size=\"$size\" name=\"$campo\" id=\"$campo\" value=\"$testo\" $html5Attr $disabilitato>$help";
+                    $prms = explode("x",$w);
+                    $width = $prms[0]."px";
+			//$size=intval($w+($w/5));
+		    $testo=stripslashes($dato);
+                    if(count($prms)>1 && $prms[1]=='multiple'){
+                        $multiple = "multiple";
+                        $nomeCampo=$campo."[]";
+                    }
+                    else{
+                        $multiple = "";
+                        $nomeCampo=$campo;
+                    }
+                    $retval = <<<EOT
+<input type="file" class="$class" style="width:$width" $multiple name="$nomeCampo" id="$campo" $html5Attr $disabilitato>$help  
+EOT;
 			break;
 		case "ui-button":
 			$size=explode("x",$w);
@@ -765,7 +782,7 @@ function get_riga_view($nriga){
 	return $testo_riga;
 }
  
-function edita(){
+function edita($print=1){
 //if($this->error_flag==1)
 	//echo ("I campi evidenziati in rosso non sono validi");
 	//crea la tabella di editing
@@ -829,8 +846,15 @@ function edita(){
     
     $buttons=$this->set_buttons();
 
-	print $tabella;
-    print $buttons;
+//	print $tabella;
+//    print $buttons;
+    if($print == 1){
+        print $tabella;
+        print $buttons;
+    }
+    else{
+        return $tabella.$buttons;
+    }
 }
 
 function tabella($curr=0){
@@ -1086,8 +1110,15 @@ function get_multiselectdb_value($val,$fld,$tab,$campo){
 // >>>>>>>>>>>>>>>>>>>>>>> FUNZIONI DI RICERCA NUOVO NOMINATIVO (da vedere)<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 function set_elenco_trovati($sql='true',$schema="pe"){
-	
-       $sql="
+       $sql="SELECT DISTINCT * FROM ((SELECT 'pe' as schema,* FROM (SELECT DISTINCT ON (coalesce(soggetti.codfis,soggetti.ragsoc) ) id,coalesce(soggetti.codfis,'') as codfis , coalesce(soggetti.ragsoc,'') as ragsoc,coalesce(datanato::varchar,'') as datanato,coalesce(soggetti.piva,'') as piva,cognome,nome,coalesce(comunato,'') as comunato,
+((((COALESCE(soggetti.cognome, ''::character varying)::text || COALESCE(' '::text || soggetti.nome::text, ''::text)) ||coalesce(' C.F. '||codfis,'')|| COALESCE(' '::text || soggetti.titolo::text, ''::text)) || COALESCE(' '::text || soggetti.ragsoc::text, ''::text)) || coalesce(' P.I. '||piva,'') || COALESCE(' '::text || soggetti.indirizzo::text, ''::text)) || COALESCE((' ('::text || soggetti.prov::text) || ')'::text, ''::text) AS soggetto
+	FROM pe.soggetti where $sql ORDER BY coalesce(soggetti.codfis,ragsoc),id DESC ) X WHERE coalesce(coalesce(codfis,piva),'')<>'' ORDER BY lower(cognome),lower(nome),datanato,lower(ragsoc))
+UNION ALL
+(SELECT '$schema' as schema,* FROM (SELECT DISTINCT ON (coalesce(soggetti.codfis,soggetti.ragsoc) ) id,coalesce(soggetti.codfis,'') as codfis , coalesce(soggetti.ragsoc,'') as ragsoc,coalesce(datanato::varchar,'') as datanato,coalesce(soggetti.piva,'') as piva,cognome,nome,coalesce(comunato,'') as comunato,
+((((COALESCE(soggetti.cognome, ''::character varying)::text || COALESCE(' '::text || soggetti.nome::text, ''::text)) ||coalesce(' C.F. '||codfis,'')|| COALESCE(' '::text || soggetti.titolo::text, ''::text)) || COALESCE(' '::text || soggetti.ragsoc::text, ''::text)) || coalesce(' P.I. '||piva,'') || COALESCE(' '::text || soggetti.indirizzo::text, ''::text)) || COALESCE((' ('::text || soggetti.prov::text) || ')'::text, ''::text) AS soggetto
+	FROM $schema.soggetti where $sql ORDER BY coalesce(soggetti.codfis,ragsoc),id DESC ) X WHERE coalesce(coalesce(codfis,piva),'')<>'' ORDER BY lower(cognome),lower(nome),datanato,lower(ragsoc))
+ORDER BY soggetto) X;";
+/*       $sql="
 (select 
 id,schema,coalesce(soggetti.codfis,'') as codfis ,tipo,
  coalesce(soggetti.ragsoc,'') as ragsoc,coalesce(datanato::varchar,'') as datanato,
@@ -1156,7 +1187,7 @@ id,schema,coalesce(soggetti.codfis,'') as codfis ,tipo,
 ((((COALESCE(soggetti.cognome, ''::character varying)::text || COALESCE(' '::text || soggetti.nome::text, ''::text)) ||coalesce(' C.F. '||codfis,'')|| COALESCE(' '::text || soggetti.titolo::text, ''::text)) || COALESCE(' '::text || soggetti.ragsoc::text, ''::text)) || coalesce(' P.I. '||piva,'') || COALESCE(' '::text || soggetti.indirizzo::text, ''::text)) || COALESCE((' ('::text || soggetti.prov::text) || ')'::text, ''::text)||' - Esecutore Lavori' AS soggetto
 ,last_upd
  FROM vigi.ricerca_soggetti as soggetti where $sql and tipo='esecutore' order by soggetto asc,last_upd desc)
-";
+";*/
 		//echo "<p>$sql</p>";
 	if (!isset($this->db)) $this->connettidb();
 	$result = $this->db->sql_query($sql);

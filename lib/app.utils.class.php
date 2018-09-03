@@ -359,7 +359,8 @@ class generalAppUtils {
             $sql="SELECT B.nome|| ' del '|| to_char(data_convocazione,'DD/MM/YYYY') as titolo FROM ce.commissione A INNER JOIN ce.e_tipopratica B ON(A.tipo_comm=B.id)  WHERE pratica=?;";
         }
         elseif ($_REQUEST["vigi"] || strpos($filename,'vigi.')!==FALSE){
-            $sql="SELECT B.nome|| ' n° '||A.numero as titolo FROM vigi.avvioproc A INNER JOIN vigi.e_tipopratica B ON(A.tipo_comm=B.id)  WHERE pratica=?;";
+            //$sql="SELECT B.nome|| ' n° '||A.numero as titolo FROM vigi.avvioproc A INNER JOIN vigi.e_tipopratica B ON(A.tipo_comm=B.id)  WHERE pratica=?;";
+            $sql="SELECT B.nome|| ' n° '||A.numero as titolo FROM vigi.avvioproc A INNER JOIN vigi.e_tipopratica B ON(A.tipo=B.id)  WHERE pratica=?;";
         }
         elseif($_REQUEST["agi"] || strpos($filename,'agi.')!==FALSE){
             $sql="SELECT B.nome|| coalesce(' - '||C.nome,'') ||' n° '||A.numero as titolo FROM agi.avvioproc A INNER JOIN agi.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN agi.e_categoriapratica C ON (coalesce(A.categoria,0)=C.id)  WHERE pratica=?;";

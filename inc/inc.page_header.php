@@ -87,7 +87,7 @@ echo $script;
                 </div>
                 
 	</div>
-       <script src="js/notifiche.js"></script>
+       <script src="js/notifiche.js?rand=345"></script>
         
         <div id="message-div" style="display:none;">
             

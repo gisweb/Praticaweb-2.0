@@ -213,6 +213,15 @@ EOT;
             $pr = $this->array_dati[$row]["pratica"];
             $retval="<td class=\"allegati\" data-url=\"$valore\" data-id=\"".$id."\" data-pratica=\"".$pr."\" title=\"Visualizza il documento\">$valore</td>\n";
             break;
+        case "allegato":
+            $pratica= $this->array_dati[$row]["pratica"];
+            $id=$this->array_dati[$row]["id"];
+            $retval=<<<EOT
+<td style="width:$w">
+   <span class="allegati" data-id="$id" data-pratica="$pratica">$valore</span>
+</td>                
+EOT;
+            break;
         case "stampe":
             //$app = $this->array_dati[$row]["tipo_app"];
             $retval="<td class=\"stampe\" data-url=\"$valore\" title=\"Visualizza il documento\">$valore</td>\n";
@@ -572,6 +581,30 @@ function zoomto_gc($tabella,$id){
                             
 			return $func;
 			break;
+                case "pe.unita_immobiliari":
+                    	$buff=50;
+                        $sql = "SELECT via,civico from pe.unita_immobiliari where id=$id;"; 
+                        if (!isset($this->db)) $this->connettidb();
+                        $result = $this->db->sql_query($sql);
+                        $indi=$this->db->sql_fetchrow();
+                        if ($indi){
+                                $via=addslashes($indi["via"]);
+                                $civico=$indi["civico"];
+                                //
+                                $sql="SELECT A.gid from civici.pe_civici A inner join civici.pe_vie B on(id=strada) where nome ilike '$via' and label='$civico';";
+                		$result = $this->db->sql_query($sql);
+                                $map=$this->db->sql_fetchrow();
+                                if ($map){      
+                                        $func="ApriMappa('".MAPSETID."','".TEMPLATE."','qt=".QTID_CIVICI."&objid=$map[gid]')";
+                                }else{
+                                        $func= "alert('$msgerr')";
+                                }
+                        }else{
+                                $func= "alert('$msgerr')";
+                        }
+                        return $func;
+                        break;
+
 		case "vigi.indirizzi":
 		case "pe.indirizzi":
 			$buff=50;

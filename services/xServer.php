@@ -67,8 +67,21 @@ switch($action) {
                 case "pratica":
                     $sql=sprintf("SELECT count(*)  FROM pe.elenco_pratiche_sorteggi WHERE tipologia='permessi' AND  date_part('month',il)=date_part('month',$dataSorteggio)-1 AND date_part('year',il)=date_part('year',$dataSorteggio) AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice='%s');",$tipo);
                     break;
+//                case "durc":
+//                    $sql=sprintf("SELECT count(*) FROM pe.elenco_pratiche_sorteggi WHERE  date_part('week',il)=date_part('week',$dataSorteggio)-1 AND date_part('year',il)=date_part('year',$dataSorteggio) AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice='%s');",$tipo);
+                    break;
                 case "durc":
-                    $sql=sprintf("SELECT count(*) FROM pe.elenco_pratiche_sorteggi WHERE  date_part('week',il)=date_part('week',$dataSorteggio)-1 AND date_part('year',il)=date_part('year',$dataSorteggio) AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice='%s');",$tipo);
+                    $sql = <<<EOT
+WITH pratiche_sorteggiabili AS (
+SELECT DISTINCT pratica FROM pe.elenco_pratiche_sorteggi WHERE  date_part('week',il)=date_part('week',$dataSorteggio)-1 AND date_part('year',il)=date_part('year',$dataSorteggio) AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice='$tipo')
+),
+esecutori AS (
+    SELECT id,pratica,codfis,piva,format('%s %s',coalesce(cognome,''),coalesce(nome,'')) as nominativo,coalesce(piva,'') as piva FROM pe.soggetti WHERE esecutore=1
+)
+SELECT count(*) FROM pratiche_sorteggiabili INNER JOIN esecutori USING(pratica);
+EOT;
+                    //$sql=sprintf($sqlA,$tipo);
+			//echo $sql;
                     break;
             }
             $sorteggiabili=$db->fetchColumn($sql,Array(),0);
@@ -107,8 +120,19 @@ switch($action) {
                 case "pratica":
                     $sql=sprintf("SELECT pratica FROM pe.elenco_pratiche_sorteggi WHERE pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice='%s') AND tipologia='permessi' AND  date_part('month',il)=date_part('month',$dataSorteggio)-1 AND date_part('year',il)=date_part('year',$dataSorteggio)  AND %s;",$tipo,$filterTipi);         
                     break;
-                case "durc":
+/*                case "durc":
                     $sql=sprintf("SELECT pratica FROM pe.elenco_pratiche_sorteggi WHERE pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice='%s') AND date_part('week',il)=date_part('week',$dataSorteggio)-1 AND date_part('year',il)=date_part('year',$dataSorteggio) AND  %s;",$tipo,$filterTipi);                  
+                    break;*/
+                case "durc":
+                    $sql = <<<EOT
+WITH pratiche_sorteggiabili AS (
+SELECT DISTINCT pratica FROM pe.elenco_pratiche_sorteggi WHERE  date_part('week',il)=date_part('week',$dataSorteggio)-1 AND date_part('year',il)=date_part('year',$dataSorteggio) AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice='$tipo')
+),
+esecutori AS (
+SELECT id,pratica,codfis,piva,ragsoc,format('%s %s',coalesce(cognome,''),coalesce(nome,'')) as nominativo,coalesce(piva,'') as piva FROM pe.soggetti WHERE esecutore=1
+)
+SELECT * FROM pratiche_sorteggiabili INNER JOIN esecutori USING(pratica);
+EOT;
                     break;
             }
             utils::debug(DEBUG_DIR.$_SESSION["USER_ID"]."_draw.debug",$sql);
@@ -123,10 +147,17 @@ switch($action) {
             shuffle($res);
             $result=array_slice($res,0,$tot);
             $success=1;
+            utils::debug(DEBUG_DIR.'draw-data.debug', $result);
             $conn->beginTransaction();
             for($i=0;$i<count($result);$i++){
                 $istr = appUtils::chooseRespVerifiche($idTipo);
-                $sql=sprintf("INSERT INTO pe.verifiche(pratica, tipo, uidins, tmsins, data_sorteggio, resp_proc_verifica) VALUES (%s, %s, %s, %s, %s,%s );",$result[$i]["pratica"],$idTipo,$_SESSION["USER_ID"],time(),$dataSorteggio,$istr);
+                if ($tipo=="durc"){
+                    $sql=sprintf("INSERT INTO pe.verifiche(pratica, tipo, uidins, tmsins, data_sorteggio, resp_proc_verifica, note, id_rif) VALUES (%s,%s,%s, %s, %s, %s, %s,%s );",$result[$i]["pratica"],$idTipo,$_SESSION["USER_ID"],time(),$dataSorteggio,$istr,"'Sorteggio DURC della ditta : ".$result[$i]["ragsoc"]."'","'".$result[$i]["piva"]."'");
+                }
+                else{
+                    $sql=sprintf("INSERT INTO pe.verifiche(pratica, tipo, uidins, tmsins, data_sorteggio, resp_proc_verifica) VALUES (%s, %s, %s, %s, %s,%s );",$result[$i]["pratica"],$idTipo,$_SESSION["USER_ID"],time(),$dataSorteggio,$istr);
+                }  
+  //              $sql=sprintf("INSERT INTO pe.verifiche(pratica, tipo, uidins, tmsins, data_sorteggio, resp_proc_verifica) VALUES (%s, %s, %s, %s, %s,%s );",$result[$i]["pratica"],$idTipo,$_SESSION["USER_ID"],time(),$dataSorteggio,$istr);
                 utils::debug(DEBUG_DIR.'draw.debug', $sql);
                 $stmt=$conn->prepare($sql);
                 if(!$stmt->execute()) {

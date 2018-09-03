@@ -44,7 +44,6 @@ elseif($azione=="Salva"){
 		}
 		else{
 			$sql="INSERT INTO admin.users(app,cognome,nominativo,username,pwd,enc_pwd,permessi,attivato,num_tel,mail,info,gruppi,data_creazione,gisclient) VALUES('$app','$cognome','$nominativo','$username','$pwd','$enc_pwd',$livello_utente,$attivato,'$tel','$mail','$info','$gruppi',now(),$gc);";
-            
 			if (!$errors){ 
 				$db->sql_query($sql);
 				$db->sql_query("SELECT max(userid) as lastvalue FROM admin.users");

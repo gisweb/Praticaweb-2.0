@@ -112,7 +112,7 @@ function loadInfoScadenze(){
 function loadInfoVerifiche(){
         var rows=[];
         $.each(verifiche['data'],function(k,v){
-            var text = sprintf('<li><a class="underline-cursor" data-href="praticaweb.php" data-pratica="%d" data-target="praticaweb" data-active_form="pe.verifiche.php" data-id="%d">Pratica n° %s : "%s".<br>Verifica : %s</a></li>',v['pratica'],v['id'],v['numero'],v['oggetto'],v['nome']);
+            var text = sprintf('<li><a class="underline-cursor" data-href="praticaweb.php" data-pratica="%d" data-target="praticaweb" data-active_form="pe.verifiche.php" data-id="%d">Pratica n° %s : "%s".<br>Verifica : %s del %s</a></li>',v['pratica'],v['id'],v['numero'],v['oggetto'],v['nome'],v['data_sorteggio']);
             rows.push(text);
         });
         var html = '<ol>';
