@@ -2,13 +2,25 @@
 //print_r($_REQUEST);
 include_once("login.php");
 $tabpath="ce";
+
 $file_config="$tabpath/ordinegiorno";
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $idcomm=$_REQUEST["pratica"];
 $ric=$_REQUEST["ricerca"];
 $titolo=$_SESSION["TITOLO_$idcomm"];
 if ($idcomm==0)	$modo="new";
-
+$sql = "SELECT tipologia FROM ce.commissione A inner join ce.e_tipopratica B on (A.tipo_comm=B.id) WHERE pratica = ?";
+$dbh = utils::getDb();
+$stmt = $dbh->prepare($sql);
+if($stmt->execute(Array($idcomm))){
+    $tipo = $stmt->fetchColumn();
+    if ($tipo == "ce"){
+        $file_config="$tabpath/ordinegiorno_ce";
+    }
+}
+else{
+    $tipo = "clp";
+} 
 include "./lib/tabella_h.class.php";
 include_once "./lib/tabella_v.class.php";
 

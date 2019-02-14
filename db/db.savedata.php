@@ -311,6 +311,7 @@ if (in_array($azione,Array("Salva",'Aggiungi'))){
         $sqlupdate=substr($sqlupdate,0,strlen($sqlupdate)-1);
         $sqlupdate="update $tabelladb set $sqlupdate where id=$idrow";
         $sql=$sqlupdate;
+//        if($_SESSION["USER_ID"]==1) echo "<p>$sql</p>";
     }
 
 

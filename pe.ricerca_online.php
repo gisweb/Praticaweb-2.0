@@ -56,7 +56,7 @@ utils::loadCss(Array("default/easyui","icon"));
                          <input type="hidden" datatable="pe.avvioproc" id="op_pe-avvioproc-online" class="search text" name="online" value="equal">
                          <input type="hidden" value="1" id="1_pe-avvioproc-online" name="online" class="text">
                         <td valign="middle">
-                            <label for="assegnata_istruttore" class="title">Pratica Assegnata</label><br/>
+                            <label for="assegnata_istruttore" class="title">Istruttore assegnato</label><br/>
                             <input type="hidden" datatable="pe.vista_assegnate" id="op_pe-vista_assegnate-assegnata_istruttore" class="search text check" name="assegnata_istruttore" value="equal">                           
                             <input type="radio" value="0" id="1_pe-vista_assegante-assegnata_istruttore" name="assegnata_istruttore"  data-plugins="dynamic-search">
                             <label for="1_pe-vista_assegante-assegnata_istruttore" class="value">No</label><br/>

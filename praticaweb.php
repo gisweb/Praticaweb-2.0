@@ -186,7 +186,11 @@ include "./inc/inc.page_header.php";
     </TR>
   </TBODY> 
 </TABLE>
-
+<?php
+if (strpos($active_form,"pe.posizione.php")===0){
+   echo "<script>pagina('pe.posizione',$idpratica);</script>";
+}
+?>
 <!-- *** fine pagina principale *** -->
 </BODY>
 </HTML>
