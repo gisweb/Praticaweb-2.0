@@ -38,7 +38,6 @@ if(!$_POST["foglio"] && !$_POST["mappale"])	// EDIT VINCOLI
 		print_debug($sql_del); 
 		$db->sql_query($sql_del); 
 		$sql="insert into cdu.mappali (pratica,sezione,foglio,mappale,vincolo,tavola,zona,perc_area) values($idpratica,'$sezione','$foglio','$mappale','$vincolo','$tavola','$zona','$perc') ;";
-//		print "$sql"; 
 		$db->sql_query($sql); 
 	}
 }
@@ -57,18 +56,18 @@ else {		// EDIT MAPPALI
         
 		$sql="insert into cdu.mappali (pratica,sezione,foglio,mappale,vincolo,tavola,zona,perc_area) 
 		select $idpratica,particelle.sezione,particelle.foglio,particelle.mappale,zona_plg.nome_vincolo,zona_plg.nome_tavola,zona_plg.nome_zona,
-		round(sum(area(intersection (particelle.".THE_GEOM.",zona_plg.the_geom))/area (particelle.".THE_GEOM.")*100)::numeric,1) from
+		round(sum(st_area(st_intersection (particelle.".THE_GEOM.",zona_plg.the_geom))/st_area (particelle.".THE_GEOM.")*100)::numeric,1) from
 		nct.particelle,(SELECT A.* FROM vincoli.zona_plg A inner join vincoli.zona B using(nome_vincolo,nome_tavola,nome_zona)  inner join vincoli.tavola using(nome_vincolo,nome_tavola) WHERE '$data'::date BETWEEN coalesce(data_da,'01/01/1970'::date) AND coalesce(data_a,CURRENT_DATE) AND cdu=1) as zona_plg
         WHERE $sqlmappali and (particelle.".THE_GEOM." && zona_plg.the_geom) and
-		(area(intersection (particelle.".THE_GEOM.",zona_plg.the_geom))>10 or (area(intersection(particelle.".THE_GEOM.",zona_plg.the_geom))/area (particelle.".THE_GEOM.")*100)>=0.02) 
+		(st_area(st_intersection (particelle.".THE_GEOM.",zona_plg.the_geom))>10 or (st_area(st_intersection(particelle.".THE_GEOM.",zona_plg.the_geom))/st_area (particelle.".THE_GEOM.")*100)>=0.02) 
 
 		group by particelle.sezione,particelle.foglio,particelle.mappale,zona_plg.nome_vincolo,zona_plg.nome_tavola,zona_plg.nome_zona,particelle.".THE_GEOM;
 
 		$result=$db->sql_query ($sql);
 		//$err=$db->sql_error();
-//		print_debug($sql); echo "<p>$sql</p>";
+		print_debug($sql); 
 		//$numrows=$db->sql_affectedrows();
-
+                echo "<p>$sql</p>";
 		//if($numrows===0 or $err["message"]){
 		$sql="insert into cdu.mappali (pratica,sezione,foglio,mappale) values ($idpratica,$sezione,$foglio,$mappale)";
 		$result=$db->sql_query ($sql); 
