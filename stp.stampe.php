@@ -115,7 +115,7 @@ function formatLink(value,rowData,rowIndex){
     $sql="select coalesce(B.id::varchar,'')||'#'||coalesce(A.id::varchar,'') as codice,A.id,coalesce(B.id::varchar,'tutti') as idtipo,A.nome as modello,coalesce(B.nome,'Tutti i tipi di pratica') as tipo_pratica,form from stp.e_modelli A left join pe.e_tipopratica B on (B.id::varchar =ANY(string_to_array(tipo_pratica,','))) WHERE $filtro order by tipo_pratica,modello;";
     $db=appUtils::getDb();
     $res=$db->fetchAll($sql);
-    if ($_SESSION["USER_ID"]<4) echo "<p>$sql</p>";
+//    if ($_SESSION["USER_ID"]<4) echo "<p>$sql</p>";
 //print_array($res);
     $modelli=  json_encode(appUtils::groupData("modelli",$res));
    // print_array($modelli);

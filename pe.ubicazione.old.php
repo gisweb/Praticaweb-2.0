@@ -20,15 +20,6 @@ $comune = appUtils::getComune($idpratica);
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
 <?php
-    if (defined('GC_URL')){
-        $url = GC_URL;
-        $js =<<<EOT
-    <script>
-        var gcURL = '$url';
-    </script>
-EOT;
-        echo $js;
-    }
     utils::loadJS(Array('init','form/pe.ubicazione'));
     utils::loadCss();
 
@@ -43,18 +34,7 @@ if (($modo=="edit") or ($modo=="new")){
     $id=$_REQUEST["id"];
     
     //$tab_edit=$_POST["tab_edit"].".tab";
-    if ($_REQUEST["tab"]=="indirizzi"){
-        $titolo = "Indirizzi";
-    }
-    elseif ($_REQUEST["tab"] == "'catasto_terreni'"){
-        $titolo = "Catasto Terreni";
-    }
-    elseif ($_REQUEST["tab"] == "'catasto_urbano'"){
-        $titolo = "Catasto Urbano";
-    }
-    else{
-        $titolo = "Unità Immobiliare";
-    }
+    $titolo=($_REQUEST["tab"]=='indirizzi')?("Indirizzi"):(($_REQUEST["tab"]=='catasto_terreni')?('Catasto Terreni'):('Catasto Urbano'));
 	$tab=$tabpath."/".$_REQUEST["tab"].".tab";
     include "./inc/inc.page_header.php";
     $tabellav=new tabella_v($tab,$modo);
@@ -110,9 +90,9 @@ if (($modo=="edit") or ($modo=="new")){
 		<H2 class="blueBanner">Ubicazione dell'intervento</H2>
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
 <?php
-$array_file_tab=array("indirizzi","catasto_terreni","catasto_urbano","uiu");
-$array_titolo=array("Indirizzi","Catasto Terreni","Catasto Urbano","Unità Immobiliare");
-for($i=0;$i<4;$i++){
+$array_file_tab=array("indirizzi","catasto_terreni","catasto_urbano");
+$array_titolo=array("Indirizzi","Catasto Terreni","Catasto Urbano");
+for($i=0;$i<3;$i++){
 
     $file_tab=$array_file_tab[$i];
     $titolo=$array_titolo[$i];

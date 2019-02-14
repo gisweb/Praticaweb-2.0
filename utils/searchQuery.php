@@ -2,7 +2,7 @@
 $query=Array();
 $query["default"]=<<<EOT
 SELECT
-    A.pratica,coalesce(coalesce(data_prot,data_presentazione),'01/01/1970'::date) as data_ordinamento,A.numero,A.protocollo,A.data_prot,A.data_presentazione,A.oggetto,A.online,
+    A.pratica,coalesce(coalesce(data_prot,data_presentazione),'01/01/1900'::date) as data_ordinamento,A.numero,A.protocollo,A.data_prot,A.data_presentazione,A.oggetto,A.online,A.rif_pratica,
     B.nome as tipo_pratica,C.descrizione as tipo_intervento,coalesce(D.nome,'non assegnata') as responsabile,
     E.richiedente,F.progettista,L.esecutore,G.elenco_ct,H.elenco_cu,I.ubicazione,
     CASE WHEN (coalesce(A.resp_it,coalesce(A.resp_ia,0)) = 0) THEN 0 ELSE 1 END as assegnata_istruttore

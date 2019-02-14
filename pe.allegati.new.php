@@ -12,10 +12,8 @@ $data_prot = $_REQUEST["data_protocollo"];
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 $config_file = sprintf("%s/%s",$tabpath,"allegati");
 $dbh = utils::getDb();
-$sql = "SELECT id as value, nome as option FROM pe.e_iter order by ordine,nome" ;
-$stmt = $dbh->prepare($sql);
-$stmt->execute();
-$items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
 ?>
 <html>
 <head>
@@ -23,7 +21,7 @@ $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
-	utils::loadJS(Array('/form/pe.allegati'));
+	utils::loadJS('form/pe.allegati.js');
 	utils::loadCss();
 ?>
 <style>
@@ -32,9 +30,6 @@ $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
         color:white;
     }
 </style>
-<script>
-	var item = <?php echo json_encode($items);?>;
-</script>
 </head>
 <body  background="" leftMargin="0" topMargin="0" marginheight="0" marginwidth="0">
 
@@ -46,9 +41,7 @@ if (in_array($modo,Array("edit","new"))){
         unset($_SESSION["ADD_NEW"]);
         $prot = $_REQUEST["protocollo"];
         $data_prot = $_REQUEST["data_protocollo"];
-        $richiesta = $_REQUEST["prot_richiesta"];
-        $data_richiesta = $_REQUEST["data_richiesta"];
-        $tabella->set_dati(Array("prot_allegato"=>$prot,"data_prot_allegato"=>$data_prot,"data_richiesta"=>$data_richiesta,"prot_richiesta"=>$richiesta));
+        $tabella->set_dati(Array("prot_allegato"=>$prot,"data_prot_allegato"=>$data_prot));
         //ob_start();
         
         //$tab = ob_get_contents();
@@ -78,7 +71,7 @@ if (in_array($modo,Array("edit","new"))){
         </TABLE>	
         <input name="active_form" type="hidden" value="pe.allegati.php">	
         <input name="id" type="hidden" value="$id">
-        <input name="mode" type="hidden" id="mode" value="$modo">				
+        <input name="mode" type="hidden" value="$modo">				
         <input name="pratica" type="hidden" value="$idpratica">
 </FORM>            
 EOT;
@@ -103,7 +96,7 @@ else{
         }
         $radioHtml = implode("\n",$opts);
     }
-    $sql="SELECT DISTINCT pratica,protocollo,data_protocollo,titolo,tipo FROM pe.elenco_allegati_pratica WHERE pratica=? ORDER BY 3";
+    $sql="SELECT DISTINCT pratica,protocollo,data_protocollo,titolo FROM pe.elenco_allegati_pratica WHERE pratica=?";
     $stmt = $dbh->prepare($sql);
     $res = Array();
     if($stmt->execute(Array($idpratica))){
@@ -115,13 +108,12 @@ else{
     
     for($i=0;$i<count($res);$i++){
         $r = $res[$i];
-        list($prat,$prot,$data_prot,$titolo,$tipoRich)=$r;
+        list($prat,$prot,$data_prot,$titolo)=$r;
         
         $tabella=new Tabella_h($config_file,"list");
         $num_allegati = $tabella->set_dati("coalesce(id,0)<>0 AND pratica=$idpratica AND protocollo='$prot' AND data_protocollo='$data_prot'::date");
         //print_array($tabella);
-        $arrayData = ($tipoRich=="richiesta_integrazione")?(Array("prot_richiesta"=>$prot,"data_richiesta"=>$data_prot)):(Array("protocollo"=>$prot,"data_protocollo"=>$data_prot));
-        $tabella->set_titolo($titolo,"nuovo",$arrayData);
+        $tabella->set_titolo($titolo,"nuovo",Array("protocollo"=>$prot,"data_protocollo"=>$data_prot));
         $tabella->get_titolo();
         if ($num_allegati) 
             $tabella->elenco();
@@ -165,7 +157,7 @@ else{
     </script>
     
 EOT;
-if (in_array($_SESSION["USER_ID"],Array(1,100000,100001)))     echo $btn_download;
+    echo $btn_download;
     $tabella_integrazione=new tabella_h("$tabpath/integrazioni.tab");
 	$tabella_integrazione->set_titolo("Aggiungi nuova Integrazione","nuovo");
 	$tabella_integrazione->get_titolo("pe.integrazioni.php");

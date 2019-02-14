@@ -64,12 +64,12 @@ function get_controllo($label,$tipo,$w,$campo,$html5Attr,$frozen=0){
 			$retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$w\" name=\"$campo\" id=\"$campo\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
 			break;
 		case "intero":
-						 if ($dato) 
-								 $dato=number_format($dato,0, ',', '');			
-						 else
-								 $dato="0";
-						 $retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$w\"  name=\"$campo\" id=\"numero\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
-						 break;
+                    if ($dato) 
+                                    $dato=number_format($dato,0, ',', '');			
+                    else
+                                    $dato="0";
+                    $retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$w\"  name=\"$campo\" id=\"numero\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
+                    break;
 	
 		case "valuta":
 		case "volume":
@@ -158,7 +158,7 @@ EOT;
 			$size=intval($size+($size/5));
 			$testo=stripslashes($dato);		
 			$retval=<<<EOT
-<INPUT type=\"text\" class="$class" maxLength="$w" size="$size" name="$campo" id="$campo" value="$testo" $title $html5Attr $disabilitato>$help			
+<INPUT type="text" class="$class" maxLength="$w" size="$size" name="$campo" id="$campo" value="$testo" $title $html5Attr $disabilitato>$help			
 <button tabindex='-1' id="toggle_$campo" class="select_all"></button>				
 <script>
 
@@ -321,20 +321,20 @@ EOT;
 
         case "selectdb"://elenco preso da query su db
 			
-			$size=explode("x",$w);
-			$opzioni=$this->elenco_selectdb($size[1],Array($dati[$campo]),isset($size[2])?($size[2]):(null));
-			
-			if (isset($size[3])) $onChange="onChange=\"".$size[3]."()\"";
-			$retval="<select style=\"width:$size[0]px\" class=\"$class\"  name=\"$campo\"  id=\"$campo\" onmousewheel=\"return false\" $onChange $title $html5Attr $disabilitato>$opzioni</select>$help";
-			break;
-		case "selectRPC":
-			$size=explode("x",$w);
-			$opzioni=$this->elenco_selectdb($size[1],Array($dati[$campo]),$size[2]);
-			list($schema,$tb)=explode(".",$size[1]);
-			
-			if (isset($size[3])) $onChange="onChange=\"javascript:".$size[3]."(this,$this->idpratica,'$schema')\"";
-			$retval="<select style=\"width:$size[0]px\" class=\"$class\"  name=\"$campo\"  id=\"$campo\" onmousewheel=\"return false\" $html5Attr $onChange $disabilitato>$opzioni</select>$help";
-			break;	
+            $size=explode("x",$w);
+            $opzioni=$this->elenco_selectdb($size[1],Array($dati[$campo]),isset($size[2])?($size[2]):(null));
+
+            if (isset($size[3])) $onChange="onChange=\"".$size[3]."()\"";
+            $retval="<select style=\"width:$size[0]px\" class=\"$class\"  name=\"$campo\"  id=\"$campo\" onmousewheel=\"return false\" $onChange $title $html5Attr $disabilitato>$opzioni</select>$help";
+            break;
+        case "selectRPC":
+            $size=explode("x",$w);
+            $opzioni=$this->elenco_selectdb($size[1],Array($dati[$campo]),$size[2]);
+            list($schema,$tb)=explode(".",$size[1]);
+
+            if (isset($size[3])) $onChange="onChange=\"javascript:".$size[3]."(this,$this->idpratica,'$schema')\"";
+            $retval="<select style=\"width:$size[0]px\" class=\"$class\"  name=\"$campo\"  id=\"$campo\" onmousewheel=\"return false\" $html5Attr $onChange $disabilitato>$opzioni</select>$help";
+            break;	
 			
 		case "elenco"://elenco di opzioni da un campo di db valori separati da virgola
 			$size=explode("x",$w);	

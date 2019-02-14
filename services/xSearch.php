@@ -111,7 +111,8 @@ EOT;
         $sql=sprintf($query[$queryName],$order,$orderType,$rows,$offset);
         utils::debug(DEBUG_DIR."search-online.debug",$sql);
         $res=$db->fetchAll($sql);
-        $result=Array("total"=>$total,"rows"=>$res,"filter"=>$filter,"sql"=>$sql,"elenco_id"=>Array());
+		for($i=0;$i<count($res);$i++) $elencoId[] = $res[$i]["pratica"];
+        $result=Array("total"=>$total,"rows"=>$res,"filter"=>$filter,"sql"=>$sql,"elenco_id"=>$elencoId);
 
         break;
     default:

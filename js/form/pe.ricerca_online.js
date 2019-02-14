@@ -64,7 +64,7 @@ $(document).ready(function(){
         queryParams:{data:{},action:'search-online',op:oper},
         onLoadSuccess:function(data){
             if(!data.total) alert('Nessun record trovato');
-            //$('#elenco').val(data['elenco_id']);
+            $('#elenco').val(data['elenco_id']);
         }
 
     });

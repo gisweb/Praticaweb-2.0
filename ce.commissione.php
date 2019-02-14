@@ -68,7 +68,7 @@ if (($modo=="edit") or ($modo=="new")) {
 				}
 				else {
 					$tabella_partecipanti=new Tabella_h("ce/elenco_membri",'list');
-					$tabella_partecipanti->set_dati("id>0");
+					$tabella_partecipanti->set_dati("id>0 and attuale=1");
 				}
 				
 				$tabella->set_titolo("Convocazione della commissione");

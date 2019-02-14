@@ -30,9 +30,8 @@
 
 
 	if (!file_exists(DATA_DIR.'config.php')) die("Nessun file di configurazione trovato!");
-    require_once DATA_DIR.'config.php';
-    loadLibs();
-	
+        require_once DATA_DIR.'config.php';
+        loadLibs();
 	if (!defined('PRINT_VERSION')) define('PRINT_VERSION',2);
 				 
 	if ((defined('UPDATE_SW') && UPDATE_SW==1 && $_SESSION["USER_ID"]>4)){
