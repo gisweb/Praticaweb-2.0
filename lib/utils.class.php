@@ -99,41 +99,51 @@ class utils {
         }
     }
 
-/*    static function loadJS($f=Array(),$default=1){
+    static function loadJSTest($f=Array(),$default=1){
         $dirName = (dirname($_SERVER['REQUEST_URI'])=="\\")?(""):(dirname($_SERVER['REQUEST_URI']));
+
+        $jsPath = APPS_DIR.DIRECTORY_SEPARATOR."js";
+        $jsLocalPath = DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."js";
         if($default){
             foreach(self::$js as $js){
-                $jsPath=sprintf("%s/%s.js",self::jsPath,$js);
-                $jsLocalPath=sprintf("%s/%s.js",self::jsLocalPath,$js);
                 $jsLocalURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/') .self::jsLocalURL,$js);
                 $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsURL,$js);
-                if (file_exists($jsLocalPath))
+                if (file_exists($jsLocalPath.DIRECTORY_SEPARATOR.$js.".js")){
                     $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsLocalURL);
-                elseif(file_exists($jsPath))
+					echo "<p>File $jsLocalURL trovato</p>";
+				}
+                elseif (file_exists($jsPath.DIRECTORY_SEPARATOR.$js.".js")){
                     $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsURL);
-                else
+					echo "<p>File $jsURL trovato</p>";
+				}
+                else{
+					echo "<p>File $js non trovato in ($jsLocalPath , $jsPath)</p>";
                     $tag="";
+				}
                 echo $tag;
             }
         }
         if (is_array($f) && count($f)){
-
+            
             foreach($f as $js){
-                $jsPath=sprintf("%s/%s.js",self::jsPath,$js);
-                $jsLocalPath=sprintf("%s/%s.js",self::jsLocalPath,$js);
                 $jsLocalURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsLocalURL,$js);
                 $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsURL,$js);
-                if (file_exists($jsLocalPath))
+                if (file_exists($jsLocalPath.DIRECTORY_SEPARATOR.$js.".js")){
                     $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsLocalURL);
-                elseif(file_exists($jsPath))
+					echo "<p>File $jsLocalURL trovato</p>";
+				}
+                elseif (file_exists($jsPath.DIRECTORY_SEPARATOR.$js.".js")){
                     $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsURL);
-                else
+					echo "<p>File $jsURL trovato</p>";
+				}
+                else{
+					echo "<p>File $js non trovato in ($jsLocalPath , $jsPath)</p>";
                     $tag="";
+				}
                 echo $tag;
-            }
+            } 
         }
-    }
-*/    
+    } 
     static function loadCSS($f=Array(),$default=1){
         $dirName = (dirname($_SERVER['REQUEST_URI'])=="\\")?(""):(dirname($_SERVER['REQUEST_URI']));
         $cssPath=APPS_DIR.DIRECTORY_SEPARATOR."css";
@@ -301,6 +311,7 @@ class utils {
         }
         closedir($dir);
     }
+
     static function filter_filename($filename, $beautify=true) {
         // sanitize filename
         $filename = preg_replace(
@@ -343,5 +354,66 @@ class utils {
         $filename = trim($filename, '.-');
         return $filename;
     }
+
+    static function getStpData($type,$pr){
+            $dbh = self::getDb();
+            $result=Array("single"=>Array("data_odierna"=>"SELECT CURRENT_DATE as oggi;"),"multiple"=>Array(),"fromfile"=>Array());
+            $sql="SELECT table_name as name,array_to_string(array_agg('B.'||column_name::varchar),',') as field_list FROM information_schema.views INNER JOIN information_schema.columns USING(table_name,table_schema) WHERE table_schema='stp' AND table_name ILIKE 'single_%' AND column_name NOT IN ('pratica') GROUP BY table_name ORDER BY 1;";
+            $stmt = $dbh->prepare($sql);
+            if ($stmt->execute())
+                $ris=$stmt->fetchAll(PDO::FETCH_ASSOC);
+            for($i=0;$i<count($ris);$i++){
+                $view=$ris[$i]["name"];
+                $fieldList=$ris[$i]["field_list"];
+                $result["single"][$view]=sprintf("SELECT A.pratica,$fieldList FROM %s A LEFT JOIN stp.$view B USING(pratica) WHERE A.pratica=?;","pe.avvioproc");
+            }
+            $ris=Array();
+            $sql="SELECT table_name as name,array_to_string(array_agg('B.'||column_name::varchar),',') as field_list FROM information_schema.views INNER JOIN information_schema.columns USING(table_name,table_schema) WHERE table_schema='stp' AND table_name ILIKE 'multiple_%' AND column_name NOT IN ('pratica') GROUP BY table_name ORDER BY 1;";
+            $stmt = $dbh->prepare($sql);
+            if ($stmt->execute())
+                $ris=$stmt->fetchAll(PDO::FETCH_ASSOC);
+            for($i=0;$i<count($ris);$i++) {
+                $view = $ris[$i]["name"];
+                $fieldList = $ris[$i]["field_list"];
+                $result["multiple"][str_replace('multiple_', '', $view)] = sprintf("SELECT A.pratica,$fieldList FROM %s A LEFT JOIN stp.$view B USING(pratica) WHERE A.pratica=?;", "pe.avvioproc");
+            }
+            $ris=Array();
+            $sql="SELECT table_name as name,array_to_string(array_agg('B.'||column_name::varchar),',') as field_list FROM information_schema.views INNER JOIN information_schema.columns USING(table_name,table_schema) WHERE table_schema='stp' AND table_name ILIKE 'fromfile_multiple_%' AND column_name NOT IN ('pratica') GROUP BY table_name ORDER BY 1;";
+            $stmt = $dbh->prepare($sql);
+            if ($stmt->execute())
+                $ris=$stmt->fetch(PDO::FETCH_ASSOC);
+            for($i=0;$i<count($ris);$i++){
+                $view=$ris[$i]["name"];
+                $fieldList=$ris[$i]["field_list"];
+                $result["file_multi"][str_replace('fromfile_multiple_','',$view)]=sprintf("SELECT A.pratica,$fieldList FROM %s A LEFT JOIN stp.$view B USING(pratica) WHERE A.pratica=?;","pe.avvioproc");
+            }
+            $data= Array();
+            foreach($result["single"] as $sql){
+                $stmt = $dbh->prepare($sql);
+                if ($stmt->execute(Array($pr)))
+                    $ris=$stmt->fetch(PDO::FETCH_ASSOC);
+                else{
+                    //print_array($stmt->errorInfo());
+                }
+                $data=(!$ris)?($data):(array_merge($data,$ris));
+            }
+            foreach($result["multiple"] as $key=>$sql){
+                $stmt = $dbh->prepare($sql);
+                if ($stmt->execute(Array($pr)))
+                    $ris=$stmt->fetchAll(PDO::FETCH_ASSOC);
+                $data[$key]=$ris;
+            }
+            utils::debug(DEBUG_DIR."/DATA_STP.debug",$data);
+            return $data;
+    }
+
+    function subst($txt,$data){
+        foreach($data as $k=>$v){
+            if (!is_array($v)) $txt = str_replace("%($k)s",$v,$txt);
+        }
+        return $txt;
+    }
+
 }
+
 ?>
