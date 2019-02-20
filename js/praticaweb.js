@@ -226,6 +226,9 @@ function selectOneriIntervento(){
 		mywin.focus();
   }
   
+
+  
+
   function ApriDocumento(url){
 	  var mywin=window.open(url,'Documenti');
 	  mywin.focus();
@@ -409,3 +412,10 @@ function verificaRuoloSoggetti(){
             $('#'+k).closest('tr').hide();
     });
 }
+
+  function ApriMappa3(mapsetid){
+        var mywin=window.open(baseURL + '?' + "mapset=" + mapsetid );
+        mywin.focus();
+  }
+
+
