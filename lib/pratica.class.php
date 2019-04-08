@@ -226,7 +226,7 @@ class generalPratica {
         }
     }
 	
-    private function initCE(){
+     private function initCE(){
         $conn = utils::getDb();
         if ($this->pratica && is_numeric($this->pratica)){
             //INFORMAZIONI SULLA PRATICA

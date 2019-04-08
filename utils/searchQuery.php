@@ -228,9 +228,8 @@ admin.users D ON(A.resp_proc=D.userid) LEFT JOIN
 (SELECT pratica,trim(array_to_string(array_agg(cip::varchar),',')) as cip FROM pe.soggetti WHERE esecutore=1 AND coalesce(voltura,0)=0 GROUP BY pratica) N USING(pratica) LEFT JOIN
 (SELECT pratica,il,fl,protocollo_il,protocollo_fl FROM pe.lavori) P USING(pratica)
 LEFT JOIN admin.users O ON(A.resp_it=O.userid)
---LEFT JOIN (SELECT id,pratica,tipo as tipo_verifica,data_avvio as data_avvio_verifica,esito FROM pe.verifiche AP INNER JOIN pe.e_verifiche BP ON(AP.tipo = BP.id)) P USING(pratica) 
 LEFT JOIN admin.users R ON(A.resp_ia=R.userid)
 LEFT JOIN pe.elenco_opzione_ap Q ON (vincolo_paes=Q.id)
-%s %s LIMIT %s OFFSET %s     
+%s %s %s LIMIT %s OFFSET %s     
 EOT;
 ?>

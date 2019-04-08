@@ -49,6 +49,7 @@ if($azione=="salva"){
     }
     else{
         $uploadedFiles = $_FILES["file_allegato"];
+//        print_array($_FILES);
         $id = $_REQUEST["id"];
         if($uploadedFiles["error"]==UPLOAD_ERR_NO_FILE){
             include_once "./db/db.savedata.php";
