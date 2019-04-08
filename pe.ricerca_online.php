@@ -79,16 +79,16 @@ utils::loadCss(Array("default/easyui","icon"));
                     </tr>
                     <tr id="tr-stato_istruttoria">
                         <td valign="middle">
-                            <label for="stato_istruttoria" class="title">Sportello di Presentazione</label><br/>
+                            <label for="stato_istruttoria" class="title">Stato Istruttoria</label><br/>
                             <input type="hidden" datatable="pe.stato_pratica" id="op_pe-stato_pratica-stato_istruttoria" class="search text check" name="stato_istruttoria" value="equal">                           
                             <input type="radio" value="inizio" id="1_pe-stato_pratica-stato_istruttoria" name="stato_istruttoria"  data-plugins="dynamic-search">
-                            <label for="1_pe-stato_pratica-stato_istruttoria" class="value">SUE</label><br/>
+                            <label for="1_pe-stato_pratica-stato_istruttoria" class="value">In corso</label><br/>
                             <input type="radio" value="chiusa" id="2_pe-stato_pratica-stato_istruttoria" name="stato_istruttoria"  data-plugins="dynamic-search">
-                            <label for="2_pe-stato_pratica-stato_istruttoria" class="value">SUAP</label><br/>
+                            <label for="2_pe-stato_pratica-stato_istruttoria" class="value">Chiusa</label><br/>
                             <input type="radio" value="chiusa_istruttoria" id="3_pe-stato_pratica-stato_istruttoria" name="stato_istruttoria"  data-plugins="dynamic-search">
-                            <label for="3_pe-stato_pratica-stato_istruttoria" class="value">Tutti</label><br/>
+                            <label for="3_pe-stato_pratica-stato_istruttoria" class="value">Pratica Chiusa</label><br/>
                             <input type="radio" value="%" id="4_pe-stato_pratica-stato_istruttoria" name="stato_istruttoria"  data-plugins="dynamic-search">
-                            <label for="3_pe-stato_pratica-stato_istruttoria" class="value">Tutti</label><br/>
+                            <label for="4_pe-stato_pratica-stato_istruttoria" class="value">Tutti</label><br/>
                         </td>
                     </tr>
                 </table>
