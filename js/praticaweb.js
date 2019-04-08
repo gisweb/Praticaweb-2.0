@@ -412,7 +412,11 @@ function verificaRuoloSoggetti(){
             $('#'+k).closest('tr').hide();
     });
 }
-
+function openGC3(mapset,x,y,scale){
+    var url = gcURL+"?mapset=" + mapset + '&x=' + x + '&y=' + y + '&s=' + scale;
+    window.open(url);
+    //alert('Sto cercando di aprire la mappa');
+}
   function ApriMappa3(mapsetid){
         var mywin=window.open(baseURL + '?' + "mapset=" + mapsetid );
         mywin.focus();

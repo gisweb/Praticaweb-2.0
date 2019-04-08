@@ -1,5 +1,6 @@
 <?php
 include_once("login.php");
+//error_reporting(E_ALL);
 $tabpath="pe";
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $idpratica=$_REQUEST["pratica"];
@@ -68,11 +69,12 @@ function aggiungi_riferimento(id,pratica){
 		<input name="mode" type="hidden" value="<?=$modo;?>">
 				
 	</FORM>			
-<?	include "./inc/inc.window.php";
+<?php
+	include "./inc/inc.window.php";
 }else{
 		
 		$tabella=new tabella_v($config_file);
-		?>
+?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 		<H2 class="blueBanner">Esposti ricevuti</H2>
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">

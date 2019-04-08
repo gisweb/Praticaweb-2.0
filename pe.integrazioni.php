@@ -114,7 +114,7 @@ for($i=0;$i<$num_integrazioni;$i++){
 //if ($num_mancanti){
 	$tabella_integrazione->set_titolo("Aggiungi nuova Integrazione $nomeiter","nuovo",array("iter"=>$iter,"nomeiter"=>$nomeiter));
 	$tabella_integrazione->get_titolo();
-	$tabella_mancanti->elenco();
+//	$tabella_mancanti->elenco();
 	echo("<br>");
 //}	
 

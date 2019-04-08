@@ -268,6 +268,7 @@
 			$sqlRicerca="((".substr($sql,0,strlen($sql)-10).") )";
 	
 		//echo $op."<br>";
-		//print("<p>$sqlRicerca</p>");
+		
+//print("<p>$sqlRicerca</p>");
 
 ?>

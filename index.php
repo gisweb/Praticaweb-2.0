@@ -22,7 +22,7 @@ $last_change=shell_exec("git log -1 --pretty=format:'%ci'");
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
 <?php
-	utils::loadJS();
+	utils::loadJS(Array('init'));
 	utils::loadCss();
 ?>
 <SCRIPT language="javascript" >

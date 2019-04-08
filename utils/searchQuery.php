@@ -206,10 +206,16 @@ SELECT id,pratica,protocollo::varchar,data_prot as data_protocollo,'Istanza'::va
 SELECT
     XX.tipo as tipo_istanza,A.pratica,XX.data_protocollo as data_ordinamento,A.numero,XX.protocollo,XX.data_protocollo as data_prot,A.data_presentazione,A.oggetto,1 as online,
     B.nome as tipo_pratica,C.descrizione as tipo_intervento,coalesce(D.nome,'non assegnata') as responsabile,
+    case 
+when (coalesce(data_chiusura_pa::varchar,'') = '' and coalesce(data_chiusura::varchar,'') = '') then 'inizio'
+when (coalesce(data_chiusura_pa::varchar,'') = '' and coalesce(data_chiusura::varchar,'') <> '') then 'chiusa'
+when (coalesce(data_chiusura_pa::varchar,'') <> '' and coalesce(data_chiusura::varchar,'') = '') then 'chiusa_istruttoria'
+when (coalesce(data_chiusura_pa::varchar,'') <> '' and coalesce(data_chiusura::varchar,'') <> '') then 'chiusa'
+end as stato_istruttoria,
     E.richiedente,F.progettista,L.esecutore,G.elenco_ct,H.elenco_cu,I.ubicazione,
     CASE WHEN (coalesce(A.resp_it,coalesce(A.resp_ia,0)) = 0) THEN 0 ELSE 1 END as assegnata_istruttore
     ,coalesce(O.nome,'non assegnata') as responsabile_it,M.titolo,M.data_rilascio,A.sportello,Q.opzione as vincolo_paes
-    ,coalesce(R.nome,'non assegnata') as responsabile_ia
+    ,coalesce(R.nome,'non assegnata') as responsabile_ia,S.testo
 FROM 
 istanze_online XX INNER JOIN 
 pe.avvioproc A USING (pratica) LEFT JOIN 
@@ -231,6 +237,7 @@ LEFT JOIN admin.users O ON(A.resp_it=O.userid)
 --LEFT JOIN (SELECT id,pratica,tipo as tipo_verifica,data_avvio as data_avvio_verifica,esito FROM pe.verifiche AP INNER JOIN pe.e_verifiche BP ON(AP.tipo = BP.id)) P USING(pratica) 
 LEFT JOIN admin.users R ON(A.resp_ia=R.userid)
 LEFT JOIN pe.elenco_opzione_ap Q ON (vincolo_paes=Q.id)
-%s %s LIMIT %s OFFSET %s     
+LEFT JOIN  pe.ultimo_iter S USING(pratica)
+%s %s %s LIMIT %s OFFSET %s     
 EOT;
 ?>

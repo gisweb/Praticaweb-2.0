@@ -155,6 +155,12 @@ class Tabella{
        case "preview":
          $button['icon']='ui-icon-print';
          $button['value']='Stampa';
+         break;
+       case "mail":
+            $button['icon']='ui-icon-mail-closed';
+            $button['text']="Invia";
+	    //$button['value']="Invia";
+	    break;
         default:
          $button['value']=$button['text'];
          break;
@@ -358,6 +364,37 @@ EOT;
 	
 	function set_tag($mytag){
 		$this->tag=$mytag;
+	}
+
+
+
+    function elenco_opzioni($tabella,$selezionato,$filtro=''){
+        if (!isset($this->db)) $this->connettidb();
+        $sql="select * from $tabella";
+        if (trim($filtro)){
+            if (!ereg("=",$filtro)){
+                if ($this->array_dati[$this->curr_record][$filtro]){
+                    $filtro="$filtro='".$this->array_dati[$this->curr_record][$filtro]."'";
+                }
+				elseif($_REQUEST[$filtro]){
+                    $filtro="$filtro='".$_REQUEST[$filtro]."'";
+                }
+            }
+            $sql.=" where $filtro";
+        }
+        utils::debug(DEBUG_DIR.'selectdb.debug',$sql);
+        $result = $this->db->sql_query ($sql);
+        if (!$result){
+            return;
+        }
+        $res=Array();
+        $elenco = $this->db->sql_fetchrowset();
+        $nrighe=$this->db->sql_numrows();
+        for  ($i=0;$i<$nrighe;$i++){
+            (in_array($elenco[$i]["id"],$selezionato))?($selected=1):($selected=0);
+            $res[]=Array("value"=>$elenco[$i]["id"],"label"=>$elenco[$i]["opzione"],"selected"=>$selected, "params"=>json_encode($elenco[$i]));
+        }
+        return $res;
 	}
 
 /*--------------------------- Funzione che costruisce i bottoni di salvataggio,annulla,elimina --------------------------------*/    

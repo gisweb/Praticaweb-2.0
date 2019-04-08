@@ -360,7 +360,7 @@ EOT;
 			break;
 		case "selectdb":		//Restituisce il campo descrittivo di un elenco 
 			$size=explode("x",$w);
-			$retval="<td$classe valign=\"middle\" width=\"$size[0]\">".$this->get_selectdb_value($valore,"id",$size[1],"opzione")."</td>";
+			$retval="<td $classe valign=\"middle\" width=\"$size[0]\">".$this->get_selectdb_value($valore,"id",$size[1],"opzione")."</td>";
 			break;	
 		case "folder":
 			$campo=$nome;
@@ -634,7 +634,7 @@ function zoomto_gc($tabella,$id){
                 $result = $this->db->sql_query($sql);
                 $map=$this->db->sql_fetchrow();
                 if (GC_VERSION == 3){
-                    $sql = sprintf("SELECT x(ST_Centroid(st_transform(the_geom,3857))) as x,y(ST_Centroid(st_transform(the_geom,3857))) as y FROM civici.civici WHERE gid = %s;",$map["gid"]);
+                    $sql = sprintf("SELECT x(ST_Centroid(st_transform(the_geom,3003))) as x,y(ST_Centroid(st_transform(the_geom,3003))) as y FROM civici.civici WHERE gid = %s;",$map["gid"]);
                     $result = $this->db->sql_query($sql);
                     $coords=$this->db->sql_fetchrow();
                     $scale = 500;

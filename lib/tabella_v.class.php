@@ -19,7 +19,7 @@ function set_errors($err){
 /*MODIFICA LOCK STATI AGGIUNTO PARAMETRO frozen*/
 function get_controllo($label,$tipo,$w,$campo,$html5Attr,$frozen=0){
 //function get_controllo($label,$tipo,$w,$campo){
-//restituisce il controllo in funzione di tipo letto dal configfile e lo riempie con i dati il valore w puÃ² contenere piÃ¹ informazioni
+//restituisce il controllo in funzione di tipo letto dal configfile e lo riempie con i dati il valore w può contenere più informazioni
 	$retval=null; 
 	$class=null;
 	$help=null;
@@ -64,12 +64,12 @@ function get_controllo($label,$tipo,$w,$campo,$html5Attr,$frozen=0){
 			$retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$w\" name=\"$campo\" id=\"$campo\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
 			break;
 		case "intero":
-						 if ($dato) 
-								 $dato=number_format($dato,0, ',', '');			
-						 else
-								 $dato="0";
-						 $retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$w\"  name=\"$campo\" id=\"numero\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
-						 break;
+                    if ($dato) 
+                                    $dato=number_format($dato,0, ',', '');			
+                    else
+                                    $dato="0";
+                    $retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$w\"  name=\"$campo\" id=\"numero\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
+                    break;
 	
 		case "valuta":
 		case "volume":
@@ -80,11 +80,28 @@ function get_controllo($label,$tipo,$w,$campo,$html5Attr,$frozen=0){
 					$dato="0,00";
 			$retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$w\" name=\"$campo\" id=\"$campo\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
 			break;
+//		case "upload":
+//			$size=intval($w+($w/5));
+//						$testo=stripslashes($dato);
+//
+//			$retval="<INPUT class=\"$class\" type=\"file\" maxLength=\"$w\" size=\"$size\" name=\"$campo\" id=\"$campo\" value=\"$testo\" $html5Attr $disabilitato>$help";
+//			break;
 		case "upload":
-			$size=intval($w+($w/5));
-						$testo=stripslashes($dato);
-
-			$retval="<INPUT class=\"$class\" type=\"file\" maxLength=\"$w\" size=\"$size\" name=\"$campo\" id=\"$campo\" value=\"$testo\" $html5Attr $disabilitato>$help";
+                    $prms = explode("x",$w);
+                    $width = $prms[0]."px";
+			//$size=intval($w+($w/5));
+		    $testo=stripslashes($dato);
+                    if(count($prms)>1 && $prms[1]=='multiple'){
+                        $multiple = "multiple";
+                        $nomeCampo=$campo."[]";
+                    }
+                    else{
+                        $multiple = "";
+                        $nomeCampo=$campo;
+                    }
+                    $retval = <<<EOT
+<input type="file" class="$class" style="width:$width" $multiple name="$nomeCampo" id="$campo" $html5Attr $disabilitato>$help  
+EOT;
 			break;
 		case "ui-button":
 			$size=explode("x",$w);
@@ -141,7 +158,7 @@ EOT;
 			$size=intval($size+($size/5));
 			$testo=stripslashes($dato);		
 			$retval=<<<EOT
-<INPUT type=\"text\" class="$class" maxLength="$w" size="$size" name="$campo" id="$campo" value="$testo" $title $html5Attr $disabilitato>$help			
+<INPUT type="text" class="$class" maxLength="$w" size="$size" name="$campo" id="$campo" value="$testo" $title $html5Attr $disabilitato>$help			
 <button tabindex='-1' id="toggle_$campo" class="select_all"></button>				
 <script>
 
@@ -304,20 +321,20 @@ EOT;
 
         case "selectdb"://elenco preso da query su db
 			
-			$size=explode("x",$w);
-			$opzioni=$this->elenco_selectdb($size[1],Array($dati[$campo]),isset($size[2])?($size[2]):(null));
-			
-			if (isset($size[3])) $onChange="onChange=\"".$size[3]."()\"";
-			$retval="<select style=\"width:$size[0]px\" class=\"$class\"  name=\"$campo\"  id=\"$campo\" onmousewheel=\"return false\" $onChange $title $html5Attr $disabilitato>$opzioni</select>$help";
-			break;
-		case "selectRPC":
-			$size=explode("x",$w);
-			$opzioni=$this->elenco_selectdb($size[1],Array($dati[$campo]),$size[2]);
-			list($schema,$tb)=explode(".",$size[1]);
-			
-			if (isset($size[3])) $onChange="onChange=\"javascript:".$size[3]."(this,$this->idpratica,'$schema')\"";
-			$retval="<select style=\"width:$size[0]px\" class=\"$class\"  name=\"$campo\"  id=\"$campo\" onmousewheel=\"return false\" $html5Attr $onChange $disabilitato>$opzioni</select>$help";
-			break;	
+            $size=explode("x",$w);
+            $opzioni=$this->elenco_selectdb($size[1],Array($dati[$campo]),isset($size[2])?($size[2]):(null));
+
+            if (isset($size[3])) $onChange="onChange=\"".$size[3]."()\"";
+            $retval="<select style=\"width:$size[0]px\" class=\"$class\"  name=\"$campo\"  id=\"$campo\" onmousewheel=\"return false\" $onChange $title $html5Attr $disabilitato>$opzioni</select>$help";
+            break;
+        case "selectRPC":
+            $size=explode("x",$w);
+            $opzioni=$this->elenco_selectdb($size[1],Array($dati[$campo]),$size[2]);
+            list($schema,$tb)=explode(".",$size[1]);
+
+            if (isset($size[3])) $onChange="onChange=\"javascript:".$size[3]."(this,$this->idpratica,'$schema')\"";
+            $retval="<select style=\"width:$size[0]px\" class=\"$class\"  name=\"$campo\"  id=\"$campo\" onmousewheel=\"return false\" $html5Attr $onChange $disabilitato>$opzioni</select>$help";
+            break;	
 			
 		case "elenco"://elenco di opzioni da un campo di db valori separati da virgola
 			$size=explode("x",$w);	
@@ -710,8 +727,8 @@ function get_data($campo){
 //function get_riga_edit($nriga){
 function get_riga_edit($nriga,$frozen_cols=Array()){
 	$ctr='';
-//prendo una riga che puÃ² essere fatta da uno,  due o piÃ¹ colonne
-// restituisce la riga in modalitÃ  edit con label controllo associato
+//prendo una riga che può essere fatta da uno,  due o più colonne
+// restituisce la riga in modalità edit con label controllo associato
 	$riga=$this->tab_config[$nriga];
 	$lbl="";
 	for ($i=0;$i<count($riga);$i++){
@@ -735,7 +752,7 @@ function get_riga_edit($nriga,$frozen_cols=Array()){
 }
 
 function get_riga_view($nriga){
-// restituisce la riga in modalitÃ  view
+// restituisce la riga in modalità view
 	$testo_riga='';
 	$riga=$this->tab_config[$nriga];
 	for ($i=0;$i<count($riga);$i++){
@@ -765,7 +782,7 @@ function get_riga_view($nriga){
 	return $testo_riga;
 }
  
-function edita(){
+function edita($print=1){
 //if($this->error_flag==1)
 	//echo ("I campi evidenziati in rosso non sono validi");
 	//crea la tabella di editing
@@ -829,8 +846,15 @@ function edita(){
     
     $buttons=$this->set_buttons();
 
-	print $tabella;
-    print $buttons;
+//	print $tabella;
+//    print $buttons;
+    if($print == 1){
+        print $tabella;
+        print $buttons;
+    }
+    else{
+        return $tabella.$buttons;
+    }
 }
 
 function tabella($curr=0){
@@ -1086,8 +1110,15 @@ function get_multiselectdb_value($val,$fld,$tab,$campo){
 // >>>>>>>>>>>>>>>>>>>>>>> FUNZIONI DI RICERCA NUOVO NOMINATIVO (da vedere)<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 function set_elenco_trovati($sql='true',$schema="pe"){
-	
-       $sql="
+       $sql="SELECT DISTINCT * FROM ((SELECT 'pe' as schema,* FROM (SELECT DISTINCT ON (coalesce(soggetti.codfis,soggetti.ragsoc) ) id,coalesce(soggetti.codfis,'') as codfis , coalesce(soggetti.ragsoc,'') as ragsoc,coalesce(datanato::varchar,'') as datanato,coalesce(soggetti.piva,'') as piva,cognome,nome,coalesce(comunato,'') as comunato,
+((((COALESCE(soggetti.cognome, ''::character varying)::text || COALESCE(' '::text || soggetti.nome::text, ''::text)) ||coalesce(' C.F. '||codfis,'')|| COALESCE(' '::text || soggetti.titolo::text, ''::text)) || COALESCE(' '::text || soggetti.ragsoc::text, ''::text)) || coalesce(' P.I. '||piva,'') || COALESCE(' '::text || soggetti.indirizzo::text, ''::text)) || COALESCE((' ('::text || soggetti.prov::text) || ')'::text, ''::text) AS soggetto
+	FROM pe.soggetti where $sql ORDER BY coalesce(soggetti.codfis,ragsoc),id DESC ) X WHERE (coalesce(codfis,'')<>'' or coalesce(piva,'')<>'') ORDER BY lower(cognome),lower(nome),datanato,lower(ragsoc))
+UNION ALL
+(SELECT '$schema' as schema,* FROM (SELECT DISTINCT ON (coalesce(soggetti.codfis,soggetti.ragsoc) ) id,coalesce(soggetti.codfis,'') as codfis , coalesce(soggetti.ragsoc,'') as ragsoc,coalesce(datanato::varchar,'') as datanato,coalesce(soggetti.piva,'') as piva,cognome,nome,coalesce(comunato,'') as comunato,
+((((COALESCE(soggetti.cognome, ''::character varying)::text || COALESCE(' '::text || soggetti.nome::text, ''::text)) ||coalesce(' C.F. '||codfis,'')|| COALESCE(' '::text || soggetti.titolo::text, ''::text)) || COALESCE(' '::text || soggetti.ragsoc::text, ''::text)) || coalesce(' P.I. '||piva,'') || COALESCE(' '::text || soggetti.indirizzo::text, ''::text)) || COALESCE((' ('::text || soggetti.prov::text) || ')'::text, ''::text) AS soggetto
+	FROM $schema.soggetti where $sql ORDER BY coalesce(soggetti.codfis,ragsoc),id DESC ) X WHERE (coalesce(codfis,'')<>'' or coalesce(piva,'')<>'') ORDER BY lower(cognome),lower(nome),datanato,lower(ragsoc))
+ORDER BY soggetto) X;";
+/*       $sql="
 (select 
 id,schema,coalesce(soggetti.codfis,'') as codfis ,tipo,
  coalesce(soggetti.ragsoc,'') as ragsoc,coalesce(datanato::varchar,'') as datanato,
@@ -1156,10 +1187,11 @@ id,schema,coalesce(soggetti.codfis,'') as codfis ,tipo,
 ((((COALESCE(soggetti.cognome, ''::character varying)::text || COALESCE(' '::text || soggetti.nome::text, ''::text)) ||coalesce(' C.F. '||codfis,'')|| COALESCE(' '::text || soggetti.titolo::text, ''::text)) || COALESCE(' '::text || soggetti.ragsoc::text, ''::text)) || coalesce(' P.I. '||piva,'') || COALESCE(' '::text || soggetti.indirizzo::text, ''::text)) || COALESCE((' ('::text || soggetti.prov::text) || ')'::text, ''::text)||' - Esecutore Lavori' AS soggetto
 ,last_upd
  FROM vigi.ricerca_soggetti as soggetti where $sql and tipo='esecutore' order by soggetto asc,last_upd desc)
-";
+";*/
 		//echo "<p>$sql</p>";
 	if (!isset($this->db)) $this->connettidb();
 	$result = $this->db->sql_query($sql);
+//if($_SESSION["USER_ID"]==1) echo "<p>$sq</p>";
 	return $this->db->sql_numrows();
 	
 }

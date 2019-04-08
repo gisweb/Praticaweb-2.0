@@ -21,6 +21,7 @@ function confirmSubmit()
 {
 var msg='Sicuro di voler eliminare definitivamente il record corrente?';
 var agree=confirm(msg);
+
 if (agree)
 	return true ;
 else
@@ -44,7 +45,7 @@ else
 		  <tr> 
 			<td> 
 			<!-- intestazione-->
-				<H2 class="blueBanner">Certificato di Agibilità </H2>
+				<H2 class="blueBanner">Certificato di Agibilit&agrave;�</H2>
 			<!-- fine intestazione-->
 			</td>
 		  </tr>
@@ -63,17 +64,18 @@ else
 		</TABLE>
 
 		<input name="active_form" type="hidden" value="pe.abitabi.php">
-		<input name="mode" type="hidden" value="<?=$modo?>">
+		<input name="mode" type="hidden" value="<?php echo $modo;?>">
 	</form>
 
-<?php }else{
+php }else{
 		//-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
-?>	<H2 class="blueBanner">Elenco Agibilità </H2>
+?>	<H2 class="blueBanner">Elenco Agibilit&agrave;�</H2>
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">
 		  <TR> 
 			<TD> 
 			<!-- contenuto-->
-				<?$tabella=new tabella_v("$tabpath/abitabi");
+				<?php
+				$tabella=new tabella_v("$tabpath/abitabi");
 				$tabella->set_titolo("Certificato rilasciato","modifica",array("id"=>""));
 				$tabella->set_dati("pratica=$idpratica");
 				$tabella->elenco();?>

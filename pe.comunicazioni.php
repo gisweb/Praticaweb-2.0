@@ -24,6 +24,7 @@ include_once "./lib/tabella_v.class.php";
 <?php
 if (($modo=="edit") or ($modo=="new") ){
 	//---<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  EDITA ELENCO ITER >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>------------------------------>
+		unset($_SESSION["ADD_NEW"]);
 		$id = $_POST["id"];
 		$tabella=new tabella_v("$tabpath/comunicazioni",$modo);
 		include "./inc/inc.page_header.php";?>

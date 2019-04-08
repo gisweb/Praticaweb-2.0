@@ -27,7 +27,7 @@ if (file_exists(DATA_DIR."praticaweb/include/init.pe.titolo.php")){
 
 <?php
 
-$tab=$_POST["tabella"];
+$tab=($_POST["tabella"])?($_POST["tabella"]):('titolo');
 if (($modo=="edit") || ($modo=="new")) {
 	unset($_SESSION["ADD_NEW"]);
 	if ($tab=="titolo"){

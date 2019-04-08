@@ -19,6 +19,19 @@ $sqlPratichepres=" except select distinct pareri.pratica,data_presentazione from
 //echo "$sqlRicerca$sqlPratichepres<br>";
 //print_debug($sqlRicerca.$sqlPratichepres);
 //$db->sql_query($sqlRicerca.$sqlPratichepres);//trovo l'elenco degli id delle pratiche che mi interessano tolte quelle giÃ  presenti
+//echo "<p>$sqlRicerca</p>";
+if($_REQUEST["numero"]){
+    $filter[] = "numero = '".$_REQUEST["numero"]."'";
+}
+if($_REQUEST["data_dal"]){
+    $filter[] = "coalesce(data_presentazione,data_prot) >= '".$_REQUEST["data_dal"]."'::date";
+}
+if($_REQUEST["data_al"]){
+    $filter[] = "coalesce(data_presentazione,data_prot) <= '".$_REQUEST["data_al"]."'::date";
+}
+$filtro = (count($filter)==0)?("FALSE"):(implode(" AND ",$filter));
+$sqlRicerca = "SELECT DISTINCT pratica FROM pe.avvioproc WHERE $filtro;";
+//echo "<p>$sqlRicerca</p>";
 $db->sql_query($sqlRicerca);
 $elenco_pratiche=$db->sql_fetchlist("pratica");
 //$elenco=serialize($elenco_pratiche);

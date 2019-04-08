@@ -92,6 +92,13 @@ switch($action){
         //utils::debug(DEBUG_DIR."groupby.debug",$result);
         break;
     case "search-online":
+       foreach($data as $key=>$value){
+            if ($key!=="pe.avvioproc") $q[]="(SELECT DISTINCT pratica FROM $key WHERE ".implode(" $op ",$value).")";
+            $f1=implode(" $op ",$value);
+        }
+        $listId=Array();
+        $filter=implode(" $queryOP ",$q);
+	if ($filter) $filter = " WHERE pratica IN ".$filter;
         $queryName="search-online";
         $order="ORDER BY data_ordinamento";
         $sql =<<<EOT
@@ -108,7 +115,7 @@ EOT;
 
         $tmp=$db->fetchAll($sql);
         $total=count($tmp);
-        $sql=sprintf($query[$queryName],$order,$orderType,$rows,$offset);
+        $sql=sprintf($query[$queryName],$filter,$order,$orderType,$rows,$offset);
         utils::debug(DEBUG_DIR."search-online.debug",$sql);
         $res=$db->fetchAll($sql);
         $result=Array("total"=>$total,"rows"=>$res,"filter"=>$filter,"sql"=>$sql,"elenco_id"=>Array());
