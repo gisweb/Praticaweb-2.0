@@ -64,3 +64,5 @@ var colsDef={
     ]]
 
 }
+
+var hiddenFilterOnline = [];
