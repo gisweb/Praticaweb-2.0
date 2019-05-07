@@ -80,6 +80,14 @@ function print_array($arr){
 	echo "</pre>";
 }
 
+function adm_print_array($arr){
+	if ($_SESSION["USER_ID"]==1){
+		echo "<pre>";
+        	print_r($arr);
+	        echo "</pre>";
+        }
+}
+
 function vnsprintf( $format, array $data)
 {
     preg_match_all( '/ (?<!%) % ( (?: [[:alpha:]_-][[:alnum:]_-]* | ([-+])? [0-9]+ (?(2) (?:\.[0-9]+)? | \.[0-9]+ ) ) ) \$ [-+]? \'? .? -? [0-9]* (\.[0-9]+)? \w/x', $format, $match, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);

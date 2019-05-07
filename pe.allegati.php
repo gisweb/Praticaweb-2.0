@@ -165,7 +165,8 @@ else{
     </script>
     
 EOT;
-if (in_array($_SESSION["USER_ID"],Array(1,100000,100001)))     echo $btn_download;
+//if (in_array($_SESSION["USER_ID"],Array(1,100000,100001)))     
+    echo $btn_download;
     $tabella_integrazione=new tabella_h("$tabpath/integrazioni.tab");
 	$tabella_integrazione->set_titolo("Aggiungi nuova Integrazione","nuovo");
 	$tabella_integrazione->get_titolo("pe.integrazioni.php");
