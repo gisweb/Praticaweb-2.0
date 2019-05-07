@@ -253,10 +253,16 @@ $(document).ready(function(){
         $("form").find('input[type=text],textarea').not('.textbox-date').filter(':visible:first').focus();
         $("[data-plugins='tipo_soggetto']").bind('change',function(event){
             verificaRuoloSoggetti();
-        });
-        
         $("[data-plugins='link']").bind('click',function(event){
             
+        });});
+//        $("[data-plugins='stato_allegato']").tooltip({content:"Modifica lo stato dell'allegato"});
+        $("[data-plugins='stato_allegato']").bind('click',function(event){
+            var d = $(this).data();
+            $('#id-change').val(d['id']);
+            $('#pratica-change').val(d['pratica']);
+            $('#dialog-change').dialog( "open" );
         });
+	
 });
 

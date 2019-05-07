@@ -359,8 +359,15 @@ EOT;
 			$retval="<td$classe>&nbsp;&nbsp;<img border=\"0\" id=\"$imm\" height=\"12\" src=\"images/left.gif\" onclick=\"show_note('$nome','$imm')\">&nbsp;<span id=\"$nome\" style=\"display:none\"><textarea name=\"$nome\" cols=\"$w\" rows=\"2\">$valore</textarea>$help</span>"; 
 			break;
 		case "selectdb":		//Restituisce il campo descrittivo di un elenco 
+			$pratica= $this->array_dati[$row]["pratica"];
+	                $id=$this->array_dati[$row]["id"];
+
 			$size=explode("x",$w);
-			$retval="<td$classe valign=\"middle\" width=\"$size[0]\">".$this->get_selectdb_value($valore,"id",$size[1],"opzione")."</td>";
+                        $label = $this->get_selectdb_value($valore,"id",$size[1],"opzione");
+			$retval=<<<EOT
+<td $classe valign="middle" width="$size[0]" data-id="$id" data-pratica="$pratica" $html5Attr>$label</td>
+EOT;
+			//$retval="<td $classe valign=\"middle\" width=\"$size[0]\" $html5Attr >".$this->get_selectdb_value($valore,"id",$size[1],"opzione")."</td>";
 			break;	
 		case "folder":
 			$campo=$nome;
