@@ -100,7 +100,7 @@ else{
             $optVal = $options[$i]["id"];
             $optLabel = $options[$i]["opzione"];
             $opts[] = sprintf("<input type=\"radio\" class=\"\" name=\"allegati_state\" data-plugins=\"input-download-allegati\" value=\"%s\">%s</input><br/>",$optVal,$optLabel);
-	    $opts2[]= sprintf("<input type=\"radio\" class=\"\" name=\"radio_stato_allegato\" value=\"%s\">%s</input><br/>",$optVal,$optLabel);
+			$opts2[]= sprintf("<input type=\"radio\" class=\"\" name=\"radio_stato_allegato\" value=\"%s\" label=\"$optLabel\">%s</input><br/>",$optVal,$optLabel,$optLabel);
         }
         $radioHtml = implode("\n",$opts);
         $radioHtml2 = implode("\n",$opts2);
@@ -176,6 +176,8 @@ $div_stato = <<<EOT
         </div>
         <input type="hidden" id="id-change" value=""/>
         <input type="hidden" id="pratica-change" value=""/>
+		<input type="hidden" id="table-change" value=""/>
+		<input type="hidden" id="field-change" value=""/>
     </div>        
     <script>
         var dialog2 = $("#dialog-change").dialog({
@@ -187,13 +189,25 @@ $div_stato = <<<EOT
                 "Salva": function(){
                     var pr = $('#pratica-change').val();
                     var id = $('#id-change').val();
+					var table = $('#table-change').val();
+					var field = $('#field-change').val();
+					var value = $("input[name='radio_stato_allegato']:checked").val();
+					var newLabel = $("input[name='radio_stato_allegato']:checked").attr('label');
+					
                     $.ajax({
-			url:'services/xServer.php',
-                        data:{'id':id,'pratica':pr,'action':'save-stato'},
-                        method:'POST',
-                        success:function(data,textStatus,jqXHR){
-				
-			}
+						url:'services/xServer.php',
+						data:{'id':id,'pratica':pr,'table':table,'field':field,'action':'save-data','value':value},
+						method:'POST',
+						success:function(data,textStatus,jqXHR){
+							if (data["success"]==1){
+							    
+							}
+							else{
+								console.log(newLabel);
+								
+							}
+							dialog2.dialog('close');
+						}
 		    });
                 },
                 "Chiudi": function() {

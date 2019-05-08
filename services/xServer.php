@@ -365,6 +365,25 @@ EOT;
 		    $result=Array("success"=>-1,"message"=>$stmt->errorInfo());
 		}
 		break;
+	case "save-data":
+		$conn = utils::getDB();
+		$table=$_POST["table"];
+		$field=$_POST["field"];
+		$id=$_POST["id"];
+		$value=$_POST["value"];
+		
+		$sql = "UPDATE $table SET $field=$ WHERE id=?;";
+		
+		$stmt = $conn->prepare($sql);
+		if($stmt->execute(Array($value,$id))){
+			$result = Array("success"=>1,"message"=>"");
+		}
+		else{
+			$result = Array("success"=>-1,"message"=>$sql);
+		}
+		//$result = Array("success"=>-1,"message"=>$sql);
+		
+		break;
 	default:
 		break;
 }

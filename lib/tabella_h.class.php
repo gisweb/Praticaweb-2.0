@@ -28,6 +28,7 @@ function set_color($intestazione,$font_intestazione,$titolo,$font_titolo){
 }
 
 function get_cella($row,$col){
+	$fieldLabel = $this->def_col[$col][0]; //label del campo
 	$nome=$this->def_col[$col][1]; //nome del campo
 	$valore=htmlspecialchars($this->array_dati[$row][$nome], ENT_QUOTES,"UTF-8");//valore del campo
 	$w=$this->def_col[$col][2];//larghezza del campo
@@ -360,15 +361,26 @@ EOT;
 			break;
 		case "selectdb":		//Restituisce il campo descrittivo di un elenco 
 			$pratica= $this->array_dati[$row]["pratica"];
-	                $id=$this->array_dati[$row]["id"];
+	        $id=$this->array_dati[$row]["id"];
 
 			$size=explode("x",$w);
-                        $label = $this->get_selectdb_value($valore,"id",$size[1],"opzione");
+            $label = $this->get_selectdb_value($valore,"id",$size[1],"opzione");
 			$retval=<<<EOT
 <td $classe valign="middle" width="$size[0]" data-id="$id" data-pratica="$pratica" $html5Attr>$label</td>
 EOT;
 			//$retval="<td $classe valign=\"middle\" width=\"$size[0]\" $html5Attr >".$this->get_selectdb_value($valore,"id",$size[1],"opzione")."</td>";
 			break;	
+		case "selectdb-editable":		//Restituisce il campo descrittivo di un elenco 
+			$pratica= $this->array_dati[$row]["pratica"];
+	        $id=$this->array_dati[$row]["id"];
+
+			$size=explode("x",$w);
+            $label = $this->get_selectdb_value($valore,"id",$size[1],"opzione");
+			$retval=<<<EOT
+<td $classe valign="middle" width="$size[0]" data-id="$id" data-pratica="$pratica" data-plugins="selectdb-editable" data-field="$nome" title="Modifica $fieldLabel" $html5Attr>$label</td>
+EOT;
+			//$retval="<td $classe valign=\"middle\" width=\"$size[0]\" $html5Attr >".$this->get_selectdb_value($valore,"id",$size[1],"opzione")."</td>";
+			break;
 		case "folder":
 			$campo=$nome;
 			$prms=explode('#',$w);

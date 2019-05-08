@@ -256,11 +256,12 @@ $(document).ready(function(){
         $("[data-plugins='link']").bind('click',function(event){
             
         });});
-//        $("[data-plugins='stato_allegato']").tooltip({content:"Modifica lo stato dell'allegato"});
-        $("[data-plugins='stato_allegato']").bind('click',function(event){
+        $("[data-plugins='selectdb-editable']").bind('click',function(event){
             var d = $(this).data();
             $('#id-change').val(d['id']);
             $('#pratica-change').val(d['pratica']);
+			$('#table-change').val(d['table']);
+			$('#field-change').val(d['field']);
             $('#dialog-change').dialog( "open" );
         });
 	
