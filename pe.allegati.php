@@ -100,7 +100,7 @@ else{
             $optVal = $options[$i]["id"];
             $optLabel = $options[$i]["opzione"];
             $opts[] = sprintf("<input type=\"radio\" class=\"\" name=\"allegati_state\" data-plugins=\"input-download-allegati\" value=\"%s\">%s</input><br/>",$optVal,$optLabel);
-			$opts2[]= sprintf("<input type=\"radio\" class=\"\" name=\"radio_stato_allegato\" value=\"%s\" label=\"$optLabel\">%s</input><br/>",$optVal,$optLabel,$optLabel);
+            $opts2[]= sprintf("<input type=\"radio\" class=\"\" name=\"radio_stato_allegato\" value=\"%s\" label=\"$optLabel\">%s</input><br/>",$optVal,$optLabel,$optLabel);
         }
         $radioHtml = implode("\n",$opts);
         $radioHtml2 = implode("\n",$opts2);
@@ -189,25 +189,23 @@ $div_stato = <<<EOT
                 "Salva": function(){
                     var pr = $('#pratica-change').val();
                     var id = $('#id-change').val();
-					var table = $('#table-change').val();
-					var field = $('#field-change').val();
-					var value = $("input[name='radio_stato_allegato']:checked").val();
-					var newLabel = $("input[name='radio_stato_allegato']:checked").attr('label');
-					
+                    var table = $('#table-change').val();
+                    var field = $('#field-change').val();
+                    var value = $("input[name='radio_stato_allegato']:checked").val();
+                    var newLabel = $("input[name='radio_stato_allegato']:checked").attr('label');
                     $.ajax({
-						url:'services/xServer.php',
-						data:{'id':id,'pratica':pr,'table':table,'field':field,'action':'save-data','value':value},
-						method:'POST',
-						success:function(data,textStatus,jqXHR){
-							if (data["success"]==1){
-							    
-							}
-							else{
-								console.log(newLabel);
-								
-							}
-							dialog2.dialog('close');
-						}
+			url:'services/xServer.php',
+			data:{'id':id,'pratica':pr,'table':table,'field':field,'action':'save-data','value':value},
+			method:'POST',
+			success:function(data,textStatus,jqXHR){
+			    if (data["success"]==1){
+                                $('td[data-id="' + id + '"]').html(newLabel+'<img title="Modifica" src="images/edit.png" border="0">');
+			    }
+			    else{
+                                alert('Si è verificato un errore nel salvataggio');
+                            }
+			    dialog2.dialog('close');
+			}
 		    });
                 },
                 "Chiudi": function() {

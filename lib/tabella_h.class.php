@@ -377,7 +377,10 @@ EOT;
 			$size=explode("x",$w);
             $label = $this->get_selectdb_value($valore,"id",$size[1],"opzione");
 			$retval=<<<EOT
-<td $classe valign="middle" width="$size[0]" data-id="$id" data-pratica="$pratica" data-plugins="selectdb-editable" data-field="$nome" title="Modifica $fieldLabel" $html5Attr>$label</td>
+<td $classe valign="middle" width="$size[0]" data-id="$id" data-pratica="$pratica" data-value="$valore" data-plugins="selectdb-editable" data-field="$nome" title="Modifica $fieldLabel" $html5Attr>
+$label
+<img title="Modifica" src="images/edit.png" border="0">
+</td>
 EOT;
 			//$retval="<td $classe valign=\"middle\" width=\"$size[0]\" $html5Attr >".$this->get_selectdb_value($valore,"id",$size[1],"opzione")."</td>";
 			break;

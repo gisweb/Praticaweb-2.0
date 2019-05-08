@@ -371,18 +371,20 @@ EOT;
 		$field=$_POST["field"];
 		$id=$_POST["id"];
 		$value=$_POST["value"];
-		
-		$sql = "UPDATE $table SET $field=$ WHERE id=?;";
+		$user=$_SESSION["USER_ID"];
+                $tms= time();
+		$sql = "UPDATE $table SET $field=?, uidupd=?, tmsupd=? WHERE id=?;";
 		
 		$stmt = $conn->prepare($sql);
-		if($stmt->execute(Array($value,$id))){
+
+		if($stmt->execute(Array($value,$user,$tms,$id))){
 			$result = Array("success"=>1,"message"=>"");
 		}
 		else{
 			$result = Array("success"=>-1,"message"=>$sql);
 		}
-		//$result = Array("success"=>-1,"message"=>$sql);
-		
+
+//		$result = Array("success"=>1,"message"=>$sql);		
 		break;
 	default:
 		break;
