@@ -28,6 +28,7 @@ function set_color($intestazione,$font_intestazione,$titolo,$font_titolo){
 }
 
 function get_cella($row,$col){
+	$fieldLabel = $this->def_col[$col][0]; //label del campo
 	$nome=$this->def_col[$col][1]; //nome del campo
 	$valore=htmlspecialchars($this->array_dati[$row][$nome], ENT_QUOTES,"UTF-8");//valore del campo
 	$w=$this->def_col[$col][2];//larghezza del campo
@@ -359,9 +360,30 @@ EOT;
 			$retval="<td$classe>&nbsp;&nbsp;<img border=\"0\" id=\"$imm\" height=\"12\" src=\"images/left.gif\" onclick=\"show_note('$nome','$imm')\">&nbsp;<span id=\"$nome\" style=\"display:none\"><textarea name=\"$nome\" cols=\"$w\" rows=\"2\">$valore</textarea>$help</span>"; 
 			break;
 		case "selectdb":		//Restituisce il campo descrittivo di un elenco 
+			$pratica= $this->array_dati[$row]["pratica"];
+	        $id=$this->array_dati[$row]["id"];
+
 			$size=explode("x",$w);
-			$retval="<td $classe valign=\"middle\" width=\"$size[0]\">".$this->get_selectdb_value($valore,"id",$size[1],"opzione")."</td>";
+            $label = $this->get_selectdb_value($valore,"id",$size[1],"opzione");
+			$retval=<<<EOT
+<td $classe valign="middle" width="$size[0]" data-id="$id" data-pratica="$pratica" $html5Attr>$label</td>
+EOT;
+			//$retval="<td $classe valign=\"middle\" width=\"$size[0]\" $html5Attr >".$this->get_selectdb_value($valore,"id",$size[1],"opzione")."</td>";
 			break;	
+		case "selectdb-editable":		//Restituisce il campo descrittivo di un elenco 
+			$pratica= $this->array_dati[$row]["pratica"];
+	        $id=$this->array_dati[$row]["id"];
+
+			$size=explode("x",$w);
+            $label = $this->get_selectdb_value($valore,"id",$size[1],"opzione");
+			$retval=<<<EOT
+<td $classe valign="middle" width="$size[0]" data-id="$id" data-pratica="$pratica" data-value="$valore" data-plugins="selectdb-editable" data-field="$nome" title="Modifica $fieldLabel" $html5Attr>
+$label
+<img title="Modifica" src="images/edit.png" border="0">
+</td>
+EOT;
+			//$retval="<td $classe valign=\"middle\" width=\"$size[0]\" $html5Attr >".$this->get_selectdb_value($valore,"id",$size[1],"opzione")."</td>";
+			break;
 		case "folder":
 			$campo=$nome;
 			$prms=explode('#',$w);
@@ -634,7 +656,7 @@ function zoomto_gc($tabella,$id){
                 $result = $this->db->sql_query($sql);
                 $map=$this->db->sql_fetchrow();
                 if (GC_VERSION == 3){
-                    $sql = sprintf("SELECT x(ST_Centroid(st_transform(the_geom,3003))) as x,y(ST_Centroid(st_transform(the_geom,3003))) as y FROM civici.civici WHERE gid = %s;",$map["gid"]);
+                    $sql = sprintf("SELECT x(ST_Centroid(st_transform(the_geom,3857))) as x,y(ST_Centroid(st_transform(the_geom,3857))) as y FROM civici.civici WHERE gid = %s;",$map["gid"]);
                     $result = $this->db->sql_query($sql);
                     $coords=$this->db->sql_fetchrow();
                     $scale = 500;
