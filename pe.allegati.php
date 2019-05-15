@@ -99,9 +99,11 @@ else{
         for($i=0;$i<count($options);$i++){
             $optVal = $options[$i]["id"];
             $optLabel = $options[$i]["opzione"];
-            $opts[] = sprintf("<input type=\"radio\" class=\"\" name=\"allegati_state\" data-plugins=\"input-download-allegati\" value=\"%s\">%s</input><br/>",$optVal,$optLabel);         
+            $opts[] = sprintf("<input type=\"radio\" class=\"\" name=\"allegati_state\" data-plugins=\"input-download-allegati\" value=\"%s\">%s</input><br/>",$optVal,$optLabel);
+            $opts2[]= sprintf("<input type=\"radio\" class=\"\" name=\"radio_stato_allegato\" value=\"%s\" label=\"$optLabel\">%s</input><br/>",$optVal,$optLabel,$optLabel);
         }
         $radioHtml = implode("\n",$opts);
+        $radioHtml2 = implode("\n",$opts2);
     }
     $sql="SELECT DISTINCT pratica,protocollo,data_protocollo,titolo,tipo FROM pe.elenco_allegati_pratica WHERE pratica=? ORDER BY 3";
     $stmt = $dbh->prepare($sql);
@@ -165,10 +167,64 @@ else{
     </script>
     
 EOT;
-if (in_array($_SESSION["USER_ID"],Array(1,100000,100001)))     echo $btn_download;
+
+
+$div_stato = <<<EOT
+    <div id="div_change_stato" style="margin-top:20px;margin-bottom:20px;display:none;" class="hidden">
+        <div id="dialog-change" title="Seleziona lo stato dell'allegato">
+            $radioHtml2
+        </div>
+        <input type="hidden" id="id-change" value=""/>
+        <input type="hidden" id="pratica-change" value=""/>
+		<input type="hidden" id="table-change" value=""/>
+		<input type="hidden" id="field-change" value=""/>
+    </div>        
+    <script>
+        var dialog2 = $("#dialog-change").dialog({
+            autoOpen: false,
+            height: 280,
+            width: 350,
+            modal: true,
+            buttons: {
+                "Salva": function(){
+                    var pr = $('#pratica-change').val();
+                    var id = $('#id-change').val();
+                    var table = $('#table-change').val();
+                    var field = $('#field-change').val();
+                    var value = $("input[name='radio_stato_allegato']:checked").val();
+                    var newLabel = $("input[name='radio_stato_allegato']:checked").attr('label');
+                    $.ajax({
+			url:'services/xServer.php',
+			data:{'id':id,'pratica':pr,'table':table,'field':field,'action':'save-data','value':value},
+			method:'POST',
+			success:function(data,textStatus,jqXHR){
+			    if (data["success"]==1){
+                                $('td[data-id="' + id + '"]').html(newLabel+'<img title="Modifica" src="images/edit.png" border="0">');
+			    }
+			    else{
+                                alert('Si è verificato un errore nel salvataggio');
+                            }
+			    dialog2.dialog('close');
+			}
+		    });
+                },
+                "Chiudi": function() {
+                   dialog2.dialog( "close" );
+                }
+            }
+        });
+    </script>
+EOT;
+
+
+//if (in_array($_SESSION["USER_ID"],Array(1,100000,100001)))     
+    echo $btn_download;
+    echo $div_stato;
     $tabella_integrazione=new tabella_h("$tabpath/integrazioni.tab");
 	$tabella_integrazione->set_titolo("Aggiungi nuova Integrazione","nuovo");
 	$tabella_integrazione->get_titolo("pe.integrazioni.php");
+
+
 }
 ?>
     
