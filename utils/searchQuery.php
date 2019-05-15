@@ -207,10 +207,11 @@ SELECT
     XX.tipo as tipo_istanza,A.pratica,XX.data_protocollo as data_ordinamento,A.numero,XX.protocollo,XX.data_protocollo as data_prot,A.data_presentazione,A.oggetto,1 as online,
     B.nome as tipo_pratica,C.descrizione as tipo_intervento,coalesce(D.nome,'non assegnata') as responsabile,
     case 
-when (coalesce(data_chiusura_pa::varchar,'') = '' and coalesce(data_chiusura::varchar,'') = '') then 'inizio'
 when (coalesce(data_chiusura_pa::varchar,'') = '' and coalesce(data_chiusura::varchar,'') <> '') then 'chiusa'
+when (T.stato_integrazione='richiesta_integrazioni') then 'richiesta_integrazioni'
 when (coalesce(data_chiusura_pa::varchar,'') <> '' and coalesce(data_chiusura::varchar,'') = '') then 'chiusa_istruttoria'
 when (coalesce(data_chiusura_pa::varchar,'') <> '' and coalesce(data_chiusura::varchar,'') <> '') then 'chiusa'
+when (coalesce(data_chiusura_pa::varchar,'') = '' and coalesce(data_chiusura::varchar,'') = '') then 'inizio'
 end as stato_istruttoria,
     E.richiedente,F.progettista,L.esecutore,G.elenco_ct,H.elenco_cu,I.ubicazione,
     CASE WHEN (coalesce(A.resp_it,coalesce(A.resp_ia,0)) = 0) THEN 0 ELSE 1 END as assegnata_istruttore
@@ -238,6 +239,7 @@ LEFT JOIN admin.users O ON(A.resp_it=O.userid)
 LEFT JOIN admin.users R ON(A.resp_ia=R.userid)
 LEFT JOIN pe.elenco_opzione_ap Q ON (vincolo_paes=Q.id)
 LEFT JOIN  pe.ultimo_iter S USING(pratica)
+LEFT JOIN pe.stato_integrazioni T USING(pratica)
 %s %s %s LIMIT %s OFFSET %s     
 EOT;
 ?>

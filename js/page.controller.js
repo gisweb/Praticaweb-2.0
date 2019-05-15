@@ -12,7 +12,8 @@ $(document).ready(function(){
             changeYear: true
         });
         $(v).datepicker("option","defaultDate",$(v).attr('data-defaultDate'));
-        $(v).datepicker("option","yearRange",$(v).attr('data-yearRange'));
+        //$(v).datepicker("option","yearRange",$(v).attr('data-yearRange'));
+        $(v).datepicker("option","yearRange",'-45:+5');
    });
    $('[title]').tooltip({ tooltipClass: "textbox" });
    $.each($('[data-change]'),function(k,v){
