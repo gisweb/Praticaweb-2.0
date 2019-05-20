@@ -27,8 +27,13 @@ if($stmt->execute($data)){
         for($i=0;$i<count($res);$i++){
             $r = $res[$i];
 			$fileName = sprintf("%s%s",$allegatiDir,$r["nome_file"]);
-			utils::debug(DEBUG_DIR."TEST.debug",$fileName,'a+');
-            $zip->addFile($fileName, $r["nome_file"]);
+//			utils::debug(DEBUG_DIR."TEST.debug",$fileName,'a+');
+	                if(! $zip->addFile($fileName, $r["nome_file"])){
+			    utils::debug(DEBUG_DIR."TEST.debug",$fileName,'a+');
+                        }
+			//else{
+			//    utils::debug(DEBUG_DIR."TEST.debug",$fileName,'a+');
+			//}
             
             
         }
