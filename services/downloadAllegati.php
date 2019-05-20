@@ -26,11 +26,10 @@ if($stmt->execute($data)){
     if ($zip->open($archive_file_name,  ZipArchive::CREATE)) {
         for($i=0;$i<count($res);$i++){
             $r = $res[$i];
-			$fileName = sprintf("%s%s",$allegatiDir,$r["nome_file"]);
-			utils::debug(DEBUG_DIR."TEST.debug",$fileName,'a+');
-            $zip->addFile($fileName, $r["nome_file"]);
-            
-            
+            $fileName = sprintf("%s%s",$allegatiDir,$r["nome_file"]);
+            if(!$zip->addFile($fileName, $r["nome_file"])){
+                utils::debug(DEBUG_DIR."TEST.debug",$fileName,'a+');
+            }
         }
 		
         $zip->close();
@@ -38,7 +37,7 @@ if($stmt->execute($data)){
     else{
        die("Failed!");
     }
-	$size = filesize($archive_file_name);
+    $size = filesize($archive_file_name);
     $f = fopen($archive_file_name,'r');
     $zipFile = fread($f,$size);
     fclose($f);

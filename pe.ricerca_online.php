@@ -37,6 +37,21 @@ utils::loadCss(Array("default/easyui","icon"));
         width: 10px;
         height: 10px;
     }
+    .input-color {
+    position: relative;
+}
+.input-color input {
+    padding-left: 20px;
+}
+.input-color .color-box {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    background-color: #ccc;
+    position: absolute;
+    left: 5px;
+    top: 5px;
+}
 </style>
 </head>
 <body>
@@ -85,11 +100,29 @@ utils::loadCss(Array("default/easyui","icon"));
                             <input type="radio" value="inizio" id="1_pe-stato_pratica-stato_istruttoria" name="stato_istruttoria"  data-plugins="dynamic-search">
 			    <label for="1_pe-stato_pratica-stato_istruttoria" class="value">In corso</label><br/>
                             <input type="radio" value="richiesta_integrazioni" id="5_pe-stato_pratica-stato_istruttoria" name="stato_istruttoria"  data-plugins="dynamic-search">
-                            <label for="5_pe-stato_pratica-stato_istruttoria" class="value">Richiesta Integrazioni</label><br/>
+                            <label for="5_pe-stato_pratica-stato_istruttoria" class="value">Richiesta Integrazioni
+                                <span class="input-color">
+                                    <span class="color-box" style="background-color: #FFFF00;"></span>
+                                </span>
+                            </label><br/>
+                            <input type="radio" value="soprintendenza" id="6_pe-stato_pratica-stato_istruttoria" name="stato_istruttoria"  data-plugins="dynamic-search">
+                            <label for="6_pe-stato_pratica-stato_istruttoria" class="value">Inviata in Soprintendenza
+                                <span class="input-color">
+                                    <span class="color-box" style="background-color: #CC99FF;"></span>
+                                </span>
+                            </label><br/>
 			    <input type="radio" value="chiusa" id="2_pe-stato_pratica-stato_istruttoria" name="stato_istruttoria"  data-plugins="dynamic-search">
-                            <label for="2_pe-stato_pratica-stato_istruttoria" class="value">Pratica Chiusa</label><br/>
+                            <label for="2_pe-stato_pratica-stato_istruttoria" class="value">Pratica Chiusa
+                                <span class="input-color">
+                                    <span class="color-box" style="background-color: #83F784;"></span>
+                                </span>
+                            </label><br/>
                             <input type="radio" value="chiusa_istruttoria" id="3_pe-stato_pratica-stato_istruttoria" name="stato_istruttoria"  data-plugins="dynamic-search">
-                            <label for="3_pe-stato_pratica-stato_istruttoria" class="value">Istruttoria Chiusa</label><br/>
+                            <label for="3_pe-stato_pratica-stato_istruttoria" class="value">Istruttoria Chiusa
+                                <span class="input-color">
+                                    <span class="color-box" style="background-color: #FFA500;"></span>
+                                </span>
+                            </label><br/>
                             <input type="radio" value="%" id="4_pe-stato_pratica-stato_istruttoria" name="stato_istruttoria"  data-plugins="dynamic-search">
                             <label for="4_pe-stato_pratica-stato_istruttoria" class="value">Tutti</label><br/>
                         </td>

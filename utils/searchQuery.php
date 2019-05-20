@@ -209,6 +209,7 @@ SELECT
     case 
 when (coalesce(data_chiusura_pa::varchar,'') = '' and coalesce(data_chiusura::varchar,'') <> '') then 'chiusa'
 when (T.stato_integrazione='richiesta_integrazioni') then 'richiesta_integrazioni'
+WHEN (U.stato='richiesta') then 'soprintendenza'
 when (coalesce(data_chiusura_pa::varchar,'') <> '' and coalesce(data_chiusura::varchar,'') = '') then 'chiusa_istruttoria'
 when (coalesce(data_chiusura_pa::varchar,'') <> '' and coalesce(data_chiusura::varchar,'') <> '') then 'chiusa'
 when (coalesce(data_chiusura_pa::varchar,'') = '' and coalesce(data_chiusura::varchar,'') = '') then 'inizio'
@@ -240,6 +241,7 @@ LEFT JOIN admin.users R ON(A.resp_ia=R.userid)
 LEFT JOIN pe.elenco_opzione_ap Q ON (vincolo_paes=Q.id)
 LEFT JOIN  pe.ultimo_iter S USING(pratica)
 LEFT JOIN pe.stato_integrazioni T USING(pratica)
+LEFT JOIN pe.pareri_sbap U USING(pratica)
 %s %s %s LIMIT %s OFFSET %s     
 EOT;
 ?>
