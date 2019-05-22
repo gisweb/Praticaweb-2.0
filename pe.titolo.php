@@ -1,6 +1,7 @@
 <?php
 include_once("login.php");
 include "./lib/tabella_v.class.php";
+require_once "./lib/tabella_h.class.php";
 $tabpath="pe";
 $idpratica=$_REQUEST["pratica"];
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
@@ -19,8 +20,8 @@ if (file_exists(DATA_DIR."praticaweb/include/init.pe.titolo.php")){
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
-    utils::loadCss();
-    utils::loadJS(Array('form/pe.titolo'));
+    utils::loadCss(Array('dropzone','iter'));
+    utils::loadJS(Array('form/pe.titolo','dropzone'));
 ?>
 </head>
 <body  background="">
@@ -83,6 +84,7 @@ if (($modo=="edit") || ($modo=="new")) {
 
             }else{
 		$tabella=new Tabella_v("$tabpath/titolo");?>
+
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 		<H2 class="blueBanner">Rilascio del titolo</H2>
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
@@ -90,34 +92,98 @@ if (($modo=="edit") || ($modo=="new")) {
 			<TD> 
 			<!-- contenuto-->
 				<?php
-                                if($tabella->set_dati("pratica=$idpratica")){
-                                    $tabella->set_titolo("Rilascio Titolo","modifica",array("tabella"=>"titolo"));
-                                    $tabella->elenco();
-                                    echo("<br>");					
-                                    $tabella_voltura=new tabella_v("$tabpath/voltura");
-                                    $tabella_voltura->set_titolo("Voltura","modifica",array("tabella"=>"volture"));
-                                    $tabella_voltura->set_dati("pratica=$idpratica");
-                                    $tabella_voltura->elenco();
-                                    echo("<br>");					
-                                    $tabella_voltura->set_titolo("Inserisci Voltura ","nuovo",array("tabella"=>"volture"));
-                                    $tabella_voltura->get_titolo();
-                                    print("<br>");
-                                    if ($tabella->editable) print($tabella->elenco_stampe("pe.titolo"));
+                    if($tabella->set_dati("pratica=$idpratica")){
+                        $tabella->set_titolo("Rilascio Titolo","modifica",array("tabella"=>"titolo"));
+                        $tabella->elenco();
+                        echo("<br>");					
+                        $tabella_voltura=new tabella_v("$tabpath/voltura");
+                        $tabella_voltura->set_titolo("Voltura","modifica",array("tabella"=>"volture"));
+                        $tabella_voltura->set_dati("pratica=$idpratica");
+                        $tabella_voltura->elenco();
+                        echo("<br>");					
+                        $tabella_voltura->set_titolo("Inserisci Voltura ","nuovo",array("tabella"=>"volture"));
+                        $tabella_voltura->get_titolo();
+                        print("<br>");
+                        if ($tabella->editable) print($tabella->elenco_stampe("pe.titolo"));
 
-                                    }				
-                                    else{
-                                        $tabella->set_titolo("Inserisci dati relativi al titolo rilasciato","nuovo",array("tabella"=>"titolo"));
-                                        print $tabella->get_titolo();
-                                        print ("<p><b>Nessun titolo rilasciato</b></p>");
-                                        print("<br>");
-                                        if ($tabella->editable) print($tabella->elenco_stampe("pe.titolo"));
-                                    }
+                        }				
+                        else{
+                            $tabella->set_titolo("Inserisci dati relativi al titolo rilasciato","nuovo",array("tabella"=>"titolo"));
+                            print $tabella->get_titolo();
+                            print ("<p><b>Nessun titolo rilasciato</b></p>");
+                            print("<br>");
+                            if ($tabella->editable) print($tabella->elenco_stampe("pe.titolo"));
+                        }
 ?>
 			<!-- fine contenuto-->
 			 </TD>
 	      </TR>
 		</TABLE>
+        
+ <?php
+    if (defined('DROPZONE_ENABLED') && DROPZONE_ENABLED){
+ ?>
+        
+<script>
+    Dropzone.autoDiscover = false;
+    $(document).ready(function () {
+    
+        var options = {
+            url:'./services/xUpload.php',
+            params:function(){
+                var res = {};
+                $('div#uploadme input').each(function(k,v){
+                    res[$(v).attr('name')] = $(v).val();
+                });
+                return res;
+            },
+            paramName: "file", // The name that will be used to transfer the file
+            maxFilesize: 10, // MB
+            parallelUploads:5,
+            uploadMultiple:true,
+            dictDefaultMessage:"Trascina i file all'interno oppure clicca su quest'area per caricare i file",
+            successmultiple:function(file,response){
+                target=window.parent.frames["myframe"];
+                target.location=target.location;
+            }
+            
+        };
+        Dropzone.options.myAwesomeDropzone = options;
+        var myDropzone = new Dropzone("div#uploadme", options);
+   });
+</script>
+        
 <?php
+        
+        
+        $tabella=new tabella_h("$tabpath/visione_documenti","view");
+        $titolo = "Documenti Relativi al titolo";
+		$nrec=$tabella->set_dati("pratica = $idpratica and form='pe.titolo'");	?>			
+
+		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
+		  <TR> 
+			<TD> 
+			<!-- contenuto-->
+				<?php
+					$tabella->set_titolo($titolo);
+					$tabella->get_titolo();
+					if ($nrec)	
+						$tabella->elenco();
+					else
+						print ("<p><b>Nessun Documento caricato</b></p>");			
+					?>
+			<!-- fine contenuto-->
+			 </TD>
+	      </TR>
+		</TABLE>
+        <br><hr><br>
+        <div style="width:600px;height:200px;align-content: right;" id="uploadme" class="dropzone">
+            <input type="hidden" name="pratica" value="<?php echo $idpratica;?>"/>
+            <input type="hidden" name="app" value="pe"/>
+            <input type="hidden" name="form" value="pe.titolo"/>
+        </div>
+<?php
+    }
 }
 ?>
 </body>

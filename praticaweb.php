@@ -154,7 +154,7 @@ include "./inc/inc.page_header.php";
   	<!-- *** cella contenuti dinamici caricati nell'iframe *** -->
 		<TD  height="100" width="97%" valign="top">
 			<!-- *** MY IFRAME ********************************************* -->
-		<IFRAME id=myframe style="DISPLAY: none; OVERFLOW: visible; WIDTH: 97%" marginWidth=0  marginHeight=0 src="<?php echo $active_form?>" frameBorder=0 scrolling=no ></IFRAME>	
+		<IFRAME name="myframe" id="myframe" style="DISPLAY: none; OVERFLOW: visible; WIDTH: 97%" marginWidth=0  marginHeight=0 src="<?php echo $active_form?>" frameBorder=0 scrolling=no ></IFRAME>	
 		</TD>
 	</TR>
 	
