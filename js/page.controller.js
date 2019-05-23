@@ -267,7 +267,6 @@ $(document).ready(function(){
             $('#table-change').val(d['table']);
             $('#field-change').val(d['field']);
             $('input[name="radio_'+d['field']+'"').each(function(k,v){
-                console.log($(v));
                 $(v).prop('checked',false);
                 if ($(v).val()==d['value']) $(v).prop('checked',true);
             });
