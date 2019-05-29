@@ -123,6 +123,12 @@ if (!$flag) echo "<p><b>Nessun documento da integrare</b></p>";?>
  </tr>
 </TABLE>
 <?php
+
+    $dropzoneFile=DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."include".DIRECTORY_SEPARATOR."dropzone.integrazione.php";
+    if (file_exists($dropzoneFile)){
+        require_once $dropzoneFile;
+    }
+
 print $tabella_integrazione->elenco_stampe();
 }//end if?>
 </body>

@@ -5,7 +5,6 @@ require_once "./lib/tabella_h.class.php";
 $tabpath="pe";
 $idpratica=$_REQUEST["pratica"];
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
-$dropzoneFile = DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."include".DIRECTORY_SEPARATOR."dropzone.titolo.php";
 $titolo=$_SESSION["TITOLO_$idpratica"];
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 if (file_exists(DATA_DIR."praticaweb/include/init.pe.titolo.php")){
@@ -121,6 +120,7 @@ if (($modo=="edit") || ($modo=="new")) {
 		</TABLE>
 
 <?php  
+    $dropzoneFile = DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."include".DIRECTORY_SEPARATOR."dropzone.titolo.php";
     if (file_exists($dropzoneFile)){
         require_once $dropzoneFile;
     }
