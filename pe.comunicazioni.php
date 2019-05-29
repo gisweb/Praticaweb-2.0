@@ -56,6 +56,7 @@ else{
 		$tabella=new tabella_h("$tabpath/comunicazioni","list");
 		$titolo = "Comunicazioni Inviate/Ricevute";
 		$nrec=$tabella->set_dati("pratica = $idpratica");	?>			
+<!--<h2 style="color:red">Attenzione il servizio di protocollazione e invio Mail &egrave; momentaneamente sospeso.</h2>-->
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
 		  <TR> 
 			<TD> 
