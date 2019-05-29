@@ -5,7 +5,7 @@ require_once "./lib/tabella_h.class.php";
 $tabpath="pe";
 $idpratica=$_REQUEST["pratica"];
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
-
+$dropzoneFile = DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."include".DIRECTORY_SEPARATOR."dropzone.titolo.php";
 $titolo=$_SESSION["TITOLO_$idpratica"];
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 if (file_exists(DATA_DIR."praticaweb/include/init.pe.titolo.php")){
@@ -119,70 +119,10 @@ if (($modo=="edit") || ($modo=="new")) {
 			 </TD>
 	      </TR>
 		</TABLE>
-        
- <?php
-    if (defined('DROPZONE_ENABLED') && DROPZONE_ENABLED){
- ?>
-        
-<script>
-    Dropzone.autoDiscover = false;
-    $(document).ready(function () {
-    
-        var options = {
-            url:'./services/xUpload.php',
-            params:function(){
-                var res = {};
-                $('div#uploadme input').each(function(k,v){
-                    res[$(v).attr('name')] = $(v).val();
-                });
-                return res;
-            },
-            paramName: "file", // The name that will be used to transfer the file
-            maxFilesize: 10, // MB
-            parallelUploads:5,
-            uploadMultiple:true,
-            dictDefaultMessage:"Trascina i file all'interno oppure clicca su quest'area per caricare i file",
-            successmultiple:function(file,response){
-                target=window.parent.frames["myframe"];
-                target.location=target.location;
-            }
-            
-        };
-        Dropzone.options.myAwesomeDropzone = options;
-        var myDropzone = new Dropzone("div#uploadme", options);
-   });
-</script>
-        
-<?php
-        
-        
-        $tabella=new tabella_h("$tabpath/visione_documenti","view");
-        $titolo = "Documenti Relativi al titolo";
-		$nrec=$tabella->set_dati("pratica = $idpratica and form='pe.titolo'");	?>			
 
-		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
-		  <TR> 
-			<TD> 
-			<!-- contenuto-->
-				<?php
-					$tabella->set_titolo($titolo);
-					$tabella->get_titolo();
-					if ($nrec)	
-						$tabella->elenco();
-					else
-						print ("<p><b>Nessun Documento caricato</b></p>");			
-					?>
-			<!-- fine contenuto-->
-			 </TD>
-	      </TR>
-		</TABLE>
-        <br><hr><br>
-        <div style="width:600px;height:200px;align-content: right;" id="uploadme" class="dropzone">
-            <input type="hidden" name="pratica" value="<?php echo $idpratica;?>"/>
-            <input type="hidden" name="app" value="pe"/>
-            <input type="hidden" name="form" value="pe.titolo"/>
-        </div>
-<?php
+<?php  
+    if (file_exists($dropzoneFile)){
+        require_once $dropzoneFile;
     }
 }
 ?>
