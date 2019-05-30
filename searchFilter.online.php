@@ -63,7 +63,7 @@
                     <tr id="tr-tipo">
                         <td valign="middle">
                             <label for="tipo" class="title">Tipo Pratica</label><br/>
-                            <input type="hidden" datatable="pe.avvioproc" id="op_pe-avvioproc-tipo" class="search text check" name="tipo" value="equal">                           
+                            <input type="hidden" datatable="pe.ricercaonline_avvioproc" id="op_pe-avvioproc-tipo" class="search text check" name="tipo" value="equal">                           
                             <input type="radio" value="70000" id="1_pe-avvioproc-tipo" name="tipo"  data-plugins="dynamic-search">
                             <label for="1_pe-avvioproc-tipo" class="value">S.C.A.</label><br/>
                             <input type="radio" value="100000" id="5_pe-avvioproc-tipo" name="tipo"  data-plugins="dynamic-search">
@@ -90,9 +90,9 @@
                             <label for="12_pe-avvioproc-tipo" class="value">Denuncia Cemento Armato / Sismica</label><br/>
                             <input type="radio" value="210000" id="13_pe-avvioproc-tipo" name="tipo"  data-plugins="dynamic-search">
                             <label for="13_pe-avvioproc-tipo" class="value">S.C.I.A. Vincolo Idrogeologico</label><br/>
-                            <input type="radio" value="211000" id="14_pe-avvAutorizzazione Vincolo Idrogeologicoioproc-tipo" name="tipo"  data-plugins="dynamic-search">
-                            <label for="14_pe-avvioproc-tipo" class="value"></label><br/>
-                            <input type="radio" value="" id="15_pe-avvioproc-tipo" name="tipo"  data-plugins="dynamic-search">
+                            <input type="radio" value="211000" id="14_pe-avvioproc-tipo" name="tipo"  data-plugins="dynamic-search">
+                            <label for="14_pe-avvioproc-tipo" class="value">Autorizzazione Vincolo Idrogeologico</label><br/>
+                            <input type="radio" value="%" id="15_pe-avvioproc-tipo" name="tipo"  data-plugins="dynamic-search">
                             <label for="15_pe-avvioproc-tipo" class="value">Tutti</label><br/>
                         </td>
                     </tr>
