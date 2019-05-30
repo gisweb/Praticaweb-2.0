@@ -1,6 +1,8 @@
 <?php
 require_once('login.php');
 require_once APPS_DIR.'lib/tabella_v.class.php';
+$baseFilterFile = APPS_DIR."searchFilter.online.php";
+$localFilterFile = DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."include".DIRECTORY_SEPARATOR."searchFilter.online.php";
 ?>
 <html>
 <head>
