@@ -67,7 +67,7 @@ else {		// EDIT MAPPALI
 		//$err=$db->sql_error();
 		print_debug($sql); 
 		//$numrows=$db->sql_affectedrows();
-                echo "<p>$sql</p>";
+                if ($_SESSION["USER_ID"]==1) echo "<p>$sql</p>";
 		//if($numrows===0 or $err["message"]){
 		$sql="insert into cdu.mappali (pratica,sezione,foglio,mappale) values ($idpratica,$sezione,$foglio,$mappale)";
 		$result=$db->sql_query ($sql); 
