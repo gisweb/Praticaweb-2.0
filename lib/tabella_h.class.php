@@ -1,5 +1,5 @@
 <?php
-include_once "./lib/tabella.class.php";
+require_once "./lib/tabella.class.php";
 
 class Tabella_h extends Tabella{
 
@@ -226,6 +226,14 @@ EOT;
         case "stampe":
             //$app = $this->array_dati[$row]["tipo_app"];
             $retval="<td class=\"stampe\" data-url=\"$valore\" title=\"Visualizza il documento\">$valore</td>\n";
+            break;
+        case "stampe-download":
+            $pratica= $this->array_dati[$row]["pratica"];
+            $id=$this->array_dati[$row]["id"];
+
+            $retval=<<<EOT
+<td data-plugins="stampe-download" data-id="$id" data-pratica="$pratica" title="Visualizza il documento">$valore</td>\n
+EOT;
             break;
         case "info":
             if(isset($this->tag) && $this->tag){
