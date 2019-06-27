@@ -72,7 +72,6 @@ if (($modo=="edit") or ($modo=="new")){
                 }
                 elseif ($modo=="edit"){	
                    $tabella->set_dati($filtro);
-print_array($tabella);
                    $titolo="";
                 }
                 $tabella->edita();
