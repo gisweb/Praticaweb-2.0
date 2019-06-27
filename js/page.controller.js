@@ -255,7 +255,11 @@ $(document).ready(function(){
         $("[data-plugins='tipo_soggetto']").bind('change',function(event){
             verificaRuoloSoggetti();
         });
-        
+        $("[data-plugins='stampe-download']").bind('click',function(event){
+              var d=$(this).data();
+              window.open('openDocument.php?mode=stampa&id=' + d['id'] + '&pratica=' + d['pratica'],'stampe');
+        });
+
         $("[data-plugins='link']").bind('click',function(event){
             
         });
