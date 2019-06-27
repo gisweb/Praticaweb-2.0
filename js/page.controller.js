@@ -256,8 +256,10 @@ $(document).ready(function(){
             verificaRuoloSoggetti();
         });
         $("[data-plugins='stampe-download']").bind('click',function(event){
+              event.preventDefault();
               var d=$(this).data();
-              window.open('openDocument.php?mode=stampa&id=' + d['id'] + '&pratica=' + d['pratica'],'stampe');
+              var urlOpen = 'openDocument.php?mode=stampa&id=' + d['id'] + '&pratica=' + d['pratica'];
+              window.open(urlOpen,'stampe');
         });
 
         $("[data-plugins='link']").bind('click',function(event){
