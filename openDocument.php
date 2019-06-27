@@ -14,6 +14,22 @@ if ($mode == "anagrafe_tributaria"){
     $doc=fread($f,$size);
     //$fName = sprintf("%d-%s",rand(10000,99999),"ANAGRAFE-TRIBUTARIA.txt");
 }
+elseif($mode == "stampa" && pratica && $id){
+$conn=utils::getDB();
+    $sql="SELECT file_doc FROM stp.stampe WHERE id=?";
+
+    $stmt=$conn->prepare($sql);
+    $stmt->execute(Array($id));
+    $fName = $stmt->fetchColumn();
+    $pr=new pratica($pratica,$type);
+    $ext = pathinfo($fName, PATHINFO_EXTENSION);
+    if($ext=='p7m') $fType="application/pkcs7-mime";
+    $url=(defined('LOCAL_DOCUMENT') && LOCAL_DOCUMENT)?($pr->smb_documenti.$fName):($pr->documenti.$fName);
+    $f=fopen($url,'r');
+    $size=filesize($url);
+    $doc=fread($f,$size);
+    $fName = sprintf("%d-%s",rand(10000,99999),$fName);
+}
 elseif ($pratica!="null" && $pratica){
     $conn=utils::getDB();
     $sql="SELECT nome_file,tipo_file FROM pe.file_allegati WHERE id=?";
