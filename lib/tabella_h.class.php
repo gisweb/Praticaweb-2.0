@@ -232,7 +232,7 @@ EOT;
             $id=$this->array_dati[$row]["id"];
 
             $retval=<<<EOT
-<td data-plugins="stampe-download" data-id="$id" data-pratica="$pratica" title="Visualizza il documento">$valore</td>\n
+<td class="underline-cursor" data-plugins="stampe-download" data-id="$id" data-pratica="$pratica" title="Visualizza il documento">$valore</td>\n
 EOT;
             break;
         case "info":
