@@ -38,6 +38,9 @@ if($azione=="salva"){
             $data[]=$_REQUEST["data_richiesta"];
             $fldList[] = "data_richiesta"; 
         }
+        $fldList[]="nome_file";
+        $fldList[] = "tipo_file";
+        $fldList[] = "size_file";
         for($i=0;$i<count($uploadedFiles);$i++){
            $newName = utils::filter_filename($uploadedFiles[$i]["name"]);
            if (is_file($dir.$newName)) $newName= sprintf("%d-%s",rand (100000, 999999),$newName);
@@ -49,9 +52,7 @@ if($azione=="salva"){
                 $insData[] = $newName;
                 $insData[] = $uploadedFiles[$i]["type"];
                 $insData[] = $uploadedFiles[$i]["size"];
-                $fldList[]="nome_file";
-                $fldList[] = "tipo_file";
-                $fldList[] = "size_file";
+                
                 $fields = implode(",",$fldList);
                 $nFields=count($fldList);
                 $valueList= array_fill(0,$nFields,'?');
