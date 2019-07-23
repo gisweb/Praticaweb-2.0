@@ -123,7 +123,7 @@ EOT;
     case "search-pagamenti":
         
         foreach($data as $key=>$value){
-            $q[]="(".implode(" $op ",$value).")";
+            $q[]="(".implode("$key $op ",$value).")";
         }
         $filter=implode(" $queryOP ",$q);
         if (!$filter) $filter = "true";
