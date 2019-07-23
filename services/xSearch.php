@@ -141,7 +141,7 @@ EOT;
         $sql =<<<EOT
 SELECT 
 avvioproc.pratica,avvioproc.numero,avvioproc.protocollo,avvioproc.data_prot,avvioproc.tipo as tipo_id,avvioproc.categoria as categoria_id,
-importo,data_pagamento,causale,codice_univoco,identificativofiscale,anagrafica,
+importo,data_pagamento,causale,e_codici_pagamento.nome as tipo_pagamento,codice_univoco,identificativofiscale,anagrafica,
 e_tipopratica.nome as tipo,e_categoriapratica.nome as categoria
 FROM
 ragioneria.importi_versati INNER JOIN pe.avvioproc USING (pratica)
