@@ -120,6 +120,31 @@ EOT;
         $result=Array("total"=>$total,"rows"=>$res,"filter"=>$filter,"sql"=>$sql,"elenco_id"=>$elencoId);
 
         break;
+    case "search-pagamenti":
+        
+        foreach($data as $key=>$value){
+            $q[]="(".implode(" $op ",$value).")";
+        }
+        $filter=implode(" $queryOP ",$q);
+        if (!$filter) $filter = "true";
+        $sql =<<<EOT
+SELECT 
+avvioproc.pratica,avvioproc.numero,avvioproc.protocollo,avvioproc.data_prot,avvioproc.tipo as tipo_id,avvioproc.categoria as categoria_id,
+importo,data_pagamento,causale,codice_univoco,identificativofiscale,anagrafica,
+e_tipopratica.nome as tipo,e_categoriapratica.nome as categoria
+FROM
+ragioneria.importi_versati INNER JOIN pe.avvioproc USING (pratica)
+INNER JOIN ragioneria.e_codici_pagamento ON(importi_versati.tipo=e_codici_pagamento.codice)
+INNER JOIN ragioneria.e_metodi_pagamento ON(importi_versati.metodo=e_metodi_pagamento.codice)
+LEFT JOIN pe.e_tipopratica ON (avvioproc.tipo=e_tipopratica.id)
+LEFT JOIN pe.e_categoriapratica ON (avvioproc.categoria=e_categoriapratica.id)
+WHERE $filter
+ORDER BY data_pagamento DESC,pratica DESC
+EOT;
+        $res=$db->fetchAll($sql);
+        $sql = str_replace(PHP_EOL, ' ', $sql);
+        $result=Array("total"=>count($res),"rows"=>$res,"filter"=>$filter,"sql"=>$sql,"elenco_id"=>Array());
+        break;
     default:
         $app = $_REQUEST["application"];
         switch($app){
