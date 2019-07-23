@@ -132,7 +132,7 @@ EOT;
         }
         $filter=implode(" $queryOP ",$q);
         if (!$filter) $filter = "true";
-        if($REQUEST["sort"]){
+        if($_REQUEST["sort"]){
             $sort = sprintf("ORDER BY %s %s",$_REQUEST["sort"],$_REQUEST["order"]);
         }
         else{
