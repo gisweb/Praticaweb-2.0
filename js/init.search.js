@@ -59,6 +59,16 @@ var colsDef={
         {title:'Resp Proc',sortable:true,field:'resp_proc',width:200},
         {title:'Esito',sortable:true,field:'esito',width:100}
     ]],
+    pagamenti:[[
+        {title:'',field:'pratica',sortable:false,width:20,formatter: function(value,row,index){return '<a target="new" href="praticaweb.php?active_form=pe.pagamenti.php&pratica=' + value + '"><div class="ui-icon ui-icon-search"/></a>'}},
+        {title:'Tipo Pratica',field:'tipo',sortable:true,width:150},
+        {title:'Numero',field:'numero',sortable:true,width:100},
+        {title:'Protocollo',sortable:true,field:'protocollo',width:100},
+        {title:'Data Prot.',sortable:true,field:'data_prot',width:100},   
+        {title:'Data Pagamento',sortable:true,field:'data_pagamento',width:100},
+        {title:'Importo',sortable:true,field:'importo',width:50},
+        {title:'Anagrafica',sortable:true,field:'anagrafica',width:50}
+    ]],
     default_cols:[[
         {title:'',sortable:true,field:'',width:100},
     ]]

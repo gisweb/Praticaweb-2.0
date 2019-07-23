@@ -48,7 +48,7 @@ $(document).ready(function(){
             url:searchUrl,
             method:'post',
             nowrap:false,
-            columns:colsDef['pratica'],
+            columns:colsDef['pagamenti'],
             fitColumns:false,
             pagination:true,
             autoRowHeight:true,
