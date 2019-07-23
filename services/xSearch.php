@@ -132,6 +132,12 @@ EOT;
         }
         $filter=implode(" $queryOP ",$q);
         if (!$filter) $filter = "true";
+        if($REQUEST["sort"]){
+            $sort = sprintf("ORDER BY %s %s",$_REQUEST["sort"],$_REQUEST["order"]);
+        }
+        else{
+            $sort = "ORDER BY data_pagamento DESC,pratica DESC";
+        }
         $sql =<<<EOT
 SELECT 
 avvioproc.pratica,avvioproc.numero,avvioproc.protocollo,avvioproc.data_prot,avvioproc.tipo as tipo_id,avvioproc.categoria as categoria_id,
@@ -144,7 +150,7 @@ INNER JOIN ragioneria.e_metodi_pagamento ON(importi_versati.metodo=e_metodi_paga
 LEFT JOIN pe.e_tipopratica ON (avvioproc.tipo=e_tipopratica.id)
 LEFT JOIN pe.e_categoriapratica ON (avvioproc.categoria=e_categoriapratica.id)
 WHERE $filter
-ORDER BY data_pagamento DESC,pratica DESC
+$sort
 EOT;
         $res=$db->fetchAll($sql);
         $sql = str_replace(PHP_EOL, ' ', $sql);
