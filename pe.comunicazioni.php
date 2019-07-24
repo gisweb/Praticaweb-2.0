@@ -55,15 +55,14 @@ else{
 	//-<<<<<<<<<<<<<<<<<<<<<< VISUALIZZA ITER >>>>>>>>>>>>>>>>>>>>>>>>>>>----------------------->	
 		$tabella=new tabella_h("$tabpath/comunicazioni","list");
 		$titolo = "Comunicazioni Inviate/Ricevute";
+        $nrec=$tabella->set_dati("pratica = $idpratica");
         $dataFile = DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."include".DIRECTORY_SEPARATOR."pe.comunicazioni.php";
         if (file_exists($dataFile)){
-            $arrayData = Array();
+            $arrayData = $tabella->array_dati;
             require_once $dataFile;
             $nrec=$tabella->set_dati($arrayData);
         }
-        else{
-            $nrec=$tabella->set_dati("pratica = $idpratica");
-        }    
+        
 ?>			
 <!--<h2 style="color:red">Attenzione il servizio di protocollazione e invio Mail &egrave; momentaneamente sospeso.</h2>-->
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
