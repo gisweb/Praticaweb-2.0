@@ -104,7 +104,7 @@ SELECT
 FROM search_pagamenti 
 WHERE 
     id in ($_REQUEST[elenco]);
-EOT;        
+EOT;
         
        break;
     default:
