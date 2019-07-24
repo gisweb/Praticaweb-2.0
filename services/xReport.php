@@ -82,7 +82,31 @@ LEFT JOIN admin.users O ON(A.resp_it=O.userid)
 LEFT JOIN admin.users R ON(A.resp_ia=R.userid)
 LEFT JOIN pe.elenco_opzione_ap Q ON (vincolo_paes=Q.id)
 EOT;
-       break;     
+       break;   
+    case "pagamenti":
+$sql = <<<EOT
+WITH search_pagamenti AS (                
+SELECT 
+A.id,B.pratica,B.numero,B.protocollo,B.data_prot,B.tipo as tipo_id,B.categoria as categoria_id,
+importo,data_pagamento,causale,C.nome as tipo_pagamento,C.capitolo,codice_univoco,identificativofiscale,anagrafica,D.nome as modo_pagamento,
+E.nome as tipo,coalesce(F.nome,'') as categoria
+FROM
+ragioneria.importi_versati A INNER JOIN pe.avvioproc B USING (pratica)
+INNER JOIN ragioneria.e_codici_pagamento C ON(A.tipo=C.codice)
+INNER JOIN ragioneria.e_metodi_pagamento D ON(A.metodo=D.codice)
+LEFT JOIN pe.e_tipopratica E ON (B.tipo=E.id)
+LEFT JOIN pe.e_categoriapratica F ON (B.categoria=F.id)
+)
+SELECT 
+    numero as "Numero",protocollo as "Protocollo",data_prot as "Data Prot.",format('%s %s',tipo,categoria) as "Tipo Pratica",
+    importo as "Importo",data_pagamento as "Data Pagam.",tipo_pagamento as "Tipo Pagam.",capitolo as "Capitolo",causale as "Causale", 
+    codice_univoco as "Codice Pagam.",anagrafica as "Anagrafica",identificativofiscale as "C.F./P.IVA"    
+FROM search_pagamenti 
+WHERE 
+    id in ($_REQUEST[elenco]);
+EOT;        
+        
+       break;
     default:
         $sql = <<<EOT
 WITH pratica AS (

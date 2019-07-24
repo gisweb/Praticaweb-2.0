@@ -141,24 +141,25 @@ EOT;
         $sql =<<<EOT
 WITH search_pagamenti AS (                
 SELECT 
-avvioproc.pratica,avvioproc.numero,avvioproc.protocollo,avvioproc.data_prot,avvioproc.tipo as tipo_id,avvioproc.categoria as categoria_id,
-importo,data_pagamento,causale,e_codici_pagamento.nome as tipo_pagamento,codice_univoco,identificativofiscale,anagrafica,
-e_tipopratica.nome as tipo,e_categoriapratica.nome as categoria
+A.id,B.pratica,B.numero,B.protocollo,B.data_prot,B.tipo as tipo_id,B.categoria as categoria_id,
+importo,data_pagamento,causale,C.nome as tipo_pagamento,C.capitolo,codice_univoco,identificativofiscale,anagrafica,D.nome as modo_pagamento,
+E.nome as tipo,coalesce(F.nome,'') as categoria
 FROM
-ragioneria.importi_versati INNER JOIN pe.avvioproc USING (pratica)
-INNER JOIN ragioneria.e_codici_pagamento ON(importi_versati.tipo=e_codici_pagamento.codice)
-INNER JOIN ragioneria.e_metodi_pagamento ON(importi_versati.metodo=e_metodi_pagamento.codice)
-LEFT JOIN pe.e_tipopratica ON (avvioproc.tipo=e_tipopratica.id)
-LEFT JOIN pe.e_categoriapratica ON (avvioproc.categoria=e_categoriapratica.id)
+ragioneria.importi_versati A INNER JOIN pe.avvioproc B USING (pratica)
+INNER JOIN ragioneria.e_codici_pagamento C ON(A.tipo=C.codice)
+INNER JOIN ragioneria.e_metodi_pagamento D ON(A.metodo=D.codice)
+LEFT JOIN pe.e_tipopratica E ON (B.tipo=E.id)
+LEFT JOIN pe.e_categoriapratica F ON (B.categoria=F.id)
 )
-SELECT * FROM search_pagamenti    
+SELECT * FROM search_pagamenti  
 WHERE $filter
 $sort
 
 EOT;
         $res=$db->fetchAll($sql);
+        for($i=0;$i<count($res);$i++) $listId[] = $res[$i]["id"];
         $sql = str_replace(PHP_EOL, ' ', $sql);
-        $result=Array("total"=>count($res),"rows"=>$res,"filter"=>$filter,"sql"=>$sql,"elenco_id"=>Array());
+        $result=Array("total"=>count($res),"rows"=>$res,"filter"=>$filter,"sql"=>$sql,"elenco_id"=>$listId);
         break;
     default:
         $app = $_REQUEST["application"];

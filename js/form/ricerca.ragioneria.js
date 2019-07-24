@@ -16,7 +16,7 @@ $(document).ready(function(){
     }).bind('click',function(event){
         event.preventDefault();
         $('#frm-report').remove();
-        $('body').append('<form id="frm-report" action="./services/xReport.php" method="POST" target="reportPraticaweb"><input type="hidden" value="" name="elenco" id="elencopratiche"/></form>')
+        $('body').append('<form id="frm-report" action="./services/xReport.php" method="POST" target="reportPraticaweb"><input type="hidden" value="" name="elenco" id="elencopratiche"/><input type="hidden" value="pagamenti" name="report"/></form>')
         $('#elencopratiche').val($('#elenco').val())
         $('#frm-report').submit();
     });
