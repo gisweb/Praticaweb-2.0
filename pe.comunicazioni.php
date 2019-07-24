@@ -60,7 +60,7 @@ else{
         if (file_exists($dataFile)){
             $arrayData = $tabella->array_dati;
             require_once $dataFile;
-            $nrec=$tabella->set_dati($arrayData);
+            $tabella->array_dati = $arrayData;
         }
         
 ?>			
