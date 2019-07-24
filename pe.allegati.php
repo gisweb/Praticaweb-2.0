@@ -148,8 +148,8 @@ else{
             buttons: {
                 "Scarica il file compresso": function(){
                     var pr = $('#pratica-download').val();
-                    goToPratica('services/downloadAllegati.php',{'pratica':pr});
-
+                    var stato = $('input[name=allegati_state]:checked').val();
+                    goToPratica('services/downloadAllegati.php',{'pratica':pr,'stato_allegato':stato});
                 },
                 Cancel: function() {
                    dialog.dialog( "close" );
