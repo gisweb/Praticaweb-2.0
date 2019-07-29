@@ -44,7 +44,7 @@ if (($modo=="edit") || ($modo=="new")) {
 	?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN EDITING  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
         <input type="hidden" id="hidden-oggetto" value="<?php echo $oggetto;?>">
-	<FORM id="" name="" method="post" action="praticaweb.php">
+	<FORM id="pe.titolo" name="" method="post" action="praticaweb.php">
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">		
 				  
 		  <tr> 
