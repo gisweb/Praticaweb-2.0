@@ -92,7 +92,16 @@ if (($modo=="edit") || ($modo=="new")) {
 			<!-- contenuto-->
 				<?php
                     if($tabella->set_dati("pratica=$idpratica")){
-                        $tabella->set_titolo("Rilascio Titolo","modifica",array("tabella"=>"titolo"));
+                        if ($tabella->array_dati[0]["diniego"]){
+                            $titoloForm = "Diniego";
+                        }
+                        elseif($tabella->array_dati[0]["archiviata"]){
+                            $titoloForm = "Pratica Archiviata";
+                        }
+                        else{
+                            $titoloForm = "Rilascio Titolo";
+                        }
+                        $tabella->set_titolo($titoloForm,"modifica",array("tabella"=>"titolo"));
                         $tabella->elenco();
                         echo("<br>");					
                         $tabella_voltura=new tabella_v("$tabpath/voltura");
