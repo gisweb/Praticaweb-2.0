@@ -88,7 +88,7 @@ $sql = <<<EOT
 WITH search_pagamenti AS (                
 SELECT 
 A.id,B.pratica,B.numero,B.protocollo,B.data_prot,B.tipo as tipo_id,B.categoria as categoria_id,
-importo,data_pagamento,causale,C.nome as tipo_pagamento,C.capitolo,codice_univoco,identificativofiscale,anagrafica,D.nome as modo_pagamento,
+A.importo,data_pagamento,causale,C.nome as tipo_pagamento,C.capitolo,codice_univoco,identificativofiscale,anagrafica,D.nome as modo_pagamento,
 E.nome as tipo,coalesce(F.nome,'') as categoria
 FROM
 ragioneria.importi_versati A INNER JOIN pe.avvioproc B USING (pratica)
