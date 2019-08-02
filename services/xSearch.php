@@ -143,7 +143,7 @@ WITH search_pagamenti AS (
 SELECT 
 A.id,B.pratica,B.numero,B.protocollo,B.data_prot,B.tipo as tipo_id,B.categoria as categoria_id,
 A.importo,data_pagamento,causale,A.tipo as codice_tipo_pagamento,C.nome as tipo_pagamento,C.capitolo,codice_univoco,identificativofiscale,anagrafica,D.nome as modo_pagamento,
-E.nome as tipo,coalesce(F.nome,'') as categoria
+E.nome as tipo,coalesce(F.nome,'') as categoria,G.flusso
 FROM
 ragioneria.importi_versati A INNER JOIN pe.avvioproc B USING (pratica)
 INNER JOIN ragioneria.e_codici_pagamento C ON(A.tipo=C.codice)
