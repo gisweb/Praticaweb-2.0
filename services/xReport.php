@@ -96,11 +96,12 @@ INNER JOIN ragioneria.e_codici_pagamento C ON(A.tipo=C.codice)
 INNER JOIN ragioneria.e_metodi_pagamento D ON(A.metodo=D.codice)
 LEFT JOIN pe.e_tipopratica E ON (B.tipo=E.id)
 LEFT JOIN pe.e_categoriapratica F ON (B.categoria=F.id)
+LEFT JOIN ragioneria.flussi G ON(A.codice_univoco=G.iuv)            
 )
 SELECT 
     numero as "Numero",protocollo as "Protocollo",data_prot as "Data Prot.",format('%s %s',tipo,categoria) as "Tipo Pratica",
     importo as "Importo",data_pagamento as "Data Pagam.",tipo_pagamento as "Tipo Pagam.",capitolo as "Capitolo",causale as "Causale", 
-    codice_univoco as "Codice Pagam.",anagrafica as "Anagrafica",identificativofiscale as "C.F./P.IVA"    
+    codice_univoco as "Codice Pagam.",flusso as "Flusso",anagrafica as "Anagrafica",identificativofiscale as "C.F./P.IVA"    
 FROM search_pagamenti 
 WHERE 
     id in ($_REQUEST[elenco]);

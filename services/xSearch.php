@@ -150,6 +150,7 @@ INNER JOIN ragioneria.e_codici_pagamento C ON(A.tipo=C.codice)
 INNER JOIN ragioneria.e_metodi_pagamento D ON(A.metodo=D.codice)
 LEFT JOIN pe.e_tipopratica E ON (B.tipo=E.id)
 LEFT JOIN pe.e_categoriapratica F ON (B.categoria=F.id)
+LEFT JOIN ragioneria.flussi G ON (A.codice_univoco=G.iuv)                
 )
 SELECT * FROM search_pagamenti  
 WHERE $filter
