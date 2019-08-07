@@ -98,7 +98,7 @@ LEFT JOIN pe.e_tipopratica E ON (B.tipo=E.id)
 LEFT JOIN pe.e_categoriapratica F ON (B.categoria=F.id)
 LEFT JOIN ragioneria.flussi G ON(A.codice_univoco=G.iuv)            
 )
-SELECT 
+SELECT DISTINCT
     numero as "Numero",protocollo as "Protocollo",data_prot as "Data Prot.",format('%s %s',tipo,categoria) as "Tipo Pratica",
     importo as "Importo",data_pagamento as "Data Pagam.",tipo_pagamento as "Tipo Pagam.",capitolo as "Capitolo",causale as "Causale", 
     format('IUV : %s',codice_univoco::text) as "Codice Pagam.",flusso as "Flusso",anagrafica as "Anagrafica",identificativofiscale as "C.F./P.IVA"    

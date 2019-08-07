@@ -43,7 +43,7 @@ $(document).ready(function(){
         dataPost=getSearchFilter();
         $('#ricerca').hide('slide',500);
         $('#result-container').show('slide',500);
-        $('#result-table').datagrid({
+        var res = $('#result-table').datagrid({
             title:'Risultato della ricerca',
             url:searchUrl,
             method:'post',
