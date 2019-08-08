@@ -667,6 +667,7 @@ INSERT INTO oneri.rate(pratica,rata,totale,uidins,tmsins) (SELECT $this->pratica
             $mime = finfo_file($finfo, $fName);
             finfo_close($finfo);
             $result = Array(
+                "nome"=>$filename,
                 "contenuto"=> base64_encode($text),
                 "mimetype"=>$mime,
                 "success"=>1,
