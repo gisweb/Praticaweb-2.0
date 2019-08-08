@@ -626,7 +626,63 @@ INSERT INTO oneri.rate(pratica,rata,totale,uidins,tmsins) (SELECT $this->pratica
 		return $ris;
 	}
 	
-        
+    /* Metodo per accedere in lettura agli Allegati/Documenti della Pratica*/    
+    function leggiDocumento($id,$tipo){
+        $result = Array(
+            "contenuto"=>"",
+            "mimetype"=>"",
+            "success"=>0,
+            "message"=>""
+        );
+        $pratica = $this->pratica;
+        $dbh = utils::getDb();
+        if ($tipo=="allegato"){
+            $path = $this->allegati;
+            $sql = "SELECT nome_file as filename FROM pe.file_allegati WHERE id=? AND pratica=?;";
+        }
+        elseif($tipo == "documento"){
+            $path = dirname($this->documenti);
+            $sql = "SELECT file_doc as filename FROM stp.stampe WHERE id=? AND pratica=?;";
+        }
+        $stmt = $dbh->prepare($sql);
+
+        if($stmt->execute(Array($id,$pratica))){
+            //$res = (!$mode)?($stmt->fetch(PDO::FETCH_ASSOC)):($stmt->fetchAll(PDO::FETCH_ASSOC));
+            $filename = $stmt->fetchColumn();
+            if (!$filename){
+                $result["message"] = "Nessun $tipo associato all'id $id";
+                return $result;
+            }
+            $fName = $path.DIRECTORY_SEPARATOR.$filename;
+            if (!file_exists($fName)){
+                $result["message"] = "Il file $fName non presente sul server";
+                return $result;
+            }
+            //Leggo contenuto file
+            $f = fopen($fName,'r');
+            $text = fread($f,filesize($fName));
+            fclose($f);
+            //leggo contenuto su mime type file
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime = finfo_file($finfo, $fName);
+            finfo_close($finfo);
+            $result = Array(
+                "contenuto"=> base64_encode($text),
+                "mimetype"=>$mime,
+                "success"=>1,
+                "message"=>""
+            );
+            
+            
+        }
+        else{
+            $errors=$stmt->errorInfo();
+            $result["message"]=$errors[2];
+            return $result;
+        }
+        return $result;
+    }
+    
 }
 
 
