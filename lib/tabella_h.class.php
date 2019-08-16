@@ -526,7 +526,7 @@ function zoomto($tabella,$id){
 			$buff=20;
 			$mappale=explode('@',$id);
 
-			$sql = "SELECT oid, xmin(box3d(".THE_GEOM.")), ymin(box3d(".THE_GEOM.")), xmax(box3d(".THE_GEOM.")), ymax(box3d(".THE_GEOM.")) FROM map.ct_particelle where foglio='". $mappale[1] ."' and mappale='" .$mappale[0] . "'"   ;
+			$sql = "SELECT oid, ST_xmin(box3d(".THE_GEOM.")), ST_ymin(box3d(".THE_GEOM.")), ST_xmax(box3d(".THE_GEOM.")), ST_ymax(box3d(".THE_GEOM.")) FROM map.ct_particelle where foglio='". $mappale[1] ."' and mappale='" .$mappale[0] . "'"   ;
 			
 			if (!isset($this->db)) $this->connettidb();
 			$result = $this->db->sql_query($sql);
@@ -587,7 +587,7 @@ function zoomto_gc($tabella,$id){
             $mappale=explode('@',$id);
             $sezione='';
             if ($mappale[2]) $sezione=" and sezione='". $mappale[2] ."'";
-            $sql = "SELECT gid, xmin(box3d(".THE_GEOM."))-50 as xmin, ymin(box3d(".THE_GEOM."))-50 as ymin, xmax(box3d(".THE_GEOM."))+50 as xmax, ymax(box3d(".THE_GEOM."))+50 as ymax FROM nct.particelle where foglio='". $mappale[1] ."' and mappale='" .$mappale[0] . "'"  .$sezione .$filter_comune;
+            $sql = "SELECT gid, ST_xmin(box3d(".THE_GEOM."))-50 as xmin, ST_ymin(box3d(".THE_GEOM."))-50 as ymin, ST_xmax(box3d(".THE_GEOM."))+50 as xmax, ST_ymax(box3d(".THE_GEOM."))+50 as ymax FROM nct.particelle where foglio='". $mappale[1] ."' and mappale='" .$mappale[0] . "'"  .$sezione .$filter_comune;
 
             $result = $this->db->sql_query($sql); 
             $map=$this->db->sql_fetchrow();
