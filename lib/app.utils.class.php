@@ -376,7 +376,7 @@ class generalAppUtils {
         $result=$db->fetchAll($sql,Array($pr));
         return $result[0]["titolo"];
     }
-    static function getScadenze($userId){
+    static function getScadenze($userId=0){
             $conn=utils::getDb();
             //DETTAGLI DELLE SCADENZE
             $lLimit=(defined('LOWER_LIMIT'))?(LOWER_LIMIT):(5);
@@ -392,7 +392,7 @@ class generalAppUtils {
                 return Array("totali"=>count($res),"data"=>$res);
             }
     }
-    static function getVerifiche($userId){
+    static function getVerifiche($userId=0){
             $conn=utils::getDb();
 
             $sql="select * from pe.vista_verifiche_utenti where $userId = ANY(interessati);";
@@ -406,7 +406,7 @@ class generalAppUtils {
                 return Array("totali"=>count($res),"data"=>$res);
             }
     }
-    static function getAnnotazioni($userId){
+    static function getAnnotazioni($userId=0){
             $conn=utils::getDb();
             //DETTAGLI DELLE SCADENZE
             $lLimit=(defined('LOWER_LIMIT'))?(LOWER_LIMIT):(5);
