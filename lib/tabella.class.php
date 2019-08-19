@@ -494,10 +494,11 @@ EOT;
 			case "oneri":
 			case "ragioneria":
 			case "stp":
-				$sql = "SELECT role FROM pe.ruoli_pratica WHERE pratica=? and userid=?;";
+				$sql = "SELECT role FROM pe.ruoli_pratica WHERE pratica=? and userid=? LIMIT 1;";
 				break;
 			default:		//Caso delle pratiche Edilizie
-                $sql = "SELECT role FROM $schema.ruoli_pratica WHERE pratica=? and userid=?;";
+                $schema=($schema=='#')?('pe'):($schema);
+                $sql = "SELECT role FROM $schema.ruoli_pratica WHERE pratica=? and userid=? limit 1;";
 
 			break;
 		}
