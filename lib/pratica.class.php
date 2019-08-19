@@ -54,12 +54,12 @@ class generalPratica {
         $conn = utils::getDb();
         $sql="SELECT userid as dirigente FROM admin.users WHERE attivato=1 and '13' = ANY(string_to_array(coalesce(gruppi,''),','));";
         $stmt = $conn->prepare($sql);
-        $stmt->execute(Array($this->pratica));
+        $stmt->execute();
         $this->info['dirigente']=$stmt->fetchColumn();
         //ESTRAGGO INFORMAZIONI SUL RESPONSABILE DEL SERVIZIO
         $sql="SELECT userid as rds FROM admin.users WHERE attivato=1 and '15' = ANY(string_to_array(coalesce(gruppi,''),','));";
         $stmt = $conn->prepare($sql);
-        $stmt->execute(Array($this->pratica));
+        $stmt->execute();
         $this->info['rds']=$stmt->fetchColumn();
         //INFO UTENTE (ID-GRUPPI-NOME)
         $this->userid=$_SESSION['USER_ID'];
