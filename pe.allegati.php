@@ -225,7 +225,8 @@ EOT;
 	$tabella_integrazione->set_titolo("Aggiungi nuova Integrazione","nuovo");
 	$tabella_integrazione->get_titolo("pe.integrazioni.php");
 
-    $tabella->elenco_stampe('pe.allegati');
+    $printText = $tabella->elenco_stampe('pe.allegati');
+    print $printText;
 }
 ?>
     
