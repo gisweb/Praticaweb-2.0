@@ -565,6 +565,11 @@ class generalAppUtils {
             return $res;
         }
     }
+    static function getPDODB(){
+        $dsn = sprintf('pgsql:dbname=%s;host=%s;port=%s',DB_NAME,DB_HOST,DB_PORT);
+        $conn = new PDO($dsn, DB_USER, DB_PWD);
+        return $conn;
+    }
     static function getInfoDocumento($id,$type=0){
         $dbh = self::getPDODB();
         if(!$type){
