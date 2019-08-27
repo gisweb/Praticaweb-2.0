@@ -565,7 +565,56 @@ class generalAppUtils {
             return $res;
         }
     }
+    static function getInfoDocumento($id,$type=0){
+        $dbh = self::getPDODB();
+        if(!$type){
+            $sql = "SELECT file_doc, descrizione,pratica,''::varchar as tipo FROM stp.stampe WHERE id = ?";
+        }
+        else{
+            $sql = "SELECT nome_file as file_doc,note as descrizione,pratica,tipo_file as tipo FROM pe.file_allegati WHERE id = ?";
+        }
+        $stmt = $dbh->prepare($sql);
+        if($stmt->execute(Array($id))){
+            $res = $stmt->fetch();
+            
+            $fname = $res["file_doc"];
+            $desc = $res["descrizione"];
+            $pratica = $res["pratica"];
+            $tipo = $res["tipo"];
+            $pr = new pratica($pratica);
+            $fname = (!$type)?($pr->documenti.$fname):($pr->allegati.$fname);
+            
+            if (!file_exists($fname)){
+                
+                $result = Array("success"=>0,"message"=>"","file"=>"","mimetype"=>"","data"=>Array("descrizione"=>"","nomefile"=>""));
+                $result["message"] = "Il file $fname non presente sul server";
+                return $result;
+            }
+            //Leggo contenuto file
+            $f = fopen($fname,'r');
+            $text = fread($f,filesize($fname));
+            fclose($f);
+            //leggo contenuto su mime type file
+            if (!$tipo){
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                $mime = finfo_file($finfo, $fname);
+                finfo_close($finfo);
+            }
+            else{
+                $mime = $tipo;
+            }
+            
+            
+            $result = Array("success"=>1,"message"=>"","file"=> base64_encode($text),"mimetype"=>$mime,"data"=>Array("descrizione"=>$desc,"nomefile"=>$fname));
 
+        }
+        else{
+            $err = $stmt->errorInfo();
+            $result = Array("success"=>0,"message"=>$err[2],"file"=>"","mimetype"=>"","data"=>Array("descrizione"=>"","nomefile"=>""));
+
+        }
+        return $result;
+    }
 }
 
 ?>
