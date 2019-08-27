@@ -1068,6 +1068,9 @@ function get_selectdb_value($val,$fld,$tab,$campo){
 		return "Non definito";
 	elseif(!$val){
 		switch($tab){
+            case "pe.elenco_onerosa":
+                $fkey = "NO";
+                break;
 			default:
 				$fkey="Non definito";
 				break;
