@@ -101,7 +101,7 @@ function formatLink(value,rowData,rowIndex){
     include "./inc/inc.page_header.php";
     $pr=new pratica($idpratica);
     //$arrFiltri=Array();
-    if ($cdu) $arrFiltri["form"]="form='$form'";
+    if ($cdu || (defined('STP_FILTER_FORM') && STP_FILTER_FORM)) $arrFiltri["form"]="form='$form'";
     $arrFiltri["utente"]="(coalesce(proprietario,'pubblico')='pubblico' or proprietario='$usr')";
     //$arrFiltri["tipopratica"]="(coalesce(tipo_pratica,'0')='0' or '".floor((double)$pr->info['tipo']/100)."'=ANY(string_to_array(coalesce(tipo_pratica,''),',')) or '".$pr->info['tipo']."'=ANY(string_to_array(coalesce(tipo_pratica,''),',')))";
     $arrFiltri["disponibili"]="NOT A.id IN (SELECT DISTINCT modello FROM stp.stampe A INNER JOIN stp.e_modelli B ON (B.id=A.modello) WHERE A.pratica=$idpratica and multiple=0) AND form ILIKE '$tt%'";
