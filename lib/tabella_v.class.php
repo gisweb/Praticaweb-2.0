@@ -114,7 +114,7 @@ EOT;
 		case "textkey":
 		case "numero_pratica":
 			$size=intval($w+($w/5));
-			$testo=stripslashes($dato);
+			$testo=str_replace('"',"&quot;",stripslashes($dato));
 			$retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$size\" name=\"$campo\" id=\"$campo\" value=\"$testo\" $html5Attr $disabilitato>$help";
 			break;
 		case "allegati":
