@@ -111,8 +111,11 @@ $_SESSION["TITOLO_".$idpratica]=  appUtils::titoloPratica($_REQUEST);
 
 </HEAD>
 <BODY >
-    
-    
+<?php    
+//if($_SESSION["USER_ID"]==1){
+//print_array($pr);
+//}    
+?>
 <script language="javascript">
 		window.name='praticaweb';
         var url_documenti='<?php echo $pr->url_documenti;?>';
