@@ -12,4 +12,11 @@ $(document).ready(function(){
 
     });
     $("#tipo_comunicazione").trigger("change");
+
+    var idCom = $("#id_comunicazione").val();
+    if (idCom){
+        $('#azione-mail').hide();
+        $('#azione-elimina').hide();
+        $('#azione-salva').hide();
+    }
 });

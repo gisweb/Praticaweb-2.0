@@ -26,10 +26,16 @@ if (in_array($azione, Array("salva","elimina"))){
             $r=unlink ($pr->documenti. $fName);
             if (!$r) echo "<p>Impossibile rimuovere il file ".$pr->documenti."$fName</p>";
         }
-        
         if (!@move_uploaded_file($_FILES['file']['tmp_name'], $pr->documenti. $fName)) { 
-          print("***ERROR: Non è possibile copiare il file.<br />\n". $pr->documenti. $fName); 
-	    }
+            //print("***ERROR: Non è possibile copiare il file.<br />\n". $pr->documenti. $fName); 
+	}
+        if (!file_exists($pr->documenti. $fName)||filesize($pr->documenti.$fName)==0 ){
+            $newId = ($modo=="new")?($_SESSION["ADD_NEW"]):($_REQUEST["id"]);
+            $sql = "DELETE FROM stp.stampe WHERE id = $newId;";
+            $dbh = utils::getDb();
+            $dbh->exec($sql);
+            print("<p style='color:red;font-weight:bold;font-size:14px;'>ERRORE: Non è stato possibile copiare il file $fName</p>");
+        }
     }
 	elseif ($_REQUEST["file_doc"] && $_REQUEST["old_name"]){
             $newName=$pr->documenti.$_REQUEST['file_doc'];
