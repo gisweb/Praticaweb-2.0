@@ -5,9 +5,9 @@ require_once("login.php");
 include "./lib/tabella_h.class.php";
 $tabpath="stp";
 $tipo=$_REQUEST["tipo"];
-$mod=($tipo=='html')?('html'):('');
+$mod=($tipo=='html')?('nuovo'):('');
 
-$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
+$db = new sql_db(DB_HOST,DB_USER,DB_PWD,DB_NAME, false);
 if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
 
 if ($_POST["azione"]){ 
@@ -32,7 +32,7 @@ if ($_POST["azione"]){
 	utils::loadCss();
 ?>
 <script language="javascript">
-<?php if ($tipo=="html"){?>
+<?if ($tipo=="html"){?>
 function link(id,pratica){
 	window.location="stp.editor.php?id_modelli="+id;
 }
@@ -53,7 +53,6 @@ function elimina(id){
 </head>
 <body  background="" leftMargin="0" topMargin="0" marginheight="0" marginwidth="0">
 <?php
-echo "<p>$tabpath/modelli_$tipo</p>";
 $tabella_modelli=new Tabella_h("$tabpath/modelli_$tipo",'list');
 $db=$tabella_modelli->get_db();
 $sql="select distinct opzione,form,stampa from stp.e_form order by stampa;";
@@ -68,7 +67,7 @@ $elenco_modelli = $db->sql_fetchrowset();
 	<input type="hidden" name="azione" id="azione" value="">
 	<input type="hidden" name="idriga" id="idriga" value="0">
        </form>
-<?php	foreach ($elenco_modelli as $row){
+<?	foreach ($elenco_modelli as $row){
 		$form=$row["form"];
 		$desc=$row["opzione"];
 
@@ -88,8 +87,7 @@ $elenco_modelli = $db->sql_fetchrowset();
 		  <tr> 
 			<td> 
 			<!--  intestazione-->
-				<?php
-					$tabella_modelli->get_titolo("stp.editor.php?tipo=modelli");
+				<?$tabella_modelli->get_titolo("stp.editor.php?tipo=modelli");
 					if ($num_modelli) 
 						$tabella_modelli->elenco();
 					else
@@ -101,7 +99,7 @@ $elenco_modelli = $db->sql_fetchrowset();
 			<br>
 			</td>
 		  </tr>
-<?php	}// end for?>
+<?	}// end for?>
 		<tr>
 			<td><input class="hexfield1" style="width:100px;margin-top:10px" type="button" value="chiudi" onClick="javascript:window.opener.focus();window.close();"></td>
 		</tr>

@@ -22,6 +22,7 @@ class generalPratica {
     var $next;
     var $prev;
     var $db;
+    var $dbh;
     
     function __construct($id,$type=0){
 		
@@ -30,6 +31,7 @@ class generalPratica {
         if(!$db->db_connect_id)  die( "Impossibile connettersi al database ".DB_NAME);
         $this->db=$db;
         $this->db1=$this->setDB();
+        $this->dbh = utils::getDb();
         switch($type){
             case 1:
                 $this->initCdu();
@@ -49,17 +51,17 @@ class generalPratica {
     function __destruct(){
         $this->db1->close();
     }
-    
+
     private function _setInfoUsers(){
         $conn = utils::getDb();
         $sql="SELECT userid as dirigente FROM admin.users WHERE attivato=1 and '13' = ANY(string_to_array(coalesce(gruppi,''),','));";
         $stmt = $conn->prepare($sql);
-        $stmt->execute();
+        $stmt->execute(Array($this->pratica));
         $this->info['dirigente']=$stmt->fetchColumn();
         //ESTRAGGO INFORMAZIONI SUL RESPONSABILE DEL SERVIZIO
         $sql="SELECT userid as rds FROM admin.users WHERE attivato=1 and '15' = ANY(string_to_array(coalesce(gruppi,''),','));";
         $stmt = $conn->prepare($sql);
-        $stmt->execute();
+        $stmt->execute(Array($this->pratica));
         $this->info['rds']=$stmt->fetchColumn();
         //INFO UTENTE (ID-GRUPPI-NOME)
         $this->userid=$_SESSION['USER_ID'];
@@ -70,7 +72,7 @@ class generalPratica {
         $this->user=$stmt->fetchColumn();
     }
     
-    function initPE(){
+    private function initPE(){
         $conn = utils::getDb();
         if ($this->pratica && is_numeric($this->pratica)){
             //INFORMAZIONI SULLA PRATICA
@@ -94,10 +96,11 @@ class generalPratica {
             $this->tipopratica=$info["tipologia"];
             $numero=appUtils::normalizeNumero($this->info['numero']);
             $tmp=explode('-',$numero);
-            if (count($tmp)==2 && preg_match("|([A-z0-9]+)|",$tmp[0])){
-                    //$tmp[0]=(preg_match("|^[89]|",$tmp[0]))?("19".$tmp[0]):($tmp[0]);
+/*            if (count($tmp)==2 && preg_match("|([A-z0-9]+)|",$tmp[0])){
+                    $tmp[0]=(preg_match("|^[89]|",$tmp[0]))?("19".$tmp[0]):($tmp[0]);
                     $numero=implode('-',$tmp);
             }
+*/
             $anno=($r['anno'])?($r['anno']):($tmp[0]);
 
             //Struttura delle directory
@@ -156,7 +159,7 @@ class generalPratica {
             $numero=appUtils::normalizeNumero($this->info['numero']);
             $tmp=explode('-',$numero);
             if (count($tmp)==2 && preg_match("|([A-z0-9]+)|",$tmp[0])){
-                    //$tmp[0]=(preg_match("|^[89]|",$tmp[0]))?("19".$tmp[0]):($tmp[0]);
+                    $tmp[0]=(preg_match("|^[89]|",$tmp[0]))?("19".$tmp[0]):($tmp[0]);
                     $numero=implode('-',$tmp);
             }
             $anno=($r['anno'])?($r['anno']):($tmp[0]);
@@ -226,7 +229,7 @@ class generalPratica {
         }
     }
 	
-     private function initCE(){
+    private function initCE(){
         $conn = utils::getDb();
         if ($this->pratica && is_numeric($this->pratica)){
             //INFORMAZIONI SULLA PRATICA
@@ -626,64 +629,26 @@ INSERT INTO oneri.rate(pratica,rata,totale,uidins,tmsins) (SELECT $this->pratica
 		return $ris;
 	}
 	
-    /* Metodo per accedere in lettura agli Allegati/Documenti della Pratica*/    
-    function leggiDocumento($id,$tipo){
-        $result = Array(
-            "contenuto"=>"",
-            "mimetype"=>"",
-            "success"=>0,
-            "message"=>""
-        );
-        $pratica = $this->pratica;
-        $dbh = utils::getDb();
-        if ($tipo=="allegato"){
-            $path = $this->allegati;
-            $sql = "SELECT nome_file as filename FROM pe.file_allegati WHERE id=? AND pratica=?;";
-        }
-        elseif($tipo == "documento"){
-            $path = dirname($this->documenti);
-            $sql = "SELECT file_doc as filename FROM stp.stampe WHERE id=? AND pratica=?;";
-        }
-        $stmt = $dbh->prepare($sql);
-
-        if($stmt->execute(Array($id,$pratica))){
-            //$res = (!$mode)?($stmt->fetch(PDO::FETCH_ASSOC)):($stmt->fetchAll(PDO::FETCH_ASSOC));
-            $filename = $stmt->fetchColumn();
-            if (!$filename){
-                $result["message"] = "Nessun $tipo associato all'id $id";
-                return $result;
+        function getDocumenti(){
+            $sql = "SELECT id,file_doc FROM stp.stampe WHERE pratica = ?;";
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->execute(Array($this->pratica));
+            $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            for($i=0;$i<count($res);$i++){
+                $result[$res[$i]["id"]] = $res[$i]["file_doc"];
             }
-            $fName = $path.DIRECTORY_SEPARATOR.$filename;
-            if (!file_exists($fName)){
-                $result["message"] = "Il file $fName non presente sul server";
-                return $result;
-            }
-            //Leggo contenuto file
-            $f = fopen($fName,'r');
-            $text = fread($f,filesize($fName));
-            fclose($f);
-            //leggo contenuto su mime type file
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $mime = finfo_file($finfo, $fName);
-            finfo_close($finfo);
-            $result = Array(
-                "nome"=>$filename,
-                "contenuto"=> base64_encode($text),
-                "mimetype"=>$mime,
-                "success"=>1,
-                "message"=>""
-            );
-            
-            
-        }
-        else{
-            $errors=$stmt->errorInfo();
-            $result["message"]=$errors[2];
             return $result;
         }
-        return $result;
-    }
-    
+	function getAllegati(){
+		$sql = "SELECT id,nome_file FROM pe.file_allegati WHERE pratica = ?;";
+		$stmt = $this->dbh->prepare($sql);
+		$stmt->execute(Array($this->pratica));
+		$res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		for($i=0;$i<count($res);$i++){
+			$result[$res[$i]["id"]] = $res[$i]["nome_file"];
+		}
+		return $result;
+	}
 }
 
 

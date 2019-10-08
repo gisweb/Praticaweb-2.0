@@ -1,8 +1,9 @@
 <?php
 use Doctrine\Common\ClassLoader;
 require_once APPS_DIR.'plugins/Doctrine/Common/ClassLoader.php';
-require_once LIB."utils.class.php";
-require_once APPS_DIR.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'app.utils.class.php';
+
+
+
 class generalAppUtils {
    static function getDB(){
 		$classLoader = new ClassLoader('Doctrine', APPS_DIR.'plugins/');
@@ -85,25 +86,6 @@ class generalAppUtils {
         $id=$db->fetchColumn("SELECT id FROM pe.e_transizioni WHERE codice=?",Array($m),0);
         return $id;
     }
-	
-   static function getCodBelfiore($pratica){
-	  if (defined('COD_BELFIORE') && COD_BELFIORE){
-		 return COD_BELFIORE;   
-	  }
-	  elseif(in_array("cod_belfiore",$_REQUEST) && $_REQUEST["cod_belfiore"]){
-		 return $_REQUEST["cod_belfiore"];
-	  }
-	  else{
-		 $db = utils::getDb();
-		 $sql="SELECT cod_belfiore FROM pe.avvioproc WHERE pratica=?;";
-		 $stmt=$db->prepare($sql);
-		 $cod = '';
-		 if($stmt->execute(Array($pratica))){
-			$cod = $stmt->fetchColumn();
-		 }
-		 return $cod;
-	  }
-	}
 /*--------------------------------------------------------------------------------------------*/  
     static function getPraticaRole($cfg,$pratica){
         $db=self::getDB();
@@ -355,18 +337,11 @@ class generalAppUtils {
         if ($_REQUEST["cdu"] || strpos($filename,'cdu.')!==FALSE){
             $sql="SELECT 'Certificato di Destinazione Urbanitica Prot n° '||protocollo as titolo FROM cdu.richiesta WHERE pratica=?";
         }
-        elseif ($_REQUEST["comm"] || strpos($filename,'ce.')!==FALSE){
-            $sql="SELECT B.nome|| ' del '|| to_char(data_convocazione,'DD/MM/YYYY') as titolo FROM ce.commissione A INNER JOIN ce.e_tipopratica B ON(A.tipo_comm=B.id)  WHERE pratica=?;";
-        }
         elseif ($_REQUEST["vigi"] || strpos($filename,'vigi.')!==FALSE){
-            //$sql="SELECT B.nome|| ' n° '||A.numero as titolo FROM vigi.avvioproc A INNER JOIN vigi.e_tipopratica B ON(A.tipo_comm=B.id)  WHERE pratica=?;";
             $sql="SELECT B.nome|| ' n° '||A.numero as titolo FROM vigi.avvioproc A INNER JOIN vigi.e_tipopratica B ON(A.tipo=B.id)  WHERE pratica=?;";
         }
         elseif($_REQUEST["agi"] || strpos($filename,'agi.')!==FALSE){
             $sql="SELECT B.nome|| coalesce(' - '||C.nome,'') ||' n° '||A.numero as titolo FROM agi.avvioproc A INNER JOIN agi.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN agi.e_categoriapratica C ON (coalesce(A.categoria,0)=C.id)  WHERE pratica=?;";
-        }
-		elseif($_REQUEST["storage"] || strpos($filename,'storage.')!==FALSE){
-            $sql="SELECT 'Documentazione inviata il '||data_invio|| ' da '||cognome||' '||nome as titolo FROM storage.invio  WHERE pratica=?;";
         }
         else{
             $sql="SELECT B.nome|| coalesce(' - '||C.nome,'') ||' n° '||A.numero as titolo FROM pe.avvioproc A INNER JOIN pe.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN pe.e_categoriapratica C ON (coalesce(A.categoria,0)=C.id)  WHERE pratica=?;";
@@ -376,7 +351,7 @@ class generalAppUtils {
         $result=$db->fetchAll($sql,Array($pr));
         return $result[0]["titolo"];
     }
-    static function getScadenze($userId=0){
+    static function getScadenze($userId){
             $conn=utils::getDb();
             //DETTAGLI DELLE SCADENZE
             $lLimit=(defined('LOWER_LIMIT'))?(LOWER_LIMIT):(5);
@@ -392,7 +367,7 @@ class generalAppUtils {
                 return Array("totali"=>count($res),"data"=>$res);
             }
     }
-    static function getVerifiche($userId=0){
+    static function getVerifiche($userId){
             $conn=utils::getDb();
 
             $sql="select * from pe.vista_verifiche_utenti where $userId = ANY(interessati);";
@@ -406,7 +381,7 @@ class generalAppUtils {
                 return Array("totali"=>count($res),"data"=>$res);
             }
     }
-    static function getAnnotazioni($userId=0){
+    static function getAnnotazioni($userId){
             $conn=utils::getDb();
             //DETTAGLI DELLE SCADENZE
             $lLimit=(defined('LOWER_LIMIT'))?(LOWER_LIMIT):(5);
@@ -424,17 +399,7 @@ class generalAppUtils {
     }
     
     static function chooseRespVerifiche($tipo){
-        $sql = "SELECT resp_proc FROM pe.e_verifiche WHERE id=?";
-        $conn=utils::getDb();
-        $stmt=$conn->prepare($sql);
-        if(!$stmt->execute(Array($tipo))){
-            return -1;
-        }
-        else{
-            $res=$stmt->fetchColumn();
-            return $res;
-        }
-
+        return 'NULL';
     }
     
     static function getAnnoOneri($id,$data){
@@ -450,175 +415,12 @@ class generalAppUtils {
         }
     }
     static function setVisitata($id,$frm,$user){
-        $sql="INSERT INTO pe.pratiche_visitate(pratica,form,userid) VALUES(?,?,?)";
-        $conn=utils::getDb();
-        $stmt=$conn->prepare($sql);
-        $stmt->execute(Array($id,$frm,$user));
-    }
-    static function getNotifiche($userId){
+        if (defined('AUTO_PURGE_NOTIFICHE') && AUTO_PURGE_NOTIFICHE==1){
+            $sql="INSERT INTO pe.pratiche_visitate(pratica,form,userid) VALUES(?,?,?)";
             $conn=utils::getDb();
-            //DETTAGLI DELLE SCADENZE
-            $lLimit=(defined('LOWER_LIMIT'))?(LOWER_LIMIT):(5);
-            $uLimit=(defined('UPPER_LIMIT'))?(UPPER_LIMIT):(3);
-            $sql="select A.id,A.pratica,B.numero,B.data_prot,testo as oggetto,ARRAY[soggetto_notificato] as interessati from pe.notifiche A inner join pe.avvioproc B using(pratica) where soggetto_notificato=$userId and visionato=0;";
-            
             $stmt=$conn->prepare($sql);
-            if(!$stmt->execute()){
-                return Array("errore"=>1,"query"=>$sql);
-            }
-            else{
-                $res=$stmt->fetchAll(PDO::FETCH_ASSOC);
-                return Array("totali"=>count($res),"data"=>$res);
-            }
-    }
-    static function getInterventiOneri(){
-    	$db = self::getDB();
-    	$sql="SELECT * FROM oneri.e_interventi order by tabella,descrizione";
-    	$res=$db->fetchAll($sql);
-    	foreach($res as $val){
-    		$result[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
-    	}
-    	return $result;
-    }
-    static function getTariffeOneri(){
-    	$db = self::getDB();
-	    $sql="SELECT * FROM oneri.e_tariffe order by anno,tabella,descrizione";
-	    $res=$db->fetchAll($sql);
-	    foreach($res as $val){
-	    	$result[$val["anno"]][]=Array("id"=>$val["tabella"],"opzione"=>$val["descrizione"]);
-	    }
-	    return $result;
-    }
-    static function getC1Oneri(){
-    	$db = self::getDB();
-    	$sql="SELECT * FROM oneri.e_c1 order by tabella,descrizione";
-    	$res=$db->fetchAll($sql);
-    	foreach($res as $val){
-    		$result[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
-    	}
-    	return $result;
-    }
-    static function getC2Oneri(){
-    	$db = self::getDB();
-    	$sql="SELECT * FROM oneri.e_c2 order by tabella,descrizione";
-    	$res=$db->fetchAll($sql);
-    	foreach($res as $val){
-    		$result[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
-    	}
-    	return $result;
-    }
-    static function getC3Oneri(){
-    	$db = self::getDB();
-    	$sql="SELECT * FROM oneri.e_c3 order by tabella,descrizione";
-    	$res=$db->fetchAll($sql);
-    	foreach($res as $val){
-    		$result[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
-    	}
-    	return $result;
-    }
-    static function getC4Oneri(){
-    	$db = self::getDB();
-    	$sql="SELECT * FROM oneri.e_c4 order by tabella,descrizione";
-    	$res=$db->fetchAll($sql);
-    	foreach($res as $val){
-    		$result[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
-    	}
-    	return $result;
-    }
-    static function getC5Oneri(){
-    	$db = self::getDB();
-    	$sql="SELECT * FROM oneri.e_c5 order by tabella,descrizione";
-    	$res=$db->fetchAll($sql);
-    	foreach($res as $val){
-    		$result[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
-    	}
-    	return $result;
-    }
-    static function getD1Oneri(){
-    	$db = self::getDB();
-    	$sql="SELECT * FROM oneri.e_d1 order by tabella,descrizione";
-    	$res=$db->fetchAll($sql);
-    	foreach($res as $val){
-    		$result[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
-    	}
-    	return $result;
-    }
-    static function getD2Oneri(){
-    	$db = self::getDB();
-    	$sql="SELECT * FROM oneri.e_d2 order by tabella,descrizione";
-    	$res=$db->fetchAll($sql);
-    	foreach($res as $val){
-    		$result[$val["tabella"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
-    	}
-    	return $result;
-    }
-
-    static function getComune($pratica,$app='pe'){
-        $conn=utils::getDb();
-        $sql = ($app=='cdu')?("SELECT cod_belfiore FROM cdu.richiesta WHERE pratica=?;"):("SELECT cod_belfiore FROM pe.avvioproc WHERE pratica=?;");
-        $stmt=$conn->prepare($sql);
-        if(!$stmt->execute(Array($pratica))){
-            return '';
+            $stmt->execute(Array($id,$frm,$user));
         }
-        else{
-            $res=$stmt->fetchColumn();
-            return $res;
-        }
-    }
-    static function getPDODB(){
-        $dsn = sprintf('pgsql:dbname=%s;host=%s;port=%s',DB_NAME,DB_HOST,DB_PORT);
-        $conn = new PDO($dsn, DB_USER, DB_PWD);
-        return $conn;
-    }
-    static function getInfoDocumento($id,$type=0){
-        $dbh = self::getPDODB();
-        if(!$type){
-            $sql = "SELECT file_doc, descrizione,pratica,''::varchar as tipo FROM stp.stampe WHERE id = ?";
-        }
-        else{
-            $sql = "SELECT nome_file as file_doc,note as descrizione,pratica,tipo_file as tipo FROM pe.file_allegati WHERE id = ?";
-        }
-        $stmt = $dbh->prepare($sql);
-        if($stmt->execute(Array($id))){
-            $res = $stmt->fetch();
-            
-            $fname = $res["file_doc"];
-            $desc = $res["descrizione"];
-            $pratica = $res["pratica"];
-            $tipo = $res["tipo"];
-            $pr = new pratica($pratica);
-            $fname = (!$type)?($pr->documenti.$fname):($pr->allegati.$fname);
-            
-            if (!file_exists($fname)){
-                
-                $result = Array("success"=>0,"message"=>"","file"=>"","mimetype"=>"","data"=>Array("descrizione"=>"","nomefile"=>""));
-                $result["message"] = "Il file $fname non presente sul server";
-                return $result;
-            }
-            //Leggo contenuto file
-            $f = fopen($fname,'r');
-            $text = fread($f,filesize($fname));
-            fclose($f);
-            //leggo contenuto su mime type file
-            if (!$tipo){
-                $finfo = finfo_open(FILEINFO_MIME_TYPE);
-                $mime = finfo_file($finfo, $fname);
-                finfo_close($finfo);
-            }
-            else{
-                $mime = $tipo;
-            }
-            
-            
-            $result = Array("success"=>1,"message"=>"","file"=> base64_encode($text),"mimetype"=>$mime,"data"=>Array("descrizione"=>$desc,"nomefile"=>$fname));
-
-        }
-        else{
-            $err = $stmt->errorInfo();
-            $result = Array("success"=>0,"message"=>$err[2],"file"=>"","mimetype"=>"","data"=>Array("descrizione"=>"","nomefile"=>""));
-
-        }
-        return $result;
     }
 }
 

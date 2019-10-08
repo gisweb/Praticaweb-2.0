@@ -7,6 +7,9 @@ $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $filetab="$tabpath/pareri";
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
+//Imposto i permessi di default per il modulo
+$_SESSION["PERMESSI"]= min($_SESSION["PERMESSI_$idpratica"],$_SESSION["PERMESSI_A_$idpratica"],$_SESSION["PERMESSI_G_$idpratica"]);
+
 ?>
 <html>
 <head>
@@ -82,7 +85,7 @@ if (($modo=="edit") or ($modo=="new")){
 	}else{
 		$tabella=new tabella_v("$tabpath/pareri");
 		$tabella->set_errors($errors);
-		$numrec=$tabella->set_dati("pratica=$idpratica");?>
+		$numrec=$tabella->set_dati("pratica=$idpratica AND NOT ente IN (SELECT id FROM pe.e_enti WHERE codice='ut')");?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 		<H2 class="blueBanner">Elenco pareri</H2>
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">
@@ -90,18 +93,28 @@ if (($modo=="edit") or ($modo=="new")){
 			<TD> 
 			<!-- contenuto-->
 			<?php
-                                $tabella->set_titolo("nome_ente","modifica",array("nome_ente"=>"","id"=>""));
+                $tabella->set_titolo("nome_ente","modifica",array("nome_ente"=>"","id"=>""));
+                $editable = $tabella->editable;
 				for($i=0;$i<$numrec;$i++){
 					$tabella->curr_record=$i;
 					$tabella->idtabella=$tabella->array_dati[$i]['id'];
+                    $permessi = $_SESSION["PERMESSI"];
+					if($_SESSION["USER_ID"] == $tabella->array_dati[$i]["resp_parere"]){
+                        $_SESSION["PERMESSI"] = ($_SESSION["PERMESSI"]>=3)?(3):($_SESSION["PERMESSI"]) ;
+						$tabella->editable=1;
+					}
+                    
 					$tabella->get_titolo();
 					$tabella->tabella();
-					//$tabella->elenco_stampe($form);	
+                    $_SESSION["permessi"] = $permessi;
+					$tabella->editable = $editable;
+                    //$tabella->elenco_stampe($form);	
 				}
 		print "</td></tr><tr><td>";
                 
                 $tabella->set_titolo("Aggiungi un nuovo Parere","nuovo");
-                $tabella->get_titolo();
+//                $tabella->editable=1;
+		$tabella->get_titolo();
                 print "<BR>";
 		if ($tabella->editable) print($tabella->elenco_stampe());
                

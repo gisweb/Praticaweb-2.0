@@ -1,8 +1,4 @@
 <?php
-//creare un trigger sul db per la numerazione automatica
-	//per ora calcolo qui il nuovo numero pratica senza controlli
-	//CREARE UN TRIGGER CHE AGGIORNA PRATICA A ID NELLA TABELLA AVVIOPROC 
-	//UTILIZZARE UNA TRANSAZIONE PER L'EREDITARIETA DEI DATI DELLA NUOVA PRATICA
 function recurse_copy($src,$dst) {
     $dir = opendir($src);
     @mkdir($dst);
@@ -18,6 +14,14 @@ function recurse_copy($src,$dst) {
     }
     closedir($dir);
 }
+
+
+
+//creare un trigger sul db per la numerazione automatica
+	//per ora calcolo qui il nuovo numero pratica senza controlli
+	//CREARE UN TRIGGER CHE AGGIORNA PRATICA A ID NELLA TABELLA AVVIOPROC 
+	//UTILIZZARE UNA TRANSAZIONE PER L'EREDITARIETA DEI DATI DELLA NUOVA PRATICA
+	
 	//se ho annullato esco
 	if ($_POST["azione"]=="Annulla" || !isset($_POST["azione"])){
 		$active_form.="?pratica=$idpratica";
@@ -33,15 +37,21 @@ function recurse_copy($src,$dst) {
 		$prPrec=new pratica($idpratica);
 		$db=$prPrec->db1;
 		$pratPrec=$db->fetchAssoc("SELECT * FROM pe.avvioproc WHERE pratica=?",Array($idpratica));
-    }
+        }
         
-    if (file_exists(DATA_DIR."praticaweb/db/db.pe.avvioproc.before.php")){
-        $dataprot = $_REQUEST["data_prot"];
-        $prot = $_REQUEST["protocollo"];
-        require_once DATA_DIR."praticaweb/db/db.pe.avvioproc.before.php";
-        $_REQUEST["data_prot"]=$dataprot;
-        $_REQUEST["protocollo"]=$prot;
-    }
+        if (file_exists(DATA_DIR."praticaweb/db/db.pe.avvioproc.before.php")){
+            $dataprot = $_REQUEST["data_prot"];
+            $prot = $_REQUEST["protocollo"];
+            require_once DATA_DIR."praticaweb/db/db.pe.avvioproc.before.php";
+            $_REQUEST["data_prot"]=$dataprot;
+            $_REQUEST["protocollo"]=$prot;
+        }
+	if($_REQUEST['mode']=='edit'){
+		$prPrec=new pratica($idpratica);
+		$db=$prPrec->db1;
+		$pratPrec=$db->fetchAssoc("SELECT * FROM pe.avvioproc WHERE pratica=?",Array($idpratica));
+        }
+
 	//Modulo condiviso per la gestione dei dati
 	include_once "./db/db.savedata.php";
 	
@@ -67,12 +77,12 @@ function recurse_copy($src,$dst) {
 	
 	//aggiorno una pratica esistente
 	elseif($_POST["mode"]=="edit"){
-            $pr=new pratica($idpratica,$app);
-            $pr->createStructure();
+            $pr=new pratica($idpratica);
             //devo solo controllare se è stato cambiato il tipo di pratica: in questo caso aggiorno il menu
             $tipo=$_POST["tipo"];
             $oldtipo=$_POST["oldtipo"];
-            if ($tipo!=$oldtipo) $menu->change_menu($idpratica,$oldtipo,$tipo);
+            if ($tipo!=$oldtipo)
+                    $menu->change_menu($idpratica,$oldtipo,$tipo);
             $menu->add_menu($idpratica,60);
 
             if($_POST["oldnumero"] && $_POST["numero"] && $_POST["oldnumero"]!=$_POST["numero"]){
@@ -86,17 +96,7 @@ function recurse_copy($src,$dst) {
                 }
             }
             
-            if($_POST["oldnumero"] && !$_POST["numero"]){
-
-
-                $res = recurse_copy($prPrec->documenti,$pr->documenti);
-                $mex = sprintf("<h3 style='color:red;'>Attenzione la pratica %s &egrave; stata rinumerata nella %s</h3>",$_POST["oldnumero"],$pr->info["numero"]);
-                print $mex;
-                if ($_SESSION["USER_ID"]==1){
-                    $mex = sprintf("<p>Copying file from %s to %s with result : %s</p>",$prPrec->documenti."/allegati/*",$pr->documenti."/allegati/",$cp2);
-                    print $mex;
-                }
-            }
+		
             if($pratPrec['resp_proc']!=$pr->info["resp_proc"]) 
                     $pr->addTransition(Array('codice'=>'rardp',"utente_fi"=>$pr->info["resp_proc"],"data"=>$d_resp));	
             if($pratPrec['resp_it']!=$_REQUEST['resp_it'])

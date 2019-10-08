@@ -127,10 +127,9 @@ class wordDoc {
                          }
                         break;
 		}
-            array_walk_recursive($customData, 'decode');
-			$this->data=$customData;
-			
-            print_debug($this->data,null,'STAMPE');
+                array_walk_recursive($customData, 'decode');
+		$this->data=$customData;
+                print_debug($this->data,null,'STAMPE');
 	}
         private function getFields(){
 		$db=$this->db;
@@ -169,28 +168,21 @@ class wordDoc {
 	function createDoc($test=0){
 		$TBS = new clsTinyButStrong; // new instance of TBS
 		$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
-		$TBS->VarRef['data'] = date("d/m/Y");
+
 		$this->getData();
-		foreach($this->data as $k=>$v){
-			$TBS->VarRef[$k]=$v;
-		}
-	        $TBS->LoadTemplate($this->modelliDir.$this->modello,OPENTBS_ALREADY_XML);
+        $TBS->LoadTemplate($this->modelliDir.$this->modello,OPENTBS_ALREADY_XML);
 
 		$TBS->SetOption('noerr',true);
 		
 		$this->substFields($TBS);
-		/*$TBS->PlugIn(OPENTBS_SELECT_HEADER,OPENTBS_DEFAULT);
-		$TBS->substFields($TBS);
-		$TBS->PlugIn(OPENTBS_SELECT_FOOTER,OPENTBS_DEFAULT);
-		$TBS->substFields($TBS);*/
         /*Check if exists header and footer */
-		//$files=$TBS->PlugIn(OPENTBS_GET_HEADERS_FOOTERS);
-		/*for($i=0;$i<count($files);$i++){
-			$TBS->LoadTemplate($files[$i]);
-			//echo $files[$i];
+		/*$files=$TBS->PlugIn(OPENTBS_GET_HEADERS_FOOTERS);
+		for($i=0;$i<count($files);$i++){
+			$TBS->LoadTemplate($files[$i],OPENTBS_ALREADY_XML);
+			echo $files[$i];
 			$TBS->substFields($TBS);
-		}*/
-		/*$TBS->PlugIn(OPENTBS_SELECT_MAIN);*/
+		}
+		$TBS->PlugIn(OPENTBS_SELECT_MAIN);*/
         /*if($TBS->Plugin(OPENTBS_FILEEXISTS, "styles.xml")){
             $TBS->LoadTemplate("#styles.xml");
             foreach($this->data as $tb=>$data){
@@ -208,7 +200,7 @@ class wordDoc {
 		}
 		else{
 			$TBS->Show(OPENTBS_FILE,$pr->documenti.$this->docName);
-			//echo $pr->documenti.$this->docName;
+			echo $pr->documenti.$this->docName;
 		}
 		//print_array($this->data);
 	} 
@@ -223,7 +215,7 @@ class wordDoc {
         function setQuery(){
             $this->db=appUtils::getDb();
             $db=$this->db;
-            $result=Array("single"=>Array(),"multiple"=>Array(),"fromfile"=>Array());
+            $result=Array("single"=>Array("data_odierna"=>"SELECT CURRENT_DATE as oggi;"),"multiple"=>Array(),"fromfile"=>Array());
             $sql="SELECT table_name as name,array_to_string(array_agg('B.'||column_name::varchar),',') as field_list FROM information_schema.views INNER JOIN information_schema.columns USING(table_name,table_schema) WHERE table_schema='stp' AND table_name ILIKE 'single_%' AND column_name NOT IN ('pratica') GROUP BY table_name ORDER BY 1;";
             $ris=$db->fetchAll($sql);
             for($i=0;$i<count($ris);$i++){

@@ -8,6 +8,8 @@ $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $id=$_REQUEST["id"];
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
+$_SESSION["PERMESSI"]=$_SESSION['PERMESSI_OK'];
+
 ?>
 <html>
 <head>

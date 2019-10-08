@@ -73,8 +73,8 @@ switch ($modo) {
 			<td> 
 				<!-- contenuto-->
 				<?php
-                    $tabella->edita();
-                ?>
+                                    $tabella->edita();
+                                ?>
 				<!-- fine contenuto-->
 			</td>
 		  </tr>
@@ -99,7 +99,7 @@ switch ($modo) {
 		for($i=0;$i<5;$i++){
 		//crea la stringa sql per i campi passati
 		if ($valori[$i])
-			$sql.="$campi[$i] ilike '%".$valori[$i]."%' and ";
+			$sql.="$campi[$i] ilike '".$valori[$i]."%' and ";
 		}
 		//se almeno un campo è stato compilato faccio la ricerca altrimenti passo al form di inserimento vuoto
 		if (strlen($sql)>5){
@@ -155,11 +155,11 @@ switch ($modo) {
 		if ($voltura==1) $config_file.="_voltura";
 		$tabella=new tabella_v($config_file,$modo);
 
-		$tabella->set_errors($Errors);
+		$tabella->set_errors($errors);
 		(($ruolo=="proprietario") || ($ruolo=="richiedente") || ($ruolo=="concessionario"))?($tit="Sposta in Volture"):($tit="Sposta in Variazioni");
 		//se edito un soggetto esitente passo l'id altrimenti completo il form con i dati passati per la ricerca 
 		if($idsoggetto){
-			if (isset($Errors))
+			if (isset($errors))
 				$dataset=$_POST;
 			else
 				$dataset="id = $idsoggetto";

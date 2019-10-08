@@ -1,34 +1,36 @@
 <?php
 function print_debug($t="",$db=NULL,$file=NULL){
-
 		if (!defined("DEBUG_DIR")) {
 			define("DEBUG_DIR",'./');
 		}
-        $uid=($_SESSION["USER_ID"])?($_SESSION["USER_ID"]."_"):("");
-        $data=date('j-m-y');
-        $ora=date("H:i:s");
-        if (!$file) $nomefile=DEBUG_DIR.$uid."standard.debug";
-        else
-            $nomefile=DEBUG_DIR.$uid.$file.".debug";
-        $size=filesize($nomefile);
+			$uid=($_SESSION["USER_ID"])?($_SESSION["USER_ID"]."_"):("");
+			$data=date('j-m-y'); 
+			$ora=date("H:i:s");
+			if (!$file) $nomefile=DEBUG_DIR.$uid."standard.debug";
+			else
+				$nomefile=DEBUG_DIR.$uid.$file.".debug";
+			$size=filesize($nomefile);
+			
+			$f=($size>1000000)?(fopen($nomefile,"w+")):(fopen($nomefile,"a+"));
+			if (!$f) die("<p>Impossibile aprire il file $nomefile</p>");
 
-        $f=($size>1000000)?(fopen($nomefile,"w+")):(fopen($nomefile,"a+"));
-        if (!$f) die("<p>Impossibile aprire il file $nomefile</p>");
-
-        if (is_array($t)||is_object($t)){
-            ob_start();
-            print_r($t);
-            $out=ob_get_contents ();
-            ob_end_clean();
-            if (!fwrite($f,"\n$data\t$ora\t --- STAMPA DI UN ARRAY ---\n\t$out")) echo "<p>Impossibile scrivere sul file $nomefile </p>";
-            fclose($f);
-        }
-        else{
-            if (!fwrite($f,"\n$data\t$ora\n\t".$t)) echo "<p>Impossibile scrivere sul file $nomefile </p>";
-            else
-                fclose($f);
-        }
-
+			if (is_array($t)||is_object($t)){
+				ob_start();
+				print_r($t);
+				$out=ob_get_contents ();
+				ob_end_clean();   
+				if (!fwrite($f,"\n$data\t$ora\t --- STAMPA DI UN ARRAY ---\n\t$out")) echo "<p>Impossibile scrivere sul file $nomefile </p>";
+				fclose($f);
+			}
+			else{
+				if (!fwrite($f,"\n$data\t$ora\n\t".$t)) echo "<p>Impossibile scrivere sul file $nomefile </p>";
+				else
+					fclose($f);
+			}
+		/*}
+		else
+			 echo "<p>Impossibile scrivere messaggi. Non � stata definita nessuna directory di DEBUG </p>".DEBUG_DIR;*/
+	
 }
 
 //FUNZIONE CHE CERCA RICORSIVAMENTE UN TESTO NEI FILE DI UNA DIRECTORY
@@ -70,7 +72,7 @@ function exec_command($cmd){
 	$ris=ob_get_contents();
 	ob_end_clean();
 	print_debug("$ast\t ESECUZIONE COMANDO $cmd con RETURN CODE $out\t$ast\n");
-	//print_debug($arr);
+	print_debug($arr);
 	print_debug("$ast$ast\tRISULTATO EXEC\t$ast$ast\n$ris\n$ast$ast FINE ESECUZIONE COMANDO $ast$ast\n");
 	
 }
@@ -78,14 +80,6 @@ function print_array($arr){
 	echo "<pre>";
 	print_r($arr);
 	echo "</pre>";
-}
-
-function adm_print_array($arr){
-	if ($_SESSION["USER_ID"]==1){
-		echo "<pre>";
-        	print_r($arr);
-	        echo "</pre>";
-        }
 }
 
 function vnsprintf( $format, array $data)

@@ -4,19 +4,17 @@ include_once "./lib/tabella_v.class.php";
 $tabpath="pe";
 $self=$_SERVER["PHP_SELF"];
 $idpratica=$_REQUEST["pratica"];
-$idallegato=(strpos($_REQUEST["id"],'all_')!==FALSE)?(substr($_REQUEST["id"],4)):($_REQUEST["id"]);
+$idallegato=$_REQUEST["id"];
 $idfile=$_REQUEST["idfile"];
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('list');
 $titolo=$_SESSION["TITOLO_$idpratica"];
 $form=$_POST["form"];
 $dbh=  utils::getDb();
-$sql =  "SELECT 'Elenco Allegati del documento : ' || coalesce(A.nome,'') as titolo,protocollo,data_protocollo FROM pe.e_documenti A INNER JOIN pe.allegati B ON(B.documento=A.id) WHERE B.id=".$idallegato;
+$sql =  "SELECT 'Elenco Allegati del documento : ' || coalesce(A.nome,'') as titolo FROM pe.e_documenti A INNER JOIN pe.allegati B ON(B.documento=A.id) WHERE B.id=".substr($idallegato,4);
 $sth = $dbh->prepare($sql);
 $sth->execute();
-$res = $sth->fetch();
-$tit = $res[0];
-$prot = $res[1];
-$data_prot = $res[2];
+$tit = $sth->fetchColumn();
+
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
 ?>
@@ -47,14 +45,18 @@ if ($modo=="edit" || $modo=='new') {
 		include "./inc/inc.page_header.php";
 		$tabella=new tabella_v("$tabpath/doc_dettaglio",$modo);
 		if (strpos($idallegato,'all_')!==FALSE) $idallegato=substr($idallegato,4);
-		$tabella->set_dati("idfile=$idfile");
-		if($modo=="new"){
-			$tabella->set_dati(Array("protocollo"=>$prot,"data_protocollo"=>$data_prot));
-		}
-		elseif (isset($_POST["allegato"])) {
-			
-			$allegato=$_POST["allegato"];
-		}
+                if($modo=="new"){
+			$sql = "select distinct protocollo,data_protocollo from  pe.grouped_allegati WHERE idallegato=$idallegato;";
+			$db = $tabella->get_db();
+			$db->sql_query($sql);
+                        $res = Array();
+			$res = $db->sql_fetchrowset();
+			$data = $res[0];
+			$tabella->set_dati($data);
+                }
+		else
+			$tabella->set_dati("idfile=$idfile");
+		if (isset($_POST["allegato"])) $allegato=$_POST["allegato"];
 		else
 			$allegato=$tabella->array_dati[0]['documento'];
 		unset($_SESSION["ADD_NEW"]);
@@ -101,7 +103,7 @@ $tabella->edita();
 }else if ($modo=="view"){		
 //<<<<<<<<<<<<<<<<<<<<<   MODALITA' VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->	
 		$tabella=new tabella_v("$tabpath/doc_dettaglio");
-		$id=$idallegato;
+		$id=substr($idallegato,4);
 		$tabella->set_dati("id = $id");
 		$nome_doc=$tabella->get_campo("documento");
 		?>
@@ -111,7 +113,7 @@ $tabella->edita();
 			<TD> 
 			<!-- contenuto-->
 				<?//aggiunto il campo costante tabella = richiedenti/tecnici per portarmi sul form il nome della tabella
-				$tabella->set_titolo("Scheda allegato","modifica",array("allegato"=>$nome_doc,"id"=>$id));
+				$tabella->set_titolo("Scheda allegato","modifica",array("allegato"=>$nome_doc,"id"=>$id,"pratica"=>""));
 				$tabella->elenco();?>
 			<!-- fine contenuto-->
 			 </TD>
@@ -169,7 +171,8 @@ $tabella->edita();
 else {
     include_once "./lib/tabella_h.class.php";
     $tabella=new tabella_h("$tabpath/doc_dettaglio",'list');
-    $tabella->set_titolo($tit,"nuovo",array("mode"=>"new","titolo"=>$titolo,"id"=>$idallegato,"pratica"=>$idpratica,"protocollo"=>$prot,"data_protocollo"=>$data_prot));
+    $idallegato=substr($idallegato,4);
+    $tabella->set_titolo($tit,"nuovo",array("mode"=>"new","titolo"=>$titolo,"id"=>$idallegato,"pratica"=>$idpratica));
     $numrows=$tabella->set_dati("id=$idallegato AND coalesce(idfile,0)>0");
     
     $tabella->get_titolo();

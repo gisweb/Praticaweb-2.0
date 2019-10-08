@@ -64,7 +64,6 @@ if ($modo=="edit" or $modo=="new"){
 		</TABLE>
 		<table>
 		<input name="mode" type="hidden" value="<?=$modo?>">
-		<input name="pratica" type="hidden" value="<?php echo $idpratica;?>">
 		<input name="active_form" type="hidden" value="oneri.sanzioni.php">
 				
 		</FORM>			

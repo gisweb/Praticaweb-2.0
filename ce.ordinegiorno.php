@@ -2,25 +2,13 @@
 //print_r($_REQUEST);
 include_once("login.php");
 $tabpath="ce";
-
 $file_config="$tabpath/ordinegiorno";
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $idcomm=$_REQUEST["pratica"];
 $ric=$_REQUEST["ricerca"];
 $titolo=$_SESSION["TITOLO_$idcomm"];
 if ($idcomm==0)	$modo="new";
-$sql = "SELECT tipologia FROM ce.commissione A inner join ce.e_tipopratica B on (A.tipo_comm=B.id) WHERE pratica = ?";
-$dbh = utils::getDb();
-$stmt = $dbh->prepare($sql);
-if($stmt->execute(Array($idcomm))){
-    $tipo = $stmt->fetchColumn();
-    if ($tipo == "ce"){
-        $file_config="$tabpath/ordinegiorno_ce";
-    }
-}
-else{
-    $tipo = "clp";
-} 
+
 include "./lib/tabella_h.class.php";
 include_once "./lib/tabella_v.class.php";
 
@@ -111,18 +99,16 @@ function show(id){
 		
 		<?php	// Eseguo cancellazione della pratica dalla commissione
 			if ($idpratica) {
-                               //print_array($_REQUEST);
 				$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
 				if(!$db->db_connect_id)  die( "Impossibile connettersi al database");	
 				$sql="DELETE FROM pe.pareri WHERE ente=(SELECT tipo_comm FROM ce.commissione WHERE id=$idcomm) and data_rich=(SELECT data_convocazione FROM ce.commissione WHERE id=$idcomm) and pratica=$idpratica";
-				$sql = "DELETE FROM pe.pareri WHERE id=$idpratica;";
 				if (!$db->sql_query($sql)) echo "ERRORE NELLA CANCELLAZIONE DELLA PRATICA <br>$sql<br>";
 				print_debug($sql);
 			}
 			$tabella_h=new Tabella_h($file_config,$modo);
 			$tabella_h->set_titolo("Elenco pratiche da discutere");
 			$tabella_h->get_titolo();
-			$tabella_h->set_dati("pratica = $idcomm");?>
+			$tabella_h->set_dati("pratica > 0");?>
 	<form name="cancella" method="post" action="ce.ordinegiorno.php">
 			<?php $tabella_h->elenco();?>
 		<table>
@@ -167,7 +153,7 @@ else{
 		$tabella->get_titolo();
 		$tabella->tabella();
 		$tabellah->set_titolo("Pratiche discusse","modifica");
-		$nprat=$tabellah->set_dati("pratica = $idcomm");
+		$nprat=$tabellah->set_dati("id>0");
 		$tabellah->get_titolo();
 		if ($nprat>0)
 			$tabellah->elenco();

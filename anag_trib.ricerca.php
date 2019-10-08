@@ -22,7 +22,7 @@ else{
 	$limit=($_REQUEST["limit"])?($_REQUEST["limit"]):("100");
 	$anno=$_REQUEST["anno"];
 	$tipo=($_REQUEST["tipo_pratica"] )?($_REQUEST["tipo_pratica"]):("0");
-	$generaFile = ($_POST["generafile"])?(1):(0);
+	$generaFile = ($_POST["generafile"])?($_POST["generafile"]):(0);
 	include_once "./lib/anagr_tributaria.php";
 	
 	
@@ -92,6 +92,7 @@ else{
 	fclose($handle);
 
 	for($i=0;$i<count($ris);$i++){		//CICLO SU TUUTE LE PRATICHE TROVATE
+//	for($i=0;$i<100;$i++){
 		list($id,$pratica,$num_pr,$data_pres)=array_values($ris[$i]);
 		$sql="SELECT * FROM anagrafe_tributaria.e_record order by ordine;";
 		if (!$db->sql_query($sql)) $aa=1;
@@ -124,7 +125,7 @@ else{
 			$a = scrivi_file($r);
 			//print "<p>$i : $a</p>";
 		}
-		elseif($genefaFile == 2 && !$errore){
+		elseif($generaFile == 2 && !$errore){
 			$a = scrivi_file($r);
 		}
 		$r=Array();

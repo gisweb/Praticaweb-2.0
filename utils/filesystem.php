@@ -58,10 +58,11 @@ function new_file_name($file){
 	}
 	$index="";
 	$i=0;
-	while(file_exists($index.$filename.$ext)){
-	    $index=rand(1,1000).".";
+	while(file_exists($filename.$index.$ext)){
+		$i++;
+		$index=".$i";
 	}
-	return $index.$filename.$ext;
+	return $filename.$index.$ext;
 		
 }
 ?>

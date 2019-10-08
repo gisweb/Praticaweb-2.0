@@ -39,140 +39,132 @@ class Tabella{
 	var $elenco_modelli;//elenco dei modelli di stampa da proporre nel form separati da virgola(posso non mettere nulla e lasciare all'utente ogni volta libera scelta)
 	
 	var $db;//puntatore a connessione a db da vedere se usare classe di interfaccia.....
+        var $dbh; //puntatore a connessione a db con PDO
+
 	var $current_user;	//Utente attualmente connesso
 	var $current_groups;	//Gruppi ai quali appartiene l'utente corrente
+        var $usersList;         //Lista degli utenti del programma
+        
         var $button;
         var $table_list=0;    //TABELLA DI ELENCO o NO
+        
+        var $printTable = 1;  // Stampa la tabella a video (1 DEFAULT) oppure ritorna il codice HTML
+                
 	function Tabella($config_file,$mode='view',$pratica=null,$id=null){
 	// ******LETTURA FILE DI CONFIGURAZIONE e impostazione layout della tabella
-		$campi=null;
-		if (!strpos($config_file,'.tab'))
-			$config_file.='.tab';
-        $fName=TAB.$config_file;
-		if(!file_exists(TAB.$config_file)) echo "<p class='ui-error'>file $fName non esistente</p>";
-        $cfg=parse_ini_file(TAB.$config_file,true);
-		
-		if (!in_array($mode,array_keys($cfg))){
-			if ($mode=='new' && in_array('edit',array_keys($cfg)))
-				$lay=$cfg['edit'];
-			else
-				$lay=$cfg['standard'];
-		}
-        else
-            $lay=$cfg[$mode];
+            $campi=null;
+            if (!strpos($config_file,'.tab')) $config_file.='.tab';
+            $fName=TAB.$config_file;
+            if(!file_exists(TAB.$config_file)) echo "<p class='ui-error'>file $fName non esistente</p>";
+            $cfg=parse_ini_file(TAB.$config_file,true);
+
+            if (!in_array($mode,array_keys($cfg))){
+                if ($mode=='new' && in_array('edit',array_keys($cfg)))
+                    $lay=$cfg['edit'];
+                else
+                    $lay=$cfg['standard'];
+            }
+            else
+                $lay=$cfg[$mode];
+            
             $this->table_list=(isset($cfg['general']['table_list']) && $cfg['general']['table_list'])?(1):(0);
             $this->printForm = (isset($cfg['general']['print_form']) && $cfg['general']['print_form'])?($cfg['general']['print_form']):(null);
-	    if (isset($cfg['general']['print_prms']) && $cfg['general']['print_prms']){
-				
-	        $tmp = explode(";",$cfg['general']['print_prms']);
-	        foreach($tmp as $el){
-	            list($key,$val)=explode("=",$el);
-		    $this->printPrms[$key]=$val;
-	        }
-	    }
-	    else{
-	        $this->printPrms=Array();
-	    }
+
             $ncol=count($lay['data']);
             $this->mode=$mode;
             $this->debug=null;
             $this->tabelladb=$lay['table'];
             $this->tabella_ref_db=(isset($lay['ref_table']))?($lay['ref_table']):($lay['table']);
-            $this->tabella_save_db=(isset($lay['save_table']))?($lay['save_table']):($lay['table']);
             $this->function_prms=(isset($lay['function_prms']) && $lay['function_prms'])?($lay['function_prms']):(null);
             $this->campi_obbl=(isset($lay['campi_obbligatori']) && $lay['campi_obbligatori'])?(explode(';',$lay['campi_obbligatori'])):(null);
             $this->campi_ord=(isset($lay['campi_ordinamento']) && $lay['campi_ordinamento'])?(explode(';',$lay['campi_ordinamento'])):(null);
             $this->num_col=$ncol;
 
-            //$lay=file(TAB.$config_file);
-            //$datidb=explode(',',$lay[0]);//prima_riga[0] contiene le info per il db: nome tabella e campi obbligatori 
-            //$ncol=count($lay)-1;
-            for ($i=0;$i<count($lay['data']);$i++)//comincio da 1 perchÃ¨ sulla prima riga ho il nome della tabella e i campi obbligatori
+            for ($i=0;$i<count($lay['data']);$i++)//comincio da 1 perchè sulla prima riga ho il nome della tabella e i campi obbligatori
                     $row[]=explode('|',$lay['data'][$i]);//array di configurazione delle tabelle
             //
             ////estraggo l'elenco dei campi
             for ($i=0;$i<$ncol;$i++){
-                    for ($j=0;$j<count($row[$i]);$j++){ //ogni elemento puÃ² avere un numero di elementi arbitrario
-                            list($label,$campo,$prms,$tipo)=explode(';',$row[$i][$j]);
-                            $tipo=trim($tipo);
-                            
-                            if (!in_array($tipo,Array("id","pratica","submit","ui-button","button","upload","stampa"))){
-                                $campi[]=$campo;
-                            }
-                            if (in_array($tipo,Array("selectdb"))){
-                                $optionFields[$campo] = $prms;
-                            }
+                for ($j=0;$j<count($row[$i]);$j++){ //ogni elemento puÃ² avere un numero di elementi arbitrario
+                    list($label,$campo,$prms,$tipo)=explode(';',$row[$i][$j]);
+                    $tipo=trim($tipo);
+                    if (!in_array($tipo,Array("id","pratica","submit","ui-button","button","upload","stampa"))){
+                        $campi[]=$campo;
                     }
+                }
             }
             $campi=implode(',',$campi);
             if (isset($lay['button']) && $lay['button']){
-                    $btn=explode('|',$lay['button']);
-                    for($i=0;$i<count($btn);$i++){
-                            @list($button['text'],$button['name'],$prms,$button['type'])=explode(';',$btn[$i]);
-                            @list($button['size'],$button['onclick'])=explode('#',$prms);
-            $name=strtolower($button['text']);
-            $button['width']='80px';
-    switch(strtolower($button['text'])){
-        case "aggiungi":
-         $button['icon']='ui-icon-plus';
-         $button['value']='Salva';
-         break;
-        case "salva":
-         $button['icon']='ui-icon-disk';
-         $button['value']='Salva';
-         break;
-        case "avanti":
-         $button['icon']='ui-icon-circle-triangle-e';
-         $button['value']='Avanti';
-         break;
-        case "elimina":
-         $button['icon']='ui-icon-trash';
-         $button['value']='Elimina';
-         $button['onclick']='confirmDelete';
-         break;
-        case "annulla":
-         $button['icon']='ui-icon-circle-triangle-w';
-         $button['value']='Annulla';
-         break;
-        case "indietro":
-         $button['icon']='ui-icon-circle-triangle-w';
-         $button['value']='Indietro';
-         break;
-        case "chiudi":
-         $button['icon']='ui-icon-circle-triangle-w';
-         $button['value']='Chiudi';
-         break;
-	case "cerca":
-         $button['icon']='ui-icon-search';
-         $button['value']='Cerca';
-         break;
-       case "voltura":
-           $button['icon']='ui-icon-shuffle';
-           $button['text']='Sposta in Variazioni';
-           $button['onclick']='confirmSpostaVariazioni';
-           $button['width']='160px';
-           break;
-       case "preview":
-         $button['icon']='ui-icon-print';
-         $button['value']='Stampa';
-        default:
-         $button['value']=$button['text'];
-         break;
-				}
-				$this->button[$name]=$button;
-			}
-		}
-		
-		$this->elenco_campi=$campi;
-		$this->tab_config=$row;
-		$this->config_file=$config_file;
-                $this->idtabella=$id;
-		$this->idpratica=($pratica)?($pratica):((isset($_REQUEST["pratica"]))?($_REQUEST["pratica"]):(null));
-		$this->current_user=$_SESSION["USERNAME"];
-		$this->current_groups=$_SESSION["GROUPS"];
-		$this->checkPermission($cfg['general']);
-		//echo "<pre>";print_r($this);echo "</pre>";
-	}
+                $btn=explode('|',$lay['button']);
+                for($i=0;$i<count($btn);$i++){
+                    @list($button['text'],$button['name'],$prms,$button['type'])=explode(';',$btn[$i]);
+                    @list($button['size'],$button['onclick'])=explode('#',$prms);
+                    $name=strtolower($button['text']);
+                    $button['width']='80px';
+                    switch(strtolower($button['text'])){
+                        case "aggiungi":
+                            $button['icon']='ui-icon-plus';
+                            $button['value']='Salva';
+                            break;
+                        case "salva":
+                            $button['icon']='ui-icon-disk';
+                            $button['value']='Salva';
+                            break;
+                        case "avanti":
+                            $button['icon']='ui-icon-circle-triangle-e';
+                            $button['value']='Avanti';
+                            break;
+                        case "elimina":
+                            $button['icon']='ui-icon-trash';
+                            $button['value']='Elimina';
+                            $button['onclick']='confirmDelete';
+                            break;
+                        case "annulla":
+                            $button['icon']='ui-icon-circle-triangle-w';
+                            $button['value']='Annulla';
+                            break;
+                        case "indietro":
+                            $button['icon']='ui-icon-circle-triangle-w';
+                            $button['value']='Indietro';
+                            break;
+                        case "chiudi":
+                            $button['icon']='ui-icon-circle-triangle-w';
+                            $button['value']='Chiudi';
+                            break;
+                        case "cerca":
+                            $button['icon']='ui-icon-search';
+                            $button['value']='Cerca';
+                            break;
+                        case "voltura":
+                            $button['icon']='ui-icon-shuffle';
+                            $button['text']='Sposta in Variazioni';
+                            $button['onclick']='confirmSpostaVariazioni';
+                            $button['width']='160px';
+                            break;
+                        case "preview":
+                            $button['icon']='ui-icon-print';
+                            $button['value']='Stampa';
+                        default:
+                            $button['value']=$button['text'];
+                            break;
+                    }
+
+                    $this->button[$name]=$button;
+                }
+            }
+	
+            $this->elenco_utenti();
+            
+            $this->elenco_campi=$campi;
+            $this->tab_config=$row;
+            $this->config_file=$config_file;
+            $this->idtabella=$id;
+            $this->idpratica=($pratica)?($pratica):((isset($_REQUEST["pratica"]))?($_REQUEST["pratica"]):(null));
+            $this->current_user=$_SESSION["USERNAME"];
+            $this->current_groups=$_SESSION["GROUPS"];
+            $this->checkPermission($cfg['general']);
+
+            }
 	
 	function get_idpratica(){
 		return $this->idpratica;
@@ -190,21 +182,24 @@ class Tabella{
 		//$self=$_SERVER["PHP_SELF"];
 		$pr=$this->idpratica;
 		//testo titolo
-                
+        
 		$titolo=(isset($this->array_dati[$this->curr_record][$this->titolo]))?($this->array_dati[$this->curr_record][$this->titolo]):($this->titolo);//se il titolo Ã¨ dato dal campo 
 		//if(!isset($titolo)) $titolo=$this->titolo;//altrimenti il titolo Ã¨ la stringa passata
 		//pulsante di menÃ¹
-		
+        
 		if ($this->editable || $forceEditBtn){
 			if (strtolower($this->button_menu)=="modifica"){
+                
 				if ($_SESSION["PERMESSI"]<=3 ){
 					$mode="edit";		
 					$butt=$this->button_modifica;
 					$im='ui-icon-pencil';
 					$label='Modifica';
+                    
 				}
 			}
 			elseif (strtolower($this->button_menu)=="nuovo"){
+                
 				if ($_SESSION["PERMESSI"]<=3){
 					$mode="new";
 					$butt=$this->button_nuovo;
@@ -214,10 +209,11 @@ class Tabella{
 			}
 		}
 		//$tit=str_replace('_','',$titolo);
-
+        
 		//$riga_titolo="<td width=\"90%\" bgColor=\"".$this->sfondo_titolo."\"><font face=\"Verdana\" color=\"".$this->testo_titolo."\" size=\"2\"><b>".ucfirst(strtolower($titolo))."</b></font></td>";
 		$riga_titolo="<td class=\"titolo\">".ucfirst($titolo)."</td>";
 		if (isset($butt)){
+            
 			//$riga_titolo.="<td><input type=\"image\" src=\"images/$butt\"></td>";
             //$idobj="btn_".$tit."_".$this->idtabella;
             $idobj="btn_".rand();
@@ -278,13 +274,18 @@ EOT;
 	}
 	// >>>>>>>>>>>>>>>>>>>>>>>>>ATTENZIONE OGNI TABELLA DEVE AVERE I CAMPI ID PRATICA E CHK<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	function set_dati($data=0,$mode=null){
-        //$time_start = microtime(true);
-
-        //se passo un array questo Ã¨ l'array di POST altrimenti Ã¨ il filtro - per default filtra su idpratica se settato
-		if (is_array($data)){		
+		//se passo un array questo è¨ l'array di POST altrimenti è¨ il filtro - per default filtra su idpratica se settato
+		if (is_array($data)){	
+                    if($mode=="list"){
+                        $this->array_dati=$data;
+			$this->num_record=count($data);
+			$this->curr_record=0;
+                    }
+                    else{
 			$this->array_dati=array(0=>$data);
 			$this->num_record=1;
 			$this->curr_record=0;
+                    }
 		}
 		else{
 			$data=($data)?("where $data"):("");
@@ -299,22 +300,20 @@ EOT;
 				}
 				else
 					$sql=($this->table_list)?("select $this->elenco_campi,id from $this->tabelladb $data $ord"):("select $this->elenco_campi,id,pratica,chk from $this->tabelladb $data $ord");	//aggiungo sempre il campo chk per il controllo della concorrenza
-			//if ($_SESSION["USER_ID"]==1) echo("<p>$sql</p>");
-			print_debug($this->config_file."\n".$sql,NULL,"tabella");
-			utils::debug(DEBUG_DIR.$_SESSION["USER_ID"]."_".'tabella.debug', $sql);
+			//echo("<p>$sql</p>");
+			//print_debug($this->config_file."\n".$sql,NULL,"tabella");
+                    utils::debug(DEBUG_DIR.$_SESSION["USER_ID"]."_".'tabella.debug', $sql);
 			if ($this->db->sql_query(trim($sql))){
 				$this->array_dati=$this->db->sql_fetchrowset();
 				$this->num_record=$this->db->sql_numrows();
 			}
 			else{
 				$this->num_record=0;
+				if ($_SESSION["USER_ID"]==1){
+					echo "<p>$sql</p>";
+				}
 			}
-            /*$time_end = microtime(true);
-            $time = $time_end - $time_start;
-            if ($_SESSION["USER_ID"]==1){
-                echo "<p>Execution of query :$sql in  $time seconds</p>";
-            }*/
-            $this->curr_record=0;
+			$this->curr_record=0;	
 			return  $this->num_record;	
 		}
 	}
@@ -360,6 +359,37 @@ EOT;
 		$this->tag=$mytag;
 	}
 
+    function elenco_opzioni($tabella,$selezionato,$filtro=''){
+        if (!isset($this->db)) $this->connettidb();
+        $sql="select * from $tabella";
+        //echo "<p>$filtro</p>";
+        if (trim($filtro)){
+            if (strpos($filtro,"=")===FALSE){
+                if ($this->array_dati[$this->curr_record][$filtro]){
+                    $filtro="$filtro='".$this->array_dati[$this->curr_record][$filtro]."'";
+                }
+				elseif($_REQUEST[$filtro]){
+                    $filtro="$filtro='".$_REQUEST[$filtro]."'";
+                }
+            }
+            $sql.=" where $filtro";
+        }
+        //utils::debug(DEBUG_DIR.'selectdb.debug',$sql);
+        $result = $this->db->sql_query ($sql);
+        //echo "<p>$sql</p>";
+        if (!$result){
+            return;
+        }
+        $res=Array();
+        $elenco = $this->db->sql_fetchrowset();
+        $nrighe=$this->db->sql_numrows();
+        for  ($i=0;$i<$nrighe;$i++){
+            (in_array($elenco[$i]["id"],$selezionato))?($selected=1):($selected=0);
+            $res[]=Array("value"=>$elenco[$i]["id"],"label"=>$elenco[$i]["opzione"],"selected"=>$selected, "params"=>json_encode($elenco[$i]));
+        }
+        return $res;
+    }   
+        
 /*--------------------------- Funzione che costruisce i bottoni di salvataggio,annulla,elimina --------------------------------*/    
     function set_buttons(){
         if (count($this->button)==0) return '';
@@ -388,6 +418,9 @@ EOT;
             label:"$text"
         }).click(function(){
             if ($check){
+                //$.each($('#btn_azione'),function(k,v){
+                //    $(v).val('$text');
+                //});
                 $(this).parents('form:first').append('<input type="hidden" name="azione" value="$text"/>');
                 $(this).parents('form:first').submit();
             }
@@ -407,8 +440,7 @@ EOT;
             label:"$text"
         }).click(function(){
             $onclick(this);
-            $(this).parents('form:first').append('<input type="hidden" name="azione" value="$text"/>');
-            $(this).parents('form:first').submit();
+            
         });
     </script>
 EOT;
@@ -479,10 +511,12 @@ EOT;
 /*-------------------------------Verifica dei permessi della pratica----------------------*/
 	function checkPermission($cfg){
 		/*TODO   AUTORIZZAZIONE NON SUI GRUPPI MA SUI RUOLI*/
-		
+		if ($_SESSION["USER_ID"]==1) $_SESSION["PERMESSI"]=1;
 		if($_SESSION["PERMESSI"]<2 ) {
+			
 			$this->editable = true;
 			$this->viewable = true;
+			
 			return;
 		}
 		
@@ -494,11 +528,10 @@ EOT;
 			case "oneri":
 			case "ragioneria":
 			case "stp":
-				$sql = "SELECT role FROM pe.ruoli_pratica WHERE pratica=? and userid=? LIMIT 1;";
+				$sql = "SELECT role FROM pe.ruoli_pratica WHERE pratica=? and userid=?;";
 				break;
 			default:		//Caso delle pratiche Edilizie
-                $schema=($schema=='#')?('pe'):($schema);
-                $sql = "SELECT role FROM $schema.ruoli_pratica WHERE pratica=? and userid=? limit 1;";
+                $sql = "SELECT role FROM $schema.ruoli_pratica WHERE pratica=? and userid=?;";
 
 			break;
 		}
@@ -546,7 +579,20 @@ EOT;
 	function print_titolo(){
 		print "<div class=\"titolo\" style=\"width:90%\">".ucfirst(strtolower($this->titolo))."</div>";
 	}
-    
+        
+        function elenco_utenti(){
+            $this->connectPDO();
+            $dbh = $this->dbh;
+            $sql = "SELECT userid as id, trim(nome) as nominativo FROM admin.users order by 2";
+            $stmt = $dbh->prepare($sql);
+            $stmt->execute();
+            $res = $stmt->fetchAll();
+            for($i=0;$i<count($res);$i++){
+                $utenti[$res[$i]["id"]] = $res[$i]["nominativo"];
+            }
+            $this->usersList = $utenti;
+        }
+        
     function getParams($row,$w){
         $params=Array();
         $params['id']=$this->array_dati[$row]["id"];
@@ -555,13 +601,7 @@ EOT;
         $size=array_shift($prms);
         $form=array_shift($prms);
         for($i=0;$i<count($prms);$i++){
-	    if (in_array($prms[$i],array_keys($this->array_dati[$row]))){
-		$params[$prms[$i]]=$this->array_dati[$row][$prms[$i]];
-	    }
-	    else{
-		list($key,$val)=explode(":",$prms[$i]);
-		$params[$key]=$val;
-	    }
+            $params[$prms[$i]]=$this->array_dati[$row][$prms[$i]];
         }
         if (isset($this->params))
             foreach($this->params as $k=>$v){
@@ -571,21 +611,6 @@ EOT;
         return Array("size"=>$size,"form"=>$form,"params"=>$params);
     }
 	
-	function getHTML5Attr($html5Data,$nriga){
-        $d=explode('#',$html5Data);
-        for($k=0;$k<count($d);$k++){
-			list($key,$v)=explode('=',$d[$k]);
-			if(strpos($v, '@')===0){
-				$html5Attr[]=sprintf('%s="%s"',$key,$this->array_dati[$nriga][str_replace('@', '', $v)]);
-			}
-			else{
-				$html5Attr[]=sprintf('%s="%s"',$key,$v);
-			}
-		}
-		$html5Attr=implode(" ",$html5Attr);
-        return $html5Attr;
-	}
-	
 function elenco_stampe ($form){
 //elenco degli elaborati in modo vista: solo i pdf
 	if ($_SESSION["PERMESSI"]>3) return;
@@ -593,7 +618,7 @@ function elenco_stampe ($form){
 	$icona_rtf="images/word.gif";
 	$procedimento=$this->array_dati[$this->curr_record]["id"];		
 	$sql="select id,file_doc,file_pdf,utente_pdf from stp.stampe where (pratica=$this->idpratica) and (form='$form') and ((char_length(file_doc)>0 or (char_length(file_pdf)>0)));";
-//	if ($this->debug) echo ("<p>$sql</p>");
+	if ($this->debug) echo ("<p>$sql</p>");
 	
 	if (!$this->db) $this->connettidb();
 	$this->db->sql_query($sql);
@@ -603,29 +628,25 @@ function elenco_stampe ($form){
        $sql="select e_tipopratica.nome as tipo from pe.avvioproc left join pe.e_tipopratica on (avvioproc.tipo=e_tipopratica.id) where pratica=$this->idpratica";
        $this->db->sql_query($sql);
        $tipo_pratica=$this->db->sql_fetchfield("tipo");
-		$form=($form)?($form):($this->printForm);
-		list($schema,$f)=explode(".",$form);
-		$this->printPrms["procedimento"]=$procedimento;
-		$this->printPrms["pratica"]=$this->idpratica;
-		$this->printPrms["form"]=$form;
-		$this->printPrms["tipo_pratica"]=$tipo_pratica;
-		foreach($this->printPrms as $k=>$v) $r[]=<<<EOT
-			<input type="hidden" name="$k" value="$v"/>		
-EOT;
-		$prms=implode("",$r);
-		$tabella=<<<EOT
-		<hr>
-		<form method="post" target="_parent" action="stp.stampe.php">
-$prms
-			<table class="stiletabella" width="90%" border=0>
-				<tr>
-					<td align="right" valign="bottom">
-						<input type="image" src="images/printer_edit.png" alt="Modifica elaborati">
-					</td>
-				</tr>
-			</table>
-		</form>
-EOT;
+	$form=($form)?($form):($this->printForm);
+	list($schema,$f)=explode(".",$form);
+		$tabella="
+			<hr>
+			<form method=\"post\" target=\"_parent\" action=\"stp.stampe.php\">
+				<input type=\"hidden\" name=\"form\" value=\"$form\">
+				<input type=\"hidden\" name=\"procedimento\" value=\"$procedimento\">
+				<input type=\"hidden\" name=\"pratica\" value=\"$this->idpratica\">
+                            <input type=\"hidden\" name=\"tipo_pratica\" value=\"$tipo_pratica\">
+                           
+
+				<table class=\"stiletabella\" width=\"90%\" border=0>
+					<tr>
+						<td align=\"right\" valign=\"bottom\">
+							<input type=\"image\" src=\"images/printer_edit.png\" alt=\"Modifica elaborati\">
+						</td>
+					</tr>
+				</table>
+			</form>";  
 
 		return $tabella;
 	}

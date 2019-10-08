@@ -6,26 +6,27 @@ error_reporting(E_ERROR);
 	if(!$dbconn->db_connect_id)  die( "Impossibile connettersi al database");
 //}
 if($_REQUEST['id_doc']){
-	
 	$idDoc=$_REQUEST['id_doc'];
 	$testo=$_REQUEST['testo'];
 	$testo=html_entity_decode($testo);
-	$sqlFind="SELECT file_doc,definizione,css.nome,print_type,stampe.form,stampe.pratica,css.script FROM stp.stampe left join stp.e_modelli on(stampe.modello=e_modelli.id) left join stp.css on(css_id=css.id)  WHERE stampe.id=$idDoc;";
-	$dbconn->sql_query($sqlFind);
+	$sql="SELECT file_doc,definizione,css.nome,print_type,stampe.form,stampe.pratica,c.testo as footer,d.testo as header,d.margin as mtop,c.margin as mbottom FROM stp.stampe left join stp.e_modelli on(stampe.modello=e_modelli.id) left join stp.css on(css_id=css.id) left join stp.e_intestazioni c on(footer=c.id) left join stp.e_intestazioni d on(header=d.id) WHERE stampe.id=$idDoc;";
+	$dbconn->sql_query($sql);
 	$pratica=$dbconn->sql_fetchfield('pratica');
 	$file=$dbconn->sql_fetchfield('file_doc');
 	$definizione=$dbconn->sql_fetchfield('definizione');
 	$css_name=$dbconn->sql_fetchfield('nome');
 	$form=$dbconn->sql_fetchfield('form');
-	$script = $dbconn->sql_fetchfield('script');
+	$footer=$dbconn->sql_fetchfield("footer");
+	$header=$dbconn->sql_fetchfield("header");
+	$mbottom=$dbconn->sql_fetchfield("mbottom");
+	$mtop=$dbconn->sql_fetchfield("mtop");
 	$is_cdu=($form=='cdu.vincoli')?(1):(0);
-	$pr=new pratica($pratica,$is_cdu);
 	
-	$infoFile=pathinfo($pr->documenti.$file);
+	$infoFile=pathinfo($file);
 	$nome=$infoFile["filename"];
 	$ext=$infoFile["extension"];
 	//print mb_detect_encoding($testo,"UTF-8, ISO-8859-1,ISO-8859-15");
-	$testo=$testo;
+	$testo=utf8_encode($testo);
 	$pr=new pratica($pratica,$is_cdu);
 	$sql="UPDATE stp.stampe SET testohtml='".addslashes($testo)."' WHERE id=$idDoc";
 	
@@ -35,7 +36,7 @@ if($_REQUEST['id_doc']){
 		$error=1;
 		//print json_encode($dbconn->sql_error());
 	}
-	$html="<html><head><style>$definizione</style></head><body>$script <br> $testo</body></html>";
+	$html="<html><head><style>$definizione</style></head><body>$testo</body></html>";
 	$html=str_replace("<!-- pagebreak -->","<pagebreak />",stripslashes($html));
 	//$html=str_replace('src="images/alghero.png"','src="http://'.$_SERVER["SERVER_NAME"].'/images/alghero.png"',$html);
 	
@@ -58,7 +59,7 @@ if($_REQUEST['id_doc']){
 
 	if($error) $result=Array('error'=>1,'message'=>$sql);
 	else
-		$result=Array('error'=>0,"SQL"=>$sqlFind,'message'=>'Salvataggio effettuato correttamente',"nomeDocumento"=>$pr->documenti.$nome);
+		$result=Array('error'=>0,'message'=>'Salvataggio effettuato correttamente');
 	print(json_encode($result));
 	return;
 }

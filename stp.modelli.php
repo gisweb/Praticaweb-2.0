@@ -83,7 +83,6 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
         <input name="active_form" type="hidden" value="stp.modelli.php">				
         <input name="mode" type="hidden" value="<?=$modo?>">
         <input name="id" type="hidden" value="<?=$id?>">
-	<input name="nome_old" type="hidden" value="<?php echo $tabella->array_dati[0]['nome'];?>">
     </FORM>
 <?php
 }
@@ -100,10 +99,7 @@ elseif($modo=="view"){
         $pr=new pratica($idpratica);
         $tabella=new tabella_v($file_config,"view");
         $nrec=$tabella->set_dati("id=$id");
-        list($schema,$form)=explode(".",$tabella->array_dati[0]["form"]);
-        $app = (in_array($schema,Array("pe","cdu","ce","vigi")))?($schema):("pe");
-        $modello=$tabella->array_dati[0]["nome"];
-        $tabella->set_titolo("Modello ".$modello,"modifica",Array("id"=>""));
+        $tabella->set_titolo("Modello ".$tabella->array_dati[0]["nome"],"modifica",Array("id"=>""));
         $tabella->get_titolo();
         $tabella->tabella();
 ?>
@@ -112,11 +108,21 @@ elseif($modo=="view"){
          </TD>
       </TR>
     </TABLE>
+	
 
-<?php
-    include_once "inc/$app.preview.php";
-?>
-
+    <div id="divPreview" style="display:none;">
+        <fieldset>
+            <legend>Numero Pratica</legend>
+            <input type="text" id="numero" style="width:200px;" value=""/>
+            <input type="hidden" id="n-pratica" value="">
+            <input type="hidden" id="modello" value="<?php echo $id;?>">
+        </fieldset>
+        <hr>
+        <div id="message" style="display:none;margin: 10px;"></div>
+        <div id="btn-preview"></div>
+                
+        
+    </div>
 	
     <script>	
         $('#btn-preview').button({
@@ -127,18 +133,15 @@ elseif($modo=="view"){
             $("#message").html("").hide();
             $('#n-pratica').val('');
             var num = $('#numero').val();
-            var d = {"field":"stp-preview"};
-            $("div#divPreview :input").each(function(){d[this.id]=$(this).val();});
-
             $.ajax({
                 url:'./services/xSuggest.php',
                 dataType:'JSON',
                 type:'POST',
                 async:false,
-                data:d,
+                data:{field:'numero-pratica','term':num},
                 success:function (data,textStatus,jqXHR) {
                     if (data.length==0 || !data[0]['id']){
-                        var message=sprintf("<b>%s<b/>",data[0]["message"]);
+                        var message=sprintf("<b>La pratica n° %s non esiste<b/>",num);
                         
                         $("#message").html(message).show();
                         
@@ -168,8 +171,7 @@ elseif($modo=="view"){
 <?php
 }
 else{
-	$file_tab = ($_REQUEST["tipo"]=='html')?('modelli_html'):('modelli');
-    $tabella_modelli=new Tabella_h("$tabpath/$file_tab",'list');
+    $tabella_modelli=new Tabella_h("$tabpath/modelli",'list');
     
     $sql="select distinct opzione,form,stampa from stp.e_form order by stampa;";
     $db->sql_query ($sql);
@@ -199,8 +201,8 @@ else{
                   <td> 
                   <!--  intestazione-->
                       <?php
-                          $tabella_modelli->get_titolo();
-                          if ($num_modelli)
+			$tabella_modelli->get_titolo();
+                          if ($num_modelli) 
                               $tabella_modelli->elenco();
                           else
                               print ("<p><b>Nessun Modello per questo Form</b></p>");

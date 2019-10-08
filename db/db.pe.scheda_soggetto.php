@@ -36,11 +36,8 @@
 		$sql="update pe.soggetti set $ruolo=0 where id=$id;
 				  delete from pe.soggetti where proprietario=0 and richiedente=0 and concessionario=0 
 				  and progettista=0 and direttore=0 and esecutore=0 and id=$id;";
-		if(!$db->sql_query ($sql)){
-			echo "<p>Errore nella cancellazione del soggetto<br>$sql </p>";
-		}
-
+		$db->sql_query ($sql);
 		$active_form="pe.elenco_soggetti.php?pratica=$idpratica";
 	}
-	$active_form="pe.elenco_soggetti.php?pratica=$idpratica";
+
 ?>

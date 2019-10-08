@@ -11,13 +11,10 @@
  * @author marco
  */
 class utils {
-
     const jsURL = "/js";
     const jsLocalURL = "/js/local";
     const cssURL="/css";
     const cssLocalURL="/css/local";
-
-
     public static $js = Array('jquery-1.10.2','jquery-ui-1.10.2.min','jquery.ui.datepicker-it','jquery.dataTables.min','dataTables.date.order','window','init.config','praticaweb','page.controller','sprintf','jq.ui-extension','message');
     public static $css = Array('praticaweb-1.10.4/jquery-ui.custom.min','styles','tabella_v','menu','jq.ui-extension');
     
@@ -64,19 +61,15 @@ class utils {
         }
         return $exists;
     }
-
     static function loadJS($f=Array(),$default=1){
         $dirName = (dirname($_SERVER['REQUEST_URI'])=="\\")?(""):(dirname($_SERVER['REQUEST_URI']));
-
-        $jsPath = APPS_DIR.DIRECTORY_SEPARATOR."js";
-        $jsLocalPath = DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."js";
         if($default){
             foreach(self::$js as $js){
                 $jsLocalURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/') .self::jsLocalURL,$js);
                 $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsURL,$js);
-                if (file_exists($jsLocalPath.DIRECTORY_SEPARATOR.$js.".js"))
+                if (self::url_exists($jsLocalURL))
                     $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsLocalURL);
-                elseif (file_exists($jsPath.DIRECTORY_SEPARATOR.$js.".js"))
+                elseif(self::url_exists($jsURL))
                     $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsURL);
                 else
                     $tag="";
@@ -88,9 +81,9 @@ class utils {
             foreach($f as $js){
                 $jsLocalURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsLocalURL,$js);
                 $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsURL,$js);
-                if (file_exists($jsLocalPath.DIRECTORY_SEPARATOR.$js.".js"))
+                if (self::url_exists($jsLocalURL))
                     $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsLocalURL);
-                elseif (file_exists($jsPath.DIRECTORY_SEPARATOR.$js.".js"))
+                elseif(self::url_exists($jsURL))
                     $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsURL);
                 else
                     $tag="";
@@ -98,63 +91,15 @@ class utils {
             } 
         }
     }
-
-    static function loadJSTest($f=Array(),$default=1){
-        $dirName = (dirname($_SERVER['REQUEST_URI'])=="\\")?(""):(dirname($_SERVER['REQUEST_URI']));
-
-        $jsPath = APPS_DIR.DIRECTORY_SEPARATOR."js";
-        $jsLocalPath = DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."js";
-        if($default){
-            foreach(self::$js as $js){
-                $jsLocalURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/') .self::jsLocalURL,$js);
-                $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsURL,$js);
-                if (file_exists($jsLocalPath.DIRECTORY_SEPARATOR.$js.".js")){
-                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsLocalURL);
-					echo "<p>File $jsLocalURL trovato</p>";
-				}
-                elseif (file_exists($jsPath.DIRECTORY_SEPARATOR.$js.".js")){
-                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsURL);
-					echo "<p>File $jsURL trovato</p>";
-				}
-                else{
-					echo "<p>File $js non trovato in ($jsLocalPath , $jsPath)</p>";
-                    $tag="";
-				}
-                echo $tag;
-            }
-        }
-        if (is_array($f) && count($f)){
-            
-            foreach($f as $js){
-                $jsLocalURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsLocalURL,$js);
-                $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsURL,$js);
-                if (file_exists($jsLocalPath.DIRECTORY_SEPARATOR.$js.".js")){
-                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsLocalURL);
-					echo "<p>File $jsLocalURL trovato</p>";
-				}
-                elseif (file_exists($jsPath.DIRECTORY_SEPARATOR.$js.".js")){
-                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsURL);
-					echo "<p>File $jsURL trovato</p>";
-				}
-                else{
-					echo "<p>File $js non trovato in ($jsLocalPath , $jsPath)</p>";
-                    $tag="";
-				}
-                echo $tag;
-            } 
-        }
-    } 
     static function loadCSS($f=Array(),$default=1){
         $dirName = (dirname($_SERVER['REQUEST_URI'])=="\\")?(""):(dirname($_SERVER['REQUEST_URI']));
-        $cssPath=APPS_DIR.DIRECTORY_SEPARATOR."css";
-        $cssLocalPath= DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."css";
         if($default){
             foreach(self::$css as $css){
                 $cssLocalURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::cssLocalURL,$css);
                 $cssURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::cssURL,$css);
-                if (file_exists($cssLocalPath.DIRECTORY_SEPARATOR.$css.".css"))
+                if (self::url_exists($cssLocalURL))
                     $tag=sprintf("\n\t\t<LINK media=\"screen\" href=\"%s\" type=\"text/css\" rel=\"stylesheet\"></link>",$cssLocalURL);
-                elseif(file_exists($cssPath.DIRECTORY_SEPARATOR.$css.".css"))
+                elseif(self::url_exists($jsURL))
                     $tag=sprintf("\n\t\t<LINK media=\"screen\" href=\"%s\" type=\"text/css\" rel=\"stylesheet\"></link>",$cssURL);
                 else
                     $tag="";
@@ -165,9 +110,9 @@ class utils {
             foreach($f as $css){
                 $cssLocalURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::cssLocalURL,$css);
                 $cssURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::cssURL,$css);
-                if (file_exists($cssLocalPath.DIRECTORY_SEPARATOR.$css.".css"))
+                if (self::url_exists($cssLocalURL))
                     $tag=sprintf("\n\t\t<LINK media=\"screen\" href=\"%s\" type=\"text/css\" rel=\"stylesheet\"></link>",$cssLocalURL);
-                elseif(file_exists($cssPath.DIRECTORY_SEPARATOR.$css.".css"))
+                elseif(self::url_exists($jsURL))
                     $tag=sprintf("\n\t\t<LINK media=\"screen\" href=\"%s\" type=\"text/css\" rel=\"stylesheet\"></link>",$cssURL);
                 else
                     $tag="";
@@ -176,40 +121,6 @@ class utils {
         }
     }
     
-/*    static function loadCSS($f=Array(),$default=1){
-        $dirName = (dirname($_SERVER['REQUEST_URI'])=="\\")?(""):(dirname($_SERVER['REQUEST_URI']));
-        if($default){
-            foreach(self::$css as $css){
-                $cssPath=sprintf("%s/%s.js",self::cssPath,$css);
-                $cssLocalPath=sprintf("%s/%s.js",self::cssLocalPath,$css);
-                $cssLocalURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::cssLocalURL,$css);
-                $cssURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::cssURL,$css);
-                if (file_exists($cssLocalPath))
-                    $tag=sprintf("\n\t\t<LINK media=\"screen\" href=\"%s\" type=\"text/css\" rel=\"stylesheet\"></link>",$cssLocalURL);
-                elseif(file_exists($cssPath))
-                    $tag=sprintf("\n\t\t<LINK media=\"screen\" href=\"%s\" type=\"text/css\" rel=\"stylesheet\"></link>",$cssURL);
-                else
-                    $tag="";
-                echo $tag;
-            }
-        }
-        if (is_array($f) && count($f)){
-            foreach($f as $css){
-                $cssPath=sprintf("%s/%s.js",self::cssPath,$css);
-                $cssLocalPath=sprintf("%s/%s.js",self::cssLocalPath,$css);
-                $cssLocalURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::cssLocalURL,$css);
-                $cssURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::cssURL,$css);
-                if (file_exists($cssLocalPath))
-                    $tag=sprintf("\n\t\t<LINK media=\"screen\" href=\"%s\" type=\"text/css\" rel=\"stylesheet\"></link>",$cssLocalURL);
-                elseif(file_exists($cssPath))
-                    $tag=sprintf("\n\t\t<LINK media=\"screen\" href=\"%s\" type=\"text/css\" rel=\"stylesheet\"></link>",$cssURL);
-                else
-                    $tag="";
-                echo $tag;
-            }
-        }
-    }
-*/
     static function rand_str($length = 8, $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'){
         // Length of character list
         $chars_length = (strlen($chars) - 1);
@@ -236,13 +147,13 @@ class utils {
     static function debug($file,$data,$mode='a+'){
         $now=self::now();
         $f=fopen($file,$mode);
-        ob_start();
-            echo "------- DEBUG DEL $now -------\n";
-        print_r($data);
-        $result=ob_get_contents();
-        ob_end_clean();
-        fwrite($f,$result."\n-------------------------\n");
-        fclose($f);
+	ob_start();
+        echo "------- DEBUG DEL $now -------\n";
+	print_r($data);
+	$result=ob_get_contents();
+	ob_end_clean();
+	fwrite($f,$result."\n-------------------------\n");
+	fclose($f);
     }
     static function postRequest($url,$fields){
 
@@ -295,125 +206,6 @@ class utils {
         }
         $utente=$stmt->fetchColumn(0);
         return $utente;
-    }
-    static function recurse_copy($src,$dst) {
-        $dir = opendir($src);
-        @mkdir($dst);
-        while(false !== ( $file = readdir($dir)) ) {
-            if (( $file != '.' ) && ( $file != '..' )) {
-                if ( is_dir($src . '/' . $file) ) {
-                    self::recurse_copy($src . '/' . $file,$dst . '/' . $file);
-                }
-                else {
-                    copy($src . '/' . $file,$dst . '/' . $file);
-                }
-            }
-        }
-        closedir($dir);
-    }
-
-    static function filter_filename($filename, $beautify=true) {
-        // sanitize filename
-        $filename = preg_replace(
-            '~
-            [<>:"/\\|?*]|            # file system reserved https://en.wikipedia.org/wiki/Filename#Reserved_characters_and_words
-            [\x00-\x1F]|             # control characters http://msdn.microsoft.com/en-us/library/windows/desktop/aa365247%28v=vs.85%29.aspx
-            [\x7F\xA0\xAD]|          # non-printing characters DEL, NO-BREAK SPACE, SOFT HYPHEN
-            [#\[\]@!$&\'()+,;=]|     # URI reserved https://tools.ietf.org/html/rfc3986#section-2.2
-            [{}^\~`]                 # URL unsafe characters https://www.ietf.org/rfc/rfc1738.txt
-            ~x',
-            '-', $filename);
-        // avoids ".", ".." or ".hiddenFiles"
-        $filename = ltrim($filename, '.-');
-        // optional beautification
-        if ($beautify) $filename = self::beautify_filename($filename);
-        // maximise filename length to 255 bytes http://serverfault.com/a/9548/44086
-        $ext = pathinfo($filename, PATHINFO_EXTENSION);
-        $filename = mb_strcut(pathinfo($filename, PATHINFO_FILENAME), 0, 255 - ($ext ? strlen($ext) + 1 : 0), mb_detect_encoding($filename)) . ($ext ? '.' . $ext : '');
-        return $filename;
-    }
-    static function beautify_filename($filename) {
-        // reduce consecutive characters
-        $filename = preg_replace(array(
-            // "file   name.zip" becomes "file-name.zip"
-            '/ +/',
-            // "file___name.zip" becomes "file-name.zip"
-            '/_+/',
-            // "file---name.zip" becomes "file-name.zip"
-            '/-+/'
-        ), '-', $filename);
-        $filename = preg_replace(array(
-            // "file--.--.-.--name.zip" becomes "file.name.zip"
-            '/-*\.-*/',
-            // "file...name..zip" becomes "file.name.zip"
-            '/\.{2,}/'
-        ), '.', $filename);
-        // lowercase for windows/unix interoperability http://support.microsoft.com/kb/100625
-        $filename = mb_strtolower($filename, mb_detect_encoding($filename));
-        // ".file-name.-" becomes "file-name"
-        $filename = trim($filename, '.-');
-        return $filename;
-    }
-
-    static function getStpData($type,$pr){
-            $dbh = self::getDb();
-            $result=Array("single"=>Array("data_odierna"=>"SELECT CURRENT_DATE as oggi;"),"multiple"=>Array(),"fromfile"=>Array());
-            $sql="SELECT table_name as name,array_to_string(array_agg('B.'||column_name::varchar),',') as field_list FROM information_schema.views INNER JOIN information_schema.columns USING(table_name,table_schema) WHERE table_schema='stp' AND table_name ILIKE 'single_%' AND column_name NOT IN ('pratica') GROUP BY table_name ORDER BY 1;";
-            $stmt = $dbh->prepare($sql);
-            if ($stmt->execute())
-                $ris=$stmt->fetchAll(PDO::FETCH_ASSOC);
-            for($i=0;$i<count($ris);$i++){
-                $view=$ris[$i]["name"];
-                $fieldList=$ris[$i]["field_list"];
-                $result["single"][$view]=sprintf("SELECT A.pratica,$fieldList FROM %s A LEFT JOIN stp.$view B USING(pratica) WHERE A.pratica=?;","pe.avvioproc");
-            }
-            $ris=Array();
-            $sql="SELECT table_name as name,array_to_string(array_agg('B.'||column_name::varchar),',') as field_list FROM information_schema.views INNER JOIN information_schema.columns USING(table_name,table_schema) WHERE table_schema='stp' AND table_name ILIKE 'multiple_%' AND column_name NOT IN ('pratica') GROUP BY table_name ORDER BY 1;";
-            $stmt = $dbh->prepare($sql);
-            if ($stmt->execute())
-                $ris=$stmt->fetchAll(PDO::FETCH_ASSOC);
-            for($i=0;$i<count($ris);$i++) {
-                $view = $ris[$i]["name"];
-                $fieldList = $ris[$i]["field_list"];
-                $result["multiple"][str_replace('multiple_', '', $view)] = sprintf("SELECT A.pratica,$fieldList FROM %s A LEFT JOIN stp.$view B USING(pratica) WHERE A.pratica=?;", "pe.avvioproc");
-            }
-            $ris=Array();
-            $sql="SELECT table_name as name,array_to_string(array_agg('B.'||column_name::varchar),',') as field_list FROM information_schema.views INNER JOIN information_schema.columns USING(table_name,table_schema) WHERE table_schema='stp' AND table_name ILIKE 'fromfile_multiple_%' AND column_name NOT IN ('pratica') GROUP BY table_name ORDER BY 1;";
-            $stmt = $dbh->prepare($sql);
-            if ($stmt->execute())
-                $ris=$stmt->fetch(PDO::FETCH_ASSOC);
-            for($i=0;$i<count($ris);$i++){
-                $view=$ris[$i]["name"];
-                $fieldList=$ris[$i]["field_list"];
-                $result["file_multi"][str_replace('fromfile_multiple_','',$view)]=sprintf("SELECT A.pratica,$fieldList FROM %s A LEFT JOIN stp.$view B USING(pratica) WHERE A.pratica=?;","pe.avvioproc");
-            }
-            $data= Array();
-            foreach($result["single"] as $sql){
-                $stmt = $dbh->prepare($sql);
-                if ($stmt->execute(Array($pr)))
-                    $ris=$stmt->fetch(PDO::FETCH_ASSOC);
-                else{
-                    //print_array($stmt->errorInfo());
-                }
-                $data=(!$ris)?($data):(array_merge($data,$ris));
-            }
-            foreach($result["multiple"] as $key=>$sql){
-                $stmt = $dbh->prepare($sql);
-                if ($stmt->execute(Array($pr)))
-                    $ris=$stmt->fetchAll(PDO::FETCH_ASSOC);
-                $data[$key]=$ris;
-            }
-            utils::debug(DEBUG_DIR."/DATA_STP.debug",$data);
-            return $data;
-    }
-
-    function subst($txt,$data){
-        foreach($data as $k=>$v){
-            if (!is_array($v)) $txt = str_replace("%($k)s",$v,$txt);
-        }
-        return $txt;
-    }
-
 }
-
+}
 ?>

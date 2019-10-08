@@ -18,8 +18,8 @@ appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
-    utils::loadCss(Array('dropzone','iter'));
-    utils::loadJS(Array('dropzone'));
+	utils::loadJS();
+	utils::loadCss();
 ?>
 </head>
 <body  background="" leftMargin="0" topMargin="0" marginheight="0" marginwidth="0">
@@ -53,8 +53,7 @@ if (($modo=="edit") or ($modo=="new")) {
 		  <tr> 
 			<td> 
 				<!-- contenuto-->
-				<?php
-				//$tabella->set_errors($errors);
+				<?//$tabella->set_errors($errors);
 				$tabella_integrazione->set_dati("id=$id_integrazione");
 				$tabella_integrazione->edita();
 				if ($num_integrati){
@@ -92,43 +91,38 @@ $elenco_iter = $db->sql_fetchrowset();?>
   <td> 
 <?php
 $flag=0;
-
-//cerco i mancanti se esistono gli integrati metto integrazione in modifica, se non esistono gli integrati metto nuova integrazione
-$num_integrazioni=$tabella_integrazione->set_dati("pratica=$idpratica order by id");
-$num_mancanti=$tabella_mancanti->set_dati("pratica=$idpratica and mancante=1");
-if ($num_mancanti or $num_integrazioni) $flag=1;
-for($i=0;$i<$num_integrazioni;$i++){
-	$tabella_integrazione->curr_record=$i;
-	$data=$tabella_integrazione->get_data("data_integ");
-	$id_integrazione=$tabella_integrazione->get_campo("id");
-	$tabella_integrazione->set_titolo("$data Integrazione documenti","modifica",Array("id"=>""));
-	$tabella_integrazione->get_titolo();
-	$tabella_integrazione->tabella();
-	
-	$num_integrati=$tabella_integrati->set_dati("integrazione=$id_integrazione and mancante=0");
-	//$tabella_integrazione->elenco_stampe($form);		
-	if ($num_integrati) 
-		$tabella_integrati->elenco();
-	echo("<br>");
+foreach ($elenco_iter as $row){
+	$iter=$row["id"];
+	$nomeiter=$row["nome"];
+	//cerco i mancanti se esistono gli integrati metto integrazione in modifica, se non esistono gli integrati metto nuova integrazione
+	$num_integrazioni=$tabella_integrazione->set_dati("pratica=$idpratica and iter=$iter order by id");
+	$num_mancanti=$tabella_mancanti->set_dati("pratica=$idpratica and iter=$iter and mancante=1");
+	if ($num_mancanti or $num_integrazioni) $flag=1;
+	for($i=0;$i<$num_integrazioni;$i++){
+		$tabella_integrazione->curr_record=$i;
+		$data=$tabella_integrazione->get_data("data_integ");
+		$tabella_integrazione->set_titolo("$data Integrazione documenti $nomeiter","modifica",array("iter"=>$iter,"nomeiter"=>$nomeiter,"id"=>""));
+		$tabella_integrazione->get_titolo();
+		$tabella_integrazione->tabella();
+		$id_integrazione=$tabella_integrazione->get_campo("id");
+		$num_integrati=$tabella_integrati->set_dati("integrazione=$id_integrazione and mancante=0");
+		//$tabella_integrazione->elenco_stampe($form);		
+		if ($num_integrati) 
+			$tabella_integrati->elenco();
+		echo("<br>");
+	}
+	if ($num_mancanti){
+		$tabella_integrazione->set_titolo("Aggiungi nuova Integrazione $nomeiter","nuovo",array("iter"=>$iter,"nomeiter"=>$nomeiter));
+		$tabella_integrazione->get_titolo();
+		$tabella_mancanti->elenco();
+		echo("<br>");
+	}	
 }
-//if ($num_mancanti){
-	$tabella_integrazione->set_titolo("Aggiungi nuova Integrazione $nomeiter","nuovo",array("iter"=>$iter,"nomeiter"=>$nomeiter));
-	$tabella_integrazione->get_titolo();
-//	$tabella_mancanti->elenco();
-	echo("<br>");
-//}	
-
 if (!$flag) echo "<p><b>Nessun documento da integrare</b></p>";?>
   </td>
  </tr>
 </TABLE>
 <?php
-
-    $dropzoneFile=DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."include".DIRECTORY_SEPARATOR."dropzone.integrazione.php";
-    if (file_exists($dropzoneFile)){
-        require_once $dropzoneFile;
-    }
-
 print $tabella_integrazione->elenco_stampe();
 }//end if?>
 </body>

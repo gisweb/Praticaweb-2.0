@@ -165,17 +165,8 @@ function paginasucc(pg){
 
 				</td>
 		  </tr>
-			<?php
-            $mex = <<<EOT
-    <tr>
-        <td>
-            <input name="all" type="checkbox"><b>Seleziona tutte le commissioni</b>
-        </td>
-    </tr>
-EOT;
-            echo $mex;
-//if ($modo=="cancella")
-
+			<?php//if ($modo=="cancella") 
+				print("\n<tr>\n<td><input name=\"all\" type=\"checkbox\"><b>Seleziona tutte le commissioni</b>\n</td>\n</tr>\n")
 			?>
 		  <tr> 
 				<!-- riga finale -->

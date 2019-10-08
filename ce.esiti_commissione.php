@@ -21,7 +21,7 @@ $tornaacasa="
 		
 		$sql="SELECT numero FROM pe.pareri left join pe.avvioproc on pareri.pratica=avvioproc.pratica WHERE pareri.id=".$_REQUEST["id"];
 		$db->sql_query($sql);
-
+		print_debug($sql);
 		$num=$db->sql_fetchfield("numero");
 		
 	}
@@ -36,7 +36,7 @@ $tornaacasa="
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
-	utils::loadJS(Array('form/ce.esiti_commissione'));
+	utils::loadJS();
 	utils::loadCss();
 ?>
 <SCRIPT>
@@ -56,9 +56,6 @@ $tornaacasa="
 		print("<H2 class=\"blueBanner\">Parere</H2>");
 		$idpratica=$_REQUEST["id_pratica"];
 		$id_parere=$_REQUEST["id"];
-        $sql = "SELECT codice FROM pe.pareri INNER JOIN pe.e_enti ON e_enti.id=pareri.ente WHERE pareri.id = $id_parere";
-        $db->sql_query($sql);
-		$codice_ente=$db->sql_fetchfield("codice");
 		$tabella=new Tabella_v($file_config,$modo);
 		$tabella->set_errors($Errors);
 		if ($modo=="edit") {
@@ -80,8 +77,7 @@ $tornaacasa="
 		<input name="pratica" type="hidden" value="<?php echo $idcomm?>">
               <input name="tipo" type="hidden" value="<?php echo $tipo?>">
 		<input name="id" type="hidden" value="<?php echo $id_parere?>">
-		<input name="numero" type="hidden" value="<?php echo $_POST["numero"]?>">
-        <input id="codice_ente" type="hidden" value="<?php echo $codice_ente?>">
+		<input name="numero" type="hidden" value=<?php echo $_POST["numero"]?>>
 		
 	</form>
 		
@@ -101,7 +97,7 @@ $tornaacasa="
 		print("<H2 class=\"blueBanner\">Elenco Pareri Espressi</H2>");
 			$tabella=new Tabella_h($file_config,'list');
 			//$tabella->set_tag($idpr);
-			$tabella->set_dati("ente =(SELECT tipo_comm FROM ce.commissione WHERE id=$idcomm) AND data_rich = (SELECT data_convocazione FROM ce.commissione WHERE id=$idcomm)");
+			$tabella->set_dati("ente =(SELECT tipo_comm FROM ce.commissione WHERE id=$idcomm) AND data_rich = (SELECT data_convocazione FROM ce.commissione WHERE id=$idcomm);");
 			
 			$mod=(($parere==0)?("new"):("edit"));
 			//$butt_mod=(($parere==0)?("nuovo"):("modifica"));

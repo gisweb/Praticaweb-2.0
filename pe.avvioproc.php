@@ -1,23 +1,44 @@
 <?php
 //Nota conservo il tipo per poter verificere se Ãš cambiato
 include_once("login.php");
-
 $tabpath="pe";
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $idpratica=isset($_REQUEST["pratica"])?($_REQUEST["pratica"]):('');
 $pr=new pratica($idpratica);
 $pr->createStructure();
 
+<<<<<<< HEAD
+if($_REQUEST["type"]=="condono"){
+    $file_config="$tabpath/avvio_procedimento_condono";
+}
+else if($_REQUEST["type"]=="ordinativo"){ 
+    $file_config="$tabpath/avvio_procedimento_ordinativo";
+}
+else{
+    $file_config="$tabpath/avvio_procedimento";
+}
+=======
+$file_config="$tabpath/avvio_procedimento";
+>>>>>>> origin/spezia
 $intestazione='Avvio del procedimento e comunicazione responsabile';
+
+//Imposto i permessi di default per il modulo
+$_SESSION["PERMESSI"]= min($_SESSION["PERMESSI_$idpratica"],$_SESSION["PERMESSI_A_$idpratica"]);
+
+
 include "./lib/tabella_v.class.php";
 $db=appUtils::getDB();
-$sql="SELECT A.id,B.id as tipo,A.nome,B.nome as tipopratica FROM pe.e_categoriapratica A inner join pe.e_tipopratica B ON(tipo=tipologia) WHERE A.enabled=1 AND B.enabled=1;";
+$sql=<<<EOT
+SELECT A.id,B.id as tipo,A.nome,B.nome as tipopratica FROM pe.e_categoriapratica A inner join pe.e_tipopratica B ON(tipo=tipologia) WHERE A.enabled=1 AND B.enabled=1
+UNION ALL
+SELECT 999 as id,id as tipo,'nessuna categoria'::varchar as nome,nome as tipopratica FROM pe.e_tipopratica WHERE enabled=1 AND not id in (SELECT DISTINCT B.id  FROM pe.e_categoriapratica A inner join pe.e_tipopratica B ON(tipo=tipologia) WHERE A.enabled=1 AND B.enabled=1);
+EOT;
+//$sql="SELECT A.id,B.id as tipo,A.nome,B.nome as tipopratica FROM pe.e_categoriapratica A inner join pe.e_tipopratica B ON(tipo=tipologia) WHERE A.enabled=1 AND B.enabled=1;";
 $res=$db->fetchAll($sql);
 foreach($res as $val){
     $categoria[$val["tipo"]][]=Array("id"=>$val["id"],"opzione"=>$val["nome"]);
     $tipopratica[$val["tipo"]]=$val["tipopratica"];
 }
-$file_config="$tabpath/avvio_procedimento";
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
 ?>
@@ -34,11 +55,6 @@ appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]
 <?php
     utils::loadJS(Array('form/pe.avvioproc'));
     utils::loadCss();
-$time_end = microtime(true);
-$time = $time_end - $time_start;
-/*if ($_SESSION["USER_ID"]==1){
-    echo "<p>Print Page  in  $time seconds</p>";
-}*/
 
 ?>
 
@@ -57,8 +73,28 @@ $time = $time_end - $time_start;
             $intestazione='Dati di chiusura del procedimento amministrativo - Avvenuta Verifica Atti';            
         }
         else{
-           
-             $file_config="$tabpath/avvio_procedimento";
+<<<<<<< HEAD
+            if ($_SESSION["USER_ID"]==52 || $_SESSION["USER_ID"] == 131) {
+                $file_config="$tabpath/avvio_procedimento_admin";
+            }
+            else if($_REQUEST["type"]=="condono"){
+                $file_config="$tabpath/avvio_procedimento_condono";
+            }
+            else if($_REQUEST["type"]=="ordinativo"){ 
+                $file_config="$tabpath/avvio_procedimento_ordinativo";
+            }
+            else{
+                $file_config="$tabpath/avvio_procedimento";
+            }
+
+=======
+            if ($_SESSION["USER_ID"]==52) {
+                $file_config="$tabpath/avvio_procedimento_admin";
+            }
+            else  {
+                $file_config="$tabpath/avvio_procedimento";
+            }
+>>>>>>> origin/spezia
             $intestazione='Avvio del procedimento e comunicazione responsabile';
         }
 
@@ -77,11 +113,11 @@ $time = $time_end - $time_start;
 				<H2 class="blueBanner"><?=$intestazione?></H2>
                                 
 				<?php
-				if (file_exists(LOCAL_INCLUDE."pe.avvioproc.edit.before.php")){
-					$html="";
-					include_once LOCAL_INCLUDE."pe.avvioproc.edit.before.php";
-					print $html;
-				}
+					if (file_exists(LOCAL_INCLUDE."pe.avvioproc.edit.before.php")){
+						$html="";
+						include_once LOCAL_INCLUDE."pe.avvioproc.edit.before.php";
+						print $html;
+					}
 				if(isset($Errors) && $Errors){
 					$tabella->set_errors($Errors);
 					$tabella->set_dati($_POST);
@@ -89,7 +125,8 @@ $time = $time_end - $time_start;
 				elseif ($modo=="edit"){	
 					$tabella->set_dati("pratica=$idpratica");
 				}
-				$tabella->edita();?>			  
+                $tabella->edita();
+                ?>
 			</td>
 		  </tr>
 
@@ -97,7 +134,6 @@ $time = $time_end - $time_start;
 <input name="active_form" type="hidden" value="pe.avvioproc.php">				
 <input name="oldtipo" type="hidden" value="<?=$tabella->get_campo("tipo")?>">
 <input name="oldnumero" type="hidden" value="<?=$tabella->get_campo("numero")?>">
-
 <input name="mode" type="hidden" id="mode" value="<?=$modo?>">
 </FORM>
 <div id="result" style="width:800px;height:600px;display:none;"></div>
@@ -140,7 +176,6 @@ $time = $time_end - $time_start;
                 <input name="mode" type="hidden" id="mode" value="<?=$modo?>">
 <?php
 }
-
 ?>
 </body>
 </html>

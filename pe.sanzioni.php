@@ -9,6 +9,10 @@ $id=$_REQUEST['id'];
 $form="sanzioni";
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
+//Imposto i permessi di default per il modulo
+$_SESSION["PERMESSI"]=$_SESSION["PERMESSI_OK"];
+
+
 ?>
 <html>
 <head>

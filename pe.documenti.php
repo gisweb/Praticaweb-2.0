@@ -48,37 +48,36 @@ appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]
     <body>
 <?php 
 include "./inc/inc.page_header.php";
-?>
-<H2 class="blueBanner"><?php echo "$tit";?></H2>
-<?php
-	if (($modo=="edit") or ($modo=="new")){
-		$tabella=new tabella_v("$tabpath/$file_config",$modo);
-		unset($_SESSION["ADD_NEW"]);
-		?>	
-		<FORM id="documenti" name="utenti" method="post" action="<?php echo $formaction; ?>">
+echo "\t\t<H2 class='blueBanner'>$tit</H2>";
+
+    if (($modo=="edit") or ($modo=="new")){
+	$tabella=new tabella_v("$tabpath/$file_config",$modo);
+	unset($_SESSION["ADD_NEW"]);
+?>	
+        <FORM id="documenti" name="utenti" method="post" action="<?php echo $formaction; ?>">
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN EDITING  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
-		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="75%">		
-				  
-		<tr> 
-			<td> 
-				<!-- contenuto-->
-				<?php
-				  if ($id)	{
-					 if ($Errors)
-						$tabella->set_errors($Errors);
-					 if (!count($Errors)) $tabella->set_dati("id=$id");
-					 else
-						$tabella->set_dati($_POST);
-				}
-				$tabella->edita();?>
-				<!-- fine contenuto-->
-			</td>
-		  </tr> 
-		</TABLE>
-		<input name="active_form" type="hidden" value="pe.documenti.php">
-        <input name="mode" type="hidden" value="<?=$_POST["mode"]?>">
-        <input name="id" type="hidden" value="<?=$id?>">
-		</FORM>		
+            <TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="75%">		
+		<TR> 
+                    <TD> 
+                        <!-- contenuto-->
+<?php
+        if ($id){
+            if ($Errors)
+                $tabella->set_errors($Errors);
+                if (!count($Errors)) $tabella->set_dati("id=$id");
+                else
+                    $tabella->set_dati($_POST);
+        }
+        $tabella->edita();
+?>
+                        <!-- fine contenuto-->
+                    </TD>
+		</TR> 
+            </TABLE>
+            <input name="active_form" type="hidden" value="pe.documenti.php">
+            <input name="mode" type="hidden" value="<?=$_POST["mode"]?>">
+            <input name="id" type="hidden" value="<?=$id?>">
+        </FORM>		
 
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 <?php

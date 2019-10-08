@@ -26,9 +26,6 @@ class Menu{
 			case "cdu":
 				$this->schema="cdu";
 				break;
-			case "":
-				$this->schema="storage";
-				break;
 			default:
 				$this->schema="pe";
 				break;
@@ -39,6 +36,12 @@ class Menu{
 	function get_list($idpratica){
 		if (isset($_SESSION["MENU_".$this->tipo."_$idpratica"])){
 			$menu_pratica=$_SESSION["MENU_".$this->tipo."_$idpratica"];
+
+            //$file = 'debug.txt';
+            //$current = file_get_contents($file);
+            //file_put_contents($file, print_r($menu_pratica, true));
+            //file_put_contents($file, "MENU_".$this->tipo."_$idpratica");
+
 		}
 		else{
 			$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
@@ -71,13 +74,6 @@ class Menu{
 					$menu_pratica[]=explode(",",$riga);
 				}
 				$mnu="condono";
-			}
-			elseif ($this->tipo=="storage"){
-				$menu_settings=@file(MENU."storage.mnu");
-				foreach ($menu_settings as $riga){
-					$menu_pratica[]=explode(",",$riga);
-				}
-				$mnu="storage";
 			}
 			elseif ($this->tipo=="vigilanza"){// menu per la commissione
                             //menu per le pratiche
@@ -182,6 +178,14 @@ class Menu{
 	 
               </div>
 		");
+        if($_SESSION["USER_ID"]==1){
+            $menuItem = <<<EOT
+<div style="width:160; border-width:1 0 1 0px; border-style:solid; border-color:#336699; padding:2 0 2 0px">
+	<a href="javascript:loadintoIframe('myframe','$this->path.mail_status.php?pratica=$idpratica&tipo=$this->tipo')" style="width:160" class="iter-button">Stato Comunicazioni</a>
+</div>
+EOT;
+            print $menuItem;
+        }
 	}
 	
 	//Aggiunge la lista di menù alla nuova pratica

@@ -6,7 +6,7 @@ $pratica = $_REQUEST["pratica"];
 $pr = new pratica($pratica);
 
 $allegatiDir = $pr->allegati.$fName;
-if ($_REQUEST["stato_allegato"] && $_REQUEST["stato_allegato"]!="all"){
+if ($_REQUEST["stato_allegato"]){
     $sql = "SELECT id,nome_file,prot_allegato,data_prot_allegato FROM pe.file_allegati WHERE pratica = ? AND stato_allegato = ?;";
     $data = Array($pratica,$_REQUEST["stato_allegato"]);
 }
@@ -63,3 +63,4 @@ else{
 }
 
 ?>
+

@@ -8,27 +8,20 @@ $idpratica=$_REQUEST["pratica"];
 $tipopratica=$_POST["tipo_pratica"];
 $form=$_POST["form"];
 $tipo=$_POST["tipo"];
-$tt = $tipo;
 $modello=$_POST["modello"];
 $file=$_POST["file"];
 $azione=$_POST["azione"];
 $procedimento=$_POST["procedimento"];
 list($tipo,$pag)=explode(".",$form);
-//$tipo=$_REQUEST["tipo"];
+//print_r($_POST);
 $condono=($tipo=="cn")?(1):(0);
 $ce=($tipo=="ce")?(1):(0);
-$cdu=($tipo=="cdu" || $form=='cdu.vincoli')?(1):(0);
-$vigi=($tipo=="vigi")?(1):(0);
+$cdu=($tipo=="cdu")?(1):(0);
 $active_form=$form.".php";
 $tab_err=array();
 $hidden="hidden";
-if($_POST["azione"]){
-	if(PRINT_VERSION == 1)
-		include("./db/db.stp.stampeV1.php");
-	else
-		include("./db/db.stp.stampe.php");
-		
-}
+if($_POST["azione"])
+	include("./db/db.stp.stampe.php");
 ?>
 <html>
 <head>
@@ -96,29 +89,30 @@ function formatLink(value,rowData,rowIndex){
 <body>
 
 <?php
-    if (PRINT_VERSION==1)
-        $arrFiltri["tipo"]= "A.nome ilike '%.html'";
-    include "./inc/inc.page_header.php";
+	include "./inc/inc.page_header.php";
     $pr=new pratica($idpratica);
-    //$arrFiltri=Array();
-    if ($cdu || (defined('STP_FILTER_FORM') && STP_FILTER_FORM)) $arrFiltri["form"]="form='$form'";
+
+    $arrFiltri=Array();
+    if ($cdu) $arrFiltri["form"]="form='$form'";
     $arrFiltri["utente"]="(coalesce(proprietario,'pubblico')='pubblico' or proprietario='$usr')";
-    //$arrFiltri["tipopratica"]="(coalesce(tipo_pratica,'0')='0' or '".floor((double)$pr->info['tipo']/100)."'=ANY(string_to_array(coalesce(tipo_pratica,''),',')) or '".$pr->info['tipo']."'=ANY(string_to_array(coalesce(tipo_pratica,''),',')))";
-    $arrFiltri["disponibili"]="NOT A.id IN (SELECT DISTINCT modello FROM stp.stampe A INNER JOIN stp.e_modelli B ON (B.id=A.modello) WHERE A.pratica=$idpratica and multiple=0) AND form ILIKE '$tt%'";
-    /*if ($_SESSION["PERMESSI"]<=3) $array_file_tab=(!$condono)?(array("$tabpath/stampe_docx","$tabpath/stampe_rtf","$tabpath/stampe_pdf")):(array("$tabpath/modelli_condono","$tabpath/stampehtml_condono","$tabpath/stampepdf_condono"));
-	else
-		$array_file_tab=(!$condono)?(array("$tabpath/modelli_usr","$tabpath/stampe_rtf","$tabpath/stampe_pdf")):(array("$tabpath/modelli_condono","$tabpath/stampehtml_condono","$tabpath/stampepdf_condono"));
-	*/
+    $arrFiltri["disponibili"]="NOT A.id IN (SELECT DISTINCT modello FROM stp.stampe A INNER JOIN stp.e_modelli B ON (B.id=A.modello) WHERE A.pratica=$idpratica and multiple=0) AND form ILIKE '$tipo%'";
     $file_tab="$tabpath/stampe";
     $titolo="Elenco Modelli";
     $filtro=implode(" AND ",$arrFiltri);
-    $sql="select coalesce(B.id::varchar,'')||'#'||coalesce(A.id::varchar,'') as codice,A.id,coalesce(B.id::varchar,'tutti') as idtipo,A.nome as modello,coalesce(B.nome,'Tutti i tipi di pratica') as tipo_pratica,form from stp.e_modelli A left join pe.e_tipopratica B on (B.id::varchar =ANY(string_to_array(tipo_pratica,','))) WHERE $filtro order by tipo_pratica,modello;";
+    $sql="select coalesce(B.id::varchar,'')||'#'||coalesce(A.id::varchar,'') as codice,A.id,coalesce(B.id::varchar,'tutti') as idtipo,A.nome as modello,coalesce(B.nome,'Tutti i tipi di pratica') as tipo_pratica,form from stp.e_modelli A left join pe.e_tipopratica B on (B.id::varchar =ANY(string_to_array(tipo_pratica,','))) WHERE $filtro;";
     $db=appUtils::getDb();
     $res=$db->fetchAll($sql);
-//    if ($_SESSION["USER_ID"]<4) echo "<p>$sql</p>";
-//print_array($res);
     $modelli=  json_encode(appUtils::groupData("modelli",$res));
-   // print_array($modelli);
+    $sql="select count(*) from pe.soggetti A WHERE A.pratica=$idpratica;";
+    $db=appUtils::getDb();
+    $res=$db->fetchAll($sql);
+    
+    if ($res[0]['count']==0) {
+       print_array('MANCANO I SOGGETTI');
+       $modelli='';
+    }
+    else {
+    }
     echo <<<EOT
     <script>
         var modelli=$modelli;
@@ -153,7 +147,6 @@ EOT;
 	<input type="hidden" name="condono" value="<?=$condono?>">
 	<input type="hidden" name="cdu" value="<?=$cdu?>">
 	<input type="hidden" name="comm" value="<?=$ce?>">
-	<input type="hidden" name="vigi" value="<?=$vigi?>">
 	<input type="hidden" name="active_form" value="<?php echo $active_form?>">
 	<input type="hidden" name="stampe" value="1">
 	<input type="hidden" name="id" id="id_mod" value="">

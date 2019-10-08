@@ -20,7 +20,7 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
 $idpratica=$_POST["pratica"];
 $azione=$_POST["azione"];
 //print_array($_POST);
-$comune = $_REQUEST["cod_belfiore"];
+
 if(!$_POST["foglio"] && !$_POST["mappale"])	// EDIT VINCOLI
 {
 	$part=$_POST["part"];
@@ -33,11 +33,12 @@ if(!$_POST["foglio"] && !$_POST["mappale"])	// EDIT VINCOLI
 	$tavola=$_POST["tavola"];
 	$perc=$_POST["perc_area"];
 	$zona=$_POST["zona"];
-        if($azione=="Aggiungi"){ 
+    if($azione=="Aggiungi"){ 
 		$sql_del="delete from cdu.mappali where foglio='$foglio' and mappale='$mappale' and coalesce(vincolo,'')='';";
 		print_debug($sql_del); 
 		$db->sql_query($sql_del); 
 		$sql="insert into cdu.mappali (pratica,sezione,foglio,mappale,vincolo,tavola,zona,perc_area) values($idpratica,'$sezione','$foglio','$mappale','$vincolo','$tavola','$zona','$perc') ;";
+		print "$sql"; 
 		$db->sql_query($sql); 
 	}
 }
@@ -48,7 +49,6 @@ else {		// EDIT MAPPALI
 
 	$sqlmappali="foglio=$foglio and mappale=$mappale";
 	if (isset($_POST["sezione"])) $sqlmappali.=" and sezione=$sezione";
-	if ($comune) $sqlmappali .= " and particelle.comune = '$comune'";
 	if($azione=="Aggiungi"){ 
         $sql="SELECT coalesce(data_certificazione,CURRENT_DATE) as data FROM cdu.richiesta WHERE pratica=$idpratica;";
         $db->sql_query($sql);
@@ -56,18 +56,19 @@ else {		// EDIT MAPPALI
         
 		$sql="insert into cdu.mappali (pratica,sezione,foglio,mappale,vincolo,tavola,zona,perc_area) 
 		select $idpratica,particelle.sezione,particelle.foglio,particelle.mappale,zona_plg.nome_vincolo,zona_plg.nome_tavola,zona_plg.nome_zona,
-		round(sum(st_area(st_intersection (particelle.".THE_GEOM.",zona_plg.the_geom))/st_area (particelle.".THE_GEOM.")*100)::numeric,1) from
+		round(sum(area(intersection (particelle.".THE_GEOM.",zona_plg.the_geom))/area (particelle.".THE_GEOM.")*100)::numeric,1) from
 		nct.particelle,(SELECT A.* FROM vincoli.zona_plg A inner join vincoli.zona B using(nome_vincolo,nome_tavola,nome_zona)  inner join vincoli.tavola using(nome_vincolo,nome_tavola) WHERE '$data'::date BETWEEN coalesce(data_da,'01/01/1970'::date) AND coalesce(data_a,CURRENT_DATE) AND cdu=1) as zona_plg
         WHERE $sqlmappali and (particelle.".THE_GEOM." && zona_plg.the_geom) and
-		(st_area(st_intersection (particelle.".THE_GEOM.",zona_plg.the_geom))>10 or (st_area(st_intersection(particelle.".THE_GEOM.",zona_plg.the_geom))/st_area (particelle.".THE_GEOM.")*100)>=0.02) 
+		(area(intersection (particelle.".THE_GEOM.",zona_plg.the_geom))>10 or (area(intersection(particelle.".THE_GEOM.",zona_plg.the_geom))/area (particelle.".THE_GEOM.")*100)>=0.02) 
 
 		group by particelle.sezione,particelle.foglio,particelle.mappale,zona_plg.nome_vincolo,zona_plg.nome_tavola,zona_plg.nome_zona,particelle.".THE_GEOM;
 
 		$result=$db->sql_query ($sql);
+		//echo "<p>$sql</p>";
 		//$err=$db->sql_error();
 		print_debug($sql); 
 		//$numrows=$db->sql_affectedrows();
-                if ($_SESSION["USER_ID"]==1) echo "<p>$sql</p>";
+
 		//if($numrows===0 or $err["message"]){
 		$sql="insert into cdu.mappali (pratica,sezione,foglio,mappale) values ($idpratica,$sezione,$foglio,$mappale)";
 		$result=$db->sql_query ($sql); 

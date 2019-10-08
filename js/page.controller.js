@@ -26,7 +26,7 @@ $(document).ready(function(){
        $(v).bind('click',function(event){
            event.preventDefault();
            var d=$(this).data();
-           var url=encodeURIComponent(d['url'])+'?random='+rnd;
+           var url=d['url']+'?random='+rnd;
            window.open(window.parent.url_documenti+url,'stampe');
        });
    });
@@ -114,75 +114,7 @@ $(document).ready(function(){
             });
             $('#submitFrm',window.parent.document).submit();
         });
-        
-        $("[data-class]").each(function(k,v){
-            var data = $(v).data();
-            $(v).addClass(data['class']);
-        });
-        
-        $("[data-plugins='inserisci-associazione-doc']").each(function(k,v){
-            $(v).attr("title","Assegna documento ad una pratica edilizia");
-            $(v).bind('click',function(event){
-            console.log($(this));
-            event.preventDefault();
-            var dd = $(this).data();
-            var id = dd['value'];
-            $('#storage-documento').val(id);   
-                $('#associa-pratica').dialog({
-                    title: "Collega documento a pratica",
-                    height: 600,
-                    width:800
-                });
-            });
-        });
-        $("[data-plugins='elimina-associazione-doc']").each(function(k,v){
             
-            
-        });
-        $("[data-plugins='openDocument']").bind('click',function(event){
-            var data = $(this).data();
-            if (!$('#frm-plugin').length) 
-                $('body').append('<form target="_new" id="frm-plugin" method="POST" action=""></form>');
-            $('#frm-plugin').html('');
-            $.each(data,function(k,v){
-                  $('#frm-plugin').append(sprintf('<input type="hidden" name="%s" value="%s"/>',k,v));
-            });
-            $('#frm-plugin').attr('action',data['url']);
-            $('#frm-plugin').submit();
-        });
-        
-        $('#associa').button({
-            label:"Collega alla Pratica",
-            icons:{
-                primary:"ui-icon-disk"
-            }
-        }).bind('click',function(event){
-            var n = $('#numero').val();
-            var documento = $('#documento').val();
-            var id = $('#storage-documento').val();
-            if (!n) {
-                alert('Inserire un numero di pratica');
-                return;
-            }
-            if (!documento) {
-                alert('Attenzione selezionare una tipologia di documento');
-                return;
-            }
-            $.ajax({
-                url:'/services/xServer.php',
-                method:'POST',
-                data:{'numero_pratica':n,'action':'invia_documento','id':id,'documento':documento,'assoc_schema':'pe','assoc_table':'allegati'},
-                success:function(data){
-                    if(data["success"]==1){
-                        $('#message-dialog').html();
-                        $('#associa-pratica').dialog('close');
-                    }
-                    else{
-                        $('#message-dialog').html(data['message']);
-                    }
-                }
-            });
-        });
         $("[data-plugins='field-disabled']").each(function(k,v){
             var params=$(v).data();
             var id = 'edit-' + $(v).attr('id');
@@ -233,7 +165,6 @@ $(document).ready(function(){
                                 data:data,
                                 success:response
                             });
-                            
 
                         },
                     /*select:$selectFN,*/
@@ -253,28 +184,27 @@ $(document).ready(function(){
         $("form").find('input[type=text],textarea').not('.textbox-date').filter(':visible:first').focus();
         $("[data-plugins='tipo_soggetto']").bind('change',function(event){
             verificaRuoloSoggetti();
+        });
+        
         $("[data-plugins='link']").bind('click',function(event){
             
-        });});
-        $("[data-plugins='selectdb-editable']").bind('click',function(event){
-            var d = $(this).data();
-            $('#id-change').val(d['id']);
-            $('#pratica-change').val(d['pratica']);
-            $('#table-change').val(d['table']);
-            $('#field-change').val(d['field']);
-            $('input[name="radio_'+d['field']+'"').each(function(k,v){
-                console.log($(v));
-                $(v).prop('checked',false);
-                if ($(v).val()==d['value']) $(v).prop('checked',true);
-            });
-            
-            //console.log($(this).width());
-            //console.log($(this).position());
-            var pos = $(this).position();
-            var w = $(this).width();
-            $('#dialog-change').dialog('option', 'position', [pos.left-$(this).outerWidth(),pos.top]);
-            $('#dialog-change').dialog( "open" );
         });
-	
+ /*       $("[data-plugins='delete-notifica']").on('click',function(event){
+            event.preventDefault();
+            if (!confirm('Sei sicuro di voler eliminare questa notifica?')) return;
+            var d = $(this).data();
+            d["action"] = "delete-notifica";
+            $.ajax({
+                url:serverUrl,
+                dataType:'json',
+                type:'POST',
+                data:d,
+                success: function(data, textStatus, jqXHR){
+                    if (data["success"]==1){
+                        $("[data-row-id]='" + data["id"] + "'").hide();
+                    }
+                }
+            });
+        });*/
 });
 

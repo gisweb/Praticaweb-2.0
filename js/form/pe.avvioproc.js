@@ -1,7 +1,7 @@
 $(document).ready(function(){
     var mode = $('#mode').val();
 
-    if (mode=='new' || mode == 'edit') $('#tipo').trigger('change');
+    if (mode=='new') $('#tipo').trigger('change');
     if (mode == 'view'){
         var d = $('#cartella').data();
         $('#cartella').bind('click',function(event){
@@ -36,5 +36,5 @@ $(document).ready(function(){
         });
     }
     
-    fillCtr('categoria');        
+        
 });

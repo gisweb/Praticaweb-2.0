@@ -160,8 +160,8 @@ function controllaCF($cf)
 
 
 function controllaPIVA($pi)
-/*{
-    if( $pi === '' )  return 4;
+{
+    if( $pi === '' )  return '';
     if( strlen($pi) != 11 )
         return 4;
     if( preg_match("/^[0-9]+\$/", $pi) != 1 )
@@ -178,8 +178,8 @@ function controllaPIVA($pi)
         return 6;
     return 0;
 }
-*/
-{
+
+/*{
 	$pi=trim($pi);
     if( $pi == '' )  return 4;
     if( strlen($pi) != 11 )
@@ -197,7 +197,7 @@ function controllaPIVA($pi)
     if( ( 10 - $s%10 )%10 != ord($pi[10]) - ord('0') )
         return 6;
     return 0;
-}
+}*/
 
 
 function valida_recordset($d,$intest,$pratica){
@@ -263,37 +263,6 @@ function crea_riga($arr,$pr){
 		$td[]="<td class=\"$class\" $js>".trim($val["valore"])."</td>";
 	}
 	return Array("html_code"=>"<tr class=\"dato\">".implode("",$td)."</tr>","err"=>$err);
-}
-
-function valida_dati_praticaweb($r,$table){
-	$errors= Array();
-	foreach($r as $key=>$val) $row[$key]=($val=='NULL')?(NULL):($val);
-	if ($table=="pe.soggetti"){
-		if ($row["richiedente"]==1){
-			if(!$row["codfis"]) $errors["codfis"]="Campo obbligatorio per Anagrafe Tributaria";
-            if(!$row["cognome"]) $errors["cognome"]="Campo obbligatorio per Anagrafe Tributaria";
-            if(!$row["nome"]) $errors["nome"]="Campo obbligatorio per Anagrafe Tributaria";
-            if(!$row["sesso"]) $errors["sesso"]="Campo obbligatorio per Anagrafe Tributaria";
-            if(!$row["comunato"]) $errors["comunato"]="Campo obbligatorio per Anagrafe Tributaria";
-            if($row["ragsoc"]) {
-                if(!$row["comuned"]) $errors["comuned"]="Campo obbligatorio per Anagrafe Tributaria";
-            }
-		}
-        if ($row["progettista"]==1 || $row["direttore"]==1){
-            if(!$row["codfis"] && !$row["piva"]) {
-            	$errors["codfis"]="Codice Fiscale o Partica Iva obbligatorii per Anagrafe Tributaria";
-                $errors["piva"]="Codice Fiscale o Partica Iva obbligatorii per Anagrafe Tributaria";
-
-            }
-            if(!$row["alboprov"]) $errors["alboprov"]="Campo obbligatorio per Anagrafe Tributaria";
-            if(!$row["albonumero"]) $errors["albonumero"]="Campo obbligatorio per Anagrafe Tributaria";
-        }
-        if ($row["esecutore"]==1){
-            if(!$row["piva"]) $errors["piva"]="Campo obbligatorio per Anagrafe Tributaria";
-            if(!$row["ragsoc"]) $errors["ragsoc"]="Campo obbligatorio per Anagrafe Tributaria";
-        }
-	}
-	return $errors;
 }
 function valida_dato($field,$value,$valid,$row,$tmp){
 //echo "<pre>$tmp<br>";print_r($valid);echo "<br>";print_r($row);echo "</pre>";

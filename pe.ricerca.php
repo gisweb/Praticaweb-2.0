@@ -1,12 +1,6 @@
 <?php
 require_once('login.php');
 require_once APPS_DIR.'lib/tabella_v.class.php';
-
-$comune = ($_REQUEST["cod_belfiore"])?($_REQUEST["cod_belfiore"]):("%");
-$filtroComune =<<<EOT
-<input type="hidden" value="equal" name="cod_belfiore" class="search text" id="op_pe-avvioproc-cod_belfiore" datatable="pe.avvioproc">
-<input type="hidden" size="12" class="textbox search" name="cod_belfiore" id="1_pe-avvioproc-cod_belfiore" value="$comune">        
-EOT;
 ?>
 <html>
 <head>
@@ -71,12 +65,7 @@ EOT;
 		  </tr>
 		  <tr> 
 				<!-- riga finale -->
-				<td align="left">
-                    <?php
-                    echo $filtroComune;
-                    ?>
-                    <img src="images/gray_light.gif" height="2" width="90%">
-                </td>
+				<td align="left"><img src="images/gray_light.gif" height="2" width="90%"></td>
 		   </tr>  
         </table>
             <div style="margin-top:20px;">

@@ -4,7 +4,7 @@ include "login.php";
 
 /*GESTIONE DEL FILE*/
 if ($_REQUEST["id_doc"]){
-	$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
+	$db = new sql_db(DB_HOST,DB_USER,DB_PWD,DB_NAME, false);
 	if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
 	$sql="SELECT file_doc,definizione,css.nome,print_type FROM stp.stampe left join stp.e_modelli on(stampe.modello=e_modelli.id) left join stp.css on(css_id=css.id) WHERE stampe.id=".$_REQUEST['id_doc'];
 	$db->sql_query($sql);
@@ -46,14 +46,13 @@ $testo="<html><head></head><body>$testo</body></html>";
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<link href="./css/screen.css" rel="stylesheet" type="text/css">
+<LINK media="screen" href="./css/modelli.css" type="text/css" rel="stylesheet">
+<LINK media="screen" href="./css/styles.css" type="text/css" rel="stylesheet">
 
-<?php
-	utils::loadJS(Array("tinymce/tinymce.min","tinymce/jquery.tinymce.min"));
-	utils::loadCss(Array("modelli","styles","screen"));
-?>
+<script language="javascript" type="text/javascript" src="./js/LoadLibs.js"></script>
+<script language="javascript" type="text/javascript" src="./js/tinymce/jquery.tinymce.js"></script>
 <script>
-	window.name = 'PW_Editor';
-	var w = window.open("", "praticaweb");
 	var ed;
 	function saveData(){
 		$.ajax({
@@ -75,51 +74,32 @@ $testo="<html><head></head><body>$testo</body></html>";
 		ed=$('textarea.tinymce').tinymce({
 		//ed=new tinymce.Editor('elm1',{
 			// Location of TinyMCE script
-			script_url : '/js/tinymce/tinymce.js',
+			script_url : '/js/tinymce/tiny_mce.js',
+
+			// General options
+			theme : "advanced",
+			plugins : "autolink,lists,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,advlist,example",
 			language : 'it',
-			plugins: [
-			"advlist autolink autosave link image lists charmap print preview hr anchor pagebreak spellchecker",
-			"searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
-			"table contextmenu directionality emoticons template textcolor paste fullpage textcolor colorpicker textpattern"
-		  ],
-		
-		  toolbar1: "newdocument fullpage | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | styleselect formatselect fontselect fontsizeselect",
-		  toolbar2: "cut copy paste | searchreplace | bullist numlist | outdent indent blockquote | undo redo | link unlink anchor image media code | insertdatetime preview | forecolor backcolor",
-		  toolbar3: "table | hr removeformat | subscript superscript | charmap emoticons | print fullscreen | ltr rtl | spellchecker | visualchars visualblocks nonbreaking template pagebreak restoredraft",
-		
-		  menubar: false,
-		  toolbar_items_size: 'small',
-		
-		  style_formats: [{
-			title: 'Bold text',
-			inline: 'b'
-		  }, {
-			title: 'Red text',
-			inline: 'span',
-			styles: {
-			  color: '#ff0000'
-			}
-		  }, {
-			title: 'Red header',
-			block: 'h1',
-			styles: {
-			  color: '#ff0000'
-			}
-		  }, {
-			title: 'Example 1',
-			inline: 'span',
-			classes: 'example1'
-		  }, {
-			title: 'Example 2',
-			inline: 'span',
-			classes: 'example2'
-		  }, {
-			title: 'Table styles'
-		  }, {
-			title: 'Table row 1',
-			selector: 'tr',
-			classes: 'tablerow1'
-		  }],
+			// Theme options
+			theme_advanced_buttons1 : "save,cancel,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,styleselect,formatselect,fontselect,fontsizeselect",
+			theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor",
+			theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,emotions,iespell,media,advhr,|,print,|,ltr,rtl,|,fullscreen",
+			theme_advanced_buttons4 : "insertlayer,moveforward,movebackward,|,styleprops,|,cite,abbr,acronym,del,ins,attribs,|,visualchars,nonbreaking,template,pagebreak",
+			theme_advanced_toolbar_location : "top",
+			theme_advanced_toolbar_align : "left",
+			theme_advanced_statusbar_location : "bottom",
+			theme_advanced_resizing : true,
+
+			// Example content CSS (should be your site CSS)
+			content_css : "css/content.css,css/stp.standard.css",
+
+			// Drop lists for link/image/media/template dialogs
+			template_external_list_url : "lists/template_list.js",
+			external_link_list_url : "lists/link_list.js",
+			external_image_list_url : "lists/image_list.js",
+			media_external_list_url : "lists/media_list.js",
+			theme_advanced_font_sizes : "3pt,4pt,5pt,6pt,7pt,8pt,9pt,10pt,11pt,12pt,13pt,14pt,15pt,16pt,17pt,18pt,19pt,20pt",
+			
 			save_onsavecallback : 'saveData',
 			save_oncancelcallback : function(v){
 				window.blur();
@@ -141,7 +121,7 @@ $testo="<html><head></head><body>$testo</body></html>";
 </style>
 </head>
 <body>
-
+<?//echo "<pre>";print_r($cols);?>
 <div class="content">
 	<form method="post" name="dati" action="">
 	<form name="dati">
@@ -175,7 +155,7 @@ $testo="<html><head></head><body>$testo</body></html>";
 								icons:{primary:'ui-icon-close'}
 							}).click(function(){
 								window.blur();
-								w.focus();
+								(window.open(window.opener.location, window.opener.name) || window).focus();
 								window.close();
 							});
 						</script>

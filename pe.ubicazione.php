@@ -11,7 +11,11 @@ $titolo=$_SESSION["TITOLO_$idpratica"];
 $azione=(isset($_POST["azione"]) && $_POST['azione'])?($_POST['azione']):(null);
 $tabpath="pe";
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
-$comune = appUtils::getComune($idpratica);
+
+//Imposto i permessi di default per il modulo
+$_SESSION["PERMESSI"]= min($_SESSION["PERMESSI_$idpratica"],$_SESSION["PERMESSI_A_$idpratica"]);
+
+
 ?>
 <html>
 <head>
@@ -20,16 +24,7 @@ $comune = appUtils::getComune($idpratica);
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
 <?php
-    if (defined('GC_URL')){
-        $url = GC_URL;
-        $js =<<<EOT
-    <script>
-        var gcURL = '$url';
-    </script>
-EOT;
-        echo $js;
-    }
-    utils::loadJS(Array('init','form/pe.ubicazione'));
+    utils::loadJS(Array('init'));
     utils::loadCss();
 
 ?>
@@ -43,18 +38,7 @@ if (($modo=="edit") or ($modo=="new")){
     $id=$_REQUEST["id"];
     
     //$tab_edit=$_POST["tab_edit"].".tab";
-    if ($_REQUEST["tab"]=="indirizzi"){
-        $titolo = "Indirizzi";
-    }
-    elseif ($_REQUEST["tab"] == "'catasto_terreni'"){
-        $titolo = "Catasto Terreni";
-    }
-    elseif ($_REQUEST["tab"] == "'catasto_urbano'"){
-        $titolo = "Catasto Urbano";
-    }
-    else{
-        $titolo = "Unità Immobiliare";
-    }
+    $titolo=($_REQUEST["tab"]=='indirizzi')?("Indirizzi"):(($tab=='catasto_terreni')?('Catasto Terreni'):('Catasto Urbano'));	
 	$tab=$tabpath."/".$_REQUEST["tab"].".tab";
     include "./inc/inc.page_header.php";
     $tabellav=new tabella_v($tab,$modo);
@@ -72,9 +56,8 @@ if (($modo=="edit") or ($modo=="new")){
 		  <tr> 
 			<td> 
 				<!-- contenuto-->
-             <form method=post id="ubicazione" action="praticaweb.php">
+                                <form method=post id="ubicazione" action="praticaweb.php">
 				<input type="hidden" name="id" id="id" value="<?php echo $id;?>">
-				<input type="hidden" name="cod_belfiore" id="cod_belfiore" value="<?php echo $comune;?>">
 				<input type="hidden" name="mode" value="<?php echo $modo;?>">
 				<input name="active_form" type="hidden" value="pe.ubicazione.php">
 				<input type="hidden" name="tab" value=<?=$_REQUEST["tab"]?>>
@@ -84,12 +67,11 @@ if (($modo=="edit") or ($modo=="new")){
 				
 				if($Errors){
 					$tabellav->set_errors($Errors);
-				}
-                if($id){
-                    $numrows=$tabellav->set_dati("id=$id");
-				}
-				else{
 					$tabellav->set_dati($_POST);
+				}
+				
+                elseif($id){
+                    $numrows=$tabellav->set_dati("id=$id");
 				}
 				//print_array($tabellav);
 				$tabellav->edita();
@@ -110,16 +92,16 @@ if (($modo=="edit") or ($modo=="new")){
 		<H2 class="blueBanner">Ubicazione dell'intervento</H2>
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
 <?php
-$array_file_tab=array("indirizzi","catasto_terreni","catasto_urbano","uiu");
-$array_titolo=array("Indirizzi","Catasto Terreni","Catasto Urbano","Unità Immobiliare");
-for($i=0;$i<4;$i++){
+$array_file_tab=array("indirizzi","catasto_terreni","catasto_urbano");
+$array_titolo=array("Indirizzi","Catasto Terreni","Catasto Urbano");
+for($i=0;$i<3;$i++){
 
     $file_tab=$array_file_tab[$i];
     $titolo=$array_titolo[$i];
     print "<tr><td>";
     $tabella=new Tabella_h("$tabpath/$file_tab");
 
-    $tabella->set_titolo($titolo,"nuovo",array("titolo"=>$titolo,"tab"=>$file_tab,"cod_belfiore"=>$_REQUEST["cod_belfiore"]));
+    $tabella->set_titolo($titolo,"nuovo",array("titolo"=>$titolo,"tab"=>$file_tab));
 
     $numrows=$tabella->set_dati("pratica=$idpratica;");
     $tabella->get_titolo();

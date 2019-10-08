@@ -14,7 +14,7 @@ admin.users D ON(A.resp_proc=D.userid) LEFT JOIN
 WHERE completata=0 AND pratica IN (%s) 
 %s %s LIMIT %s OFFSET %s     
 -------------------------
-------- DEBUG DEL 14/12/2017 09:19:47 -------
+------- DEBUG DEL 06/11/2015 12:47:39 -------
 SELECT DISTINCT A.pratica,A.numero,A.protocollo,A.data_prot,A.data_presentazione,A.oggetto,B.nome as tipo_pratica,C.descrizione as tipo_intervento,coalesce(D.nome,'non assegnata')  as responsabile,E.richiedente,F.progettista,G.scadenza,G.testo,G.uidins,G.diff,G.cod_scadenza
 FROM pe.avvioproc A LEFT JOIN 
 pe.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN
@@ -30,7 +30,7 @@ admin.users D ON(A.resp_proc=D.userid) LEFT JOIN
 WHERE completata=0 AND pratica IN (%s) 
 %s %s LIMIT %s OFFSET %s     
 -------------------------
-------- DEBUG DEL 14/12/2017 09:22:29 -------
+------- DEBUG DEL 06/11/2015 12:48:00 -------
 SELECT DISTINCT A.pratica,A.numero,A.protocollo,A.data_prot,A.data_presentazione,A.oggetto,B.nome as tipo_pratica,C.descrizione as tipo_intervento,coalesce(D.nome,'non assegnata')  as responsabile,E.richiedente,F.progettista,G.scadenza,G.testo,G.uidins,G.diff,G.cod_scadenza
 FROM pe.avvioproc A LEFT JOIN 
 pe.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN
@@ -46,7 +46,7 @@ admin.users D ON(A.resp_proc=D.userid) LEFT JOIN
 WHERE completata=0 AND pratica IN (%s) 
 %s %s LIMIT %s OFFSET %s     
 -------------------------
-------- DEBUG DEL 26/06/2018 05:26:39 -------
+------- DEBUG DEL 09/10/2017 11:34:05 -------
 SELECT DISTINCT A.pratica,A.numero,A.protocollo,A.data_prot,A.data_presentazione,A.oggetto,B.nome as tipo_pratica,C.descrizione as tipo_intervento,coalesce(D.nome,'non assegnata')  as responsabile,E.richiedente,F.progettista,G.scadenza,G.testo,G.uidins,G.diff,G.cod_scadenza
 FROM pe.avvioproc A LEFT JOIN 
 pe.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN
@@ -62,7 +62,7 @@ admin.users D ON(A.resp_proc=D.userid) LEFT JOIN
 WHERE completata=0 AND pratica IN (%s) 
 %s %s LIMIT %s OFFSET %s     
 -------------------------
-------- DEBUG DEL 26/06/2018 05:26:59 -------
+------- DEBUG DEL 09/10/2017 11:34:33 -------
 SELECT DISTINCT A.pratica,A.numero,A.protocollo,A.data_prot,A.data_presentazione,A.oggetto,B.nome as tipo_pratica,C.descrizione as tipo_intervento,coalesce(D.nome,'non assegnata')  as responsabile,E.richiedente,F.progettista,G.scadenza,G.testo,G.uidins,G.diff,G.cod_scadenza
 FROM pe.avvioproc A LEFT JOIN 
 pe.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN
@@ -78,7 +78,55 @@ admin.users D ON(A.resp_proc=D.userid) LEFT JOIN
 WHERE completata=0 AND pratica IN (%s) 
 %s %s LIMIT %s OFFSET %s     
 -------------------------
-------- DEBUG DEL 26/06/2018 05:27:16 -------
+------- DEBUG DEL 09/10/2017 11:34:43 -------
+SELECT DISTINCT A.pratica,A.numero,A.protocollo,A.data_prot,A.data_presentazione,A.oggetto,B.nome as tipo_pratica,C.descrizione as tipo_intervento,coalesce(D.nome,'non assegnata')  as responsabile,E.richiedente,F.progettista,G.scadenza,G.testo,G.uidins,G.diff,G.cod_scadenza
+FROM pe.avvioproc A LEFT JOIN 
+pe.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN
+pe.e_intervento C ON (A.intervento=C.id) LEFT JOIN
+admin.users D ON(A.resp_proc=D.userid) LEFT JOIN 
+(SELECT pratica,trim(array_to_string(array_agg(coalesce(app||' ','')||coalesce(' '||nome,'')||coalesce(' '||cognome)||coalesce(' - '||ragsoc,'')),',')) as richiedente FROM pe.soggetti WHERE richiedente=1 AND voltura=0 GROUP BY pratica) E USING(pratica) LEFT JOIN
+(SELECT pratica,trim(array_to_string(array_agg(coalesce(app||' ','')||coalesce(' '||nome,'')||coalesce(' '||cognome)||coalesce(' - '||ragsoc,'')),',')) as progettista FROM pe.soggetti WHERE progettista=1 AND voltura=0 GROUP BY pratica) F USING(pratica) LEFT JOIN
+(SELECT a.id, a.pratica,a.completata,a.codice as cod_scadenza, a.scadenza, aaa.nome, COALESCE(b.nome, ''::character varying)::text || COALESCE(' - '::text || a.note, ''::text) AS testo, a.uidins,(a.scadenza-CURRENT_DATE) as diff
+    FROM pe.scadenze a
+    LEFT JOIN admin.users aaa ON aaa.userid = COALESCE(a.uidins, a.uidupd)
+    LEFT JOIN pe.e_scadenze b USING (codice) WHERE (%s)
+) G USING (pratica)    
+WHERE completata=0 AND pratica IN (%s) 
+%s %s LIMIT %s OFFSET %s     
+-------------------------
+------- DEBUG DEL 09/10/2017 11:34:56 -------
+SELECT DISTINCT A.pratica,A.numero,A.protocollo,A.data_prot,A.data_presentazione,A.oggetto,B.nome as tipo_pratica,C.descrizione as tipo_intervento,coalesce(D.nome,'non assegnata')  as responsabile,E.richiedente,F.progettista,G.scadenza,G.testo,G.uidins,G.diff,G.cod_scadenza
+FROM pe.avvioproc A LEFT JOIN 
+pe.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN
+pe.e_intervento C ON (A.intervento=C.id) LEFT JOIN
+admin.users D ON(A.resp_proc=D.userid) LEFT JOIN 
+(SELECT pratica,trim(array_to_string(array_agg(coalesce(app||' ','')||coalesce(' '||nome,'')||coalesce(' '||cognome)||coalesce(' - '||ragsoc,'')),',')) as richiedente FROM pe.soggetti WHERE richiedente=1 AND voltura=0 GROUP BY pratica) E USING(pratica) LEFT JOIN
+(SELECT pratica,trim(array_to_string(array_agg(coalesce(app||' ','')||coalesce(' '||nome,'')||coalesce(' '||cognome)||coalesce(' - '||ragsoc,'')),',')) as progettista FROM pe.soggetti WHERE progettista=1 AND voltura=0 GROUP BY pratica) F USING(pratica) LEFT JOIN
+(SELECT a.id, a.pratica,a.completata,a.codice as cod_scadenza, a.scadenza, aaa.nome, COALESCE(b.nome, ''::character varying)::text || COALESCE(' - '::text || a.note, ''::text) AS testo, a.uidins,(a.scadenza-CURRENT_DATE) as diff
+    FROM pe.scadenze a
+    LEFT JOIN admin.users aaa ON aaa.userid = COALESCE(a.uidins, a.uidupd)
+    LEFT JOIN pe.e_scadenze b USING (codice) WHERE (%s)
+) G USING (pratica)    
+WHERE completata=0 AND pratica IN (%s) 
+%s %s LIMIT %s OFFSET %s     
+-------------------------
+------- DEBUG DEL 18/07/2018 08:22:52 -------
+SELECT DISTINCT A.pratica,A.numero,A.protocollo,A.data_prot,A.data_presentazione,A.oggetto,B.nome as tipo_pratica,C.descrizione as tipo_intervento,coalesce(D.nome,'non assegnata')  as responsabile,E.richiedente,F.progettista,G.scadenza,G.testo,G.uidins,G.diff,G.cod_scadenza
+FROM pe.avvioproc A LEFT JOIN 
+pe.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN
+pe.e_intervento C ON (A.intervento=C.id) LEFT JOIN
+admin.users D ON(A.resp_proc=D.userid) LEFT JOIN 
+(SELECT pratica,trim(array_to_string(array_agg(coalesce(app||' ','')||coalesce(' '||nome,'')||coalesce(' '||cognome)||coalesce(' - '||ragsoc,'')),',')) as richiedente FROM pe.soggetti WHERE richiedente=1 AND voltura=0 GROUP BY pratica) E USING(pratica) LEFT JOIN
+(SELECT pratica,trim(array_to_string(array_agg(coalesce(app||' ','')||coalesce(' '||nome,'')||coalesce(' '||cognome)||coalesce(' - '||ragsoc,'')),',')) as progettista FROM pe.soggetti WHERE progettista=1 AND voltura=0 GROUP BY pratica) F USING(pratica) LEFT JOIN
+(SELECT a.id, a.pratica,a.completata,a.codice as cod_scadenza, a.scadenza, aaa.nome, COALESCE(b.nome, ''::character varying)::text || COALESCE(' - '::text || a.note, ''::text) AS testo, a.uidins,(a.scadenza-CURRENT_DATE) as diff
+    FROM pe.scadenze a
+    LEFT JOIN admin.users aaa ON aaa.userid = COALESCE(a.uidins, a.uidupd)
+    LEFT JOIN pe.e_scadenze b USING (codice) WHERE (%s)
+) G USING (pratica)    
+WHERE completata=0 AND pratica IN (%s) 
+%s %s LIMIT %s OFFSET %s     
+-------------------------
+------- DEBUG DEL 26/07/2018 10:07:30 -------
 SELECT DISTINCT A.pratica,A.numero,A.protocollo,A.data_prot,A.data_presentazione,A.oggetto,B.nome as tipo_pratica,C.descrizione as tipo_intervento,coalesce(D.nome,'non assegnata')  as responsabile,E.richiedente,F.progettista,G.scadenza,G.testo,G.uidins,G.diff,G.cod_scadenza
 FROM pe.avvioproc A LEFT JOIN 
 pe.e_tipopratica B ON(A.tipo=B.id) LEFT JOIN

@@ -7,7 +7,7 @@ $config_file="$tabpath/sopralluoghi";
 $host=$_SERVER["HTTP_HOST"];
 $modal=$_POST["modal"];
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
-//print_array($_REQUEST);
+
 include "./lib/tabella_v.class.php";
 include "./lib/tabella_h.class.php";
 ?>
@@ -67,7 +67,7 @@ window.open('http://'+host+'/praticaweb/carica_foto.php?pratica='+idpr+'&form=vi
 	?>
 	
 	<br>
-		<input name="active_form" type="hidden" value="vigi.sopralluoghi.php">				
+		<input name="active_form" type="hidden" value="pe.sopralluoghi.php">				
 		<input name="id_sopralluoghi" type="hidden" value="<?=$soprall;?>">
 		<input name="host" type="hidden" value="<?=$host;?>">
 		<input name="mode" type="hidden" value="<?=$modo?>">

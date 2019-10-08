@@ -64,12 +64,12 @@ function get_controllo($label,$tipo,$w,$campo,$html5Attr,$frozen=0){
 			$retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$w\" name=\"$campo\" id=\"$campo\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
 			break;
 		case "intero":
-                    if ($dato) 
-                                    $dato=number_format($dato,0, ',', '');			
-                    else
-                                    $dato="0";
-                    $retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$w\"  name=\"$campo\" id=\"numero\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
-                    break;
+						 if ($dato) 
+								 $dato=number_format($dato,0, ',', '');			
+						 else
+								 $dato="0";
+						 $retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$w\"  name=\"$campo\" id=\"numero\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
+						 break;
 	
 		case "valuta":
 		case "volume":
@@ -80,28 +80,11 @@ function get_controllo($label,$tipo,$w,$campo,$html5Attr,$frozen=0){
 					$dato="0,00";
 			$retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$w\" name=\"$campo\" id=\"$campo\" value=\"$dato\" $title $html5Attr $disabilitato>$help";
 			break;
-//		case "upload":
-//			$size=intval($w+($w/5));
-//						$testo=stripslashes($dato);
-//
-//			$retval="<INPUT class=\"$class\" type=\"file\" maxLength=\"$w\" size=\"$size\" name=\"$campo\" id=\"$campo\" value=\"$testo\" $html5Attr $disabilitato>$help";
-//			break;
 		case "upload":
-                    $prms = explode("x",$w);
-                    $width = $prms[0]."px";
-			//$size=intval($w+($w/5));
-		    $testo=stripslashes($dato);
-                    if(count($prms)>1 && $prms[1]=='multiple'){
-                        $multiple = "multiple";
-                        $nomeCampo=$campo."[]";
-                    }
-                    else{
-                        $multiple = "";
-                        $nomeCampo=$campo;
-                    }
-                    $retval = <<<EOT
-<input type="file" class="$class" style="width:$width" $multiple name="$nomeCampo" id="$campo" $html5Attr $disabilitato>$help  
-EOT;
+			$size=intval($w+($w/5));
+						$testo=stripslashes($dato);
+
+			$retval="<INPUT class=\"$class\" type=\"file\" maxLength=\"$w\" size=\"$size\" name=\"$campo\" id=\"$campo\" value=\"$testo\" $html5Attr $disabilitato>$help";
 			break;
 		case "ui-button":
 			$size=explode("x",$w);
@@ -114,7 +97,7 @@ EOT;
 		case "textkey":
 		case "numero_pratica":
 			$size=intval($w+($w/5));
-			$testo=str_replace('"',"&quot;",stripslashes($dato));
+			$testo=stripslashes($dato);
 			$retval="<INPUT type=\"text\" class=\"$class\" maxLength=\"$w\" size=\"$size\" name=\"$campo\" id=\"$campo\" value=\"$testo\" $html5Attr $disabilitato>$help";
 			break;
 		case "allegati":
@@ -158,7 +141,7 @@ EOT;
 			$size=intval($size+($size/5));
 			$testo=stripslashes($dato);		
 			$retval=<<<EOT
-<INPUT type="text" class="$class" maxLength="$w" size="$size" name="$campo" id="$campo" value="$testo" $title $html5Attr $disabilitato>$help			
+<INPUT type=\"text\" class="$class" maxLength="$w" size="$size" name="$campo" id="$campo" value="$testo" $title $html5Attr $disabilitato>$help			
 <button tabindex='-1' id="toggle_$campo" class="select_all"></button>				
 <script>
 
@@ -226,7 +209,7 @@ EOT;*/
 			break;	
 		case "textarea":
 			$size=explode("x",$w);
-			$retval="<textarea cols=\"$size[0]\" rows=\"$size[1]\" name=\"$campo\" id=\"$campo\" $title $html5Attr $disabilitato>$dato</textarea>$help";
+			$retval="<textarea cols=\"$size[0]\" rows=\"$size[1]\" name=\"$campo\" id=\"$campo\" $title $html5Attr $disabilitato>$dato</textarea>";
 			break;
 		case "richtext":
 			$size=explode("x",$w);
@@ -279,62 +262,59 @@ EOT;
 			$opzioni=$this->elenco_select_view($size[1],'id in ('. $dati[$campo].')');
 			$retval="<ol>$opzioni</ol>";
 			break;
-
-        case "_multiselectdb":
-            $val = $dati[$campo];
-            if ($val && $val!="{}"){
-                $vals = explode(",",str_replace("{","",str_replace("}","",$val)));
-            }
-            else{
-                $vals = Array();
-            }
-            $size=explode("x",$w);
-            if ($size[2]=="pratica"){
-                $filtro = sprintf("(pratica = -1 or pratica = %d)",$this->idpratica);
-            }
-            else{
-                $filtro=$size[2];
-            }
-            $opzioni=$this->elenco_opzioni($size[1],Array($dati[$campo]),isset($size[2])?($filtro):(null));
-            $width = sprintf("%spx;",$size[0]);
-            foreach($opzioni as $opt){
-                $dataParams=Array();
-                $value=$opt["value"];
-                $label = $opt["label"];
-                $params = json_decode($opt["params"]);
-                foreach($params as $k=>$v) $dataParams[]=sprintf("data-%s='%s'",$k,$v);
-                $params=implode(" ",$dataParams);
-                $selezionato = (in_array($value,$vals))?("selected"):("");
-                $fieldName = sprintf("%s[]",$campo);
-                $res[] = <<<EOT
-				<OPTION value="$value" $selezionato $params>$label</OPTION>
+                case "_multiselectdb":
+                    $val = $dati[$campo];
+                    if ($val && $val!="{}"){
+                        $vals = explode(",",str_replace("{","",str_replace("}","",$val)));
+                    }
+                    else{
+                        $vals = Array();
+                    }
+                    $size=explode("x",$w);
+                    if ($size[2]=="pratica"){
+                        $filtro = sprintf("(pratica = -1 or pratica = %d)",$this->idpratica);
+                    }
+                    else{
+                        $filtro=$size[2];
+                    }
+                    $opzioni=$this->elenco_opzioni($size[1],Array($dati[$campo]),isset($size[2])?($filtro):(null));
+                    $width = sprintf("%spx;",$size[0]);
+                    foreach($opzioni as $opt){
+                        $dataParams=Array();
+                        $value=$opt["value"];
+                        $label = $opt["label"];
+                        $params = json_decode($opt["params"]);
+                        foreach($params as $k=>$v) $dataParams[]=sprintf("data-%s='%s'",$k,$v);
+                        $params=implode(" ",$dataParams);
+                        $selezionato = (in_array($value,$vals))?("selected"):("");
+                        $fieldName = sprintf("%s[]",$campo);
+                        $res[] = <<<EOT
+                                        <OPTION value="$value" $selezionato $params>$label</OPTION>
 EOT;
-            }
-            $retval =<<<EOT
-			<SELECT class="$class multi" multiple="true" style="width:$width"  name="$fieldName"  id="$campo" $html5Attr $disabilitato>
-				%s
-			</SELECT>
+                    }
+                    $retval =<<<EOT
+                                <SELECT class="$class multi" multiple="true" style="width:$width"  name="$fieldName"  id="$campo" $html5Attr $disabilitato>
+                                        %s
+                                </SELECT>
 EOT;
-            $retval = sprintf($retval,implode("\n",$res));
-            break;
-
-
-        case "selectdb"://elenco preso da query su db
+                    $retval = sprintf($retval,implode("\n",$res));
+                    break;                    
+		case "selectdb"://elenco preso da query su db
 			
-            $size=explode("x",$w);
-            $opzioni=$this->elenco_selectdb($size[1],Array($dati[$campo]),isset($size[2])?($size[2]):(null));
-
-            if (isset($size[3])) $onChange="onChange=\"".$size[3]."()\"";
-            $retval="<select style=\"width:$size[0]px\" class=\"$class\"  name=\"$campo\"  id=\"$campo\" onmousewheel=\"return false\" $onChange $title $html5Attr $disabilitato>$opzioni</select>$help";
-            break;
-        case "selectRPC":
-            $size=explode("x",$w);
-            $opzioni=$this->elenco_selectdb($size[1],Array($dati[$campo]),$size[2]);
-            list($schema,$tb)=explode(".",$size[1]);
-
-            if (isset($size[3])) $onChange="onChange=\"javascript:".$size[3]."(this,$this->idpratica,'$schema')\"";
-            $retval="<select style=\"width:$size[0]px\" class=\"$class\"  name=\"$campo\"  id=\"$campo\" onmousewheel=\"return false\" $html5Attr $onChange $disabilitato>$opzioni</select>$help";
-            break;	
+			$size=explode("x",$w);
+			$opzioni=$this->elenco_selectdb($size[1],Array($dati[$campo]),isset($size[2])?($size[2]):(null));
+			
+			if (isset($size[3])) $onChange="onChange=\"".$size[3]."()\"";
+			$retval="<select style=\"width:$size[0]px\" class=\"$class\"  name=\"$campo\"  id=\"$campo\" onmousewheel=\"return false\" $onChange $title $html5Attr $disabilitato>$opzioni</select>$help";
+			break;
+		case "selectRPC":
+			$size=explode("x",$w);
+			$opzioni=$this->elenco_selectdb($size[1],Array($dati[$campo]),$size[2]);
+			list($schema,$tb)=explode(".",$size[1]);
+			
+			if (isset($size[3])) $onChange="onChange=\"javascript:".$size[3]."(this,$this->idpratica,'$schema')\"";
+			$retval="<select style=\"width:$size[0]px\" class=\"$class\"  name=\"$campo\"  id=\"$campo\" onmousewheel=\"return false\" $html5Attr $onChange $disabilitato>$opzioni</select>$help";
+			break;	
 			
 		case "elenco"://elenco di opzioni da un campo di db valori separati da virgola
 			$size=explode("x",$w);	
@@ -354,41 +334,41 @@ EOT;
 			if($dati[$campo]==-1) $ch="<font color=\"FF0000\">EX $ch</font>";
 			$retval="<b>$ch</b><input type=\"checkbox\"  name=\"$campo\"  id=\"$campo\" $selezionato $html5Attr $disabilitato>&nbsp;&nbsp;";
 			break;
-        case "_checkbox":
-            $val = $dati[$campo];
-            if ($val && $val!="{}"){
-                $vals = explode(",",str_replace("{","",str_replace("}","",$val)));
-            }
-            else{
-                $vals = Array();
-            }
-            $size=explode("x",$w);
-            if ($size[2]=="pratica"){
-                $filtro = sprintf("(pratica = -1 or pratica = %d)",$this->idpratica);
-            }
-            else{
-                $filtro=$size[2];
-            }
-            $opzioni=$this->elenco_opzioni($size[1],Array($dati[$campo]),isset($size[2])?($filtro):(null));
-            $width = sprintf("%spx;",$size[0]);
-            if (!$opzioni) $res[] ="<p><b>Nessun Elemento Trovato</b></p>";
-            foreach($opzioni as $opt){
-                $dataParams=Array();
-                $value=$opt["value"];
-                $label = $opt["label"];
-                $params = json_decode($opt["params"]);
-                foreach($params as $k=>$v) $dataParams[]=sprintf("data-%s='%s'",$k,$v);
-                $params=implode(" ",$dataParams);
-                $selezionato = (in_array($value,$vals))?("checked"):("");
-                $fieldName = sprintf("%s[]",$campo);
-                $objId = sprintf("%s[%s]",$campo,$value);
+		case "_checkbox":
+                    $val = $dati[$campo];
+                    if ($val && $val!="{}"){
+                        $vals = explode(",",str_replace("{","",str_replace("}","",$val)));
+                    }
+                    else{
+                        $vals = Array();
+                    }
+                    $size=explode("x",$w);
+                    if (trim($size[2])=="pratica"){
+                        $filtro = sprintf("(pratica = -1 or pratica = %d)",$this->idpratica);
+                    }
+                    else{
+                        $filtro=$size[2];
+                    }
+                    $opzioni=$this->elenco_opzioni($size[1],Array($dati[$campo]),trim($filtro));
+                    $width = sprintf("%spx;",$size[0]);
+                    if (!$opzioni) $res[] ="<p><b>Nessun Elemento Trovati</b></p>";
+                    foreach($opzioni as $opt){
+                        $dataParams=Array();
+                        $value=$opt["value"];
+                        $label = $opt["label"];
+                        $params = json_decode($opt["params"]);
+                        foreach($params as $k=>$v) $dataParams[]=sprintf("data-%s='%s'",$k,$v);
+                        $params=implode(" ",$dataParams);
+                        $selezionato = (in_array($value,$vals))?("checked"):("");
+                        $fieldName = sprintf("%s[]",$campo);
+                        $objId = sprintf("%s[%s]",$campo,$value);
 
-                $res[] = <<<EOT
-			<label for="$objId" class="texbox">$label</label>
-			<input type="checkbox" class="textbox" name="$fieldName" id="$objId" value="$value" $html5Attr $params $selezionato $disabilitato />
+                        $res[] = <<<EOT
+                                <input type="checkbox" class="textbox" name="$fieldName" id="$objId" value="$value" $html5Attr $params $selezionato $disabilitato />
+                                <label for="$objId" class="texbox">$label</label><br/>
 EOT;
-            }
-            $retval = implode("\n",$res);
+                    }
+                    $retval = implode("\n",$res);
 
             break;
 		case "radio":
@@ -642,23 +622,25 @@ function get_dato($tipo,$w,$campo,$html5Attr){
                     $size=explode("x",$w);
                     $retval=$this->get_multiselectdb_value($dati[$campo],"id",$size[1],"opzione");
                     break;
-				
-			case "select2-str":
-			case "select2-int":
-				$size=explode("x",$w);
-				$table = $size[1];
-				$key=$size[2];
-				$lbl =$size[3];
-				//$values=explode(',',str_replace(Array('{','}'),'',$dati[$campo]));
-				$values = str_replace(Array('{','}'),"",$dati[$campo]);
-				$labels=$this->getlabels($table,$key,$lbl,"pratica IN (".$values.")");
-				foreach($labels as $k=>$v){
-					$retval .=<<<EOT
-		<span id="$campo-$i" $html5Attr data-$key="$k"><span class="underline-cursor">$v</span><span class="ui-icon ui-icon-link" style="display:inline-block;margin-left:1px;"/></span>
+
+            case "select2-str":
+            case "select2-int":
+                    $size=explode("x",$w);
+                    $table = $size[1];
+                    $key=$size[2];
+                    $lbl =$size[3];
+                    //$values=explode(',',str_replace(Array('{','}'),'',$dati[$campo]));
+                    $values = json_encode($dati[$campo]);
+                    $labels=$this->getlabels($table,$key,$lbl,"pratica IN (".implode(',',$values).")");
+
+                    foreach($labels as $k=>$v){
+                            $retval .=<<<EOT
+    <span id="$campo-$i" $html5Attr data-$key="$k"><span class="underline-cursor">$v</span><span class="ui-icon ui-icon-link" style="display:inline-block;margin-left:1px;"/></span>
 EOT;
-				}
-				
-				break;
+                    }
+
+                    break;
+                              
             case "riferimento":
                 $prms=explode('#',$w);
                 $size=array_shift($prms);
@@ -703,13 +685,11 @@ EOT;
 <a href="#" id="$campo" style="text-decoration:none;width:$size" data-pratica="$pr" $html5Attr>$testo &nbsp;<span style="display:inline-block" class="ui-icon $class"></a>
 EOT;
 				break;
-			case "link":
+            case "link":
 				$value = $dati[$campo];
 				$retval =<<<EOT
 	<a href="$value" target="iol">$value</a>
 EOT;
-
-
 			
 	}
 	return $retval;
@@ -736,7 +716,19 @@ function get_riga_edit($nriga,$frozen_cols=Array()){
             $html5Attr=Array();
             //Raccolgo gli HTML5 Attributes (sono nella forma data1=val1#data2=val2....)
             if ($html5Data){
-                $html5Attr = $this->getHTML5Attr($html5Data,$i);
+                $d=explode('#',$html5Data);
+                //$d=(is_array($d))?($d):(Array($d));
+                for($k=0;$k<count($d);$k++){
+                    list($key,$v)=explode('=',$d[$k]);
+                    if(strpos($v, '@')===0){
+                        $html5Attr[]=sprintf('%s="%s"',$key,$this->array_dati[$nriga][str_replace('@', '', $v)]);
+                    }
+                    else{
+                        $html5Attr[]=sprintf('%s="%s"',$key,$v);
+                    }
+                    
+                }
+                $html5Attr=implode(" ",$html5Attr);
             }
             $tipo=trim($tipo);
             if(($tipo!="button") and ($tipo!="submit"))
@@ -782,7 +774,7 @@ function get_riga_view($nriga){
 	return $testo_riga;
 }
  
-function edita($print=1){
+function edita(){
 //if($this->error_flag==1)
 	//echo ("I campi evidenziati in rosso non sono validi");
 	//crea la tabella di editing
@@ -845,15 +837,16 @@ function edita($print=1){
 	";
     
     $buttons=$this->set_buttons();
-
-//	print $tabella;
-//    print $buttons;
-    if($print == 1){
+    if ($this->printTable == 1){
         print $tabella;
         print $buttons;
     }
     else{
-        return $tabella.$buttons;
+        $html =<<<EOT
+        $tabella
+        $buttons        
+EOT;
+        return $html;
     }
 }
 
@@ -886,18 +879,27 @@ function tabella($curr=0){
     
 	$buttons=$this->set_buttons();
 
-	print $tabella;
-    print $buttons;
+    if ($this->printTable == 1){
+        print $tabella;
+        print $buttons;
+    }
+    else{
+        $html =<<<EOT
+        $tabella
+        $buttons        
+EOT;
+        return $html;
+    };
 }	
 
 function elenco($form=SELF){
-	for ($i=0;$i<$this->num_record;$i++){
-		$this->curr_record=$i;
+    for ($i=0;$i<$this->num_record;$i++){
+        $this->curr_record=$i;
         $this->idtabella=$this->array_dati[$i]['id'];
         $this->array_hidden["id"]="";
-		$this->get_titolo($form);
-		$this->tabella();
-	}
+        $this->get_titolo($form);
+        $this->tabella();
+    }
 }
 
 
@@ -924,53 +926,39 @@ function elenco_select($tabella,$selezionato){
 	return $retval;
 }
 
-    function elenco_selectdb($tabella,$selezionato,$filtro=''){
+function elenco_selectdb($tabella,$selezionato,$filtro=''){
 // dalla tabella crea la lista di opzioni per il controllo SELECT
 
-        if (!isset($this->db)) $this->connettidb();
-        $sql="select * from $tabella";
-        if (trim($filtro)){
-            if (!ereg("=",$filtro)){
-                if ($this->array_dati[$this->curr_record][$filtro]){
-                    $filtro="$filtro='".$this->array_dati[$this->curr_record][$filtro]."'";
-                }
-				elseif($_REQUEST[$filtro]){
-                    $filtro="$filtro='".$_REQUEST[$filtro]."'";
-                }
-            }
-            $sql.=" where $filtro";
+	if (!isset($this->db)) $this->connettidb();
+	$sql="select id,opzione from $tabella";
+	if (trim($filtro)){
+		if (!ereg("=",$filtro)){
+			if ($this->array_dati[$this->curr_record][$filtro]){
+				$filtro="$filtro='".$this->array_dati[$this->curr_record][$filtro]."'";
+			}
+			elseif($_REQUEST[$filtro]){
+				$filtro="$filtro='".$_REQUEST[$filtro]."'";
+			}
+		}
+		$sql.=" where $filtro";
 
-        }
+	}
 
-        utils::debug(DEBUG_DIR.'selectdb.debug',$sql);
-        $result = $this->db->sql_query ($sql);
-        if (!$result){
-            return;
-        }
-        $retval="";
-        $elenco = $this->db->sql_fetchrowset();
-        $nrighe=$this->db->sql_numrows();
-        if (!$nrighe) return "\n<option value=\"\">Seleziona =====></option>";
-        $tmp = Array();
-        for  ($i=0;$i<$nrighe;$i++){
-            $el = $elenco[$i];
-            $prms = Array();
-            foreach($el as $k=>$v){
-                $prms[]=sprintf("data-%s=\"%s\"",$k,$v);
-            }
-            $params= implode(" ",$prms);
-            (in_array($elenco[$i]["id"],$selezionato))?($selected="selected"):($selected="");
-            $id = $elenco[$i]["id"];
-            $opzione = $elenco[$i]["opzione"];
-            //$retval.="\n<option value=\"".$elenco[$i]["id"]."\" $selected>".$elenco[$i]["opzione"]."</option>";
-            $tmp[]=<<<EOT
-<option value="$id" $params $selected >$opzione</option>
-EOT;
-
-        }
-        $retval = implode("",$tmp);
-        return $retval;
-    }
+	utils::debug(DEBUG_DIR.'selectdb.debug',$sql);
+	$result = $this->db->sql_query ($sql);
+	if (!$result){
+		return;
+	}
+	$retval="";
+	$elenco = $this->db->sql_fetchrowset();
+	$nrighe=$this->db->sql_numrows();
+	if (!$nrighe) return "\n<option value=\"\">Seleziona =====></option>";
+	for  ($i=0;$i<$nrighe;$i++){
+		(in_array($elenco[$i]["id"],$selezionato))?($selected="selected"):($selected="");
+		$retval.="\n<option value=\"".$elenco[$i]["id"]."\" $selected>".$elenco[$i]["opzione"]."</option>";
+  	}
+	return $retval;
+}
 
 function elenco_select_view($tabella,$filtro){
 	if (!isset($this->db)) $this->connettidb();
@@ -1068,9 +1056,6 @@ function get_selectdb_value($val,$fld,$tab,$campo){
 		return "Non definito";
 	elseif(!$val){
 		switch($tab){
-            case "pe.elenco_onerosa":
-                $fkey = "NO";
-                break;
 			default:
 				$fkey="Non definito";
 				break;
@@ -1113,85 +1098,10 @@ function get_multiselectdb_value($val,$fld,$tab,$campo){
 // >>>>>>>>>>>>>>>>>>>>>>> FUNZIONI DI RICERCA NUOVO NOMINATIVO (da vedere)<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 function set_elenco_trovati($sql='true',$schema="pe"){
-       $sql="SELECT DISTINCT * FROM ((SELECT 'pe' as schema,* FROM (SELECT DISTINCT ON (coalesce(soggetti.codfis,soggetti.ragsoc) ) id,coalesce(soggetti.codfis,'') as codfis , coalesce(soggetti.ragsoc,'') as ragsoc,coalesce(datanato::varchar,'') as datanato,coalesce(soggetti.piva,'') as piva,cognome,nome,coalesce(comunato,'') as comunato,
+
+       $sql="SELECT * FROM (SELECT DISTINCT ON (coalesce(soggetti.codfis,soggetti.ragsoc) ) id,coalesce(soggetti.codfis,'') as codfis , coalesce(soggetti.ragsoc,'') as ragsoc,coalesce(datanato::varchar,'') as datanato,coalesce(soggetti.piva,'') as piva,cognome,nome,coalesce(comunato,'') as comunato,
 ((((COALESCE(soggetti.cognome, ''::character varying)::text || COALESCE(' '::text || soggetti.nome::text, ''::text)) ||coalesce(' C.F. '||codfis,'')|| COALESCE(' '::text || soggetti.titolo::text, ''::text)) || COALESCE(' '::text || soggetti.ragsoc::text, ''::text)) || coalesce(' P.I. '||piva,'') || COALESCE(' '::text || soggetti.indirizzo::text, ''::text)) || COALESCE((' ('::text || soggetti.prov::text) || ')'::text, ''::text) AS soggetto
-	FROM pe.soggetti where $sql ORDER BY coalesce(soggetti.codfis,ragsoc),id DESC ) X WHERE coalesce(coalesce(codfis,piva),'')<>'' ORDER BY lower(cognome),lower(nome),datanato,lower(ragsoc))
-UNION ALL
-(SELECT '$schema' as schema,* FROM (SELECT DISTINCT ON (coalesce(soggetti.codfis,soggetti.ragsoc) ) id,coalesce(soggetti.codfis,'') as codfis , coalesce(soggetti.ragsoc,'') as ragsoc,coalesce(datanato::varchar,'') as datanato,coalesce(soggetti.piva,'') as piva,cognome,nome,coalesce(comunato,'') as comunato,
-((((COALESCE(soggetti.cognome, ''::character varying)::text || COALESCE(' '::text || soggetti.nome::text, ''::text)) ||coalesce(' C.F. '||codfis,'')|| COALESCE(' '::text || soggetti.titolo::text, ''::text)) || COALESCE(' '::text || soggetti.ragsoc::text, ''::text)) || coalesce(' P.I. '||piva,'') || COALESCE(' '::text || soggetti.indirizzo::text, ''::text)) || COALESCE((' ('::text || soggetti.prov::text) || ')'::text, ''::text) AS soggetto
-	FROM $schema.soggetti where $sql ORDER BY coalesce(soggetti.codfis,ragsoc),id DESC ) X WHERE coalesce(coalesce(codfis,piva),'')<>'' ORDER BY lower(cognome),lower(nome),datanato,lower(ragsoc))
-ORDER BY soggetto) X;";
-/*       $sql="
-(select 
-id,schema,coalesce(soggetti.codfis,'') as codfis ,tipo,
- coalesce(soggetti.ragsoc,'') as ragsoc,coalesce(datanato::varchar,'') as datanato,
- coalesce(soggetti.piva,'') as piva,cognome,nome,coalesce(comunato,'') as comunato,
-((((COALESCE(soggetti.cognome, ''::character varying)::text || COALESCE(' '::text || soggetti.nome::text, ''::text)) ||coalesce(' C.F. '||codfis,'')|| COALESCE(' '::text || soggetti.titolo::text, ''::text)) || COALESCE(' '::text || soggetti.ragsoc::text, ''::text)) || coalesce(' P.I. '||piva,'') || COALESCE(' '::text || soggetti.indirizzo::text, ''::text)) || COALESCE((' ('::text || soggetti.prov::text) || ')'::text, ''::text)||' - Richiedente' AS soggetto
-,last_upd
- FROM pe.ricerca_soggetti as soggetti where $sql and tipo='richiedente' order by soggetto asc,last_upd desc)
-UNION ALL
-(
-select 
-id,schema,coalesce(soggetti.codfis,'') as codfis ,tipo,
- coalesce(soggetti.ragsoc,'') as ragsoc,coalesce(datanato::varchar,'') as datanato,
- coalesce(soggetti.piva,'') as piva,cognome,nome,coalesce(comunato,'') as comunato,
-((((COALESCE(soggetti.cognome, ''::character varying)::text || COALESCE(' '::text || soggetti.nome::text, ''::text)) ||coalesce(' C.F. '||codfis,'')|| COALESCE(' '::text || soggetti.titolo::text, ''::text)) || COALESCE(' '::text || soggetti.ragsoc::text, ''::text)) || coalesce(' P.I. '||piva,'') || COALESCE(' '::text || soggetti.indirizzo::text, ''::text)) || COALESCE((' ('::text || soggetti.prov::text) || ')'::text, ''::text)||' - Richiedente' AS soggetto
-,last_upd
- FROM vigi.ricerca_soggetti as soggetti where $sql and tipo='richiedente' order by soggetto asc,last_upd desc
-)
-UNION ALL
-(select 
-id,schema,coalesce(soggetti.codfis,'') as codfis ,tipo,
- coalesce(soggetti.ragsoc,'') as ragsoc,coalesce(datanato::varchar,'') as datanato,
- coalesce(soggetti.piva,'') as piva,cognome,nome,coalesce(comunato,'') as comunato,
-((((COALESCE(soggetti.cognome, ''::character varying)::text || COALESCE(' '::text || soggetti.nome::text, ''::text)) ||coalesce(' C.F. '||codfis,'')|| COALESCE(' '::text || soggetti.titolo::text, ''::text)) || COALESCE(' '::text || soggetti.ragsoc::text, ''::text)) || coalesce(' P.I. '||piva,'') || COALESCE(' '::text || soggetti.indirizzo::text, ''::text)) || COALESCE((' ('::text || soggetti.prov::text) || ')'::text, ''::text)||' - Progettista Opere' AS soggetto
-,last_upd
- FROM pe.ricerca_soggetti as soggetti where $sql and tipo='progettista' order by soggetto asc,last_upd desc)
-UNION ALL
-(
-select 
-id,schema,coalesce(soggetti.codfis,'') as codfis ,tipo,
- coalesce(soggetti.ragsoc,'') as ragsoc,coalesce(datanato::varchar,'') as datanato,
- coalesce(soggetti.piva,'') as piva,cognome,nome,coalesce(comunato,'') as comunato,
-((((COALESCE(soggetti.cognome, ''::character varying)::text || COALESCE(' '::text || soggetti.nome::text, ''::text)) ||coalesce(' C.F. '||codfis,'')|| COALESCE(' '::text || soggetti.titolo::text, ''::text)) || COALESCE(' '::text || soggetti.ragsoc::text, ''::text)) || coalesce(' P.I. '||piva,'') || COALESCE(' '::text || soggetti.indirizzo::text, ''::text)) || COALESCE((' ('::text || soggetti.prov::text) || ')'::text, ''::text)||' - Progettista Opere' AS soggetto
-,last_upd
- FROM vigi.ricerca_soggetti as soggetti where $sql and tipo='progettista' order by soggetto asc,last_upd desc)
- UNION ALL
- (select 
-id,schema,coalesce(soggetti.codfis,'') as codfis ,tipo,
- coalesce(soggetti.ragsoc,'') as ragsoc,coalesce(datanato::varchar,'') as datanato,
- coalesce(soggetti.piva,'') as piva,cognome,nome,coalesce(comunato,'') as comunato,
-((((COALESCE(soggetti.cognome, ''::character varying)::text || COALESCE(' '::text || soggetti.nome::text, ''::text)) ||coalesce(' C.F. '||codfis,'')|| COALESCE(' '::text || soggetti.titolo::text, ''::text)) || COALESCE(' '::text || soggetti.ragsoc::text, ''::text)) || coalesce(' P.I. '||piva,'') || COALESCE(' '::text || soggetti.indirizzo::text, ''::text)) || COALESCE((' ('::text || soggetti.prov::text) || ')'::text, ''::text)||' - Direttore Lavori' AS soggetto
-,last_upd
- FROM pe.ricerca_soggetti as soggetti where $sql and tipo='direttore' order by soggetto asc,last_upd desc)
-UNION ALL
-(
-select 
-id,schema,coalesce(soggetti.codfis,'') as codfis ,tipo,
- coalesce(soggetti.ragsoc,'') as ragsoc,coalesce(datanato::varchar,'') as datanato,
- coalesce(soggetti.piva,'') as piva,cognome,nome,coalesce(comunato,'') as comunato,
-((((COALESCE(soggetti.cognome, ''::character varying)::text || COALESCE(' '::text || soggetti.nome::text, ''::text)) ||coalesce(' C.F. '||codfis,'')|| COALESCE(' '::text || soggetti.titolo::text, ''::text)) || COALESCE(' '::text || soggetti.ragsoc::text, ''::text)) || coalesce(' P.I. '||piva,'') || COALESCE(' '::text || soggetti.indirizzo::text, ''::text)) || COALESCE((' ('::text || soggetti.prov::text) || ')'::text, ''::text)||' - Direttore Lavori' AS soggetto
-,last_upd
- FROM vigi.ricerca_soggetti as soggetti where $sql and tipo='direttore' order by soggetto asc,last_upd desc)
-UNION ALL
- (select 
-id,schema,coalesce(soggetti.codfis,'') as codfis ,tipo,
- coalesce(soggetti.ragsoc,'') as ragsoc,coalesce(datanato::varchar,'') as datanato,
- coalesce(soggetti.piva,'') as piva,cognome,nome,coalesce(comunato,'') as comunato,
-((((COALESCE(soggetti.cognome, ''::character varying)::text || COALESCE(' '::text || soggetti.nome::text, ''::text)) ||coalesce(' C.F. '||codfis,'')|| COALESCE(' '::text || soggetti.titolo::text, ''::text)) || COALESCE(' '::text || soggetti.ragsoc::text, ''::text)) || coalesce(' P.I. '||piva,'') || COALESCE(' '::text || soggetti.indirizzo::text, ''::text)) || COALESCE((' ('::text || soggetti.prov::text) || ')'::text, ''::text)||' - Esecutore Lavori' AS soggetto
-,last_upd
- FROM pe.ricerca_soggetti as soggetti where $sql and tipo='esecutore' order by soggetto asc,last_upd desc)
-UNION ALL
-(
-select 
-id,schema,coalesce(soggetti.codfis,'') as codfis ,tipo,
- coalesce(soggetti.ragsoc,'') as ragsoc,coalesce(datanato::varchar,'') as datanato,
- coalesce(soggetti.piva,'') as piva,cognome,nome,coalesce(comunato,'') as comunato,
-((((COALESCE(soggetti.cognome, ''::character varying)::text || COALESCE(' '::text || soggetti.nome::text, ''::text)) ||coalesce(' C.F. '||codfis,'')|| COALESCE(' '::text || soggetti.titolo::text, ''::text)) || COALESCE(' '::text || soggetti.ragsoc::text, ''::text)) || coalesce(' P.I. '||piva,'') || COALESCE(' '::text || soggetti.indirizzo::text, ''::text)) || COALESCE((' ('::text || soggetti.prov::text) || ')'::text, ''::text)||' - Esecutore Lavori' AS soggetto
-,last_upd
- FROM vigi.ricerca_soggetti as soggetti where $sql and tipo='esecutore' order by soggetto asc,last_upd desc)
-";*/
-		//echo "<p>$sql</p>";
+	FROM $schema.soggetti where $sql ORDER BY coalesce(soggetti.codfis,ragsoc),id DESC ) X WHERE coalesce(coalesce(codfis,piva),'')<>'' ORDER BY lower(cognome),lower(nome),datanato,lower(ragsoc);";
 	if (!isset($this->db)) $this->connettidb();
 	$result = $this->db->sql_query($sql);
 	return $this->db->sql_numrows();
@@ -1208,7 +1118,7 @@ function elenco_trovati($pratica,$schema="pe"){
 	foreach ($nomi as $ardati){
 	print "
 	<tr height=10>
-		<td width=40><a href=$schema.scheda_soggetto.php?mode=new&pratica=$pratica&id=$ardati[id]&schema=$ardati[schema]><img src=\"images/left.gif\" border=0></a></td>
+		<td width=40><a href=$schema.scheda_soggetto.php?mode=new&pratica=$pratica&id=$ardati[id]><img src=\"images/left.gif\" border=0></a></td>
 		<td width=100%>$ardati[soggetto], nato a $ardati[comunato] il $ardati[datanato]</td>
 	</tr>
 	<tr>
@@ -1229,6 +1139,8 @@ function getLabels($table,$key,$label,$filter){
 	}
 	return $result;
 }
+
+
 /*function elenco_rif($fields,$tab,$filter){
 	$campi=implode(",",$fields);
 	$sql="SELECT $campi FROM $tab WHERE $filter";

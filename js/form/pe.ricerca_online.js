@@ -15,7 +15,7 @@ $(document).ready(function(){
     }).bind('click',function(event){
         event.preventDefault();
         $('#frm-report').remove();
-        $('body').append('<form id="frm-report" action="./services/xReport.php" method="POST" target="reportPraticaweb"><input type="hidden" value="online" name="report" id="report"/><input type="hidden" value="" name="elenco" id="elencopratiche"/></form>')
+        $('body').append('<form id="frm-report" action="./services/xReport.php" method="POST" target="reportPraticaweb"><input type="hidden" value="" name="elenco" id="elencopratiche"/></form>')
         $('#elencopratiche').val($('#elenco').val());
         $('#frm-report').submit();
     });
@@ -37,7 +37,7 @@ $(document).ready(function(){
     $('[data-plugins="dynamic-search"]').bind('change',function(event){
         event.preventDefault();
         dataPost=getSearchFilter();
-        $('#result-table').datagrid('load',{data:dataPost,action:'search-online'});
+        $('#result-table').datagrid('load',{data:dataPost});
     });
     var oper='AND';
     var dataPost=getSearchFilter();
@@ -61,7 +61,7 @@ $(document).ready(function(){
         rowStyler: function(index,row){
             return 'color:#0e2d5f';
         },
-        queryParams:{data:{},action:'search-online',op:oper},
+        queryParams:{data:dataPost,action:'search',op:oper},
         onLoadSuccess:function(data){
             if(!data.total) alert('Nessun record trovato');
             $('#elenco').val(data['elenco_id']);

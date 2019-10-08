@@ -8,12 +8,6 @@ $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $id=(isset($_REQUEST["id"]))?($_REQUEST["id"]):(null);
 $idpratica=$_REQUEST["pratica"];
 $file_config="$tabpath/documenti";
-list($tipo,$page) = explode(".",$_REQUEST["form"]);
-$is_cdu=($tipo=="cdu")?(1):(0);
-$is_ce=($tipo=="ce")?(1):(0);
-$is_vigi=($tipo == "vigi")?(1):(0);
-$is_agi=($tipo == "agi")?(1):(0);
-$is_storage=($tipo=="storage")?(1):(0);
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
 $db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
@@ -44,7 +38,7 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
     }
     elseif ($modo=="edit"){	
         $tabella->set_dati("id=$id");
-        $intestazione="Documento ".$tabella->array_dati[0]["file_doc"];
+        $intestazione="Documento ".$tabella->array_dati[0]["nome"];
         
     }
     else{
@@ -67,18 +61,18 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
 		  </tr>
 
 		</TABLE>
-        <input type="hidden" name="pratica" value="<?php echo $idpratica;?>">
-        <input type="hidden" name="agi" value="<?php echo $is_agi;?>"/>
-        <input type="hidden" name="cdu" value="<?php echo $is_cdu;?>"/>
-        <input type="hidden" name="ce" value="<?php echo $is_ce;?>"/>
-        <input type="hidden" name="storage" value="<?php echo $is_storage;?>"/>
-        <input type="hidden" name="vigi" value="<?php echo $is_vigi;?>"/>
-		<input type="hidden" name="comm" value="<?php echo $is_ce;?>"/>
         <input name="active_form" type="hidden" value="stp.documenti.php">				
         <input name="mode" type="hidden" value="<?=$modo?>">
         <input name="id" type="hidden" value="<?=$id?>">
-        <input name="old_name" type="hidden" value="<?php echo $tabella->array_dati[0]["file_doc"];?>">
     </FORM>
+<!--
+
+    <a href="invia_firma.php"
+       target="popup"
+       onclick="window.open('invia_firma.php?iddoc=<?php echo $id?>&idpratica=<?php echo $idpratica;?>','popup','width=600,height=480 scrollbars=no,resizable=no'); return false;">
+        Firma e invia il documento
+    </a>
+-->
 <?php
 }
 else{
@@ -87,17 +81,16 @@ else{
    
 ?>
     <form method="post" target="_parent" action="stp.documenti.php">
-		<input type="hidden" name="mode" value="new">
+	 <input type="hidden" name="mode" value="new">
         <input type="hidden" name="pratica" value="<?php echo $idpratica;?>">
-		<input type="hidden" name="agi" value="<?php echo $is_agi;?>"/>
-		<input type="hidden" name="cdu" value="<?php echo $is_cdu;?>"/>
-		<input type="hidden" name="ce" value="<?php echo $is_ce;?>"/>
-		<input type="hidden" name="storage" value="<?php echo $is_storage;?>"/>
-		<input type="hidden" name="vigi" value="<?php echo $is_vigi;?>"/>
-    <H2 class="blueBanner">Elenco dei documenti della pratica</H2>
+    
+    <H2 class="blueBanner">Elenco dei documenti della pratica</H2><form method="post" name="modelli" action="">
         <TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
         
 <?php	
+
+
+
 		//Visualizzare solo quelli inerenti il form e opzioni 
 		$num_doc=$tabella->set_dati("pratica='$idpratica' AND NOT coalesce(form,'') IN ('cdu.vincoli')");
                 $tabella->set_titolo("Elenco Documenti prodotti","nuovo");

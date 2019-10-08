@@ -4,6 +4,7 @@ include_once("login.php");
 $tabpath="pe";
 include_once "./lib/tabella_h.class.php";
 include_once "./lib/tabella_v.class.php";
+//print_array($_REQUEST);
 $idpratica=$_REQUEST["pratica"];
 $modo=(isset($_REQUEST["mode"]) && $_REQUEST["mode"])?($_REQUEST["mode"]):('view');
 $titolo=$_SESSION["TITOLO_$idpratica"];
@@ -31,8 +32,8 @@ appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
-    utils::loadCss(Array('dropzone','iter'));
-    utils::loadJS(Array('dropzone'));
+    utils::loadCss();
+    utils::loadJS();
 ?>
 <script language=javascript>
 function confirmSubmit()
@@ -136,10 +137,6 @@ if (($modo=="edit") or ($modo=="new")){
 		  
 		</table>
 <?php
-    $dropzoneFile=DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."include".DIRECTORY_SEPARATOR."dropzone.visione.php";
-    if (file_exists($dropzoneFile)){
-        require_once $dropzoneFile;
-    }
 }
 ?>
 

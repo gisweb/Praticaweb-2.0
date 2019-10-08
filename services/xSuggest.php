@@ -135,36 +135,9 @@ switch($field) {
                 
             );
         break;
-    case "sezione":
-        $sezione=($_REQUEST["sezione"])?($_REQUEST["sezione"]):('%');
-        $filtroComune = ($_REQUEST["cod_belfiore"])?("comune = '".$_REQUEST["cod_belfiore"]."'"):("true");
-        $sql="SELECT DISTINCT sezione as valore,nome as label FROM nct.sezioni WHERE $filtroComune order by 2,1";
-        if($db->sql_query($sql)){
-            $res=$db->sql_fetchrowset();
-            for($i=0;$i<count($res);$i++){
-                $result[]=Array(
-                    "id"=>$res[$i]["valore"],
-                    "value"=>$res[$i]["valore"],
-                    "label"=>$res[$i]["valore"]
-                );
-
-            }
-            $exec=1;
-        }
-        else
-            $result[]=Array(
-                "id"=>'',
-                "value"=>'',
-                "label"=>"Si è verificato un errore nell' esecuzione dell'interrogazione;",
-                "query"=>$sql,
-                "field"=>$field
-            );
-        break;
-
     case "foglio":
         $sezione=($_REQUEST["sezione"])?($_REQUEST["sezione"]):('%');
-	$filtroComune = ($_REQUEST["cod_belfiore"])?(" AND comune = '".$_REQUEST["cod_belfiore"]."'"):("");
-        $sql="SELECT DISTINCT foglio as valore,length(foglio) FROM nct.particelle WHERE foglio ilike '%$value%' AND (sezione ilike '$sezione' or sezione is null) $filtroComune order by 2,1";
+        $sql="SELECT DISTINCT foglio as valore,length(foglio) FROM nct.particelle WHERE foglio ilike '%$value%' and (sezione ilike '$sezione' or sezione is null) order by 2,1";
         if($db->sql_query($sql)){
             $res=$db->sql_fetchrowset();
             for($i=0;$i<count($res);$i++){
@@ -189,8 +162,8 @@ switch($field) {
     case 'mappale':
         $fg=(isset($_REQUEST['foglio']))?(addslashes($_REQUEST['foglio'])):('%');
         $sezione=($_REQUEST["sezione"])?($_REQUEST["sezione"]):('%');
-	$filtroComune = ($_REQUEST["cod_belfiore"])?(" AND comune = '".$_REQUEST["cod_belfiore"]."'"):("");
-        $sql="SELECT DISTINCT mappale as valore,CASE WHEN (regexp_replace(mappale,'([^0-9]+)','','g'))='' THEN 0 ELSE regexp_replace(mappale,'([^0-9]+)','','g')::integer end FROM nct.particelle WHERE mappale ilike '$value%' and foglio ilike '$fg' and (sezione ilike '$sezione' or sezione is null) $filtroComune order by 2";
+        $sql="SELECT DISTINCT mappale as valore,CASE WHEN (regexp_replace(mappale,'([^0-9]+)','','g'))='' THEN 0 ELSE regexp_replace(mappale,'([^0-9]+)','','g')::integer end FROM nct.particelle WHERE mappale ilike '$value%' and foglio ilike '$fg' and (sezione ilike '$sezione' or sezione is null) order by 2";
+
         if($db->sql_query($sql)){
             $res=$db->sql_fetchrowset();
             for($i=0;$i<count($res);$i++){
@@ -211,7 +184,6 @@ switch($field) {
             );
         break;
     case 'via':
-	$filtroComune = ($_REQUEST["cod_belfiore"])?(" AND comune = '".$_REQUEST["cod_belfiore"]."'"):("");
         $sql="SELECT DISTINCT nome as valore FROM civici.pe_vie WHERE nome ilike '%$value%' order by 1";
         if($db->sql_query($sql)){
             $res=$db->sql_fetchrowset();
@@ -290,7 +262,7 @@ switch($field) {
             break;
     case 'numero-pratica':
     case "rif_pratica":    
-        $sql="SELECT numero as valore, B.nome||' n° '|| coalesce(numero,'') ||  coalesce(' del ' ||to_char(data_prot,'DD/MM/YYYY'),'') as label,B.nome as categoria,coalesce(data_prot,data_presentazione) as data_prot,pratica FROM pe.avvioproc A left join pe.e_tipopratica B on (A.tipo=B.id) WHERE numero ilike '$value%' order by 3,4;";
+        $sql="SELECT numero as valore, 'Pratica n° '|| coalesce(numero,'') ||  coalesce(' del ' ||to_char(data_prot,'DD/MM/YYYY'),'') as label,B.nome as categoria,coalesce(data_prot,data_presentazione) as data_prot,pratica FROM pe.avvioproc A left join pe.e_tipopratica B on (A.tipo=B.id) WHERE numero ilike '$value%' order by 3,4;";
         if($db->sql_query($sql)){
             $res=$db->sql_fetchrowset();
             for($i=0;$i<count($res);$i++){
@@ -298,50 +270,12 @@ switch($field) {
                     "id"=>$res[$i]["pratica"],
                     "value"=>$res[$i]["valore"],
                     "label"=>$res[$i]["label"],
-                    "category"=>$res[$i]["categoria"],
-					"child"=>Array("riferimento"=>$res[$i]["pratica"])
+                    "category"=>$res[$i]["categoria"]
                 );
 
             }
         }
 		$query=1;
-        break;
-    case "stp-preview":
-        $dbh = utils::getDb();
-        $app = $_REQUEST["app"];
-        switch($app){
-            case "cdu":
-                $data=Array($_REQUEST["protocollo"],$_REQUEST["data_protocollo"]);
-                $sql="SELECT protocollo as value,format('CDU protocollo n. %s richesto da %s',protocollo,coalesce(richiedente,'')) as label,pratica as id FROM cdu.richiesta WHERE protocollo=? and data = ?;";
-                $message = sprintf("Nessun CDU con protocollo %s in data %s è stato trovato.",$_REQUEST["protocollo"],$_REQUEST["data_protocollo"]);
-                break;
-            case "vigi":
-                $data = Array($_REQUEST["numero"]);
-                $sql="SELECT numero as value, B.nome||' n° '|| coalesce(numero,'') ||  coalesce(' del ' ||to_char(data_prot,'DD/MM/YYYY'),'') as label,pratica as id FROM pe.avvioproc A left join pe.e_tipopratica B on (A.tipo=B.id) WHERE numero ilike ? order by 3,4;";
-                $message = sprintf("Nessun pratica con numero %s è stata trovata.",$_REQUEST["numero"]);
-                break;
-            case "ce":
-                break;
-            default:
-                $data = Array($_REQUEST["numero"]);
-                $sql="SELECT numero as value, B.nome||' n° '|| coalesce(numero,'') ||  coalesce(' del ' ||to_char(data_prot,'DD/MM/YYYY'),'') as label,pratica as id FROM pe.avvioproc A left join pe.e_tipopratica B on (A.tipo=B.id) WHERE numero ilike ? order by 1;";
-                $message = sprintf("Nessun pratica con numero %s è stata trovata.",$_REQUEST["numero"]);
-                break;
-        }
-        //$sql="SELECT numero as valore, B.nome||' n° '|| coalesce(numero,'') ||  coalesce(' del ' ||to_char(data_prot,'DD/MM/YYYY'),'') as label,B.nome as categoria,coalesce(data_prot,data_presentazione) as data_prot,pratica FROM pe.avvioproc A left join pe.e_tipopratica B on (A.tipo=B.id) WHERE numero ilike '$value%' order by 3,4;";
-        $stmt = $dbh->prepare($sql);
-        if($stmt->execute($data)){
-            $result = $stmt->fetchAll();
-            if (count($result)==0){
-                $result=Array(Array("id"=>0,"message"=>$message));
-            }
-
-        }
-        else{
-            $result=Array(Array("id"=>0,"message"=>"Si è verificato un errore nella ricerca"));
-        }
-
-        $query=1;
         break;
 	case "infrazione":
 	case "esposto":    
@@ -361,23 +295,7 @@ switch($field) {
         }
 		$query=1;
         break;
-	case "pedilizia":
-        $sql="SELECT numero as valore, nome||' n° '|| coalesce(numero,'') ||  coalesce(' del ' ||to_char(data_prot,'DD/MM/YYYY'),'') as label,
-		B.nome as categoria,coalesce(data_prot,data_presentazione) as data_prot,pratica FROM pe.avvioproc A left join pe.e_tipopratica B on (A.tipo=B.id) WHERE numero ilike '$value%' order by 3,4;";
-        if($db->sql_query($sql)){
-            $res=$db->sql_fetchrowset();
-            for($i=0;$i<count($res);$i++){
-                $result[]=Array(
-                    "id"=>$res[$i]["pratica"],
-                    "value"=>$res[$i]["valore"],
-                    "label"=>$res[$i]["label"],
-                    "category"=>$res[$i]["categoria"]
-                );
 
-            }
-        }
-		$query=1;
-        break;
 }
 if (!$result && $query==0){
     $sql="select distinct $field as valore from $tabella where $field ilike '$value%' order by 1;";

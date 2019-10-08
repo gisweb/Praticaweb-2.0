@@ -22,6 +22,11 @@ switch ($modo) {
 		$tit="Elenco dei Pagamenti";
 		break;
 }
+
+//Imposto i permessi di default per il modulo
+$_SESSION["PERMESSI"]=$_SESSION["PERMESSI_OK"];
+
+
 ?>
 <html>
 <head>
@@ -59,7 +64,7 @@ if (($modo=="edit") or ($modo=="new")){
     <FORM height=0 method="post" action="praticaweb.php">
         <TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">		
             <TR> <!-- intestazione-->
-                <TD><H2 class="blueBanner"><?=$titolo?></H2></TD>
+                <TD colspan="2"><H2 class="blueBanner"><?=$titolo?></H2></TD>
             </TR> 
             <TR>
                 <TD>
@@ -78,12 +83,44 @@ if (($modo=="edit") or ($modo=="new")){
 		?>
 		<!-- fine contenuto-->
                 </TD>
+
+                <TD>
+                    <!--  Diego Bertola 07.11.2015 - Visualizzo gli altri pagamenti aperti della pratica -->
+                    <?php
+                    if ($modo=="edit"){
+                        $db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
+                        $sql = "SELECT * FROM ragioneria.pagamentiaperti WHERE pratica=$idpratica AND id<>$id ORDER BY id";
+                        $db->sql_query($sql);
+                        $ris = $db->sql_fetchrowset();
+                        if(count($ris)>0) {
+                            $ret="<BR><BR><B>Imposta la stessa data e codice per altri pagamenti della pratica:</B><BR><BR>";
+                        }
+                        for($i=0;$i<count($ris);$i++) {
+                            $ret .= "<INPUT type='checkbox' name='id_".$ris[$i]['id']."'>&nbsp;";
+                            $ret .= $ris[$i]['tipo']."&nbsp - ".$ris[$i]['modalita']."&nbsp - ".$ris[$i]['quantita']."x".str_replace(".",",",$ris[$i]['importo'])."<BR>";
+
+                        }
+                        //}
+                        $panelvers="<DIV class='stiletabella'> $ret </DIV>";
+                        print $panelvers;
+
+                        //$file = 'debug.txt';
+                        //$current = file_get_contents($file);
+                        //file_put_contents($file, print_r($menu_pratica, true));
+                        //file_put_contents($file, $panelvers);
+                    }
+                    ?>
+                </TD>
             </TR>
         </TABLE>
 		<input name="active_form" type="hidden" value="<?php echo $form;?>">
 		<input name="mode" type="hidden" value="<?=$modo?>">
 
+
+
 		</FORM>	
+		
+
 	<?php
         include "./inc/inc.window.php";
 		

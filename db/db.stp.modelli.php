@@ -2,18 +2,7 @@
 
 $azione=  strtolower($_REQUEST["azione"]);
 $modo=($_REQUEST["mode"])?($_REQUEST["mode"]):('view');
-if (in_array($azione, Array("salva"))){
-    if(!$_POST["nome"]){
-        if (!$_FILES['file']["name"]){
-		$_POST["nome"]=$_POST["nome_old"];
-		$_REQUEST["nome"]=$_POST["nome_old"];
-        }
-	else{
-		$_POST["nome"]=$_FILES['file']["name"];
-        	$_REQUEST["nome"]=$_FILES['file']["name"];
-	}
-    }
- 
+if (in_array($azione, Array("salva","elimina"))){
     require_once 'db.savedata.php';
     $modo=($azione=='elimina')?("list"):("view");
     $id=($_SESSION["ADD_NEW"])?($_SESSION["ADD_NEW"]):($_REQUEST["id"]);
@@ -25,11 +14,6 @@ if (in_array($azione, Array("salva"))){
           print("***ERROR: Non è possibile copiare il file.<br />\n". MODELLI. $fName); 
 	} 
     }
-}
-elseif($azione=="elimina"){
-    require_once 'db.savedata.php';
-    $modo="list";
-    
 }
 elseif($azione=="annulla"){
     $modo=($modo=='new')?("list"):("view");

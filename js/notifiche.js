@@ -112,7 +112,7 @@ function loadInfoScadenze(){
 function loadInfoVerifiche(){
         var rows=[];
         $.each(verifiche['data'],function(k,v){
-            var text = sprintf('<li><a class="underline-cursor" data-href="praticaweb.php" data-pratica="%d" data-target="praticaweb" data-active_form="pe.verifiche.php" data-id="%d">Pratica n° %s : "%s".<br>Verifica : %s del %s</a></li>',v['pratica'],v['id'],v['numero'],v['oggetto'],v['nome'],v['data_sorteggio']);
+            var text = sprintf('<li><a class="underline-cursor" data-href="praticaweb.php" data-pratica="%d" data-target="praticaweb" data-active_form="pe.verifiche.php" data-id="%d">Pratica n° %s : "%s".<br>Verifica : %s</a></li>',v['pratica'],v['id'],v['numero'],v['oggetto'],v['nome']);
             rows.push(text);
         });
         var html = '<ol>';
@@ -138,21 +138,24 @@ function loadInfoVerifiche(){
 
 function loadInfoAnnotazioni(){
         var rows=[];
+        var rr = ''
         $.each(annotazioni['data'],function(k,v){
-            if (typeof(v["form"])=='undefined') {
-                v["form"]='pe.avvioproc.php';
-            }
-            var vigi = '';
-            if (v['form'].indexOf('vigi.')==0) {
-                vigi = 'data-vigi="1"';
-            }
-            
-            var text = sprintf('<li><a class="underline-cursor" data-href="praticaweb.php" data-pratica="%d" data-target="praticaweb" data-active_form="%s" data-id="%d" %s>Pratica n° %s : "%s".</a></li>',v['pratica'],v['form'],v['id'],vigi,v['numero'],v['oggetto']);
+            //var text = sprintf('<li><a class="underline-cursor" data-href="praticaweb.php" data-pratica="%d" data-target="praticaweb" data-active_form="pe.avvioproc.php" data-id="%d">Pratica n. %s : "%s".</li>',v['pratica'],v['id'],v['numero'],v['oggetto']);
+            rr = '<tr data-row-id="%s">';
+            rr += '<td>%s</td><td>%s</td>';
+            rr += '<td><a class="underline-cursor" data-href="praticaweb.php" data-pratica="%d" data-target="praticaweb" data-active_form="pe.avvioproc.php" data-id="%d"> %s</td>';
+            //rr += '<td><div style="cursor:pointer;" title="Elimina notifica" tooltip="Elimina notifica" class="ui-icon ui-icon-circle-close" ><a data-plugins="delete-notifica" data-pratica="%s" data-id="%s"></a></div></td></tr>'';
+            //rr += '<td><a href="#" data-plugins="delete-notifica" data-pratica="%s" data-id="%s">Elimina</a></td>';
+            rr += '<td><a href="#" onclick="deleteNotifica(%s,%s);">Elimina</a></td>';
+            rr += '</tr>';
+            var text = sprintf(rr,v['id'],v['data_notifica'],v['numero'],v['pratica'],v['id'],v['oggetto'],v['pratica'],v['id']);
             rows.push(text);
         });
-        var html = '<ol>';
+        //var html = '<ol>';
+        var html = '<table class="stiletabella dt" width="100%"><tr bgcolor="#E7EFFF"><th>Data Notifica</th><th>Numero Pratica</th><th colspan="2">Notifica</th></tr>';
         html += rows.join('');
-        html += '</ol>';
+        //html += '</ol>';
+        html += '</table>';
         $('#message-div').html(html);
         $('#message-div').dialog({
             title:'Pratiche Presentate OnLine',

@@ -16,7 +16,7 @@ $id=$_REQUEST["id"];
 unset($_SESSION["ADD_NEW"]);
 $titolo=$_SESSION["TITOLO_$idpratica"];
 $tabpath="oneri";
-/*
+
 $db=appUtils::getDB();
 $sql="SELECT * FROM oneri.e_interventi order by tabella,descrizione";
 $res=$db->fetchAll($sql);
@@ -66,16 +66,6 @@ $res=$db->fetchAll($sql);
 foreach($res as $val){
     $d2[$val["tabella"]][$val["anno"]][]=Array("id"=>$val["valore"],"opzione"=>$val["descrizione"]);
 }
-*/
-$interventi = appUtils::getInterventiOneri();
-$tariffe = appUtils::getTariffeOneri();
-$c1 = appUtils::getC1Oneri();
-$c2 = appUtils::getC2Oneri();
-$c3 = appUtils::getC3Oneri();
-$c4 = appUtils::getC4Oneri();
-$c5 = appUtils::getC5Oneri();
-$d1 = appUtils::getD1Oneri();
-$d2 = appUtils::getD2Oneri();
 //print_array($el);
 ?>
 
@@ -184,7 +174,7 @@ if (($modo=="new") or ($modo=="edit")){
                 if(isset($Errors) && $Errors){
                     $tabella->set_errors($Errors);
                     $tabella->set_dati($_POST);
-				}
+		}
                 elseif ($modo=="edit"){	
                     $tabella->set_dati("id=$id");
                 }

@@ -5,7 +5,7 @@ $(document).ready(function(){
         title:'Finestra di caricamento dei dati',
         width:600,
         height:200
-    });
+    })
     var progressbar = $( "#progressbar" ),
         progressLabel = $( ".progress-label" );
     $( "#progressbar" ).progressbar({
@@ -101,7 +101,7 @@ $(document).ready(function(){
         $(this).removeAttr('disabled');
         $('#btn-close').removeAttr('disabled');
         $( "#dialog" ).dialog( "close" );
-        $("#file").attr('href','./openDocument.php?mode=anagrafe_tributaria&filename='+filename).html("File dell'Anagrafe Triburia");
+        $("#file").attr('href','/documenti/'+filename).html("File dell'Anagrafe Triburia");
     return;
         
     });

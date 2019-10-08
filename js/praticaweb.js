@@ -1,5 +1,5 @@
 if (typeof(appBaseUrl) == 'undefined') var appBaseUrl='';
-if (typeof(baseURL) == 'undefined') var baseURL='/gisclient/template/';
+var baseURL='/gisclient/template/';
 var searchUrl=appBaseUrl+'/services/xSearch.php';
 var serverUrl=appBaseUrl+'/services/xServer.php';
 var suggestUrl=appBaseUrl+'/services/xSuggest.php';
@@ -8,7 +8,7 @@ var suggestUrl=appBaseUrl+'/services/xSuggest.php';
 function setDatiAutoSuggest(event,ui){
     if (typeof(ui.item.child)!='undefined'){
         $.each(ui.item.child,function(k,v){
-            $('#'+k).val(v);
+            $('#'+k).val(v);  
         });
     }
 }
@@ -68,6 +68,8 @@ function loadInto(url,prms){
 }
 function linkToEdit(url,prms){
     if (url && url.indexOf('.php')=='-1' && url.indexOf('.docx')=='-1' && url.indexOf('.odt')=='-1') url += '.php';
+    
+    
     var form='<form action="'+url+'" method="POST" id="submitFrm"></form>';
     prms['mode']='edit';
     if (!window.parent){
@@ -347,13 +349,13 @@ function selectOneriIntervento(){
                 }
             }
             else if(opValue == 'contains'){
-                filter=name+" ilike '%"+$('#1_'+id).val().replace(/'/gi,"''")+"%'";
+                filter=name+" ilike '%"+$('#1_'+id).val()+"%'";
             }
             else if(opValue == 'startswith'){
-                 filter=name+" ilike '"+$('#1_'+id).val().replace(/'/gi,"''")+"%'";
+                 filter=name+" ilike '"+$('#1_'+id).val()+"%'";
             }
             else if(opValue == 'endswith'){
-                 filter=name+" ilike '%"+$('#1_'+id).val().replace(/'/gi,"''")+"'";
+                 filter=name+" ilike '%"+$('#1_'+id).val()+"'";
             }
             else if(opValue == 'in'){
                 var res = [];
@@ -410,13 +412,21 @@ function verificaRuoloSoggetti(){
     });
 }
 
-function openGC3(mapset,x,y,scale){
-    var url = gcURL+"?mapset=" + mapset + '&x=' + x + '&y=' + y + '&s=' + scale;
-    window.open(url);
-    //alert('Sto cercando di aprire la mappa');
+function deleteNotifica(pratica,id){
+    if (!confirm('Sei sicuro di voler eliminare questa notifica?')) return;
+    var d = {};
+    d["pratica"] = pratica;
+    d["id"] = id;
+    d["action"] = "delete-notifica";
+    $.ajax({
+        url:serverUrl,
+        dataType:'json',
+        type:'POST',
+        data:d,
+        success: function(data, textStatus, jqXHR){
+            if (data["success"]==1){
+                $("tr[data-row-id='" + data["id"] + "']").hide();
+            }
+        }
+    });
 }
-
-  function ApriMappa3(mapsetid){
-	var mywin=window.open(baseURL + '?' + "mapset=" + mapsetid );
-	mywin.focus();
-  }

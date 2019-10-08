@@ -19,7 +19,6 @@ if($azione=="salva"){
     $dir = $pr->allegati;
     if($_REQUEST["mode"]=="new"){
         $uploadedFiles = rearrange($_FILES["file_allegato"]);
-        print_array($_REQUEST);
         $data = Array(
             $idpratica,
             $_REQUEST["prot_allegato"],
@@ -29,7 +28,6 @@ if($azione=="salva"){
             $_REQUEST["note"]
         );
         for($i=0;$i<count($uploadedFiles);$i++){
-            print_array($uploadedFiles[$i]);
            $newName = utils::filter_filename($uploadedFiles[$i]["name"]);
            if (is_file($dir.$newName)) $newName= sprintf("%d-%s",rand (100000, 999999),$newName);
            if($uploadedFiles[$i]["error"]==UPLOAD_ERR_NO_FILE){
@@ -51,6 +49,7 @@ if($azione=="salva"){
     }
     else{
         $uploadedFiles = $_FILES["file_allegato"];
+//        print_array($_FILES);
         $id = $_REQUEST["id"];
         if($uploadedFiles["error"]==UPLOAD_ERR_NO_FILE){
             include_once "./db/db.savedata.php";
@@ -78,3 +77,7 @@ elseif($azione=="elimina"){
 
 $active_form=$_POST["active_form"]."?pratica=$idpratica";
 ?>
+<<<<<<< HEAD
+
+=======
+>>>>>>> origin/spezia

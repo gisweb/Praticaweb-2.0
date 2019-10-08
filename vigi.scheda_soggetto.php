@@ -9,7 +9,6 @@ $modo=isset($_REQUEST["mode"])?($_REQUEST["mode"]):('view');
 $errors=null;
 
 $idpratica=$_REQUEST["pratica"];
-$schema = ($_REQUEST["schema"])?($_REQUEST["schema"]):("vigi");
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 
 if(substr($ruolo,0,1)=='v'){
@@ -106,7 +105,7 @@ switch ($modo) {
 		if (strlen($sql)>5){
 			$sql=substr($sql,0,strlen($sql)-4);  // taglio l'ultimo "and "
 			$tabella=new tabella_v("$tabpath/soggetto",'search');	
-			if ($tabella->set_elenco_trovati($sql,'vigi')){ //se trovo un nome corrispondente ai criteri imposto la pagina con i risultati
+			if ($tabella->set_elenco_trovati($sql)){ //se trovo un nome corrispondente ai criteri imposto la pagina con i risultati
 			include "./inc/inc.page_header.php";?>	
 	<FORM id="" name="find" method="post" action="vigi.scheda_soggetto.php">		
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">		
@@ -126,7 +125,7 @@ switch ($modo) {
 				//$trovati=1;
 				$tabella->set_dati($_POST);
 				$tabella->edita();
-				$tabella->elenco_trovati($idpratica,"vigi");?>
+				$tabella->elenco_trovati($idpratica);?>
 				<!-- fine contenuto-->
 			</td>
 		  </tr>
@@ -138,7 +137,6 @@ switch ($modo) {
 	<input name="mode" type="hidden" value="new">
 	<input name="active_form" type="hidden" value="vigi.scheda_soggetto.php">
 	<input name="pratica" type="hidden" value="<?php print $idpratica;?>">
-	<input name="vigi" type="hidden" value="1">
 				
 	</FORM>	
 		<?php
@@ -163,10 +161,8 @@ switch ($modo) {
 		if($idsoggetto){
 			if (isset($errors))
 				$dataset=$_POST;
-			else if ($modo=="edit")
-				$dataset="id = $idsoggetto";
 			else
-				$dataset="id = $idsoggetto AND schema='$schema'";
+				$dataset="id = $idsoggetto";
 		}
 		else{
 			$dataset=$_POST;
@@ -186,8 +182,8 @@ switch ($modo) {
 			<td> 
 				<!-- contenuto-->
 				<?php
-					$tabella->set_dati($dataset);
-					$tabella->edita();
+                                $tabella->set_dati($dataset);
+				$tabella->edita();
 				?>
 				<!-- fine contenuto-->
 			</td>

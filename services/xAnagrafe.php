@@ -135,8 +135,6 @@ switch($mode){
         for($i=0;$i<count($res);$i++){		//CICLO SU TUUTE LE PRATICHE TROVATE
            $discarded=0;
            list($pratica,$num_pr,$data_pres,$tipo)=array_values($res[$i]);
-            utils::debug(DEBUG_DIR."DATI-ANAGRAFE.debug",$res[$i]);
-
            /*Per ogni tipo di record*/
             foreach($rec as $v){    
                 $t1=  getmicrotime();
@@ -158,7 +156,7 @@ switch($mode){
                     else {
                         utils::debug(DEBUG_DIR."anagrafe.debug",$sql);
                         $discarded=1;
-                        $message[]="Errore 1 nell'esecuzione della query \"".$arr_sql[$v["nome"]]."\"";
+                        $message[]="Errore nell'esecuzione della query \"".$arr_sql[$v["nome"]]."\"";
                     }
                     /*$str=sprintf("%d) Query \"%s\" : %d ms",$i,$sql,(getmicrotime()-$t2)*1000);
                     utils::debug(DEBUG_DIR."time-".(string)$offset.".debug",$str);*/
@@ -169,7 +167,7 @@ switch($mode){
                 else {
                     utils::debug(DEBUG_DIR."anagrafe.debug",$sql);
                     $discarded=1;
-                    $message[]="Errore 2 nell'esecuzione della query \"$sql\"";
+                    $message[]="Errore nell'esecuzione della query \"$sql\"";
                     //header('Content-Type: application/json; charset=utf-8');
                     //print json_encode($result);
                 } 
