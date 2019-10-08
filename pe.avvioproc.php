@@ -7,7 +7,6 @@ $idpratica=isset($_REQUEST["pratica"])?($_REQUEST["pratica"]):('');
 $pr=new pratica($idpratica);
 $pr->createStructure();
 
-<<<<<<< HEAD
 if($_REQUEST["type"]=="condono"){
     $file_config="$tabpath/avvio_procedimento_condono";
 }
@@ -17,9 +16,6 @@ else if($_REQUEST["type"]=="ordinativo"){
 else{
     $file_config="$tabpath/avvio_procedimento";
 }
-=======
-$file_config="$tabpath/avvio_procedimento";
->>>>>>> origin/spezia
 $intestazione='Avvio del procedimento e comunicazione responsabile';
 
 //Imposto i permessi di default per il modulo
@@ -73,7 +69,6 @@ appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]
             $intestazione='Dati di chiusura del procedimento amministrativo - Avvenuta Verifica Atti';            
         }
         else{
-<<<<<<< HEAD
             if ($_SESSION["USER_ID"]==52 || $_SESSION["USER_ID"] == 131) {
                 $file_config="$tabpath/avvio_procedimento_admin";
             }
@@ -87,14 +82,6 @@ appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]
                 $file_config="$tabpath/avvio_procedimento";
             }
 
-=======
-            if ($_SESSION["USER_ID"]==52) {
-                $file_config="$tabpath/avvio_procedimento_admin";
-            }
-            else  {
-                $file_config="$tabpath/avvio_procedimento";
-            }
->>>>>>> origin/spezia
             $intestazione='Avvio del procedimento e comunicazione responsabile';
         }
 

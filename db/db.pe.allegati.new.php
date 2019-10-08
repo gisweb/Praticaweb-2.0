@@ -77,7 +77,4 @@ elseif($azione=="elimina"){
 
 $active_form=$_POST["active_form"]."?pratica=$idpratica";
 ?>
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/spezia
