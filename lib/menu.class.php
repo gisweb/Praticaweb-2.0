@@ -178,14 +178,6 @@ class Menu{
 	 
               </div>
 		");
-        if($_SESSION["USER_ID"]==1){
-            $menuItem = <<<EOT
-<div style="width:160; border-width:1 0 1 0px; border-style:solid; border-color:#336699; padding:2 0 2 0px">
-	<a href="javascript:loadintoIframe('myframe','$this->path.mail_status.php?pratica=$idpratica&tipo=$this->tipo')" style="width:160" class="iter-button">Stato Comunicazioni</a>
-</div>
-EOT;
-            print $menuItem;
-        }
 	}
 	
 	//Aggiunge la lista di menù alla nuova pratica

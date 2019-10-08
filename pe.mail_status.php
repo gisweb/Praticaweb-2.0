@@ -53,6 +53,7 @@ EOT;
         $stmt->execute(Array($idpratica,$idpratica));
         $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
         require_once LOCAL_LIB."wsclient.mail.class.php";
+        $j = 0;
         for($i=0;$i<count($res);$i++){
             //DA FARE CHIAMATA A WS SIMONE PER ACCETTAZIONE E CONSEGNA PEC IN BASE A PRATICA_RAGGRUPPAMENTOPROTOCOLLO
             $objId = $res[$i]["key"];
@@ -60,26 +61,30 @@ EOT;
             if (count($rr)){
                 $acc = ($rr[0]["Accettazione"])?($rr[0]["Accettazione"]):(" --- ");
                 $cons = ($rr[0]["Consegna"])?($rr[0]["Consegna"]):(" --- ");
+                $regexp = "/([0-9\-]+)T([0-9:]+)\./";
+                preg_match($regexp,$rr[0]["DataOra"],$result);
+                //print_array(count($result));
+                $data[$j]["pratica"] = $res[$i]["pratica"];
+                $data[$j]["key"] = $objId;
+                $data[$j]["data"] = (count($result)==0)?(substr(str_replace('T',' ',$rr[0]["DataOra"]),0,-3)):($result[1]." ".$result[2]);
+                $data[$j]["oggetto"] = $rr[0]["OggettoFiltrato"];
+                $data[$j]["destinatari"] = str_replace(';','<br>',$rr[0]["Destinatario"]);
+                $data[$j]["consegna"] = $cons;
+                $data[$j]["accettazione"] = $acc;
+                $j++;
             }
             else{
                 $acc = " --- ";
                 $cons = " --- ";
             }    
-            $regexp = "/([0-9\-]+)T([0-9:]+)\./";
-            preg_match($regexp,$rr[0]["DataOra"],$result);
-            //print_array(count($result));
-            $res[$i]["data"] = (count($result)==0)?(substr(str_replace('T',' ',$rr[0]["DataOra"]),0,-3)):($result[1]." ".$result[2]);
-            $res[$i]["oggetto"] = $rr[0]["OggettoFiltrato"];
-            $res[$i]["destinatari"] = str_replace(';','<br>',$rr[0]["Destinatario"]);
-            $res[$i]["consegna"] = $cons;
-            $res[$i]["accettazione"] = $acc;
+            
             //$dd = json_decode($res[$i]["pathdocumento"],TRUE);
             //$res[$i]["nomedocumento"] = $dd["nomedocumento"];
             
         }
-        
-        $tabella->set_dati($res,'list');	
-        $nrec = count($res);
+
+        $tabella->set_dati($data,'list');	
+        $nrec = count($data);
         $tabella->set_titolo($titolo,"");
         echo "\t\t<H2 class='blueBanner'>$banner</H2>";
 
