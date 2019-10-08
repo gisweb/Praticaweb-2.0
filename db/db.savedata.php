@@ -253,6 +253,7 @@ if ($azione=="Elimina"){
 }
 
 if (in_array($azione,Array("Salva",'Aggiungi'))){
+
     $array_dati=valida_dati($array_config,$campi_obbl);
 
     if($array_dati["errors"]){
@@ -294,7 +295,7 @@ if (in_array($azione,Array("Salva",'Aggiungi'))){
             $db->sql_query ($sql);
             $chkret = $db->sql_fetchfield("chk");
             if (!($chkret==$_POST["chk"])){
-              $Errors["Multiutenza"]= "Un altro utente ha salvato il record, oppure è gia stato salvato.....aggiornare  il form";
+                $Errors["Multiutenza"]= "Un altro utente ha salvato il record, oppure è gia stato salvato.....aggiornare  il form";
                 echo "<p style=\"color:red\">Un altro utente ha salvato il record, oppure è gia stato salvato.....aggiornare  il form</p>";
                 $db->sql_close();
                 include $active_form;
@@ -310,7 +311,6 @@ if (in_array($azione,Array("Salva",'Aggiungi'))){
         $sqlupdate=substr($sqlupdate,0,strlen($sqlupdate)-1);
         $sqlupdate="update $tabelladb set $sqlupdate where id=$idrow";
         $sql=$sqlupdate;
-//        if($_SESSION["USER_ID"]==1) echo "<p>$sql</p>";
     }
 
 

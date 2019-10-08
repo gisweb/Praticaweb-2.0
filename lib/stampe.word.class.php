@@ -223,7 +223,7 @@ class wordDoc {
         function setQuery(){
             $this->db=appUtils::getDb();
             $db=$this->db;
-            $result=Array("single"=>Array(),"multiple"=>Array(),"fromfile"=>Array());
+            $result=Array("single"=>Array("data_odierna"=>"SELECT CURRENT_DATE as oggi;"),"multiple"=>Array(),"fromfile"=>Array());
             $sql="SELECT table_name as name,array_to_string(array_agg('B.'||column_name::varchar),',') as field_list FROM information_schema.views INNER JOIN information_schema.columns USING(table_name,table_schema) WHERE table_schema='stp' AND table_name ILIKE 'single_%' AND column_name NOT IN ('pratica') GROUP BY table_name ORDER BY 1;";
             $ris=$db->fetchAll($sql);
             for($i=0;$i<count($ris);$i++){

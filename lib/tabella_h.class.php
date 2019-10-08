@@ -28,7 +28,6 @@ function set_color($intestazione,$font_intestazione,$titolo,$font_titolo){
 }
 
 function get_cella($row,$col){
-	$fieldLabel = $this->def_col[$col][0]; //label del campo
 	$nome=$this->def_col[$col][1]; //nome del campo
 	$valore=htmlspecialchars($this->array_dati[$row][$nome], ENT_QUOTES,"UTF-8");//valore del campo
 	$w=$this->def_col[$col][2];//larghezza del campo
@@ -209,6 +208,18 @@ EOT;
             
             $retval.="</td>\n";
             break;
+		case "btn_prisma":
+			$prms=$this->getParams($row,$w);
+			$url = "http://documentale.comune.savona.it/Protocollo/standalone.zul?operazione=APRI_DOCUMENTO&tipoDocumento=LETTERA&idDoc=$valore";
+			$retval = <<<EOT
+			<td align="center" valign="middle"  class="printhide" style="width:$prms[size]">
+				<a target='_new' href='$url'><span class='ui-icon ui-icon-document' title='Visualizza il documento su prisma'/></a>
+			</td>
+EOT;
+			//$retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
+			//$retval.="<a target='_new' href='openPrismaDocument.php?idDocumento=&idObjFile='><span class='ui-icon ui-icon-document' title='Visualizza il documento su prisma'/></a>";
+			//$retval.="</td>\n";
+			break;
         case "allegati":
             $id = $this->array_dati[$row]["idfile"];
             $pr = $this->array_dati[$row]["pratica"];
@@ -360,30 +371,9 @@ EOT;
 			$retval="<td$classe>&nbsp;&nbsp;<img border=\"0\" id=\"$imm\" height=\"12\" src=\"images/left.gif\" onclick=\"show_note('$nome','$imm')\">&nbsp;<span id=\"$nome\" style=\"display:none\"><textarea name=\"$nome\" cols=\"$w\" rows=\"2\">$valore</textarea>$help</span>"; 
 			break;
 		case "selectdb":		//Restituisce il campo descrittivo di un elenco 
-			$pratica= $this->array_dati[$row]["pratica"];
-	        $id=$this->array_dati[$row]["id"];
-
 			$size=explode("x",$w);
-            $label = $this->get_selectdb_value($valore,"id",$size[1],"opzione");
-			$retval=<<<EOT
-<td $classe valign="middle" width="$size[0]" data-id="$id" data-pratica="$pratica" $html5Attr>$label</td>
-EOT;
-			//$retval="<td $classe valign=\"middle\" width=\"$size[0]\" $html5Attr >".$this->get_selectdb_value($valore,"id",$size[1],"opzione")."</td>";
+			$retval="<td$classe valign=\"middle\" width=\"$size[0]\">".$this->get_selectdb_value($valore,"id",$size[1],"opzione")."</td>";
 			break;	
-		case "selectdb-editable":		//Restituisce il campo descrittivo di un elenco 
-			$pratica= $this->array_dati[$row]["pratica"];
-	        $id=$this->array_dati[$row]["id"];
-
-			$size=explode("x",$w);
-            $label = $this->get_selectdb_value($valore,"id",$size[1],"opzione");
-			$retval=<<<EOT
-<td $classe valign="middle" width="$size[0]" data-id="$id" data-pratica="$pratica" data-value="$valore" data-plugins="selectdb-editable" data-field="$nome" title="Modifica $fieldLabel" $html5Attr>
-$label
-<img title="Modifica" src="images/edit.png" border="0">
-</td>
-EOT;
-			//$retval="<td $classe valign=\"middle\" width=\"$size[0]\" $html5Attr >".$this->get_selectdb_value($valore,"id",$size[1],"opzione")."</td>";
-			break;
 		case "folder":
 			$campo=$nome;
 			$prms=explode('#',$w);
@@ -526,7 +516,7 @@ function zoomto($tabella,$id){
 			$buff=20;
 			$mappale=explode('@',$id);
 
-			$sql = "SELECT oid, ST_xmin(box3d(".THE_GEOM.")), ST_ymin(box3d(".THE_GEOM.")), ST_xmax(box3d(".THE_GEOM.")), ST_ymax(box3d(".THE_GEOM.")) FROM map.ct_particelle where foglio='". $mappale[1] ."' and mappale='" .$mappale[0] . "'"   ;
+			$sql = "SELECT oid, xmin(box3d(".THE_GEOM.")), ymin(box3d(".THE_GEOM.")), xmax(box3d(".THE_GEOM.")), ymax(box3d(".THE_GEOM.")) FROM map.ct_particelle where foglio='". $mappale[1] ."' and mappale='" .$mappale[0] . "'"   ;
 			
 			if (!isset($this->db)) $this->connettidb();
 			$result = $this->db->sql_query($sql);
@@ -568,113 +558,92 @@ function zoomto($tabella,$id){
 
 function zoomto_gc($tabella,$id){
 
-    $msgerr="Oggetto non presente in cartografia";
+	$msgerr="Oggetto non presente in cartografia";
     $pratica = $this->idpratica;
     if (!isset($this->db)) $this->connettidb();
     $sql = "SELECT cod_belfiore FROM pe.avvioproc WHERE pratica= $pratica;";
     $result = $this->db->sql_query($sql);
     $r=$this->db->sql_fetchrow();
     $cod = $r["cod_belfiore"];
-    switch ($tabella){
-        case "vigi.ct_info":
-        case "pe.cu_info":
-        case "pe.ct_info":
-        case "cdu.vista_mappali": 
-            $buff=20;
-            if ($cod) {
-                $filter_comune=" AND comune = '$cod'";
+	switch ($tabella){
+		case "vigi.ct_info":
+		case "pe.cu_info":
+		case "pe.ct_info":
+		case "cdu.vista_mappali": 
+			$buff=20;
+			if ($cod) {
+			    $filter_comune=" AND comune = '$cod'";
             }
-            $mappale=explode('@',$id);
-            $sezione='';
-            if ($mappale[2]) $sezione=" and sezione='". $mappale[2] ."'";
-            $sql = "SELECT gid, ST_xmin(box3d(".THE_GEOM."))-50 as xmin, ST_ymin(box3d(".THE_GEOM."))-50 as ymin, ST_xmax(box3d(".THE_GEOM."))+50 as xmax, ST_ymax(box3d(".THE_GEOM."))+50 as ymax FROM nct.particelle where foglio='". $mappale[1] ."' and mappale='" .$mappale[0] . "'"  .$sezione .$filter_comune;
+			$mappale=explode('@',$id);
+            		$sezione='';
+			if ($mappale[2]) $sezione=" and sezione='". $mappale[2] ."'";
+			$sql = "SELECT gid, xmin(box3d(".THE_GEOM."))-50 as xmin, ymin(box3d(".THE_GEOM."))-50 as ymin, xmax(box3d(".THE_GEOM."))+50 as xmax, ymax(box3d(".THE_GEOM."))+50 as ymax FROM nct.particelle where foglio='". $mappale[1] ."' and mappale='" .$mappale[0] . "'"  .$sezione .$filter_comune;
 
-            $result = $this->db->sql_query($sql); 
-            $map=$this->db->sql_fetchrow();
-
-            $_SESSION["MAPSET_".MAPPA_PRATICHE]["RESULT"]= Array("LAYER"=>"OBJ_LAYER","LAYER_TYPE"=>"2","ID_FIELD" => "gid","ID_LIST" => Array("0"=>$map["gid"]),"EXTENT" => Array("0"=>$map["xmin"],"1"=>$map["ymin"],"2"=>$map["xmax"],"3"=>$map["ymax"]));
-
-            if (GC_VERSION == 3){
-                    $sql = sprintf("SELECT x(ST_Centroid(st_transform(bordo_gb,3857))) as x,y(ST_Centroid(st_transform(bordo_gb,3857))) as y FROM nct.particelle WHERE gid = %s;",$map["gid"]);
-                    $result = $this->db->sql_query($sql);
-                    $coords=$this->db->sql_fetchrow();
-                    $scale = 500;
-                }
-
-            if ($map){ 
-                $func=(GC_VERSION==2)?("ApriMappa('".CDUMAPSETID."','".TEMPLATE."','qt=".QTID_PARTICELLE."&objid=$map[gid]')"):((GC_VERSION==3)?(sprintf("openGC3('%s',%s,%s,%s)",MAPSETID,$coords["x"],$coords["y"],$scale)):("openMap(".CDUMAPSETID.",'gisclient','&extent=$map[xmin],$map[ymin],$map[xmax],$map[ymax]')"));
-            }   
-            else{
-                $func= "alert('$msgerr')";
-            }
-
-            return $func;
-            break;
-        case "pe.unita_immobiliari":
-            $buff=50;
-            $sql = "SELECT via,civico from pe.unita_immobiliari where id=$id;"; 
-            if (!isset($this->db)) $this->connettidb();
-            $result = $this->db->sql_query($sql);
-            $indi=$this->db->sql_fetchrow();
-            if ($indi){
-                    $via=addslashes($indi["via"]);
-                    $civico=$indi["civico"];
-                    //
-                    $sql="SELECT A.gid from civici.pe_civici A inner join civici.pe_vie B on(id=strada) where nome ilike '$via' and label='$civico';";
-                    $result = $this->db->sql_query($sql);
-                    $map=$this->db->sql_fetchrow();
-                    if (GC_VERSION == 3){
-                        $sql = sprintf("SELECT x(ST_Centroid(st_transform(the_geom,3857))) as x,y(ST_Centroid(st_transform(the_geom,3857))) as y FROM civici.civici WHERE gid = %s;",$map["gid"]);
+			$result = $this->db->sql_query($sql); 
+			$map=$this->db->sql_fetchrow();
+			
+			$_SESSION["MAPSET_".MAPPA_PRATICHE]["RESULT"]= Array("LAYER"=>"OBJ_LAYER","LAYER_TYPE"=>"2","ID_FIELD" => "gid","ID_LIST" => Array("0"=>$map["gid"]),"EXTENT" => Array("0"=>$map["xmin"],"1"=>$map["ymin"],"2"=>$map["xmax"],"3"=>$map["ymax"]));
+               
+                   			
+                    if ($map){ 
+				$func=(GC_VERSION==2)?("ApriMappa('".CDUMAPSETID."','".TEMPLATE."','qt=".QTID_PARTICELLE."&objid=$map[gid]')"):("openMap(".CDUMAPSETID.",'gisclient','&extent=$map[xmin],$map[ymin],$map[xmax],$map[ymax]')");
+			}else{
+				$func= "alert('$msgerr')";
+			}
+                            
+			return $func;
+			break;
+                case "pe.unita_immobiliari":
+                    	$buff=50;
+                        $sql = "SELECT via,civico from pe.unita_immobiliari where id=$id;"; 
+                        if (!isset($this->db)) $this->connettidb();
                         $result = $this->db->sql_query($sql);
-                        $coords=$this->db->sql_fetchrow();
-                        $scale = 500;
-                    }
+                        $indi=$this->db->sql_fetchrow();
+                        if ($indi){
+                                $via=addslashes($indi["via"]);
+                                $civico=$indi["civico"];
+                                //
+                                $sql="SELECT A.gid from civici.pe_civici A inner join civici.pe_vie B on(id=strada) where nome ilike '$via' and label='$civico';";
+                		$result = $this->db->sql_query($sql);
+                                $map=$this->db->sql_fetchrow();
+                                if ($map){      
+                                        $func="ApriMappa('".MAPSETID."','".TEMPLATE."','qt=".QTID_CIVICI."&objid=$map[gid]')";
+                                }else{
+                                        $func= "alert('$msgerr')";
+                                }
+                        }else{
+                                $func= "alert('$msgerr')";
+                        }
+                        return $func;
+                        break;
 
-                    if ($map){      
-                            $func=(GC_VERSION==3)?(sprintf("openGC3('%s',%s,%s,%s)",MAPSETID,$coords["x"],$coords["y"],$scale)):("ApriMappa('".MAPSETID."','".TEMPLATE."','qt=".QTID_CIVICI."&objid=$map[gid]')");
-                    }else{
-                            $func= "alert('$msgerr')";
-                    }
-            }else{
-                    $func= "alert('$msgerr')";
-            }
-            return $func;
-            break;
-
-        case "vigi.indirizzi":
-        case "pe.indirizzi":
-            $buff=50;
-            $sql = "SELECT via,civico from pe.indirizzi where id=$id;"; 
-            if (!isset($this->db)) $this->connettidb();
-            $result = $this->db->sql_query($sql);
-            $indi=$this->db->sql_fetchrow();
-            if ($indi){
-                $via=addslashes($indi["via"]);
-                $civico=$indi["civico"];
-                
-                $sql="SELECT A.gid from civici.pe_civici A inner join civici.pe_vie B on(id=strada) where nome ilike '$via' and label='$civico';";
+		case "vigi.indirizzi":
+		case "pe.indirizzi":
+			$buff=50;
+                        $sk = ($tabella == 'pe.indirizzi')?("pe"):("vigi");
+			$sql = "SELECT via,civico from $sk.indirizzi where id=$id;"; 
+			if (!isset($this->db)) $this->connettidb();
+			$result = $this->db->sql_query($sql);
+			$indi=$this->db->sql_fetchrow();
+			if ($indi){
+				$via=addslashes($indi["via"]);
+				$civico=$indi["civico"];
+				//
+				$sql="SELECT A.gid from civici.pe_civici A inner join civici.pe_vie B on(id=strada) where nome ilike '$via' and label='$civico';";
                 $result = $this->db->sql_query($sql);
-                $map=$this->db->sql_fetchrow();
-                if (GC_VERSION == 3){
-                    $sql = sprintf("SELECT x(ST_Centroid(st_transform(the_geom,3857))) as x,y(ST_Centroid(st_transform(the_geom,3857))) as y FROM civici.civici WHERE gid = %s;",$map["gid"]);
-                    $result = $this->db->sql_query($sql);
-                    $coords=$this->db->sql_fetchrow();
-                    $scale = 500;
-                }
-                if ($map){	
-                    $func=(GC_VERSION==3)?(sprintf("openGC3('%s',%s,%s,%s)",MAPSETID,$coords["x"],$coords["y"],$scale)):("ApriMappa('".MAPSETID."','".TEMPLATE."','qt=".QTID_CIVICI."&objid=$map[gid]')");
-                }
-                else{
-                    $func= "alert('$msgerr')";
-                }
-            }
-            else{
-                $func= "alert('$msgerr')";
-            }
-            return $func;
-            break;
-    }
-}
+				$map=$this->db->sql_fetchrow();
+				if ($map){	
+					$func="ApriMappa('".MAPSETID."','".TEMPLATE."','qt=".QTID_CIVICI."&objid=$map[gid]')";
+				}else{
+					$func= "alert('$msgerr')";
+				}
+			}else{
+				$func= "alert('$msgerr')";
+			}
+			return $func;
+			break;
+		}
+	}
     function defColDataTable(){
         for($i=0;$i<count($this->tab_config);$i++){
             $d=explode(";",$this->tab_config[$i][0]);

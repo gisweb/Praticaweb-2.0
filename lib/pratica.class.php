@@ -54,12 +54,12 @@ class generalPratica {
         $conn = utils::getDb();
         $sql="SELECT userid as dirigente FROM admin.users WHERE attivato=1 and '13' = ANY(string_to_array(coalesce(gruppi,''),','));";
         $stmt = $conn->prepare($sql);
-        $stmt->execute();
+        $stmt->execute(Array($this->pratica));
         $this->info['dirigente']=$stmt->fetchColumn();
         //ESTRAGGO INFORMAZIONI SUL RESPONSABILE DEL SERVIZIO
         $sql="SELECT userid as rds FROM admin.users WHERE attivato=1 and '15' = ANY(string_to_array(coalesce(gruppi,''),','));";
         $stmt = $conn->prepare($sql);
-        $stmt->execute();
+        $stmt->execute(Array($this->pratica));
         $this->info['rds']=$stmt->fetchColumn();
         //INFO UTENTE (ID-GRUPPI-NOME)
         $this->userid=$_SESSION['USER_ID'];
@@ -70,11 +70,11 @@ class generalPratica {
         $this->user=$stmt->fetchColumn();
     }
     
-    function initPE(){
+    private function initPE(){
         $conn = utils::getDb();
         if ($this->pratica && is_numeric($this->pratica)){
             //INFORMAZIONI SULLA PRATICA
-            $sql="SELECT numero,tipo,resp_proc,resp_it,resp_ia,date_part('year',data_presentazione) as anno,data_presentazione,data_prot,B.nome as tipo_pratica,B.tipologia FROM pe.avvioproc A LEFT JOIN pe.e_tipopratica B ON(A.tipo=B.id)  WHERE A.pratica=?";
+            $sql="SELECT numero,tipo,resp_proc,resp_it,resp_ia,date_part('year',data_presentazione) as anno,data_presentazione,data_prot,B.nome as tipo_pratica,B.tipologia,trim(format('%s%s%s',fascicolo,'.'||sub_fascicolo,'.'||sub_sub_fascicolo)) as fascicolo,anno_fascicolo,coalesce(online,0) as online FROM pe.avvioproc A LEFT JOIN pe.e_tipopratica B ON(A.tipo=B.id)  WHERE A.pratica=?";
             $stmt = $conn->prepare($sql);
             if (!$stmt->execute(Array($this->pratica))){
                 return;
@@ -226,7 +226,7 @@ class generalPratica {
         }
     }
 	
-     private function initCE(){
+    private function initCE(){
         $conn = utils::getDb();
         if ($this->pratica && is_numeric($this->pratica)){
             //INFORMAZIONI SULLA PRATICA
@@ -626,64 +626,7 @@ INSERT INTO oneri.rate(pratica,rata,totale,uidins,tmsins) (SELECT $this->pratica
 		return $ris;
 	}
 	
-    /* Metodo per accedere in lettura agli Allegati/Documenti della Pratica*/    
-    function leggiDocumento($id,$tipo){
-        $result = Array(
-            "contenuto"=>"",
-            "mimetype"=>"",
-            "success"=>0,
-            "message"=>""
-        );
-        $pratica = $this->pratica;
-        $dbh = utils::getDb();
-        if ($tipo=="allegato"){
-            $path = $this->allegati;
-            $sql = "SELECT nome_file as filename FROM pe.file_allegati WHERE id=? AND pratica=?;";
-        }
-        elseif($tipo == "documento"){
-            $path = dirname($this->documenti);
-            $sql = "SELECT file_doc as filename FROM stp.stampe WHERE id=? AND pratica=?;";
-        }
-        $stmt = $dbh->prepare($sql);
-
-        if($stmt->execute(Array($id,$pratica))){
-            //$res = (!$mode)?($stmt->fetch(PDO::FETCH_ASSOC)):($stmt->fetchAll(PDO::FETCH_ASSOC));
-            $filename = $stmt->fetchColumn();
-            if (!$filename){
-                $result["message"] = "Nessun $tipo associato all'id $id";
-                return $result;
-            }
-            $fName = $path.DIRECTORY_SEPARATOR.$filename;
-            if (!file_exists($fName)){
-                $result["message"] = "Il file $fName non presente sul server";
-                return $result;
-            }
-            //Leggo contenuto file
-            $f = fopen($fName,'r');
-            $text = fread($f,filesize($fName));
-            fclose($f);
-            //leggo contenuto su mime type file
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $mime = finfo_file($finfo, $fName);
-            finfo_close($finfo);
-            $result = Array(
-                "nome"=>$filename,
-                "contenuto"=> base64_encode($text),
-                "mimetype"=>$mime,
-                "success"=>1,
-                "message"=>""
-            );
-            
-            
-        }
-        else{
-            $errors=$stmt->errorInfo();
-            $result["message"]=$errors[2];
-            return $result;
-        }
-        return $result;
-    }
-    
+        
 }
 
 

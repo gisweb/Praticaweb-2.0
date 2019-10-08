@@ -58,10 +58,9 @@ include "./inc/inc.page_header.php";
                      			
 					 if (is_array($Errors) && count($Errors))
 						$tabella->set_errors($Errors);
-					 else{
-                        $tabella->set_dati("id=$idpratica");
-						
-					 }
+					 else
+                                             $tabella->set_dati("id=$idpratica");
+					 
 				}
 				$tabella->edita();?>
 				<!-- fine contenuto-->

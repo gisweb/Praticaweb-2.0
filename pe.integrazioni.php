@@ -18,8 +18,8 @@ appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
-    utils::loadCss(Array('dropzone','iter'));
-    utils::loadJS(Array('dropzone'));
+	utils::loadJS();
+	utils::loadCss();
 ?>
 </head>
 <body  background="" leftMargin="0" topMargin="0" marginheight="0" marginwidth="0">
@@ -114,7 +114,7 @@ for($i=0;$i<$num_integrazioni;$i++){
 //if ($num_mancanti){
 	$tabella_integrazione->set_titolo("Aggiungi nuova Integrazione $nomeiter","nuovo",array("iter"=>$iter,"nomeiter"=>$nomeiter));
 	$tabella_integrazione->get_titolo();
-//	$tabella_mancanti->elenco();
+	$tabella_mancanti->elenco();
 	echo("<br>");
 //}	
 
@@ -123,12 +123,6 @@ if (!$flag) echo "<p><b>Nessun documento da integrare</b></p>";?>
  </tr>
 </TABLE>
 <?php
-
-    $dropzoneFile=DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."include".DIRECTORY_SEPARATOR."dropzone.integrazione.php";
-    if (file_exists($dropzoneFile)){
-        require_once $dropzoneFile;
-    }
-
 print $tabella_integrazione->elenco_stampe();
 }//end if?>
 </body>

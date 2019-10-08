@@ -1,5 +1,5 @@
 if (typeof(appBaseUrl) == 'undefined') var appBaseUrl='';
-if (typeof(baseURL) == 'undefined') var baseURL='/gisclient/template/';
+var baseURL='/gisclient/template/';
 var searchUrl=appBaseUrl+'/services/xSearch.php';
 var serverUrl=appBaseUrl+'/services/xServer.php';
 var suggestUrl=appBaseUrl+'/services/xSuggest.php';
@@ -409,14 +409,3 @@ function verificaRuoloSoggetti(){
             $('#'+k).closest('tr').hide();
     });
 }
-
-function openGC3(mapset,x,y,scale){
-    var url = gcURL+"?mapset=" + mapset + '&x=' + x + '&y=' + y + '&s=' + scale;
-    window.open(url);
-    //alert('Sto cercando di aprire la mappa');
-}
-
-  function ApriMappa3(mapsetid){
-	var mywin=window.open(baseURL + '?' + "mapset=" + mapsetid );
-	mywin.focus();
-  }

@@ -20,15 +20,6 @@ $comune = appUtils::getComune($idpratica);
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
 <?php
-    if (defined('GC_URL')){
-        $url = GC_URL;
-        $js =<<<EOT
-    <script>
-        var gcURL = '$url';
-    </script>
-EOT;
-        echo $js;
-    }
     utils::loadJS(Array('init','form/pe.ubicazione'));
     utils::loadCss();
 

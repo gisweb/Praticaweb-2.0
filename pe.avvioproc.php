@@ -105,6 +105,11 @@ $time = $time_end - $time_start;
 <?php
 //include "./inc/inc.window.php"; // contiene la gesione della finestra popup
 }else{
+$file_config_online = $file_config."_online";
+if ($pr->info["online"]==1 && file_exists(TAB.$file_config_online.".tab")){
+    $file_config = $file_config_online;
+}
+
 ?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 

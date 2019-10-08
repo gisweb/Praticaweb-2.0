@@ -139,9 +139,11 @@ TABLE.stiletabellaleggi {
 	FONT-SIZE: 11px; 
 	COLOR: #000066;
 	FONT-FAMILY: Verdana, Geneva, Arial, sans-serif;
-	HEIGHT:20px;	
 	BACKGROUND-COLOR:#FFFFFF
 	#e5ecf9;
+}
+input.textbox{
+    HEIGHT:20px !important;
 }
 
 .errors {

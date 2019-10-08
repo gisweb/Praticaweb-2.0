@@ -12,10 +12,8 @@ $data_prot = $_REQUEST["data_protocollo"];
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
 $config_file = sprintf("%s/%s",$tabpath,"allegati");
 $dbh = utils::getDb();
-$sql = "SELECT id as value, nome as option FROM pe.e_iter order by ordine,nome" ;
-$stmt = $dbh->prepare($sql);
-$stmt->execute();
-$items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
 ?>
 <html>
 <head>
@@ -23,7 +21,7 @@ $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
-	utils::loadJS(Array('/form/pe.allegati'));
+	utils::loadJS('form/pe.allegati.js');
 	utils::loadCss();
 ?>
 <style>
@@ -32,9 +30,6 @@ $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
         color:white;
     }
 </style>
-<script>
-	var item = <?php echo json_encode($items);?>;
-</script>
 </head>
 <body  background="" leftMargin="0" topMargin="0" marginheight="0" marginwidth="0">
 
@@ -46,9 +41,7 @@ if (in_array($modo,Array("edit","new"))){
         unset($_SESSION["ADD_NEW"]);
         $prot = $_REQUEST["protocollo"];
         $data_prot = $_REQUEST["data_protocollo"];
-        $richiesta = $_REQUEST["prot_richiesta"];
-        $data_richiesta = $_REQUEST["data_richiesta"];
-        $tabella->set_dati(Array("prot_allegato"=>$prot,"data_prot_allegato"=>$data_prot,"data_richiesta"=>$data_richiesta,"prot_richiesta"=>$richiesta));
+        $tabella->set_dati(Array("prot_allegato"=>$prot,"data_prot_allegato"=>$data_prot));
         //ob_start();
         
         //$tab = ob_get_contents();
@@ -78,7 +71,7 @@ if (in_array($modo,Array("edit","new"))){
         </TABLE>	
         <input name="active_form" type="hidden" value="pe.allegati.php">	
         <input name="id" type="hidden" value="$id">
-        <input name="mode" type="hidden" id="mode" value="$modo">				
+        <input name="mode" type="hidden" value="$modo">				
         <input name="pratica" type="hidden" value="$idpratica">
 </FORM>            
 EOT;
@@ -99,13 +92,11 @@ else{
         for($i=0;$i<count($options);$i++){
             $optVal = $options[$i]["id"];
             $optLabel = $options[$i]["opzione"];
-            $opts[] = sprintf("<input type=\"radio\" class=\"\" name=\"allegati_state\" data-plugins=\"input-download-allegati\" value=\"%s\">%s</input><br/>",$optVal,$optLabel);
-            $opts2[]= sprintf("<input type=\"radio\" class=\"\" name=\"radio_stato_allegato\" value=\"%s\" label=\"$optLabel\">%s</input><br/>",$optVal,$optLabel,$optLabel);
+            $opts[] = sprintf("<input type=\"radio\" class=\"\" name=\"allegati_state\" data-plugins=\"input-download-allegati\" value=\"%s\">%s</input><br/>",$optVal,$optLabel);         
         }
         $radioHtml = implode("\n",$opts);
-        $radioHtml2 = implode("\n",$opts2);
     }
-    $sql="SELECT DISTINCT pratica,protocollo,data_protocollo,titolo,tipo FROM pe.elenco_allegati_pratica WHERE pratica=? ORDER BY 3";
+    $sql="SELECT DISTINCT pratica,protocollo,data_protocollo,titolo FROM pe.elenco_allegati_pratica WHERE pratica=? ORDER BY 3";
     $stmt = $dbh->prepare($sql);
     $res = Array();
     if($stmt->execute(Array($idpratica))){
@@ -117,13 +108,12 @@ else{
     
     for($i=0;$i<count($res);$i++){
         $r = $res[$i];
-        list($prat,$prot,$data_prot,$titolo,$tipoRich)=$r;
+        list($prat,$prot,$data_prot,$titolo)=$r;
         
         $tabella=new Tabella_h($config_file,"list");
         $num_allegati = $tabella->set_dati("coalesce(id,0)<>0 AND pratica=$idpratica AND protocollo='$prot' AND data_protocollo='$data_prot'::date");
         //print_array($tabella);
-        $arrayData = ($tipoRich=="richiesta_integrazione")?(Array("prot_richiesta"=>$prot,"data_richiesta"=>$data_prot)):(Array("protocollo"=>$prot,"data_protocollo"=>$data_prot));
-        $tabella->set_titolo($titolo,"nuovo",$arrayData);
+        $tabella->set_titolo($titolo,"nuovo",Array("protocollo"=>$prot,"data_protocollo"=>$data_prot));
         $tabella->get_titolo();
         if ($num_allegati) 
             $tabella->elenco();
@@ -148,8 +138,7 @@ else{
             buttons: {
                 "Scarica il file compresso": function(){
                     var pr = $('#pratica-download').val();
-                    var stato = $('input[name=allegati_state]:checked').val();
-                    goToPratica('services/downloadAllegati.php',{'pratica':pr,'stato_allegato':stato});
+                    goToPratica('services/downloadAllegati.php',{'pratica':pr});
 
                 },
                 Cancel: function() {
@@ -168,65 +157,10 @@ else{
     </script>
     
 EOT;
-
-
-$div_stato = <<<EOT
-    <div id="div_change_stato" style="margin-top:20px;margin-bottom:20px;display:none;" class="hidden">
-        <div id="dialog-change" title="Seleziona lo stato dell'allegato">
-            $radioHtml2
-        </div>
-        <input type="hidden" id="id-change" value=""/>
-        <input type="hidden" id="pratica-change" value=""/>
-		<input type="hidden" id="table-change" value=""/>
-		<input type="hidden" id="field-change" value=""/>
-    </div>        
-    <script>
-        var dialog2 = $("#dialog-change").dialog({
-            autoOpen: false,
-            height: 280,
-            width: 350,
-            modal: true,
-            buttons: {
-                "Salva": function(){
-                    var pr = $('#pratica-change').val();
-                    var id = $('#id-change').val();
-                    var table = $('#table-change').val();
-                    var field = $('#field-change').val();
-                    var value = $("input[name='radio_stato_allegato']:checked").val();
-                    var newLabel = $("input[name='radio_stato_allegato']:checked").attr('label');
-                    $.ajax({
-			url:'services/xServer.php',
-			data:{'id':id,'pratica':pr,'table':table,'field':field,'action':'save-data','value':value},
-			method:'POST',
-			success:function(data,textStatus,jqXHR){
-			    if (data["success"]==1){
-                                $('td[data-id="' + id + '"]').html(newLabel+'<img title="Modifica" src="images/edit.png" border="0">');
-			    }
-			    else{
-                                alert('Si è verificato un errore nel salvataggio');
-                            }
-			    dialog2.dialog('close');
-			}
-		    });
-                },
-                "Chiudi": function() {
-                   dialog2.dialog( "close" );
-                }
-            }
-        });
-    </script>
-EOT;
-
-
-//if (in_array($_SESSION["USER_ID"],Array(1,100000,100001)))     
-    echo $btn_download;
-    echo $div_stato;
+//    echo $btn_download;
     $tabella_integrazione=new tabella_h("$tabpath/integrazioni.tab");
 	$tabella_integrazione->set_titolo("Aggiungi nuova Integrazione","nuovo");
 	$tabella_integrazione->get_titolo("pe.integrazioni.php");
-
-    $printText = $tabella->elenco_stampe('pe.allegati');
-    print $printText;
 }
 ?>
     

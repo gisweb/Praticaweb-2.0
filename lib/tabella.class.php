@@ -78,7 +78,7 @@ class Tabella{
             $this->debug=null;
             $this->tabelladb=$lay['table'];
             $this->tabella_ref_db=(isset($lay['ref_table']))?($lay['ref_table']):($lay['table']);
-            $this->tabella_save_db=(isset($lay['save_table']))?($lay['save_table']):($lay['table']);
+			$this->tabella_save_db=(isset($lay['save_table']))?($lay['save_table']):($lay['table']);
             $this->function_prms=(isset($lay['function_prms']) && $lay['function_prms'])?($lay['function_prms']):(null);
             $this->campi_obbl=(isset($lay['campi_obbligatori']) && $lay['campi_obbligatori'])?(explode(';',$lay['campi_obbligatori'])):(null);
             $this->campi_ord=(isset($lay['campi_ordinamento']) && $lay['campi_ordinamento'])?(explode(';',$lay['campi_ordinamento'])):(null);
@@ -98,9 +98,6 @@ class Tabella{
                             
                             if (!in_array($tipo,Array("id","pratica","submit","ui-button","button","upload","stampa"))){
                                 $campi[]=$campo;
-                            }
-                            if (in_array($tipo,Array("selectdb"))){
-                                $optionFields[$campo] = $prms;
                             }
                     }
             }
@@ -155,6 +152,10 @@ class Tabella{
        case "preview":
          $button['icon']='ui-icon-print';
          $button['value']='Stampa';
+		case "prisma":
+         $button['icon']='ui-icon-shuffle';
+         $button['value']='Invia Prisma';
+		 $button['text']='Invia Prisma';
         default:
          $button['value']=$button['text'];
          break;
@@ -309,7 +310,7 @@ EOT;
 			else{
 				$this->num_record=0;
 			}
-            /*$time_end = microtime(true);
+           /* $time_end = microtime(true);
             $time = $time_end - $time_start;
             if ($_SESSION["USER_ID"]==1){
                 echo "<p>Execution of query :$sql in  $time seconds</p>";
@@ -344,14 +345,6 @@ EOT;
 		if(!$this->db->db_connect_id)  die( "Impossibile connettersi al database");
 	}
 	
-        function connectPDO(){
-            $message = sprintf("Impossibile connettersi al database %s sul server %s porta %s con credenziali %s:%s",DB_NAME,DB_HOST,DB_PORT,DB_USER, DB_PWD);
-            $dsn = sprintf('pgsql:dbname=%s;host=%s;port=%s',DB_NAME,DB_HOST,DB_PORT);
-            $conn = new PDO($dsn, DB_USER, DB_PWD);
-            if (!$conn) die($message);
-            $this->dbh = $conn;
-        }
-        
 	function close_db(){
 		if(isset($this->db)) $this->db->sql_close();
 	}
@@ -494,11 +487,10 @@ EOT;
 			case "oneri":
 			case "ragioneria":
 			case "stp":
-				$sql = "SELECT role FROM pe.ruoli_pratica WHERE pratica=? and userid=? LIMIT 1;";
+				$sql = "SELECT role FROM pe.ruoli_pratica WHERE pratica=? and userid=?;";
 				break;
 			default:		//Caso delle pratiche Edilizie
-                $schema=($schema=='#')?('pe'):($schema);
-                $sql = "SELECT role FROM $schema.ruoli_pratica WHERE pratica=? and userid=? limit 1;";
+                $sql = "SELECT role FROM $schema.ruoli_pratica WHERE pratica=? and userid=?;";
 
 			break;
 		}
@@ -593,7 +585,7 @@ function elenco_stampe ($form){
 	$icona_rtf="images/word.gif";
 	$procedimento=$this->array_dati[$this->curr_record]["id"];		
 	$sql="select id,file_doc,file_pdf,utente_pdf from stp.stampe where (pratica=$this->idpratica) and (form='$form') and ((char_length(file_doc)>0 or (char_length(file_pdf)>0)));";
-//	if ($this->debug) echo ("<p>$sql</p>");
+	if ($this->debug) echo ("<p>$sql</p>");
 	
 	if (!$this->db) $this->connettidb();
 	$this->db->sql_query($sql);

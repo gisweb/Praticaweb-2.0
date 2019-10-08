@@ -2,12 +2,12 @@
 //VERIFICARE IN BASE AL TIPO DI UTENTE I SERVIZI DISPONIBILI
 //se passo un idpratica punto alla pratica
 
+
 require_once ("login.php");
 
 $file = TAB_ELENCO."elenco_index.tab";
 $menu=0;
 $last_change=shell_exec("git log -1 --pretty=format:'%ci'");
-
 ?>
 
 <html>
@@ -37,7 +37,7 @@ $last_change=shell_exec("git log -1 --pretty=format:'%ci'");
 <body>
 
 <?php
-include "./inc/inc.page_header.php";	
+include "./inc/inc.page_header.php";
 ?>
 <TABLE id=main_layout cellSpacing=0 cellPadding=0 width="102%" border=0>
   <TBODY> 
@@ -91,7 +91,6 @@ include "./inc/inc.page_header.php";
 	}
 	else 
 		print("	\n\tNessun file di configurazione $file\n");
-	
 	
 	/*FINE MODIFICHE*/
 	?>

@@ -99,51 +99,41 @@ class utils {
         }
     }
 
-    static function loadJSTest($f=Array(),$default=1){
+/*    static function loadJS($f=Array(),$default=1){
         $dirName = (dirname($_SERVER['REQUEST_URI'])=="\\")?(""):(dirname($_SERVER['REQUEST_URI']));
-
-        $jsPath = APPS_DIR.DIRECTORY_SEPARATOR."js";
-        $jsLocalPath = DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."js";
         if($default){
             foreach(self::$js as $js){
+                $jsPath=sprintf("%s/%s.js",self::jsPath,$js);
+                $jsLocalPath=sprintf("%s/%s.js",self::jsLocalPath,$js);
                 $jsLocalURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/') .self::jsLocalURL,$js);
                 $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsURL,$js);
-                if (file_exists($jsLocalPath.DIRECTORY_SEPARATOR.$js.".js")){
+                if (file_exists($jsLocalPath))
                     $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsLocalURL);
-					echo "<p>File $jsLocalURL trovato</p>";
-				}
-                elseif (file_exists($jsPath.DIRECTORY_SEPARATOR.$js.".js")){
+                elseif(file_exists($jsPath))
                     $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsURL);
-					echo "<p>File $jsURL trovato</p>";
-				}
-                else{
-					echo "<p>File $js non trovato in ($jsLocalPath , $jsPath)</p>";
+                else
                     $tag="";
-				}
                 echo $tag;
             }
         }
         if (is_array($f) && count($f)){
-            
+
             foreach($f as $js){
+                $jsPath=sprintf("%s/%s.js",self::jsPath,$js);
+                $jsLocalPath=sprintf("%s/%s.js",self::jsLocalPath,$js);
                 $jsLocalURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsLocalURL,$js);
                 $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsURL,$js);
-                if (file_exists($jsLocalPath.DIRECTORY_SEPARATOR.$js.".js")){
+                if (file_exists($jsLocalPath))
                     $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsLocalURL);
-					echo "<p>File $jsLocalURL trovato</p>";
-				}
-                elseif (file_exists($jsPath.DIRECTORY_SEPARATOR.$js.".js")){
+                elseif(file_exists($jsPath))
                     $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsURL);
-					echo "<p>File $jsURL trovato</p>";
-				}
-                else{
-					echo "<p>File $js non trovato in ($jsLocalPath , $jsPath)</p>";
+                else
                     $tag="";
-				}
                 echo $tag;
-            } 
+            }
         }
-    } 
+    }
+*/    
     static function loadCSS($f=Array(),$default=1){
         $dirName = (dirname($_SERVER['REQUEST_URI'])=="\\")?(""):(dirname($_SERVER['REQUEST_URI']));
         $cssPath=APPS_DIR.DIRECTORY_SEPARATOR."css";
@@ -413,7 +403,13 @@ class utils {
         }
         return $txt;
     }
-
+    function debugAdmin($data){
+        if($_SESSION["USER_ID"]==1){
+            echo "<pre>";
+            print_r($data);
+            echo "</pre>";
+        }
+    }
 }
 
 ?>

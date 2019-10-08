@@ -376,7 +376,7 @@ class generalAppUtils {
         $result=$db->fetchAll($sql,Array($pr));
         return $result[0]["titolo"];
     }
-    static function getScadenze($userId=0){
+    static function getScadenze($userId){
             $conn=utils::getDb();
             //DETTAGLI DELLE SCADENZE
             $lLimit=(defined('LOWER_LIMIT'))?(LOWER_LIMIT):(5);
@@ -392,7 +392,7 @@ class generalAppUtils {
                 return Array("totali"=>count($res),"data"=>$res);
             }
     }
-    static function getVerifiche($userId=0){
+    static function getVerifiche($userId){
             $conn=utils::getDb();
 
             $sql="select * from pe.vista_verifiche_utenti where $userId = ANY(interessati);";
@@ -406,7 +406,7 @@ class generalAppUtils {
                 return Array("totali"=>count($res),"data"=>$res);
             }
     }
-    static function getAnnotazioni($userId=0){
+    static function getAnnotazioni($userId){
             $conn=utils::getDb();
             //DETTAGLI DELLE SCADENZE
             $lLimit=(defined('LOWER_LIMIT'))?(LOWER_LIMIT):(5);
@@ -460,7 +460,7 @@ class generalAppUtils {
             //DETTAGLI DELLE SCADENZE
             $lLimit=(defined('LOWER_LIMIT'))?(LOWER_LIMIT):(5);
             $uLimit=(defined('UPPER_LIMIT'))?(UPPER_LIMIT):(3);
-            $sql="select A.id,A.pratica,B.numero,B.data_prot,testo as oggetto,ARRAY[soggetto_notificato] as interessati from pe.notifiche A inner join pe.avvioproc B using(pratica) where soggetto_notificato=$userId and visionato=0;";
+            $sql="select A.id,A.pratica,B.numero,B.data_prot,testo as oggetto,ARRAY[soggetto_notificato] as interessati,C.nominativo as richiedenti from pe.notifiche A inner join pe.avvioproc B using(pratica) left join pe.elenco_richiedenti C USING(pratica)  where soggetto_notificato=$userId and visionato=0;";
             
             $stmt=$conn->prepare($sql);
             if(!$stmt->execute()){
@@ -565,61 +565,7 @@ class generalAppUtils {
             return $res;
         }
     }
-    static function getPDODB(){
-        $dsn = sprintf('pgsql:dbname=%s;host=%s;port=%s',DB_NAME,DB_HOST,DB_PORT);
-        $conn = new PDO($dsn, DB_USER, DB_PWD);
-        return $conn;
-    }
-    static function getInfoDocumento($id,$type=0){
-        $dbh = self::getPDODB();
-        if(!$type){
-            $sql = "SELECT file_doc, descrizione,pratica,''::varchar as tipo FROM stp.stampe WHERE id = ?";
-        }
-        else{
-            $sql = "SELECT nome_file as file_doc,note as descrizione,pratica,tipo_file as tipo FROM pe.file_allegati WHERE id = ?";
-        }
-        $stmt = $dbh->prepare($sql);
-        if($stmt->execute(Array($id))){
-            $res = $stmt->fetch();
-            
-            $fname = $res["file_doc"];
-            $desc = $res["descrizione"];
-            $pratica = $res["pratica"];
-            $tipo = $res["tipo"];
-            $pr = new pratica($pratica);
-            $fname = (!$type)?($pr->documenti.$fname):($pr->allegati.$fname);
-            
-            if (!file_exists($fname)){
-                
-                $result = Array("success"=>0,"message"=>"","file"=>"","mimetype"=>"","data"=>Array("descrizione"=>"","nomefile"=>""));
-                $result["message"] = "Il file $fname non presente sul server";
-                return $result;
-            }
-            //Leggo contenuto file
-            $f = fopen($fname,'r');
-            $text = fread($f,filesize($fname));
-            fclose($f);
-            //leggo contenuto su mime type file
-            if (!$tipo){
-                $finfo = finfo_open(FILEINFO_MIME_TYPE);
-                $mime = finfo_file($finfo, $fname);
-                finfo_close($finfo);
-            }
-            else{
-                $mime = $tipo;
-            }
-            
-            
-            $result = Array("success"=>1,"message"=>"","file"=> base64_encode($text),"mimetype"=>$mime,"data"=>Array("descrizione"=>$desc,"nomefile"=>$fname));
 
-        }
-        else{
-            $err = $stmt->errorInfo();
-            $result = Array("success"=>0,"message"=>$err[2],"file"=>"","mimetype"=>"","data"=>Array("descrizione"=>"","nomefile"=>""));
-
-        }
-        return $result;
-    }
 }
 
 ?>

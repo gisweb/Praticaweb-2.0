@@ -1,6 +1,6 @@
 <?php
 function print_debug($t="",$db=NULL,$file=NULL){
-
+/*
 		if (!defined("DEBUG_DIR")) {
 			define("DEBUG_DIR",'./');
 		}
@@ -28,7 +28,7 @@ function print_debug($t="",$db=NULL,$file=NULL){
             else
                 fclose($f);
         }
-
+*/
 }
 
 //FUNZIONE CHE CERCA RICORSIVAMENTE UN TESTO NEI FILE DI UNA DIRECTORY
@@ -78,14 +78,6 @@ function print_array($arr){
 	echo "<pre>";
 	print_r($arr);
 	echo "</pre>";
-}
-
-function adm_print_array($arr){
-	if ($_SESSION["USER_ID"]==1){
-		echo "<pre>";
-        	print_r($arr);
-	        echo "</pre>";
-        }
 }
 
 function vnsprintf( $format, array $data)

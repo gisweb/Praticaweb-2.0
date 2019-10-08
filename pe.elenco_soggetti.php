@@ -84,7 +84,7 @@ $tabella_variati->set_color("#FFFFFF","#FF0000",0,0);
 		</td>
 	</tr>
 	<?php	} //end if
-	} // end foreach
+        } // end foreach
         ?>
 	
 	<?php if ($tabella_attuali->editable) {?>
@@ -123,6 +123,7 @@ $tabella_variati->set_color("#FFFFFF","#FF0000",0,0);
         <tr>
             <td colspan="2">
 <?php
+//$start = time();
 $sql="SELECT * FROM pe.conteggio_soggetti WHERE pratica=?;";
 $conn = utils::getDb();
 $stmt=$conn->prepare($sql);
@@ -131,7 +132,8 @@ $res=$stmt->fetch(PDO::FETCH_ASSOC);
 $conc=($res["concessionario"])?(""):("un richiedente, un concessionario (beneficiario),");
 $prog=($res["progettisti"])?(""):("un tecnico (progettista/direttore lavori),");
 $esec=($res["esecutore"])?(""):("un esecutore dei lavori(se presente)");
-
+$end = time();
+$diff = $end - $start;
 $msg=<<<EOT
 <div class="avviso" style="margin-top:10px;">
     Per la compilazione dell'anagrafe tributaria sono necessari almeno $conc $prog $esec 

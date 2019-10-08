@@ -42,13 +42,13 @@ echo $script;
 	</style>
 	<div id="intestazione">
 		<div style="background-image:url(images/curva.png); float:left; width:43; height:100px"></div>
-		<div style="float:left; margin-top:20px; font-family:tahoma, verdana, arial; font-size:25px; font-weight:normal; color:#FFFFFF; width:60%; height:30">
+		<div style="float:left; margin-top:20px; font-family:tahoma, verdana, arial; font-size:25px; font-weight:normal; color:#FFFFFF; width:600px; height:30">
 			<i>Pratica<b style="color:#FF8000">Web</b></i>
                         <div style="font-family:arial; font-size:12px; color:#FFFFFF; margin-top:8px; height:19; width:100%;padding-bottom: 7px;">
                             <?php 
-                                $tit_comune =  "<b style='font-size:12px; color:#ffffff;'>".NOME_COMUNE."</b>";
+                                echo "<b>".NOME_COMUNE."</b>";
                                 $titoloPratica=$_SESSION["TITOLO_$idpratica"];
-                                echo "$tit_comune<span style='font-family:arial; font-weight:bold; font-size:13px; color:#ff8000;margin-left:40px;'>$titoloPratica</span>";
+                                echo "<div style='font-family:arial; font-weight:bold; font-size:12px; color:#ff8000; float:right'>$titoloPratica</div>";
 
                             ?>
 			</div>
@@ -60,11 +60,11 @@ echo $script;
 		
 		<div style="float:right; margin-top:26px; margin-right:16px; color:#FFFFFF; font-family:arial; font-weight:bold; font-size:16px; height:24; width:450px; text-align:right">
 			<div id="top_menu">
-                                <!--<a href="javascript:NewWindow('https://indata.istat.it/pdc/','istatPraticaweb',0,0,'yes')">[ ISTAT ]</a>-->
+<!--                                <a href="javascript:NewWindow('https://indata.istat.it/pdc/','istatPraticaweb',0,0,'yes')">[ ISTAT ]</a>-->
 				<a href="javascript:NewWindow('index.php','indexPraticaweb',0,0,'yes');window.close()">[Inizio]</a>
 				<a href="javascript:NewWindow('pe.ricerca.php','ricercaPraticaweb',0,0,'yes')">[Ricerca]</a>
-				<!--<a href="#">[Guida]</a>
-				<a href="javascript:window.print();">[Stampa]</a>-->
+				<a href="http://documentale.comune.savona.it" target="prisma">[Protocollo]</a>
+				<a href="javascript:window.print();">[Stampa]</a>
 				<a href="javascript:closeWindow()">[Chiudi]</a>
 				<?php if ($_SESSION['USER_ID']){?><a href="./admin/logout.php">[Esci]</a><?php }?>
 			</div>
@@ -87,7 +87,7 @@ echo $script;
                 </div>
                 
 	</div>
-       <script src="js/notifiche.js"></script>
+       <script src="js/notifiche.js?rand=345"></script>
         
         <div id="message-div" style="display:none;">
             

@@ -14,17 +14,11 @@ if ($_POST["idpratica"]) {
 	print_debug($sql);
 	$tipo_comm=$row["tipo_comm"];
 	$data=$row["data_convocazione"];
-        $sqlOrdine= "SELECT max(coalesce(ordine,0))+1 as ordine FROM pe.pareri WHERE data_rich=? AND ente=?";
-        $stmt=$conn->prepare($sqlOrdine);
-        $stmt->execute(Array($data,$tipo_comm));
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-	$ordine = $row["ordine"];
-
-        $sql="INSERT INTO pe.pareri(pratica,ente,data_rich,data_ril,ordine,uidins,tmsins) VALUES(?,?,?,?,?,?,?)";
-	$stmt=$conn->prepare($sql);
+        $sql="INSERT INTO pe.pareri(pratica,ente,data_rich,data_ril,uidins,tmsins) VALUES(?,?,?,?,?,?)";
+        $stmt=$conn->prepare($sql);
 	for($i=0;$i<count($pratiche);$i++){
 		$tmsins=time();
-                $parere = Array($pratiche[$i],$tipo_comm,$data,$data,($ordine+$i),$uid,$tmsins);
+                $parere = Array($pratiche[$i],$tipo_comm,$data,$data,$uid,$tmsins);
 		$stmt->execute($parere);
 	}
 }

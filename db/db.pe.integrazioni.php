@@ -19,9 +19,9 @@ UPDATE pe.allegati SET mancante=0,integrato=0,sostituito=0 WHERE id=$idallegato;
 UPDATE pe.allegati SET protocollo=$prot,data_protocollo=$data_prot,$v=1,integrazione=$integrazione WHERE id=$idallegato;
 EOT;
 			$db->sql_query($sql);
-			//echo "<p>$sql</p>";
+			echo "<p>$sql</p>";
 		}
 	}
 }
-$active_form="pe.allegati.php?pratica=$idpratica";
+$active_form=$_POST["active_form"]."?pratica=$idpratica";
 ?>

@@ -59,9 +59,8 @@ VALUES(:pratica,:allegato,:protocollo,:data_protocollo,:note,:stato_allegato,:no
     }
     if(!$sth->execute()){
         $arr = $sth->errorInfo();
-        print_array($arr);
-	echo "<p>$sql</p>";
-       print_array($_REQUEST);
+        print_r($arr);
+		echo "<p>$sql</p>";
     }
     else{
         if ($mode=="new") $_SESSION["ADD_NEW"]=1;

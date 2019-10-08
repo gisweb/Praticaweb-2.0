@@ -154,7 +154,7 @@ include "./inc/inc.page_header.php";
   	<!-- *** cella contenuti dinamici caricati nell'iframe *** -->
 		<TD  height="100" width="97%" valign="top">
 			<!-- *** MY IFRAME ********************************************* -->
-		<IFRAME name="myframe" id="myframe" style="DISPLAY: none; OVERFLOW: visible; WIDTH: 97%" marginWidth=0  marginHeight=0 src="<?php echo $active_form?>" frameBorder=0 scrolling=no ></IFRAME>	
+		<IFRAME id=myframe style="DISPLAY: none; OVERFLOW: visible; WIDTH: 97%" marginWidth=0  marginHeight=0 src="<?php echo $active_form?>" frameBorder=0 scrolling=no ></IFRAME>	
 		</TD>
 	</TR>
 	
@@ -186,11 +186,7 @@ include "./inc/inc.page_header.php";
     </TR>
   </TBODY> 
 </TABLE>
-<?php
-if (strpos($active_form,"pe.posizione.php")===0){
-   echo "<script>pagina('pe.posizione',$idpratica);</script>";
-}
-?>
+
 <!-- *** fine pagina principale *** -->
 </BODY>
 </HTML>

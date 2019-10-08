@@ -15,35 +15,16 @@ switch($action) {
         case "check-draw":
             $dataSorteggio=($_REQUEST["data_sorteggio"])?("'".$_REQUEST["data_sorteggio"]."'::date"):('CURRENT_DATE');
             $tipo=$_REQUEST["tipo"];
-            $sql="SELECT id,tipi_pratica,tipo_sorteggio,totale_sorteggi,coalesce(filter,'true') as filter FROM pe.e_verifiche WHERE sorteggio=1 AND codice=?";
+            $sql="SELECT id,tipi_pratica,tipo_sorteggio,totale_sorteggi,coalesce(filter,'true') as filter FROM pe.e_verifiche WHERE codice=?";
             $stmt = $dbh->prepare($sql);
-            if ($stmt->execute(Array($tipo))){
-                $row = $stmt->fetch();
-                $idTipo = $row["id"];
-                $listTipi = $row["tipi_pratica"];
-                $tipoSorteggio = $row["tipo_sorteggio"];
-                $totSorteggi = $row["totale_sorteggi"];
-                $filter = $row["filter"];
-            }
-            /*$idTipo=$db->fetchColumn($sql,Array($tipo),0);
+
+            $idTipo=$db->fetchColumn($sql,Array($tipo),0);
             $listTipi=$db->fetchColumn($sql,Array($tipo),1);
             $tipoSorteggio=$db->fetchColumn($sql,Array($tipo),2);
             $totSorteggi=$db->fetchColumn($sql,Array($tipo),3);
-            $filter=$db->fetchColumn($sql,Array($tipo),4);*/
-            $filterTipi=($listTipi)?("tipo IN ($listTipi)"):('true');
+            $filter=$db->fetchColumn($sql,Array($tipo),4);
             /*Pratiche Sorteggiate*/
             switch($tipo){
-				case "sca":
-					$sql = <<<EOT
-SELECT 
-	count(*) as sorteggiato 
-FROM 
-	pe.verifiche 
-WHERE 
-	tipo=999 and date_part('year',data_sorteggio)=date_part('year',$dataSorteggio);				
-EOT;
-					$sql = sprintf($sql,$filterTipi,$tipo);
-					break;
                 case "agibi":
                     $sql=sprintf("SELECT count(*) as sorteggiato FROM pe.verifiche WHERE tipo IN (%s) and date_part('month',data_sorteggio)=date_part('month',$dataSorteggio) AND date_part('year',data_sorteggio)=date_part('year',$dataSorteggio);",$idTipo);
                     break;
@@ -58,26 +39,23 @@ EOT;
                     break;
 
                 case "durc":
-                    $sql=sprintf("SELECT count(*) as sorteggiato FROM pe.verifiche WHERE tipo IN (%s) and date_part('week',data_sorteggio)=date_part('week',$dataSorteggio) AND date_part('year',data_sorteggio)=date_part('year',$dataSorteggio);",$idTipo);
+                    $query = <<<EOT
+SELECT 
+    count(*) as sorteggiato 
+FROM 
+    pe.verifiche 
+WHERE 
+tipo IN (%s) and 
+date_part('week',data_sorteggio)=date_part('week',$dataSorteggio) 
+AND date_part('year',data_sorteggio)=date_part('year',$dataSorteggio);
+EOT;
+                    $sql=sprintf($query,$idTipo);
                     break;
             }
             $sorteggiato=(int)(bool)$db->fetchColumn($sql,Array(),0);
             
             /*Pratiche Sorteggiabili*/
             switch($tipo){
-				case "sca":
-					$sql = <<<EOT
-SELECT 
-	count(*) as sorteggiabili 
-FROM 
-	pe.avvioproc 
-WHERE 
-	tipo=70000 AND 
-	date_part('year',coalesce(data_prot,data_presentazione))=date_part('year',$dataSorteggio) AND
-	pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice='%s');
-EOT;
-					$sql = sprintf($sql,$filterTipi,$tipo);
-					break;
                 case "agibi":
                     $sql=sprintf("SELECT count(*)  FROM pe.elenco_pratiche_sorteggi WHERE  date_part('month',data_agibilita)=date_part('month',$dataSorteggio)-1 AND date_part('year',data_agibilita)=date_part('year',$dataSorteggio) AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice='%s');",$tipo);
                     break;
@@ -105,7 +83,8 @@ EOT;
                 case "durc":
                     $sql = <<<EOT
 WITH pratiche_sorteggiabili AS (
-SELECT DISTINCT pratica FROM pe.elenco_pratiche_sorteggi WHERE  date_part('week',il)=date_part('week',$dataSorteggio)-1 AND date_part('year',il)=date_part('year',$dataSorteggio) AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice='$tipo')
+SELECT DISTINCT pratica FROM pe.elenco_pratiche_sorteggi WHERE  date_part('week',il)=date_part('week',$dataSorteggio)-1 
+AND date_part('year',il)=date_part('year',$dataSorteggio) AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice='$tipo')
 ),
 esecutori AS (
     SELECT id,pratica,codfis,piva,format('%s %s',coalesce(cognome,''),coalesce(nome,'')) as nominativo,coalesce(piva,'') as piva FROM pe.soggetti WHERE esecutore=1
@@ -124,38 +103,15 @@ EOT;
         case "draw":
             $tipo=$_REQUEST["tipo"];
             $dataSorteggio=($_REQUEST["data_sorteggio"])?("'".$_REQUEST["data_sorteggio"]."'::date"):('CURRENT_DATE');
-            $sql="SELECT id,tipi_pratica,tipo_sorteggio,totale_sorteggi,coalesce(filter,'true') as filter FROM pe.e_verifiche WHERE sorteggio=1 AND codice=?";
-            $stmt = $dbh->prepare($sql);
-            if ($stmt->execute(Array($tipo))){
-                $row = $stmt->fetch();
-                $idTipo = $row["id"];
-                $listTipi = $row["tipi_pratica"];
-                $tipoSorteggio = $row["tipo_sorteggio"];
-                $totSorteggi = $row["totale_sorteggi"];
-                $filter = $row["filter"];
-            }
-            /*$idTipo=$db->fetchColumn($sql,Array($tipo),0);
+            $sql="SELECT id,tipi_pratica,tipo_sorteggio,totale_sorteggi,coalesce(filter,'true') as filter FROM pe.e_verifiche WHERE codice=?";
+            $idTipo=$db->fetchColumn($sql,Array($tipo),0);
             $listTipi=$db->fetchColumn($sql,Array($tipo),1);
             $tipoSorteggio=$db->fetchColumn($sql,Array($tipo),2);
             $totSorteggi=$db->fetchColumn($sql,Array($tipo),3);
-            $filter=$db->fetchColumn($sql,Array($tipo),4);*/
-            $filterTipi=($listTipi)?("tipo IN ($listTipi)"):('true');
+            $filter=$db->fetchColumn($sql,Array($tipo),4);
             $filterTipi=($listTipi)?("tipo IN ($listTipi)"):('true');
             $conn=utils::getDb();
             switch($tipo){
-                case "sca":
-                    $sql = <<<EOT
-SELECT 
-    pratica 
-FROM 
-    pe.avvioproc 
- WHERE 
-    date_part('year',coalesce(data_prot,data_presentazione))=date_part('year',%s) AND 
-    pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice='%s') AND 
-    tipo in (70000);                       
-EOT;
-                    $sql=sprintf($sql,$dataSorteggio,$tipoSorteggio,$idTipo);
-                    break;
                 case "agibi":
                     $sql=sprintf("SELECT pratica FROM pe.abitabi WHERE date_part('month',data_agibilita)=date_part('month',$dataSorteggio)-1 AND date_part('year',data_agibilita)=date_part('year',$dataSorteggio) AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice='%s') AND %s;",$tipo);
                     $perc=0.1;
@@ -181,7 +137,9 @@ EOT;
                 case "durc":
                     $sql = <<<EOT
 WITH pratiche_sorteggiabili AS (
-SELECT DISTINCT pratica FROM pe.elenco_pratiche_sorteggi WHERE  date_part('week',il)=date_part('week',$dataSorteggio)-1 AND date_part('year',il)=date_part('year',$dataSorteggio) AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice='$tipo')
+SELECT DISTINCT pratica FROM pe.elenco_pratiche_sorteggi WHERE  
+date_part('week',il)=date_part('week',$dataSorteggio)-1 AND 
+date_part('year',il)=date_part('year',$dataSorteggio) AND pratica NOT IN (SELECT DISTINCT pratica FROM pe.verifiche INNER JOIN pe.e_verifiche ON(verifiche.tipo=e_verifiche.id) WHERE codice='$tipo')
 ),
 esecutori AS (
 SELECT id,pratica,codfis,piva,ragsoc,format('%s %s',coalesce(cognome,''),coalesce(nome,'')) as nominativo,coalesce(piva,'') as piva FROM pe.soggetti WHERE esecutore=1
@@ -297,7 +255,8 @@ EOT;
             break;
         case "delete-pratica":
 		    $schema = $_REQUEST["schema"];
-			$pr = $_REQUEST["pratica"];
+		    $pr = $_REQUEST["pratica"];
+                    utils::debug(DEBUG_DIR."DELETE-PRATICA.debug",Array("schema"=>$schema,"pratica"=>$pr,"user"=>$_SESSION["USER_ID"]));
 			if($pr){
 				switch($schema){
 				    case "vigi":
@@ -364,27 +323,6 @@ EOT;
 		else{
 		    $result=Array("success"=>-1,"message"=>$stmt->errorInfo());
 		}
-		break;
-	case "save-data":
-		$conn = utils::getDB();
-		$table=$_POST["table"];
-		$field=$_POST["field"];
-		$id=$_POST["id"];
-		$value=$_POST["value"];
-		$user=$_SESSION["USER_ID"];
-                $tms= time();
-		$sql = "UPDATE $table SET $field=?, uidupd=?, tmsupd=? WHERE id=?;";
-		
-		$stmt = $conn->prepare($sql);
-
-		if($stmt->execute(Array($value,$user,$tms,$id))){
-			$result = Array("success"=>1,"message"=>"");
-		}
-		else{
-			$result = Array("success"=>-1,"message"=>$sql);
-		}
-
-//		$result = Array("success"=>1,"message"=>$sql);		
 		break;
 	default:
 		break;

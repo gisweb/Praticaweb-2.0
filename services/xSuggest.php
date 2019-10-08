@@ -135,32 +135,6 @@ switch($field) {
                 
             );
         break;
-    case "sezione":
-        $sezione=($_REQUEST["sezione"])?($_REQUEST["sezione"]):('%');
-        $filtroComune = ($_REQUEST["cod_belfiore"])?("comune = '".$_REQUEST["cod_belfiore"]."'"):("true");
-        $sql="SELECT DISTINCT sezione as valore,nome as label FROM nct.sezioni WHERE $filtroComune order by 2,1";
-        if($db->sql_query($sql)){
-            $res=$db->sql_fetchrowset();
-            for($i=0;$i<count($res);$i++){
-                $result[]=Array(
-                    "id"=>$res[$i]["valore"],
-                    "value"=>$res[$i]["valore"],
-                    "label"=>$res[$i]["valore"]
-                );
-
-            }
-            $exec=1;
-        }
-        else
-            $result[]=Array(
-                "id"=>'',
-                "value"=>'',
-                "label"=>"Si è verificato un errore nell' esecuzione dell'interrogazione;",
-                "query"=>$sql,
-                "field"=>$field
-            );
-        break;
-
     case "foglio":
         $sezione=($_REQUEST["sezione"])?($_REQUEST["sezione"]):('%');
 	$filtroComune = ($_REQUEST["cod_belfiore"])?(" AND comune = '".$_REQUEST["cod_belfiore"]."'"):("");

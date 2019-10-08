@@ -40,7 +40,7 @@ if ($_POST["azione"]){
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
 
-    utils::loadJS(Array('init','form/cdu.mappali'));
+    utils::loadJS(Array('init'));
     utils::loadCss();
 ?>
 <script language="javascript">

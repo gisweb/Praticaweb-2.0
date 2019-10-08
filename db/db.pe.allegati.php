@@ -18,29 +18,15 @@ if($azione=="salva"){
     $pr = new pratica($idpratica);
     $dir = $pr->allegati;
     if($_REQUEST["mode"]=="new"){
-        
         $uploadedFiles = rearrange($_FILES["file_allegato"]);
-        
-            $data = Array(
-                $idpratica,
-                $_REQUEST["prot_allegato"],
-                $_REQUEST["prot_richiesta"],
-                $_REQUEST["tipo_allegato"],
-                $_REQUEST["stato_allegato"],
-                $_REQUEST["note"]
-            );
-        $fldList = Array("pratica","prot_allegato","prot_richiesta","tipo_allegato","stato_allegato","note");
-        if($_REQUEST["data_prot_allegato"]) {
-            $data[]=$_REQUEST["data_prot_allegato"];
-            $fldList[] = "data_prot_allegato"; 
-        }
-        if($_REQUEST["data_richiesta"]) {
-            $data[]=$_REQUEST["data_richiesta"];
-            $fldList[] = "data_richiesta"; 
-        }
-        $fldList[]="nome_file";
-        $fldList[] = "tipo_file";
-        $fldList[] = "size_file";
+        $data = Array(
+            $idpratica,
+            $_REQUEST["prot_allegato"],
+            $_REQUEST["data_prot_allegato"],
+            $_REQUEST["tipo_allegato"],
+            $_REQUEST["stato_allegato"],
+            $_REQUEST["note"]
+        );
         for($i=0;$i<count($uploadedFiles);$i++){
            $newName = utils::filter_filename($uploadedFiles[$i]["name"]);
            if (is_file($dir.$newName)) $newName= sprintf("%d-%s",rand (100000, 999999),$newName);
@@ -48,28 +34,21 @@ if($azione=="salva"){
                include_once "./db/db.savedata.php";
            }
            elseif($uploadedFiles[$i]["error"]==UPLOAD_ERR_OK && move_uploaded_file($uploadedFiles[$i]["tmp_name"], $dir.$newName)){
-                $insData = $data;
-                $insData[] = $newName;
-                $insData[] = $uploadedFiles[$i]["type"];
-                $insData[] = $uploadedFiles[$i]["size"];
-                
-                $fields = implode(",",$fldList);
-                $nFields=count($fldList);
-                $valueList= array_fill(0,$nFields,'?');
-                $values = implode(",",$valueList);
-                $sql = "INSERT INTO pe.file_allegati($fields) VALUES($values)";
-                
-                $stmt = $dbh->prepare($sql); 
-                if(!$stmt->execute($insData)){
-                    echo "<p>Errore nell'inserimento del record</p>";
-                    print_array($stmt->errorInfo());
-                }
+               $insData = $data;
+               $insData[] = $newName;
+               $insData[] = $uploadedFiles[$i]["type"];
+               $insData[] = $uploadedFiles[$i]["size"];
+               $sql = "INSERT INTO pe.file_allegati(pratica,prot_allegato,data_prot_allegato,tipo_allegato,stato_allegato,note,nome_file,tipo_file,size_file) VALUES(?,?,?,?,?,?,?,?,?)";
+               $stmt = $dbh->prepare($sql); 
+               if(!$stmt->execute($insData)){
+                   echo "<p>Errore nell'inserimento del record</p>";
+                   print_array($stmt->errorInfo());
+               }
            }
         }
     }
     else{
         $uploadedFiles = $_FILES["file_allegato"];
-//        print_array($_FILES);
         $id = $_REQUEST["id"];
         if($uploadedFiles["error"]==UPLOAD_ERR_NO_FILE){
             include_once "./db/db.savedata.php";

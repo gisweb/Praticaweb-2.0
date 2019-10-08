@@ -253,28 +253,10 @@ $(document).ready(function(){
         $("form").find('input[type=text],textarea').not('.textbox-date').filter(':visible:first').focus();
         $("[data-plugins='tipo_soggetto']").bind('change',function(event){
             verificaRuoloSoggetti();
+        });
+        
         $("[data-plugins='link']").bind('click',function(event){
             
-        });});
-        $("[data-plugins='selectdb-editable']").bind('click',function(event){
-            var d = $(this).data();
-            $('#id-change').val(d['id']);
-            $('#pratica-change').val(d['pratica']);
-            $('#table-change').val(d['table']);
-            $('#field-change').val(d['field']);
-            $('input[name="radio_'+d['field']+'"').each(function(k,v){
-                console.log($(v));
-                $(v).prop('checked',false);
-                if ($(v).val()==d['value']) $(v).prop('checked',true);
-            });
-            
-            //console.log($(this).width());
-            //console.log($(this).position());
-            var pos = $(this).position();
-            var w = $(this).width();
-            $('#dialog-change').dialog('option', 'position', [pos.left-$(this).outerWidth(),pos.top]);
-            $('#dialog-change').dialog( "open" );
         });
-	
 });
 

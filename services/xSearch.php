@@ -104,63 +104,15 @@ UNION ALL
 SELECT id,pratica,protocollo::varchar,data_prot as data_protocollo,'Istanza'::varchar as tipo,1 as ordine from pe.avvioproc WHERE online=1
 EOT;
 
-		foreach($data as $key=>$value){
-            $q[]="(SELECT DISTINCT pratica FROM $key WHERE ".implode(" $op ",$value).")";
-        }
-		utils::debug(DEBUG_DIR."filter.debug",$q);
-        $listId=Array();
-        $filter=implode(" $queryOP ",$q);
-		if ($filter) $filter = "WHERE pratica in ($filter)"; 
+
+
         $tmp=$db->fetchAll($sql);
         $total=count($tmp);
-        $sql=sprintf($query[$queryName],$filter,$order,$orderType,$rows,$offset);
-        utils::debug(DEBUG_DIR."search-online.debug",$filter);
+        $sql=sprintf($query[$queryName],$order,$orderType,$rows,$offset);
+        utils::debug(DEBUG_DIR."search-online.debug",$sql);
         $res=$db->fetchAll($sql);
-		for($i=0;$i<count($res);$i++) $elencoId[] = $res[$i]["pratica"];
-        $result=Array("total"=>$total,"rows"=>$res,"filter"=>$filter,"sql"=>$sql,"elenco_id"=>$elencoId);
+        $result=Array("total"=>$total,"rows"=>$res,"filter"=>$filter,"sql"=>$sql,"elenco_id"=>Array());
 
-        break;
-    case "search-pagamenti":
-        
-        foreach($data as $key=>$value){
-            $vv = Array();
-            for($i=0;$i<count($value);$i++){
-                $vv[]=sprintf("%s %s",$key,$value[$i]);
-            }
-            $vvv=implode(" $op ",$vv);
-            $q[]=$vvv;
-        }
-        $filter=implode(" $queryOP ",$q);
-        if (!$filter) $filter = "true";
-        if($_REQUEST["sort"]){
-            $sort = sprintf("ORDER BY %s %s",$_REQUEST["sort"],$_REQUEST["order"]);
-        }
-        else{
-            $sort = "ORDER BY data_pagamento DESC,pratica DESC";
-        }
-        $sql =<<<EOT
-WITH search_pagamenti AS (                
-SELECT 
-A.id,B.pratica,B.numero,B.protocollo,B.data_prot,B.tipo as tipo_id,B.categoria as categoria_id,
-A.importo,data_pagamento,causale,A.tipo as codice_tipo_pagamento,C.nome as tipo_pagamento,C.capitolo,codice_univoco,identificativofiscale,anagrafica,D.nome as modo_pagamento,
-E.nome as tipo,coalesce(F.nome,'') as categoria,G.flusso
-FROM
-ragioneria.importi_versati A INNER JOIN pe.avvioproc B USING (pratica)
-INNER JOIN ragioneria.e_codici_pagamento C ON(A.tipo=C.codice)
-INNER JOIN ragioneria.e_metodi_pagamento D ON(A.metodo=D.codice)
-LEFT JOIN pe.e_tipopratica E ON (B.tipo=E.id)
-LEFT JOIN pe.e_categoriapratica F ON (B.categoria=F.id)
-LEFT JOIN ragioneria.flussi G ON (A.codice_univoco=G.iuv)                
-)
-SELECT DISTINCT * FROM search_pagamenti  
-WHERE $filter
-$sort
-
-EOT;
-        $res=$db->fetchAll($sql);
-        for($i=0;$i<count($res);$i++) $listId[] = $res[$i]["id"];
-        $sql = str_replace(PHP_EOL, ' ', $sql);
-        $result=Array("total"=>count($res),"rows"=>$res,"filter"=>$filter,"sql"=>$sql,"elenco_id"=>$listId);
         break;
     default:
         $app = $_REQUEST["application"];
@@ -190,7 +142,6 @@ EOT;
         foreach($data as $key=>$value){
             $q[]="(SELECT DISTINCT pratica FROM $key WHERE ".implode(" $op ",$value).")";
         }
-		utils::debug(DEBUG_DIR."filter.debug",$q);
         $listId=Array();
         $filter=implode(" $queryOP ",$q);
         $tmp=$db->fetchAll($filter);

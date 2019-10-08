@@ -1,10 +1,10 @@
 <?php
 include_once("login.php");
 include "./lib/tabella_v.class.php";
-require_once "./lib/tabella_h.class.php";
 $tabpath="pe";
 $idpratica=$_REQUEST["pratica"];
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
+
 $titolo=$_SESSION["TITOLO_$idpratica"];
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 if (file_exists(DATA_DIR."praticaweb/include/init.pe.titolo.php")){
@@ -19,8 +19,8 @@ if (file_exists(DATA_DIR."praticaweb/include/init.pe.titolo.php")){
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
-    utils::loadCss(Array('dropzone','iter'));
-    utils::loadJS(Array('form/pe.titolo','dropzone'));
+    utils::loadCss();
+    utils::loadJS(Array('form/pe.titolo'));
 ?>
 </head>
 <body  background="">
@@ -44,7 +44,7 @@ if (($modo=="edit") || ($modo=="new")) {
 	?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN EDITING  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
         <input type="hidden" id="hidden-oggetto" value="<?php echo $oggetto;?>">
-	<FORM id="pe_titolo" name="" method="post" action="praticaweb.php">
+	<FORM id="" name="" method="post" action="praticaweb.php">
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">		
 				  
 		  <tr> 
@@ -83,7 +83,6 @@ if (($modo=="edit") || ($modo=="new")) {
 
             }else{
 		$tabella=new Tabella_v("$tabpath/titolo");?>
-
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
 		<H2 class="blueBanner">Rilascio del titolo</H2>
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">		
@@ -91,48 +90,43 @@ if (($modo=="edit") || ($modo=="new")) {
 			<TD> 
 			<!-- contenuto-->
 				<?php
-                    if($tabella->set_dati("pratica=$idpratica")){
-                        if ($tabella->array_dati[0]["diniego"]){
-                            $titoloForm = "Diniego";
-                        }
-                        elseif($tabella->array_dati[0]["archiviata"]){
-                            $titoloForm = "Pratica Archiviata";
-                        }
-                        else{
-                            $titoloForm = "Rilascio Titolo";
-                        }
-                        $tabella->set_titolo($titoloForm,"modifica",array("tabella"=>"titolo"));
-                        $tabella->elenco();
-                        echo("<br>");					
-                        $tabella_voltura=new tabella_v("$tabpath/voltura");
-                        $tabella_voltura->set_titolo("Voltura","modifica",array("tabella"=>"volture"));
-                        $tabella_voltura->set_dati("pratica=$idpratica");
-                        $tabella_voltura->elenco();
-                        echo("<br>");					
-                        $tabella_voltura->set_titolo("Inserisci Voltura ","nuovo",array("tabella"=>"volture"));
-                        $tabella_voltura->get_titolo();
-                        print("<br>");
-                        if ($tabella->editable) print($tabella->elenco_stampe("pe.titolo"));
+                                if($tabella->set_dati("pratica=$idpratica")){
+                                    if ($tabella->array_dati[0]["diniego"]){
+                                        $titoloForm = "Diniego";
+                                    }
+                                    elseif($tabella->array_dati[0]["archiviata"]){
+                                        $titoloForm = "Pratica Archiviata";
+                                    }
+                                    else{
+                                        $titoloForm = "Rilascio Titolo";
+                                    }
+                                    $tabella->set_titolo($titoloForm,"modifica",array("tabella"=>"titolo"));
+                                    $tabella->elenco();
+                                    echo("<br>");					
+                                    $tabella_voltura=new tabella_v("$tabpath/voltura");
+                                    $tabella_voltura->set_titolo("Voltura","modifica",array("tabella"=>"volture"));
+                                    $tabella_voltura->set_dati("pratica=$idpratica");
+                                    $tabella_voltura->elenco();
+                                    echo("<br>");					
+                                    $tabella_voltura->set_titolo("Inserisci Voltura ","nuovo",array("tabella"=>"volture"));
+                                    $tabella_voltura->get_titolo();
+                                    print("<br>");
+                                    if ($tabella->editable) print($tabella->elenco_stampe("pe.titolo"));
 
-                        }				
-                        else{
-                            $tabella->set_titolo("Inserisci dati relativi al titolo rilasciato","nuovo",array("tabella"=>"titolo"));
-                            print $tabella->get_titolo();
-                            print ("<p><b>Nessun titolo rilasciato</b></p>");
-                            print("<br>");
-                            if ($tabella->editable) print($tabella->elenco_stampe("pe.titolo"));
-                        }
+                                    }				
+                                    else{
+                                        $tabella->set_titolo("Inserisci dati relativi al titolo rilasciato","nuovo",array("tabella"=>"titolo"));
+                                        print $tabella->get_titolo();
+                                        print ("<p><b>Nessun titolo rilasciato</b></p>");
+                                        print("<br>");
+                                        if ($tabella->editable) print($tabella->elenco_stampe("pe.titolo"));
+                                    }
 ?>
 			<!-- fine contenuto-->
 			 </TD>
 	      </TR>
 		</TABLE>
-
-<?php  
-    $dropzoneFile = DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."include".DIRECTORY_SEPARATOR."dropzone.titolo.php";
-    if (file_exists($dropzoneFile)){
-        require_once $dropzoneFile;
-    }
+<?php
 }
 ?>
 </body>
