@@ -410,6 +410,41 @@ class utils {
             echo "</pre>";
         }
     }
+    function printMessage($message){
+        ob_start();
+        utils::loadJS();
+        utils::loadCss();
+        $jscss = ob_get_contents();
+        ob_end_clean();
+        
+        $html =<<<EOT
+<HTML>
+	<HEAD>
+		<TITLE>Messaggio di Errore</TITLE>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        $jscss
+        <style>
+            div.page-message{
+                position:fixed;
+                top:50%;
+                text-align:center;
+                font-weight:bold;
+                padding-top:50px;
+                padding-bottom:50px;
+                width:100%;
+            }
+        </style>        
+    </HEAD>
+    <BODY>
+        $message
+    </BODY>
+</HTML>
+EOT;
+        header('Content-Type: text/html; charset=utf-8');
+        print $html;
+        return;
+    }
 }
 
 ?>

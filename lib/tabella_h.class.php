@@ -211,7 +211,12 @@ EOT;
 		case "btn_prisma":
 			$prms=$this->getParams($row,$w);
 			$url = "http://documentale.comune.savona.it/Protocollo/standalone.zul?operazione=APRI_DOCUMENTO&tipoDocumento=LETTERA&idDoc=$valore";
-			$retval = <<<EOT
+            $idDoc = $valore;
+            $idObj = $this->array_dati[$row]["id_oggetto"];
+            $filename = $this->array_dati[$row]["documento"];
+                    
+			$url = "openExternalDocument.php?type=ADS&idDocumento=$idDoc&idObjFile=$idObj&filename=$filename";
+            $retval = <<<EOT
 			<td align="center" valign="middle"  class="printhide" style="width:$prms[size]">
 				<a target='_new' href='$url'><span class='ui-icon ui-icon-document' title='Visualizza il documento su prisma'/></a>
 			</td>
