@@ -413,6 +413,37 @@ class utils {
         }
         return $txt;
     }
+    function debugAdmin($data){
+        if($_SESSION["USER_ID"]==1){
+            echo "<pre>";
+            print_r($data);
+            echo "</pre>";
+        }
+    }
+    function printMessage($message){
+        ob_start();
+        utils::loadJS();
+        utils::loadCss();
+        $jscss = ob_get_contents();
+        ob_end_clean();
+        
+        $html =<<<EOT
+<HTML>
+	<HEAD>
+		<TITLE>Messaggio di Errore</TITLE>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        $jscss
+    </HEAD>
+    <BODY>
+        $message
+    </BODY>
+</HTML>
+EOT;
+        header('Content-Type: text/html; charset=utf-8');
+        print $html;
+        return;
+    }
 
 }
 
