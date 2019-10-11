@@ -444,7 +444,35 @@ EOT;
         print $html;
         return;
     }
-
+    
+    static function validation($type,$val){
+        $result = 0;
+        switch($type){
+            case "valuta":
+                if (preg_match('/^\d+([\.,]\d{1,2})?$/', $val)) $result = 1;
+                else 
+                    $result =  0;
+                break;
+            case "email":
+                if(filter_var($val, FILTER_VALIDATE_EMAIL)) $result = 1;
+                break;
+            case "url":
+                if(filter_var($val, FILTER_VALIDATE_URL)) $result = 1;
+                break;
+            case "ip":
+                if(filter_var($val, FILTER_VALIDATE_IP)) $result = 1;
+            default:
+                $result = 1;   
+        }
+        return $result;
+    }
+    static function is_zero($val){
+        $res = preg_replace('|[\.,0]|',"",$val);
+        if (strlen($res)==0) return 1;
+        else
+            return 0;
+            
+    }
 }
 
 ?>
