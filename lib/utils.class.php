@@ -280,5 +280,32 @@ EOT;
             return 0;
             
     }
+    
+    static function json_error($err){
+        switch ($err) {
+            case JSON_ERROR_NONE:
+                return Array("success"=>1,"error"=>"");
+            break;
+            case JSON_ERROR_DEPTH:
+                return Array("success"=>0,"error"=>"Maximum stack depth exceeded");
+               
+            break;
+            case JSON_ERROR_STATE_MISMATCH:
+                return Array("success"=>0,"error"=>"Underflow or the modes mismatch");
+            break;
+            case JSON_ERROR_CTRL_CHAR:
+                return Array("success"=>0,"error"=>"Unexpected control character found");
+            break;
+            case JSON_ERROR_SYNTAX:
+                return Array("success"=>0,"error"=>"Syntax error, malformed JSON");
+            break;
+            case JSON_ERROR_UTF8:
+                return Array("success"=>0,"error"=>"Malformed UTF-8 characters, possibly incorrectly encoded");
+            break;
+            default:
+                return Array("success"=>0,"error"=>"Unknown error");
+            break;
+        }
+    }
 }
 ?>

@@ -61,7 +61,7 @@ $(document).ready(function(){
         rowStyler: function(index,row){
             return 'color:#0e2d5f';
         },
-        queryParams:{data:dataPost,action:'search',op:oper},
+        queryParams:{data:dataPost,action:'search-online',op:oper},
         onLoadSuccess:function(data){
             if(!data.total) alert('Nessun record trovato');
             $('#elenco').val(data['elenco_id']);

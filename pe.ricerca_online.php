@@ -1,6 +1,8 @@
 <?php
 require_once('login.php');
 require_once APPS_DIR.'lib/tabella_v.class.php';
+$baseFilterFile = APPS_DIR."pe.searchFilter.online.php";
+$localFilterFile = DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."include".DIRECTORY_SEPARATOR."pe.searchFilter.online.php";
 ?>
 <html>
 <head>
@@ -37,6 +39,21 @@ utils::loadCss(Array("default/easyui","icon"));
         width: 10px;
         height: 10px;
     }
+    .input-color {
+    position: relative;
+}
+.input-color input {
+    padding-left: 20px;
+}
+.input-color .color-box {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    background-color: #ccc;
+    position: absolute;
+    left: 5px;
+    top: 5px;
+}
 </style>
 </head>
 <body>
@@ -50,25 +67,18 @@ utils::loadCss(Array("default/easyui","icon"));
                 </table>
             </td>
             <td valign="top">
-                
-                <table>
-                    <tr>
-                         <input type="hidden" datatable="pe.avvioproc" id="op_pe-avvioproc-online" class="search text" name="online" value="equal">
-                         <input type="hidden" value="1" id="1_pe-avvioproc-online" name="online" class="text">
-                        <td valign="middle">
-                            <label for="istruita" class="title">Pratica Vista dal responsabile</label><br/>
-                            <input type="hidden" datatable="pe.vista_assegnate" id="op_pe-vista_assegnate-assegnata_istruttore" class="search text check" name="istruita" value="equal">                           
-                            <input type="radio" value="0" id="1_pe-vista_assegante-assegnata_istruttore" name="istruita"  data-plugins="dynamic-search"  checked="checked">
-                            <label for="1_pe-vista_assegante-assegnata_istruttore" class="value">No</label><br/>
-                            <input type="radio" value="1" id="1_pe-vista_assegante-assegnata_istruttore" name="istruita"  data-plugins="dynamic-search">
-                            <label for="2_pe-vista_assegante-assegnata_istruttore" class="value">SI</label><br/>
-                            <input type="radio" value="" id="1_pe-vista_assegante-assegnata_istruttore" name="istruita"  data-plugins="dynamic-search">
-                            <label for="3_pe-vista_assegante-assegnata_istruttore" class="value">Tutte</label><br/>
-                        </td>
-                    </tr>
-                </table>
+<?php
+    if (file_exists($localFilterFile)){
+        require_once $localFilterFile;
+    }
+    else{
+        require_once $baseFilterFile;
+    }
+?>
+
             </td>
         </tr>
+        
     </table>
     
     <div style="margin-top:20px;">
