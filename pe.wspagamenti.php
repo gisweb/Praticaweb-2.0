@@ -16,11 +16,9 @@ $wsData = Array();
 
 $tabpath="pe";
 $dbh = utils::getDb();
-$sql = "SELECT * FROM pe.istanze WHERE pratica=?";
-$stmt = $dbh->prepare($sql);
-if($stmt->execute(Array($idpratica))){
 
-} 
+
+if (file_exists($includeFile)) require_once $includeFile;
 
 
 

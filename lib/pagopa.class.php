@@ -5,9 +5,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-class pagopa{
+class generalPagopa{
     const actionRead = "iol-GetElencoImportiPagamenti";
     const actionSet = "";
+    const urlVerifica = "";
+    const urlRicevuta = "";
+    
+    var $result = Array("success"=>0,"message"=>Array(),"data"=>Array());
+    
     const user = "marco.carbone@gisweb.it";
     const passwd = "pipino";
     static function readPagamenti($pratica){
@@ -61,6 +66,14 @@ class pagopa{
     }
     
     static function setPagamenti($pratica,$codice){
+        
+    }
+    
+    static function verificaPagamento($iuv){
+        
+    }
+    
+    static function ricevutaPagamento($iuv){
         
     }
 }
