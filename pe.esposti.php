@@ -79,27 +79,47 @@ function aggiungi_riferimento(id,pratica){
 		<H2 class="blueBanner">Esposti ricevuti</H2>
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">
 	
-		  <TR> 
-			<TD> 
+            <TR> 
+                <TD> 
 			<!-- contenuto-->
 				<?php
-				$tabella->set_dati("pratica=$idpratica");
+				$nrec = $tabella->set_dati("pratica=$idpratica");
 				$tabella->set_titolo("Esposto","modifica",array("id"=>$id));
 				$tabella->elenco();?>
 			<!-- fine contenuto-->
-			 </TD>
-	      </TR>
+                </TD>
+            </TR>
 		  
-		  <TR> 
-			<TD> 
+            <TR> 
+                <TD> 
 			<!-- tabella nuovo inserimento-->
 				<?php
-                                $tabella->set_titolo("Aggiungi nuovo Esposto ---> clicca su Nuovo","nuovo");
+                $tabella->set_titolo("Aggiungi nuovo Esposto ---> clicca su Nuovo","nuovo");
 				$tabella->get_titolo();
-                                ?><BR>
+                ?><BR>
 			<!-- fine tabella nuovo inserimento-->
-			</TD>
-		  </TR>			  
+                </TD>
+            </TR>	
+            <TR>
+                <TD>
+                    <?php
+                    if ($nrec==0)  print ("<p><b>Nessun Esposto presentato</b></p>");
+
+
+                    print "<br><div class=\"button_line\"></div>\n";
+                    $tabellaStampe=new tabella_h('stp/documenti','list');
+                    $nrecStampe=$tabellaStampe->set_dati("pratica=$idpratica and form='pe.esposti'");
+                    $tabellaStampe->set_titolo("Documenti dei sopralluoghi","nuovo",Array("form"=>"pe.esposti"));
+                    $tabellaStampe->get_titolo("stp.documenti.php");
+                    if ($tabellaStampe->num_record)
+                        $tabellaStampe->elenco();
+                    else
+                        print ("<p><b>Nessuna Documento</b></p>");
+                    print "<BR>";
+                    ?>
+                </TD>
+            </TR>
+        
 		</TABLE>
 <?php
 }

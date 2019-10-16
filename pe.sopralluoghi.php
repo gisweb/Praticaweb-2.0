@@ -105,7 +105,7 @@ window.open('http://'+host+'/praticaweb/carica_foto.php?pratica='+idpr+'&form=vi
 			
 			$tabella->set_titolo("Nuovo Sopralluogo","nuovo");
 			$tabella->get_titolo();
-                        if ($nrec==0)  print ("<p><b>Nessun Sopralluogo effettuato</b></p>");
+            if ($nrec==0)  print ("<p><b>Nessun Sopralluogo effettuato</b></p>");
 
 
             print "<br><div class=\"button_line\"></div>\n";
