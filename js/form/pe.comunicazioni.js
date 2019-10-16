@@ -15,8 +15,8 @@ $(document).ready(function(){
 
     var idCom = $("#id_comunicazione").val();
     if (idCom){
-        $('#azione-mail').hide();
-        $('#azione-elimina').hide();
-        $('#azione-salva').hide();
+//        $('#azione-mail').hide();
+//        $('#azione-elimina').hide();
+//        $('#azione-salva').hide();
     }
 });

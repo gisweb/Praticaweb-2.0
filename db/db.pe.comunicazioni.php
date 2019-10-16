@@ -4,9 +4,9 @@ $localSave=DATA_DIR."praticaweb/db/db.pe.comunicazioni.before.php";
 $idpratica=$_REQUEST["pratica"];
 $action = $_REQUEST["azione"];
 
+
 if (in_array($action,Array("Salva","Elimina","Invia"))){
-        
-	if ($_REQUEST["azione"]== "Invia") $_REQUEST["azione"]="Salva";
+    if ($_REQUEST["azione"]== "Invia") $_REQUEST["azione"]="Salva";
 	include_once "./db/db.savedata.php";
 	if (file_exists($localSave)){
 		
