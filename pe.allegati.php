@@ -95,7 +95,7 @@ else{
     $stmt = $dbh->prepare($sql);
     if($stmt->execute()){
         $options = $stmt->fetchAll();
-        $opts[] = sprintf("<input type=\"radio\" name=\"allegati_state\" class=\"\" id=\"\" data-plugins=\"input-download-allegati\" value=\"%s\">%s</input><br/>","all","Tutti gli stati");
+        $opts[] = sprintf("<input type=\"radio\" name=\"allegati_state\" class=\"\" id=\"\" data-plugins=\"input-download-allegati\" value=\"%s\">%s</input><br/>","%","Tutti gli stati");
         for($i=0;$i<count($options);$i++){
             $optVal = $options[$i]["id"];
             $optLabel = $options[$i]["opzione"];
@@ -143,7 +143,14 @@ else{
         <button id = "btn_dialog_allegati" class="" data-plugins="dialog-allegati" data-pratica="$pratica" data-stato_allegato=""/>
     
         <div id="dialog-download" title="Seleziona quali allegati scaricare">
+	    <fieldset>
+            <legend>Seleziona un protocollo</legend>
+            $radioHtmlProt
+            </fieldset>
+            <fieldset>
+            <legend>Seleziona uno stato</legend>
             $radioHtml
+            </fieldset>
             <input type="hidden" id="pratica-download" value="$idpratica"/>
         </div>
     </div>        
@@ -180,9 +187,6 @@ EOT;
 
 $div_stato = <<<EOT
     <div id="div_change_stato" style="margin-top:20px;margin-bottom:20px;display:none;" class="hidden">
-        <div id="dialog-change" title="Seleziona il protocollo dei file">
-            $radioHtmlProt
-        </div>
         <div id="dialog-change" title="Seleziona lo stato dell'allegato">
             $radioHtml2
         </div>

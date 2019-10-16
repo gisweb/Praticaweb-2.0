@@ -1,6 +1,7 @@
 <?php
 error_reporting(E_ALL);
 require_once "../login.php";
+//error_reporting(E_ALL);
 $dbh = utils::getDB();
 $pratica = $_REQUEST["pratica"];
 $pr = new pratica($pratica);
@@ -8,22 +9,24 @@ $pr = new pratica($pratica);
 $allegatiDir = $pr->allegati.$fName;
 
 $data = Array($pratica);
-
+$filterStato="";
+$filterProt="";
 if ($_REQUEST["stato_allegato"]){
-    $filterStato = "stato_allegato = ?;";
+    $stato = $_REQUEST["stato_allegato"];
+    $filterStato = "AND coalesce(stato_allegato::varchar,'') ilike '$stato'";
     $data[] = $_REQUEST["stato_allegato"];
 }
 
 if ($_REQUEST["protocollo"]){
-    $filterProt = "AND prot_allegato = ?;";
+    $prot = $_REQUEST["protocollo"];
+    $filterProt = "AND prot_allegato ilike '$prot'";
     $data[] = $_REQUEST["protocollo"];
 }
-$sql = trim("SELECT id,nome_file,prot_allegato,data_prot_allegato FROM pe.file_allegati WHERE pratica = ? $filterStato $filterProt").";";
-
-
+$sql = trim("SELECT id,nome_file,prot_allegato,data_prot_allegato FROM pe.file_allegati WHERE pratica = $pratica $filterStato $filterProt");
+//die($sql);
 $stmt = $dbh->prepare($sql);
 
-if($stmt->execute($data)){
+if($stmt->execute()){
     $res = $stmt->fetchAll();
     if (count($res)==0) die("<p>No data found!</p>");
     $zip = new ZipArchive;
