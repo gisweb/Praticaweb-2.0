@@ -22,7 +22,7 @@ if ($_REQUEST["protocollo"]){
     $filterProt = "AND prot_allegato ilike '$prot'";
     $data[] = $_REQUEST["protocollo"];
 }
-$sql = trim("SELECT id,nome_file,prot_allegato,data_prot_allegato FROM pe.file_allegati WHERE pratica = $pratica $filterStato $filterProt");
+$sql = trim("SELECT id,nome_file,prot_allegato,data_prot_allegato FROM pe.file_allegati WHERE pratica = $pratica and coalesce(nome_file,'')<>'' $filterStato $filterProt");
 //die($sql);
 $stmt = $dbh->prepare($sql);
 
