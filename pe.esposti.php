@@ -110,7 +110,7 @@ function aggiungi_riferimento(id,pratica){
                     print "<br><div class=\"button_line\"></div>\n";
                     $tabellaStampe=new tabella_h('stp/documenti','list');
                     $nrecStampe=$tabellaStampe->set_dati("pratica=$idpratica and form='pe.esposti'");
-                    $tabellaStampe->set_titolo("Documenti dei sopralluoghi","nuovo",Array("form"=>"pe.esposti"));
+                    $tabellaStampe->set_titolo("Documentazione relativa agli esposti","nuovo",Array("form"=>"pe.esposti"));
                     $tabellaStampe->get_titolo("stp.documenti.php");
                     if ($tabellaStampe->num_record)
                         $tabellaStampe->elenco();
