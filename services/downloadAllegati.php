@@ -6,14 +6,21 @@ $pratica = $_REQUEST["pratica"];
 $pr = new pratica($pratica);
 
 $allegatiDir = $pr->allegati.$fName;
+
+$data = Array($pratica);
+
 if ($_REQUEST["stato_allegato"]){
-    $sql = "SELECT id,nome_file,prot_allegato,data_prot_allegato FROM pe.file_allegati WHERE pratica = ? AND stato_allegato = ?;";
-    $data = Array($pratica,$_REQUEST["stato_allegato"]);
+    $filterStato = "stato_allegato = ?;";
+    $data[] = $_REQUEST["stato_allegato"];
 }
-else{
-    $sql = "SELECT id,nome_file,prot_allegato,data_prot_allegato FROM pe.file_allegati WHERE pratica = ?;";
-    $data = Array($pratica);
+
+if ($_REQUEST["protocollo"]){
+    $filterProt = "AND prot_allegato = ?;";
+    $data[] = $_REQUEST["protocollo"];
 }
+$sql = trim("SELECT id,nome_file,prot_allegato,data_prot_allegato FROM pe.file_allegati WHERE pratica = ? $filterStato $filterProt").";";
+
+
 $stmt = $dbh->prepare($sql);
 
 if($stmt->execute($data)){

@@ -114,11 +114,11 @@ else{
     else{
         print_r($stmt->errorInfo());
     }
-    
+    $keyProt = Array('%'=>1);
     for($i=0;$i<count($res);$i++){
         $r = $res[$i];
         list($prat,$prot,$data_prot,$titolo,$tipoRich)=$r;
-        
+        $keyProt[$prot] = 1;
         $tabella=new Tabella_h($config_file,"list");
         $num_allegati = $tabella->set_dati("coalesce(id,0)<>0 AND pratica=$idpratica AND protocollo='$prot' AND data_protocollo='$data_prot'::date");
         //print_array($tabella);
@@ -130,6 +130,14 @@ else{
         else
 			 print "<p><b>Nessun Documento Allegato</b></p>";
     }
+    $protocolli = array_keys($keyProt);
+    for($kk=0;$kk<count($protocolli);$kk++){
+        $optVal = $protocolli[$kk];
+        $optLabel = ($protocolli[$kk]=='%')?("Tutti i protocolli"):("Protocollo ".$protocolli[$kk]);
+        
+        $optsProt[]= sprintf("<input type=\"radio\" class=\"\" name=\"radio_protocollo\" value=\"%s\" label=\"%s\">%s</input><br/>",$optVal,$optLabel,$optLabel);
+    }
+    $radioHtmlProt = implode("\n",$optsProt);
     $btn_download = <<<EOT
     <div id="div_download_allegati" style="margin-top:20px;margin-bottom:20px;style:display:none;" class="hidden">
         <button id = "btn_dialog_allegati" class="" data-plugins="dialog-allegati" data-pratica="$pratica" data-stato_allegato=""/>
@@ -142,14 +150,15 @@ else{
     <script>
         var dialog = $("#dialog-download").dialog({
             autoOpen: false,
-            height: 280,
-            width: 350,
+            height: 400,
+            width: 600,
             modal: true,
             buttons: {
                 "Scarica il file compresso": function(){
                     var pr = $('#pratica-download').val();
                     var stato = $('input[name=allegati_state]:checked').val();
-                    goToPratica('services/downloadAllegati.php',{'pratica':pr,'stato_allegato':stato});
+                    var protocollo = $('input[name=radio_protocollo]:checked').val();
+                    goToPratica('services/downloadAllegati.php',{'pratica':pr,'stato_allegato':stato,'protocollo':protocollo});
                 },
                 Cancel: function() {
                    dialog.dialog( "close" );
@@ -171,6 +180,9 @@ EOT;
 
 $div_stato = <<<EOT
     <div id="div_change_stato" style="margin-top:20px;margin-bottom:20px;display:none;" class="hidden">
+        <div id="dialog-change" title="Seleziona il protocollo dei file">
+            $radioHtmlProt
+        </div>
         <div id="dialog-change" title="Seleziona lo stato dell'allegato">
             $radioHtml2
         </div>
