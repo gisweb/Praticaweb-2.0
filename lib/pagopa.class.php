@@ -19,7 +19,7 @@ class generalPagopa{
     
     static function readPagamenti($pratica){
         $result = Array("success"=>0,"message"=>Array(),"data"=>Array());
-        $sql = "SELECT * FROM pe.istanze WHERE pratica=?";
+        $sql = "SELECT DISTINCT url FROM pe.istanze WHERE pratica=?";
         $dbh = utils::getDb();
         $stmt = $dbh->prepare($sql);
         if($stmt->execute(Array($pratica))){
