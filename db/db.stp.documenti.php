@@ -63,8 +63,13 @@ elseif($_POST["azione"]=="Invia Prisma"){
 	$data = Array($pratica,$data,$nota,$user,$tms,$uid);
 	$pr = new pratica($pratica);
 	$id = $_REQUEST["id"];
+        $tipoLettera = $_REQUEST["tipo_lettera"];
 	//print_array($pr);
-	
+	if (!$tipoLettera){
+            $Errors["tipo_lettera"]="Campo Obbligatorio";
+            require_once $active_form;
+            exit;
+        }
 	$numero = $pr->numero;
 	$fascicolo = $pr->info["fascicolo"];
 	$anno = $pr->info["anno_fascicolo"];
@@ -90,12 +95,12 @@ elseif($_POST["azione"]=="Invia Prisma"){
 			$strDST=$r["LoginResult"]["strDST"];
 
 			$clientCreation = new SoapClient(WSDL_DOCUM_URL,array("login"=>SERVICE_USER,"password"=>SERVICE_PASSWD,"trace" => true,'exceptions' => true));
-			$result = creaDocumento($clientCreation,$userAds,$fascicolo,$anno,$descrizione,$id,$fname);
+			$result = creaDocumento($clientCreation,$userAds,$fascicolo,$anno,$descrizione,$id,$fname,$tipoLettera);
 			if($result["success"]==1){
 				$idExt = $result["data"]["idDocumentoEsterno"];
-				$sql = "UPDATE stp.stampe SET external_id = ?, descrizione = ? WHERE id = ?;";
+				$sql = "UPDATE stp.stampe SET external_id = ?, descrizione = ?, tipo_lettera=?  WHERE id = ?;";
 				$stmt = $dbh->prepare($sql);
-				if(!$stmt->execute(Array($idExt,$descrizione,$id))){
+				if(!$stmt->execute(Array($idExt,$descrizione,$tipoLettera,$id))){
 					echo "<p>Errore nell'aggiornamento del documento</p>";
 				}
 				$sql = "INSERT INTO pe.annotazioni(pratica,data_annotazione,note,utente,tmsins,uidins) VALUES(?,?,?,?,?,?)";

@@ -677,6 +677,35 @@ EOT;
                 $obj=json_encode($params);
                 $retval=($dati[$campo])?("<a href='javascript:goToPratica(\"$form.php\",$obj)'><img title=\"Visualizza la pratica\" src=\"images/view.png\" border=\"0\"></a>"):('');
                 break;
+            case "riferimento_vigi":
+                $data = $dati[$campo];
+                $data = str_replace("{","",str_replace("}","",$data));
+                $tmp = (!trim($data))?(Array()):(explode(",",$data));
+                $tmp = array_unique($tmp);
+                $data1 = $dati["riferimento_vigi_numero"];
+                $data1 = str_replace("{","",str_replace("}","",$data1));
+                $tmp1 = explode(",",$data1);
+                $tmp1 = array_unique($tmp1);
+                $html=<<<EOT
+<ol>
+    %s
+</ol>
+EOT;
+                for($kk=0;$kk<count($tmp);$kk++){
+                    $idpr = $tmp[$kk];
+                    $num = $tmp1[$kk];
+                    $r[] =<<<EOT
+<li><a href="praticaweb.php?vigi=1&pratica=$idpr" target="_new">$num</a></li>
+EOT;
+                }
+                if(count($tmp)){
+                    $a = implode("",$r);
+                    $retval = sprintf($html,$a);
+                }
+                else{
+                    $retval = "Nessun pratica collegata";
+                }
+                break;
             case "folder":
                 $prms=explode('#',$w);
                 $size=array_shift($prms);
