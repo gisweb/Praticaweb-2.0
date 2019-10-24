@@ -416,7 +416,25 @@ function openGC3(mapset,x,y,scale){
     //alert('Sto cercando di aprire la mappa');
 }
 
-  function ApriMappa3(mapsetid){
-	var mywin=window.open(baseURL + '?' + "mapset=" + mapsetid );
-	mywin.focus();
-  }
+function ApriMappa3(mapsetid){
+  var mywin=window.open(baseURL + '?' + "mapset=" + mapsetid );
+  mywin.focus();
+}
+function deleteNotifica(pratica,id){
+    if (!confirm('Sei sicuro di voler eliminare questa notifica?')) return;
+    var d = {};
+    d["pratica"] = pratica;
+    d["id"] = id;
+    d["action"] = "delete-notifica";
+    $.ajax({
+        url:serverUrl,
+        dataType:'json',
+        type:'POST',
+        data:d,
+        success: function(data, textStatus, jqXHR){
+            if (data["success"]==1){
+                $("tr[data-row-id='" + data["id"] + "']").hide();
+            }
+        }
+    });
+}
