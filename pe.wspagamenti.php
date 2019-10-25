@@ -17,6 +17,8 @@ $wsData = Array();
 $tabpath="pe";
 $dbh = utils::getDb();
 
+$pratica = new pratica($idpratica);
+$online = $pratica->info["online"];
 
 if (file_exists($includeLocalFile)) require_once $includeLocalFile;
 elseif (file_exists($includeFile)) require_once $includeFile;
@@ -51,7 +53,7 @@ elseif (file_exists($includeFile)) require_once $includeFile;
 
     $tabellaRichiesti->set_dati("pratica=$idpratica");
     $tabellaPagoPA->array_dati = $wsData;
-    $tabellaVersati->set_dati("pratica=$idpratica");
+    $tabellaVersati->set_dati("pratica=$idpratica and coalesce(modalita,0)<>4");
     
     $tabellaPagoPA->num_record = count($wsData);
     
@@ -63,6 +65,7 @@ elseif (file_exists($includeFile)) require_once $includeFile;
             <TD> 
 			<!-- tabella nuovo inserimento-->
 <?php
+    if($online==1){
         $tabellaRichiesti->set_titolo("Elenco degli importi Richiesti",'nuovo');
         $tabellaRichiesti->get_titolo('pe.importi_dovuti.php');
         if ($tabellaRichiesti->num_record) 
@@ -70,7 +73,7 @@ elseif (file_exists($includeFile)) require_once $includeFile;
         else
             print ("<p><b>Nessuna richiesta di pagamento effettuata</b></p>");
         print "<BR>";
-        
+    }    
         $tabellaPagoPA->set_titolo("Importi versati tramite PagoPA");
         $tabellaPagoPA->get_titolo();
         if ($tabellaPagoPA->num_record) 

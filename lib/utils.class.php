@@ -445,11 +445,16 @@ EOT;
         return;
     }
     
-    static function validation($type,$val){
+   static function validation($type,$val){
         $result = 0;
         switch($type){
             case "valuta":
                 if (preg_match('/^\d+([\.,]\d{1,2})?$/', $val)) $result = 1;
+                else 
+                    $result =  0;
+                break;
+            case "intero":
+                if (preg_match('/^\d+?$/', $val)) $result = 1;
                 else 
                     $result =  0;
                 break;
@@ -466,12 +471,40 @@ EOT;
         }
         return $result;
     }
+    
     static function is_zero($val){
         $res = preg_replace('|[\.,0]|',"",$val);
         if (strlen($res)==0) return 1;
         else
             return 0;
             
+    }
+    
+    static function json_error($err){
+        switch ($err) {
+            case JSON_ERROR_NONE:
+                return Array("success"=>1,"error"=>"");
+            break;
+            case JSON_ERROR_DEPTH:
+                return Array("success"=>0,"error"=>"Maximum stack depth exceeded");
+               
+            break;
+            case JSON_ERROR_STATE_MISMATCH:
+                return Array("success"=>0,"error"=>"Underflow or the modes mismatch");
+            break;
+            case JSON_ERROR_CTRL_CHAR:
+                return Array("success"=>0,"error"=>"Unexpected control character found");
+            break;
+            case JSON_ERROR_SYNTAX:
+                return Array("success"=>0,"error"=>"Syntax error, malformed JSON");
+            break;
+            case JSON_ERROR_UTF8:
+                return Array("success"=>0,"error"=>"Malformed UTF-8 characters, possibly incorrectly encoded");
+            break;
+            default:
+                return Array("success"=>0,"error"=>"Unknown error");
+            break;
+        }
     }
 }
 

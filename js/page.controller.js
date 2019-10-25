@@ -275,6 +275,44 @@ $(document).ready(function(){
             $('#dialog-change').dialog('option', 'position', [pos.left-$(this).outerWidth(),pos.top]);
             $('#dialog-change').dialog( "open" );
         });
-	
+        $("[data-plugins='ws-pagopa']").bind('click',function(event){
+            event.preventDefault();
+            
+            var d = $(this).data();
+            if (d["action"] == "pubblica-pagamento"){
+                if (!confirm('Sei sicuro di voler pubblicare questo pagamento?')) return;
+                $.ajax({
+                    url:serverUrl,
+                    dataType:'json',
+                    type:'POST',
+                    data:d,
+                    success: function(data, textStatus, jqXHR){
+                        if (data["success"]==1){
+                            window.location.reload();
+                        }
+                        else{
+                            alert(data["message"]);
+                        }
+                    }
+                });
+            }
+            else if(d["action"] == "revoca-pagamento"){
+                if (!confirm('Sei sicuro di voler revocare questo pagamento?')) return;
+                $.ajax({
+                    url:serverUrl,
+                    dataType:'json',
+                    type:'POST',
+                    data:d,
+                    success: function(data, textStatus, jqXHR){
+                        if (data["success"]==1){
+                            window.location.reload();
+                        }
+                        else{
+                            alert(data["message"]);
+                        }
+                    }
+                });
+            }
+        });
 });
 
