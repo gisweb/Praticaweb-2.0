@@ -5,7 +5,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-serror_reporting(E_ERROR);
+error_reporting(E_ERROR);
 function loadLibs(){
     $libs=Array("pratica.class.php","app.utils.class.php","utils.class.php","menu.class.php","mail.class.php");
     foreach($libs as $lib){
