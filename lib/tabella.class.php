@@ -344,6 +344,7 @@ EOT;
 		if(!$this->db->db_connect_id)  die( "Impossibile connettersi al database");
 	}
 	
+    
         function connectPDO(){
             $message = sprintf("Impossibile connettersi al database %s sul server %s porta %s con credenziali %s:%s",DB_NAME,DB_HOST,DB_PORT,DB_USER, DB_PWD);
             $dsn = sprintf('pgsql:dbname=%s;host=%s;port=%s',DB_NAME,DB_HOST,DB_PORT);
@@ -360,6 +361,40 @@ EOT;
 		$this->tag=$mytag;
 	}
 
+    
+    
+    function elenco_opzioni($tabella,$selezionato,$filtro=''){
+        if (!isset($this->db)) $this->connettidb();
+        $sql="select * from $tabella";
+        //echo "<p>$filtro</p>";
+        if (trim($filtro)){
+            if (strpos($filtro,"=")===FALSE){
+                if ($this->array_dati[$this->curr_record][$filtro]){
+                    $filtro="$filtro='".$this->array_dati[$this->curr_record][$filtro]."'";
+                }
+				elseif($_REQUEST[$filtro]){
+                    $filtro="$filtro='".$_REQUEST[$filtro]."'";
+                }
+            }
+            $sql.=" where $filtro";
+        }
+        //utils::debug(DEBUG_DIR.'selectdb.debug',$sql);
+        $result = $this->db->sql_query ($sql);
+        //echo "<p>$sql</p>";
+        if (!$result){
+            return;
+        }
+        $res=Array();
+        $elenco = $this->db->sql_fetchrowset();
+        $nrighe=$this->db->sql_numrows();
+        for  ($i=0;$i<$nrighe;$i++){
+            (in_array($elenco[$i]["id"],$selezionato))?($selected=1):($selected=0);
+            $res[]=Array("value"=>$elenco[$i]["id"],"label"=>$elenco[$i]["opzione"],"selected"=>$selected, "params"=>json_encode($elenco[$i]));
+        }
+        return $res;
+    }   
+    
+    
 /*--------------------------- Funzione che costruisce i bottoni di salvataggio,annulla,elimina --------------------------------*/    
     function set_buttons(){
         if (count($this->button)==0) return '';
