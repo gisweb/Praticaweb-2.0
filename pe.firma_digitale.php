@@ -93,29 +93,30 @@ EOT;
         $stmt = $tabella->dbh->prepare($sql);
         $stmt->execute(Array($idpratica));
         $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        require_once LOCAL_LIB."wsclient.mail.class.php";
-        for($i=0;$i<count($res);$i++){
-            //DA FARE CHIAMATA A WS SIMONE PER ACCETTAZIONE E CONSEGNA PEC IN BASE A PRATICA_RAGGRUPPAMENTOPROTOCOLLO
-            $objId = sprintf("%s_%s",$idpratica,$res[$i]["raggruppamentoprotocollo"]);
-            $rr = wsClientMail::getInfoPEC($objId);
-            if (count($rr)){
-                $acc = ($rr[0]["Accettazione"])?($rr[0]["Accettazione"]):(" --- ");
-                $cons = ($rr[0]["Consegna"])?($rr[0]["Consegna"]):(" --- ");
+        if (file_exists(LOCAL_LIB."wsclient.mail.class.php")){
+            require_once LOCAL_LIB."wsclient.mail.class.php";
+            for($i=0;$i<count($res);$i++){
+                //DA FARE CHIAMATA A WS SIMONE PER ACCETTAZIONE E CONSEGNA PEC IN BASE A PRATICA_RAGGRUPPAMENTOPROTOCOLLO
+                $objId = sprintf("%s_%s",$idpratica,$res[$i]["raggruppamentoprotocollo"]);
+                $rr = wsClientMail::getInfoPEC($objId);
+                if (count($rr)){
+                    $acc = ($rr[0]["Accettazione"])?($rr[0]["Accettazione"]):(" --- ");
+                    $cons = ($rr[0]["Consegna"])?($rr[0]["Consegna"]):(" --- ");
+                }
+                else{
+                    $acc = " --- ";
+                    $cons = " --- ";
+                }    
+
+
+                $res[$i]["consegna"] = $cons;
+                $res[$i]["accettazione"] = $acc;
+                $dd = json_decode($res[$i]["pathdocumento"],TRUE);
+                $res[$i]["nomedocumento"] = $dd["nomedocumento"];
+                $res[$i]["object"] = $dd["object"];
+
             }
-            else{
-                $acc = " --- ";
-                $cons = " --- ";
-            }    
-            
-            
-            $res[$i]["consegna"] = $cons;
-            $res[$i]["accettazione"] = $acc;
-            $dd = json_decode($res[$i]["pathdocumento"],TRUE);
-            $res[$i]["nomedocumento"] = $dd["nomedocumento"];
-            $res[$i]["object"] = $dd["object"];
-            
         }
-        
         $tabella->set_dati($res,'list');	
         $nrec = count($res);
         $tabella->set_titolo($titolo,"nuovo");
