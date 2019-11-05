@@ -4,6 +4,9 @@ include "./lib/tabella_h.class.php";
 include "./lib/tabella_v.class.php";
 $tabpath="pe";
 //print_array($_REQUEST);
+
+$dbh = utils::getDb();
+
 $idpratica=$_REQUEST["pratica"];
 $modo=(isset($_REQUEST["mode"]) && $_REQUEST["mode"])?($_REQUEST["mode"]):('view');
 $today=date('j-m-y'); 
@@ -89,8 +92,9 @@ EOT;
     else{
     //-<<<<<<<<<<<<<<<<<<<<<< VISUALIZZA DOCUMENTI DA FIRMARE >>>>>>>>>>>>>>>>>>>>>>>>>>>----------------------->	
         $tabella=new tabella_h("$tabpath/firma_digitale",$modo);
+        
         $sql = "SELECT iddocumento,iddocumento as id,idpratica as pratica,datainvio,idutentesrc,idutentedst,oggetto,lettura,firma,1 as protocolla,destinatarimail as destinatari,raggruppamentoprotocollo,pathdocumento FROM firma_digitale.documenti WHERE idpratica = ? AND pathdocumento ilike '{%}';";
-        $stmt = $tabella->dbh->prepare($sql);
+        $stmt = $dbh->prepare($sql);
         $stmt->execute(Array($idpratica));
         $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
         if (file_exists(LOCAL_LIB."wsclient.mail.class.php")){
