@@ -15,8 +15,8 @@ include_once "./lib/tabella_v.class.php";
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <?php
-	utils::loadJS(Array("select2.min","select2_locale_it",'form/pe.comunicazioni'));
-	utils::loadCss(Array("select2"));
+	utils::loadJS(Array("jquery.multi-select",'form/pe.comunicazioni'));
+	utils::loadCss(Array("multi-select"));
 ?>
 
 </head>
