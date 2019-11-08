@@ -47,7 +47,10 @@ if (($modo=="edit") or ($modo=="new") ){
 		  </tr>
 		</TABLE>
 		</form>		
-		
+<script>
+//console.log($("data-plugins='multi-select'"));
+$("#destinatari").multiSelect({});
+</script>		
 	<?php
 }	
 else{
