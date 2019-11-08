@@ -68,7 +68,7 @@ $formaction = "pe.firma_digitale.php";
             //print_r($tabella->array_dati);
         }
         
-        $htmlTabella = $tabella->edita();
+        $htmlTabella = $tabella->edita(0);
         $pagina = <<<EOT
     <H2 class='blueBanner'>$banner</H2>
     <FORM id="documenti" name="utenti" method="post" action="praticaweb.php">
@@ -97,6 +97,7 @@ EOT;
         $stmt = $dbh->prepare($sql);
         $stmt->execute(Array($idpratica));
         $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		utils::debugAdmin($res);
         if (file_exists(LOCAL_LIB."wsclient.mail.class.php")){
             require_once LOCAL_LIB."wsclient.mail.class.php";
             for($i=0;$i<count($res);$i++){

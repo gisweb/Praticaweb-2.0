@@ -314,8 +314,9 @@ $(document).ready(function(){
                 });
             }
         });
-    $("data-plugins='multi-select'").each(function($k,v){
+/*    $("data-plugins='multi-select'").each(function($k,v){
         $(v).multiSelect();
     });
+*/
 });
 

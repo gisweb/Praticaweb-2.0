@@ -420,4 +420,6 @@ class gwMail{
         return $result;
     }
 }
+
+class generalMailUtils{}
 ?>
