@@ -1,6 +1,7 @@
 <?php
 $idpratica=$_REQUEST["pratica"];
 $action = $REQUEST["azione"];
+utils::debugAdmin($_REQUEST);
 if (in_array($action,Array("Salva","Elimina"))){
 	
 	if ($action=="Salva" && defined('PROT_OUT') && $_REQUEST["richiedi_protocollo_out"] && PROT_OUT==1){

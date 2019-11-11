@@ -314,9 +314,12 @@ $(document).ready(function(){
                 });
             }
         });
-/*    $("data-plugins='multi-select'").each(function($k,v){
+    $("[data-plugins='multi-select']").each(function($k,v){
         $(v).multiSelect();
     });
-*/
+	$("[data-locked='protocollo']").each(function($k,v){
+		if ($('#protocollo').val()) $(v).prop('readonly', true);
+    });
+
 });
 

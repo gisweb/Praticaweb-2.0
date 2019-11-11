@@ -114,50 +114,56 @@ class Tabella{
             $button['width']='80px';
     switch(strtolower($button['text'])){
         case "aggiungi":
-         $button['icon']='ui-icon-plus';
-         $button['value']='Salva';
-         break;
+			$button['icon']='ui-icon-plus';
+			$button['value']='Salva';
+			break;
         case "salva":
-         $button['icon']='ui-icon-disk';
-         $button['value']='Salva';
-         break;
+			$button['icon']='ui-icon-disk';
+			$button['value']='Salva';
+			break;
         case "avanti":
-         $button['icon']='ui-icon-circle-triangle-e';
-         $button['value']='Avanti';
-         break;
+			$button['icon']='ui-icon-circle-triangle-e';
+			$button['value']='Avanti';
+			break;
         case "elimina":
-         $button['icon']='ui-icon-trash';
-         $button['value']='Elimina';
-         $button['onclick']='confirmDelete';
-         break;
+			$button['icon']='ui-icon-trash';
+			$button['value']='Elimina';
+			$button['onclick']='confirmDelete';
+			break;
         case "annulla":
-         $button['icon']='ui-icon-circle-triangle-w';
-         $button['value']='Annulla';
-         break;
+			$button['icon']='ui-icon-circle-triangle-w';
+			$button['value']='Annulla';
+			break;
         case "indietro":
-         $button['icon']='ui-icon-circle-triangle-w';
-         $button['value']='Indietro';
-         break;
+			$button['icon']='ui-icon-circle-triangle-w';
+			$button['value']='Indietro';
+			break;
         case "chiudi":
-         $button['icon']='ui-icon-circle-triangle-w';
-         $button['value']='Chiudi';
-         break;
-	case "cerca":
-         $button['icon']='ui-icon-search';
-         $button['value']='Cerca';
-         break;
-       case "voltura":
+			$button['icon']='ui-icon-circle-triangle-w';
+			$button['value']='Chiudi';
+			break;
+		case "cerca":
+			$button['icon']='ui-icon-search';
+			$button['value']='Cerca';
+			break;
+		case "voltura":
            $button['icon']='ui-icon-shuffle';
-           $button['text']='Sposta in Variazioni';
+           $button['text']='Sposta in Variazioni';		   
            $button['onclick']='confirmSpostaVariazioni';
            $button['width']='160px';
            break;
-       case "preview":
-         $button['icon']='ui-icon-print';
-         $button['value']='Stampa';
+		case "mail":
+           $button['icon']='ui-icon-shuffle';
+           $button['text']='Invia Comunicazione';
+           $button['value']='mail';
+           $button['width']='160px';
+           break;
+		case "preview":
+			$button['icon']='ui-icon-print';
+			$button['value']='Stampa';
         default:
-         $button['value']=$button['text'];
-         break;
+			$button['value']=$button['text'];
+			break;
 				}
 				$this->button[$name]=$button;
 			}

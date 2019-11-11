@@ -18,7 +18,16 @@ include_once "./lib/tabella_v.class.php";
 	utils::loadJS(Array("jquery.multi-select",'form/pe.comunicazioni'));
 	utils::loadCss(Array("multi-select"));
 ?>
-
+<style>
+.ms-container .ms-selectable li.ms-elem-selectable,
+.ms-container .ms-selection li.ms-elem-selection{
+  border-bottom: 1px #eee solid;
+  padding: 2px 10px;
+  color: rgb(65, 85, 120);
+  font-family:Verdana, Geneva, Arial, sans-serif; 
+  font-size: 10px;
+}div.ms-container {width:800px;}
+</style>
 </head>
 <body>
 <?php
@@ -49,7 +58,10 @@ if (($modo=="edit") or ($modo=="new") ){
 		</form>		
 <script>
 //console.log($("data-plugins='multi-select'"));
-$("#destinatari").multiSelect({});
+$("[data-plugins='multi-select']").multiSelect({});
+	$("[data-locked='protocollo']").each(function($k,v){
+        $(v).prop('readonly', true);
+    });
 </script>		
 	<?php
 }	
