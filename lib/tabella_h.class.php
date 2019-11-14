@@ -451,10 +451,12 @@ EOT;
 </td>
 EOT;
             break;   
-		case "widget":
+		case "verifica-pec":
 			$id = $nome.="[".$this->array_dati[$row]["id"]."]";
+            $valore = $this->array_dati[$row][$campo];
+            $pr = $this->array_dati[$row]["pratica"];
 			$retval=<<<EOT
-	<td style="width:$w"><span id="$id" $html5Attr>$valore</span></td>
+	<td style="width:$w"><a id="$id" data-plugins="verifica-pec" data-pratica="$pr" data-uuid="$valore">Verifica Comunicazione</a></td>
 EOT;
 			break;            
 	}
