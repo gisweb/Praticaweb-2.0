@@ -46,6 +46,16 @@ $formaction = "pe.firma_digitale.php";
 	utils::loadCss(Array('firma_digitale'));
 ?>
 </head>
+<style>
+.ms-container .ms-selectable li.ms-elem-selectable,
+.ms-container .ms-selection li.ms-elem-selection{
+  border-bottom: 1px #eee solid;
+  padding: 2px 10px;
+  color: rgb(65, 85, 120);
+  font-family:Verdana, Geneva, Arial, sans-serif; 
+  font-size: 10px;
+}div.ms-container {width:800px;}
+</style>
 <body>
 <?php
     if (($modo=="edit") or ($modo=="new") ){
@@ -88,6 +98,12 @@ $formaction = "pe.firma_digitale.php";
     </FORM>                
 EOT;
         print $pagina;
+?>
+<script>
+//console.log($("data-plugins='multi-select'"));
+$("[data-plugins='multi-select']").multiSelect({});
+</script>	    
+<?php    
     }	
     else{
     //-<<<<<<<<<<<<<<<<<<<<<< VISUALIZZA DOCUMENTI DA FIRMARE >>>>>>>>>>>>>>>>>>>>>>>>>>>----------------------->	
