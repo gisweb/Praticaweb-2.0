@@ -93,6 +93,11 @@ else{
 			 </TD>
 	      </TR>
 		</TABLE>
+
+</script>	
+<?php
+}
+?>		
 <script>
 
 $("[data-plugins='verifica-pec']").each(function(k,v){
@@ -139,10 +144,5 @@ $("[data-plugins='verifica-pec']").each(function(k,v){
             });
         });
     });
-</script>	
-<?php
-}
-?>		
-
 </body>
 </html>
