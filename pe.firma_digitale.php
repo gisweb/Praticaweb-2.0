@@ -42,8 +42,8 @@ $formaction = "pe.firma_digitale.php";
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
 <?php
-	utils::loadJS('form/pe.firma_digitale');
-	utils::loadCss(Array('firma_digitale'));
+	utils::loadJS("jquery.multi-select",'form/pe.firma_digitale');
+	utils::loadCss(Array("multi-select",'firma_digitale'));
 ?>
 </head>
 <style>
