@@ -28,7 +28,54 @@ include_once "./lib/tabella_v.class.php";
   font-size: 10px;
 }div.ms-container {width:800px;}
 </style>
+<script>
+function verificapec(pratica,uuid){
+//    alert(uuid);
+$.ajax({
+                url:serverUrl,
+                dataType:'json',
+                type:'POST',
+                data:{action:'verifica-pec',uuid:uuid,pratica:pratica},
+                success: function(data, textStatus, jqXHR){
+                    if (data["success"]==1){
+//console.log(data);
+//                        if ($("div#verifica-pec")){
+                            $("div#verifica-pec").html('');
+//                        }
+//                        else{
+//                            $(document).append('<div id="verifica-pec"></div>');
+//                        }
+                        var html = '<ol>';
+                        var tmp = '';
+                       for (var i = 0; i < data["result"].length; i++) {
+                            tmp='<li>'+ data["result"][i] +'</li>';
+                            html += tmp;
+                        }    
+                        html += '</ol>';
+                        $("#verifica-pec").html(html);
+                        var dialog = $("verifica-pec").dialog({
+                            autoOpen: false,
+                            height: 400,
+                            width: 350,
+                            modal: true,
+                            buttons: {
+                                Cancel: function() {
+                                    dialog.dialog( "close" );
+                                }
+                            }
+                        });
+                        dialog.dialog("open");
 
+                    }
+                    else{
+                        alert(data["message"]);
+                    }
+                }
+            });
+
+
+}
+</script>
 </head>
 <body>
 <?php
@@ -93,13 +140,12 @@ else{
 			 </TD>
 	      </TR>
 		</TABLE>
-
-</script>	
+<div id="verifica-pec"></div>
 <?php
 }
 ?>		
 <script>
-
+/*
 $("[data-plugins='verifica-pec']").each(function(k,v){
         $(v).bind('click',functions(event){
             event.preventDefault();
@@ -144,5 +190,6 @@ $("[data-plugins='verifica-pec']").each(function(k,v){
             });
         });
     });
+*/
 </body>
 </html>

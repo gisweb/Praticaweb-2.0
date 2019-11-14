@@ -457,7 +457,7 @@ EOT;
             $pr = $this->array_dati[$row]["pratica"];
             if ($valore){
 			$retval=<<<EOT
-	<td style="width:$w"><a style="text-decoration:none;" href="#" id="$id" data-plugins="verifica-pec" data-pratica="$pr" data-uuid="$valore">Verifica Comunicazione</a></td>
+	<td style="width:$w"><a style="text-decoration:none;" id="$id" href="javascript:verificapec($pr,'$valore')">Verifica Comunicazione</a></td>
 EOT;
             }
             else{
