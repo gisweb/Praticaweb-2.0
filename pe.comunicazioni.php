@@ -28,6 +28,52 @@ include_once "./lib/tabella_v.class.php";
   font-size: 10px;
 }div.ms-container {width:800px;}
 </style>
+<script>
+$("[data-plugins='verifica-pec']").each(function(k,v){
+        $(v).bind('click',functions(event){
+            event.preventDefault();
+            var d = $(v).data();
+            $.ajax({
+                url:serverUrl,
+                dataType:'json',
+                type:'POST',
+                data:d,
+                success: function(data, textStatus, jqXHR){
+                    if (data["success"]==1){
+                        if ($("div#verifica-pec")){
+                            $("div#verifica-pec").html('');
+                        }
+                        else{
+                            $(document).append('<div id="verifica-pec"></div>');
+                        }
+                        var html = '';
+                        var tmp = ''
+                        $(data["result"]).each(function(v){
+                            tmp='<li>'+ v +'</li>';
+                            
+                        });
+                        html = '<ol>' + tmp + '</ol>';
+                        $("div#verifica-pec").html(html);
+                        $("div#verifica-pec").dialog({
+                            autoOpen: true,
+                            height: 400,
+                            width: 350,
+                            modal: true,
+                            buttons: {
+                                Chiudi: function() {
+                                    dialog.dialog( "close" );
+                                }
+                            }
+                        });
+                    }
+                    else{
+                        alert(data["message"]);
+                    }
+                }
+            });
+        });
+    });
+</script>
 </head>
 <body>
 <?php
