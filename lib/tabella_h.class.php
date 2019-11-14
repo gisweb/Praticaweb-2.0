@@ -455,9 +455,16 @@ EOT;
 			$id = $nome.="[".$this->array_dati[$row]["id"]."]";
             $valore = $this->array_dati[$row]["id_comunicazione"];
             $pr = $this->array_dati[$row]["pratica"];
+            if ($valore){
 			$retval=<<<EOT
 	<td style="width:$w"><a style="text-decoration:none;" href="#" id="$id" data-plugins="verifica-pec" data-pratica="$pr" data-uuid="$valore">Verifica Comunicazione</a></td>
 EOT;
+            }
+            else{
+                $retval = <<<EOT
+<td style="width:$w"> ----- </td>
+EOT;
+            }
 			break;            
 	}
 	return $retval;
