@@ -246,7 +246,7 @@ class gwMail{
                 
                 //Fetch an overview of the email.
                 $overview = imap_fetch_overview($imapResource, $email);
-                print_r($overview);
+                //print_r($overview);
                 $overview = $overview[0];
                 $res = $overview;
                 if(!$uuid){
