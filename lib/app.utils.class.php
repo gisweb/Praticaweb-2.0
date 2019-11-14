@@ -669,6 +669,8 @@ class generalAppUtils {
 			$result["comunicazione"]["text"]=$comunicazione["testo"];
 			$result["comunicazione"]["to"]=$destinatari;
 			$result["comunicazione"]["attachments"]=$allegati;
+			$result["comunicazione"]["id_comunicazione"]= $comunicazione["id_comunicazione"];
+			$result["comunicazione"]["protocollo"]= $comunicazione["protocollo"];
 		}
 		else{
 			$err = $stmt->errorInfo();
