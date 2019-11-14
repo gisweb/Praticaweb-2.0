@@ -59,8 +59,8 @@ $formaction = "pe.firma_digitale.php";
         elseif($modo=="edit"){
             $id = $_REQUEST["id"];
             $sql = "SELECT iddocumento,iddocumento as id,idpratica as pratica,datainvio,idutentesrc,idutentedst,oggetto,lettura,firma,1 as protocolla,raggruppamentoprotocollo FROM firma_digitale.documenti WHERE iddocumento = ?;";
-
-            $stmt = $tabella->dbh->prepare($sql);
+			$dbh = utils::getDb();
+            $stmt = $dbh->prepare($sql);
             $stmt->execute(Array($id));
             $res = $stmt->fetch(PDO::FETCH_ASSOC);
             

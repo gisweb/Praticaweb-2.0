@@ -33,6 +33,7 @@ include_once "./lib/tabella_v.class.php";
 <?php
 if (($modo=="edit") or ($modo=="new") ){
 	//---<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  EDITA ELENCO ITER >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>------------------------------>
+		unset($_SESSION["ADD_NEW"]);
 		$id = $_POST["id"];
 		$tabella=new tabella_v("$tabpath/comunicazioni",$modo);
 		include "./inc/inc.page_header.php";?>
@@ -42,8 +43,13 @@ if (($modo=="edit") or ($modo=="new") ){
 			<td> 
 				<!-- contenuto-->
 				<?php
-                  $numrows=$tabella->set_dati("id=$id AND pratica=$idpratica");
-				  
+					if($Errors){
+						$tabella->set_errors($Errors);
+						$tabella->set_dati($_POST);
+					}
+					else{
+						$numrows=$tabella->set_dati("id=$id AND pratica=$idpratica");
+					}
                   print $tabella->edita();
 				?>	
 				<input type="hidden" name="mode" value="<?php echo $modo;?>">
@@ -60,7 +66,7 @@ if (($modo=="edit") or ($modo=="new") ){
 //console.log($("data-plugins='multi-select'"));
 $("[data-plugins='multi-select']").multiSelect({});
 	$("[data-locked='protocollo']").each(function($k,v){
-        $(v).prop('readonly', true);
+        if ("#protocollo").val() $(v).prop('readonly', true);
     });
 </script>		
 	<?php

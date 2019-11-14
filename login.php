@@ -29,11 +29,15 @@
         define('DATA_DIR',$dataDir);
         define('APPS_DIR',$appsDir);
 
-
+	/*AGGIUNTA DI UN PATH PER LE LIBRERIE GLOBALI*/
+	$path = '/apps/php-lib/mail';
+	set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 
 	if (!file_exists(DATA_DIR.'config.php')) die("Nessun file di configurazione trovato!");
         require_once DATA_DIR.'config.php';
         loadLibs();
+		
+	
 	if (!defined('PRINT_VERSION')) define('PRINT_VERSION',2);
 				 
 	if ((defined('UPDATE_SW') && UPDATE_SW==1 && $_SESSION["USER_ID"]>4)){

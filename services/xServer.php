@@ -386,6 +386,32 @@ EOT;
 
 //		$result = Array("success"=>1,"message"=>$sql);		
 		break;
+	case "invia-pec":
+		$pratica=$_REQUEST["pratica"];
+		$id=$_REQUEST["id"];
+		$r = appUtils::getComunicazione($id);
+		if($r["success"]==1){
+			require_once DATA_DIR."config.mail.php";
+			require_once LIB."mail.class.php";
+			$rr = inviaPec("",$r["comunicazione"]["to"],$r["comunicazione"]["subject"],$r["comunicazione"]["text"],$r["comunicazione"]["attachments"]);
+			if($rr["success"]==1){
+				$dbh = utils::getDb();
+				$sql = "UPDATE pe.comunicazioni SET data_invio=?, id_comunicazione=? WHERE pratica=? AND id=?;";
+				$stmt = $dbh->prepare->sql($sql);
+				if(!$stmt->execute(Array(date('d/m/Y'),$rr["uuid"],$pratica,$id))){
+					$err = $stmt->errorInfo();
+					$result = Array("success"=>-1,"message"=>$err[2]);
+				}
+				else{
+					$result = Array("success"=>1,"message"=>"");
+				}
+			}
+			else{
+				$message="Si sono verificati degli errori durante l'invio della comunicazione";
+				$result = Array("success"=>-1,"message"=>$message);
+			}
+		}
+		break;
 	default:
 		break;
 }

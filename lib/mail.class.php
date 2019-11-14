@@ -8,8 +8,7 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-$baseDir = dirname(dirname(__FILE__));
-//require_once $baseDir.DIRECTORY_SEPARATOR."config".DIRECTORY_SEPARATOR."sml.config.php";
+
 
 require_once LIB.DIRECTORY_SEPARATOR."PHPMailer.php";
 require_once LIB.DIRECTORY_SEPARATOR."SMTP.php";
@@ -58,8 +57,9 @@ class gwMail{
         return substr(str_shuffle(str_repeat($x='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length/strlen($x)) )),1,$length);
     }
 
-    static function send($to,$subject,$text,$attachments=Array(),$html=0,$cc=Array(),$bcc=Array()){
-        $mail = new PHPMailer;
+    static function inviaPec($uuid="",$to,$subject,$text,$attachments=Array(),$html=0,$cc=Array(),$bcc=Array()){
+
+		$mail = new PHPMailer;
 
         $mail->isSMTP();
         //Enable SMTP debugging
@@ -90,18 +90,21 @@ class gwMail{
         for($i=0;$i<count($bcc);$i++){
             $mail->addBCC($bcc[$i]);
         }
+		//return Array("success"=>1,"message"=>"", "uuid"=>$uuid);
+		//Aggiunta degli attachments nella forma Array(Array("file"=>"binario del file","name"=>"nome del file"))
         for($i=0;$i<count($attachments);$i++){
             $mail->addStringAttachment($attachments[$i]["file"],$attachments[$i]["name"]);
         }
-        
-        $uuid = self::generateRandomString();
+        if(!$uuid) $uuid = self::generateRandomString();
 
         $mail->Subject = sprintf('%s - %s', $subject, $uuid);
-
+		
         if($html) $mail->isHTML (true);
         $mail->Body = $text;
         if (self::secure) $mail->SMTPSecure = self::secure;
         $userId = 1;
+
+		
         if (!$mail->send()) {
             return Array("success"=>0,"message"=>$mail->ErrorInfo, "uuid"=>"") ;
         } else {
@@ -115,8 +118,8 @@ class gwMail{
             $tms = date('d/m/Y H:i:s');
             $data = Array(
                 $uuid,
-                'PROGETTO TEST',
-                'TEST',
+                PW_PROJECT,
+                'PraticaWeb',
                 $mail->Subject,
                 $mail->Body,
                 $arrTO,

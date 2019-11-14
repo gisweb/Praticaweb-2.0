@@ -19,7 +19,7 @@ if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
 
 $idpratica=$_POST["pratica"];
 $azione=$_POST["azione"];
-//print_array($_POST);
+//utils::debugAdmin($_POST);
 $comune = $_REQUEST["cod_belfiore"];
 if(!$_POST["foglio"] && !$_POST["mappale"])	// EDIT VINCOLI
 {
@@ -49,7 +49,7 @@ else {		// EDIT MAPPALI
 	$sqlmappali="foglio=$foglio and mappale=$mappale";
 	if (isset($_POST["sezione"])) $sqlmappali.=" and sezione=$sezione";
 	if ($comune) $sqlmappali .= " and particelle.comune = '$comune'";
-	if($azione=="Aggiungi"){ 
+	if(in_array($azione,Array("Aggiungi","Salva"))){ 
         $sql="SELECT coalesce(data_certificazione,CURRENT_DATE) as data FROM cdu.richiesta WHERE pratica=$idpratica;";
         $db->sql_query($sql);
         $data=$db->sql_fetchfield('data');
@@ -65,9 +65,9 @@ else {		// EDIT MAPPALI
 
 		$result=$db->sql_query ($sql);
 		//$err=$db->sql_error();
-		print_debug($sql); 
+		//utils::debugAdmin($sql); 
 		//$numrows=$db->sql_affectedrows();
-                if ($_SESSION["USER_ID"]==1) echo "<p>$sql</p>";
+                //if ($_SESSION["USER_ID"]==1) echo "<p>$sql</p>";
 		//if($numrows===0 or $err["message"]){
 		$sql="insert into cdu.mappali (pratica,sezione,foglio,mappale) values ($idpratica,$sezione,$foglio,$mappale)";
 		$result=$db->sql_query ($sql); 

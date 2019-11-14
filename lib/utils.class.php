@@ -407,20 +407,20 @@ class utils {
             return $data;
     }
 
-    function subst($txt,$data){
+    static function subst($txt,$data){
         foreach($data as $k=>$v){
             if (!is_array($v)) $txt = str_replace("%($k)s",$v,$txt);
         }
         return $txt;
     }
-    function debugAdmin($data){
+    static function debugAdmin($data){
         if($_SESSION["USER_ID"]==1){
             echo "<pre>";
             print_r($data);
             echo "</pre>";
         }
     }
-    function printMessage($message){
+    static function printMessage($message){
         ob_start();
         utils::loadJS();
         utils::loadCss();

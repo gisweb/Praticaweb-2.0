@@ -153,7 +153,7 @@ class Tabella{
            $button['width']='160px';
            break;
 		case "mail":
-           $button['icon']='ui-icon-shuffle';
+           $button['icon']='ui-icon-mail-open';
            $button['text']='Invia Comunicazione';
            $button['value']='mail';
            $button['width']='160px';
@@ -414,10 +414,14 @@ EOT;
     
         if (in_array($this->mode,Array('edit','new','addnew','search'))){
             foreach($this->button as $key=>$v){
+				$value="";
+				$text="";
                 extract($v);
                 $idbtn="azione-".strtolower($key);
                 if ($type=='submit'){
+					$val = ($value)?($value):($text);
                     $check=($onclick)?("$onclick(this)"):('true');
+					
                     $buttons.= <<<EOT
             
     <span id="$idbtn" style=""></span>
@@ -429,7 +433,7 @@ EOT;
             label:"$text"
         }).click(function(){
             if ($check){
-                $(this).parents('form:first').append('<input type="hidden" name="azione" value="$text"/>');
+                $(this).parents('form:first').append('<input type="hidden" name="azione" value="$val"/>');
                 $(this).parents('form:first').submit();
             }
         });

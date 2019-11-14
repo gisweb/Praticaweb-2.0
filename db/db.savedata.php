@@ -254,7 +254,7 @@ if ($azione=="Elimina"){
 
 if (in_array($azione,Array("Salva",'Aggiungi'))){
     $array_dati=valida_dati($array_config,$campi_obbl);
-
+	
     if($array_dati["errors"]){
         //if (DEBUG) echo "<br>".$active_form."<br>";
         $db->sql_close();
