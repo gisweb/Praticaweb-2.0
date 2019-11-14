@@ -456,7 +456,7 @@ EOT;
             $valore = $this->array_dati[$row]["id_comunicazione"];
             $pr = $this->array_dati[$row]["pratica"];
 			$retval=<<<EOT
-	<td style="width:$w"><a href="#" id="$id" data-plugins="verifica-pec" data-pratica="$pr" data-uuid="$valore">Verifica Comunicazione</a></td>
+	<td style="width:$w"><a style="text-decoration:none;" href="#" id="$id" data-plugins="verifica-pec" data-pratica="$pr" data-uuid="$valore">Verifica Comunicazione</a></td>
 EOT;
 			break;            
 	}
