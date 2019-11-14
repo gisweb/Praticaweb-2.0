@@ -453,10 +453,10 @@ EOT;
             break;   
 		case "verifica-pec":
 			$id = $nome.="[".$this->array_dati[$row]["id"]."]";
-            $valore = $this->array_dati[$row][$campo];
+            $valore = $this->array_dati[$row]["id_comunicazione"];
             $pr = $this->array_dati[$row]["pratica"];
 			$retval=<<<EOT
-	<td style="width:$w"><a id="$id" data-plugins="verifica-pec" data-pratica="$pr" data-uuid="$valore">Verifica Comunicazione</a></td>
+	<td style="width:$w"><a href="#" id="$id" data-plugins="verifica-pec" data-pratica="$pr" data-uuid="$valore">Verifica Comunicazione</a></td>
 EOT;
 			break;            
 	}
