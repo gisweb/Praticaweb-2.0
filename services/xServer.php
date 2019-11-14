@@ -412,6 +412,24 @@ EOT;
 			}
 		}
 		break;
+    case "verifica-pec":
+        require_once DATA_DIR."config.mail.php";
+		require_once LIB."mail.class.php";
+        $uuid = $_REQUEST["uuid"];
+        $res = gwMail::verificaUUID($uuid);
+        $result = Array("success"=>1,"message"=>"","result"=>Array());
+        if ($res["success"]==1){
+            for($i=0;$i<count($res["accettazioni"]);$i++){
+                $result["result"][]=sprintf("Pec accettata il %s",$res["accettazioni"][$i]["data"]);
+            }
+            for($i=0;$i<count($res["consegne"]);$i++){
+                $result["result"][]=sprintf("Pec consegnata a %s il %s",$res["consegne"][$i]["pec"],$res["consegne"][$i]["data"]);
+            }
+            
+        }
+        else{
+            $result = Array("success"=>-1,"message"=>"Errore nel recupero delle informazioni della PEC");
+        }
 	default:
 		break;
 }
