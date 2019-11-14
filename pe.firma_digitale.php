@@ -97,7 +97,7 @@ EOT;
         $stmt = $dbh->prepare($sql);
         $stmt->execute(Array($idpratica));
         $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		utils::debugAdmin($res);
+//		utils::debugAdmin($res);
         if (file_exists(LOCAL_LIB."wsclient.mail.class.php")){
             require_once LOCAL_LIB."wsclient.mail.class.php";
             for($i=0;$i<count($res);$i++){
@@ -120,6 +120,13 @@ EOT;
                 $res[$i]["nomedocumento"] = $dd["nomedocumento"];
                 $res[$i]["object"] = $dd["object"];
 
+            }
+        }
+        else{
+            for($i=0;$i<count($res);$i++){
+                $dd = json_decode($res[$i]["pathdocumento"],TRUE);
+                $res[$i]["nomedocumento"] = $dd["nomedocumento"];
+                $res[$i]["object"] = $dd["object"];
             }
         }
         $tabella->set_dati($res,'list');	

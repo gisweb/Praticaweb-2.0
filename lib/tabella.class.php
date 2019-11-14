@@ -288,9 +288,16 @@ EOT;
 
         //se passo un array questo Ã¨ l'array di POST altrimenti Ã¨ il filtro - per default filtra su idpratica se settato
 		if (is_array($data)){		
-			$this->array_dati=array(0=>$data);
-			$this->num_record=1;
-			$this->curr_record=0;
+            if($mode=="list"){
+                $this->array_dati=$data;
+                $this->num_record=count($data);
+                $this->curr_record=0;
+            }
+            else{
+                $this->array_dati=array(0=>$data);
+                $this->num_record=1;
+                $this->curr_record=0;
+            }
 		}
 		else{
 			$data=($data)?("where $data"):("");
