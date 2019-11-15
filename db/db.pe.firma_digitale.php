@@ -35,6 +35,7 @@ if ($azione == ACTION_SAVE){
             $array_dati["errors"]["allegati"] = "Attenzione selezionare almeno un allegato da firmare";
             echo "<p><b style='color:red'>".$array_dati["errors"]["allegati"]."</b></p>";
         }
+/*
         if(!$_REQUEST["object"]){
             $array_dati["errors"]["object"] = "Attenzione il campo Oggetto Comunicazione è obbligatorio";
             //echo "<p><b style='color:red'>".$array_dati["errors"]["destinatari"]."</b></p>";
@@ -43,6 +44,7 @@ if ($azione == ACTION_SAVE){
             $array_dati["errors"]["body"] = "Attenzione il campo Testo Comunicazione è obbligatorio";
             echo "<p><b style='color:red'>".$array_dati["errors"]["body"]."</b></p>";
         }
+*/
         if ($array_dati["errors"]){
             include_once  $_REQUEST["active_form"];
             exit;

@@ -86,6 +86,7 @@ if (($modo=="edit") or ($modo=="new") ){
 		$tabella=new tabella_v("$tabpath/comunicazioni",$modo);
 		include "./inc/inc.page_header.php";?>
 		<form method="post" name="comunicazioni" action="praticaweb.php">		
+                
 		<TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="99%" align="center">					  
 		  <tr> 
 			<td> 
@@ -98,7 +99,8 @@ if (($modo=="edit") or ($modo=="new") ){
 					else{
 						$numrows=$tabella->set_dati("id=$id AND pratica=$idpratica");
 					}
-                  print $tabella->edita();
+                                         print "<p><b style='color:red;font-size:13px;'>Attenzione se non viene immesso il protocollo il sistema richieder&agrave; un protocollo in uscita per la comunicazione( Protocollazione di Test)</b></p>"; 
+                 			 print $tabella->edita();
 				?>	
 				<input type="hidden" name="mode" value="<?php echo $modo;?>">
 				<INPUT type="hidden" name="pratica" value="<?php echo $idpratica;?>">
