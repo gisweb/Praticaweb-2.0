@@ -37,7 +37,7 @@ class generalWSProtocollo{
     function curlSoapCall($service,$action,$soap_request,$headers=Array()){
         $header = array(
           "Content-type: text/xml;charset=\"utf-8\"",
-          "Accept: text/xml",
+          "Accept-Encoding: gzip,deflate",
           "Cache-Control: no-cache",
           "Pragma: no-cache",
           "SOAPAction: \"$action\"",
@@ -49,11 +49,12 @@ class generalWSProtocollo{
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($ch, CURLOPT_TIMEOUT,        30);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true );
+		curl_setopt($ch, CURLOPT_HTTPHEADER,     $header);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_POST,           true );
         curl_setopt($ch, CURLOPT_POSTFIELDS,     $soap_request);
-        curl_setopt($ch, CURLOPT_HTTPHEADER,     $header);
+        
 
         if(!$result = curl_exec($ch)) {
           $err = 'Curl error: ' . curl_error($ch);
@@ -61,7 +62,10 @@ class generalWSProtocollo{
           return Array("success"=>0,"result"=>$err);
         } else {
           curl_close($ch);
-          return Array("success"=>1,"result"=>$result);
+		  $res = simplexml_load_string($result);
+		  utils::debugAdmin($res,"SimpleXMLElement", LIBXML_NOCDATA);
+		  $data = json_decode(json_encode($res),TRUE);
+          return Array("success"=>1,"result"=>$data);
         }
     }
 
