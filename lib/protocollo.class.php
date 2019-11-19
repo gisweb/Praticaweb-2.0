@@ -62,10 +62,10 @@ class generalWSProtocollo{
           return Array("success"=>0,"result"=>$err);
         } else {
           curl_close($ch);
-		  $res = simplexml_load_string($result);
-		  utils::debugAdmin($res,"SimpleXMLElement", LIBXML_NOCDATA);
-		  $data = json_decode(json_encode($res),TRUE);
-          return Array("success"=>1,"result"=>$data);
+		  //$res = simplexml_load_string($result);
+		  //utils::debugAdmin($soap_request);
+		  //$data = json_decode(json_encode($res),TRUE);
+          return Array("success"=>1,"result"=>$result);
         }
     }
 

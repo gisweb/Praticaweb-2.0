@@ -1,7 +1,7 @@
 <?php
 require_once dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."login.php";
 require_once LOCAL_LIB."wsprotocollo.class.php";
-
+/*
 $ws = new protocollo();
 $res = $ws->login();
 if($res["success"]==1){
@@ -10,6 +10,7 @@ if($res["success"]==1){
 else{
     die("<p><b style='color:red;font-size:15px;'>Impossibile effettuare il login al servizio</b></p>");
 }
+*/
 /*
 $xmlDocumentInfo=<<<EOT
          <![CDATA[
@@ -80,16 +81,14 @@ $xml =<<<EOT
          <!--Optional:-->
          <tem:strDST>%s</tem:strDST>
          <!--Optional:-->
-         <tem:strDocumentInfo>
 %s
-	    </tem:strDocumentInfo>
       </tem:Protocollazione>
    </soapenv:Body>
 </soapenv:Envelope>
 EOT;
 
-$xml = sprintf($xml,$dst,$xmlDocumentInfo);
-$action = SERVICE_URL."/Protocollazione";
+
+$action = "http://tempuri.org/Protocollazione";
 $url = str_replace('?wsdl','',SERVICE_URL,$xml);
 
 //$res = $ws->curlSoapCall($url,$action,$xml);
@@ -128,6 +127,7 @@ else{
 $pratica= 9637;
 $idCom = 6;
 $res = appUtils::getComunicazione($idCom);
+//utils::debugAdmin($res);die();
 if ($res["success"]==1)
 {
 	$com = $res["comunicazione"];
@@ -153,15 +153,42 @@ $mittente=Array(
     )
 );
 
-
+$xml =<<<EOT
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <tem:Protocollazione>
+         <!--Optional:-->
+         <tem:strUserName>%s</tem:strUserName>
+         <!--Optional:-->
+         <tem:strDST>%s</tem:strDST>
+         <!--Optional:-->
+%s
+      </tem:Protocollazione>
+   </soapenv:Body>
+</soapenv:Envelope>
+EOT;
 
 $ws = new protocollo();
-$r = $ws->protocolla("U",$com["subject"],$mittente,$destinatari,$allegati);
-
-
+$res = $ws->protocolla("U",$com["subject"],$mittente,$destinatari,$allegati);
+utils::debugAdmin($res);die();
+//$xmlDocumentInfo = $ws->protocolla("U",$com["subject"],$mittente,$destinatari,$allegati);
+$dst = $ws->dst;
+$xml = sprintf($xml,SERVICE_USER,$dst,$xmlDocumentInfo);
 
 /*$res = $ws->login();
 $dst = $res["dst"];
 */
-utils::debugAdmin($r);
+$action = "http://tempuri.org/Protocollazione";
+$url = str_replace('?wsdl','',SERVICE_URL);
+//utils::debugAdmin($xml);die();
+$res = $ws->curlSoapCall($url,$action,$xml);
+
+//$clean_xml = str_ireplace(['SOAP-ENV:', 'SOAP:'], '', $res["result"]);
+$xml = simplexml_load_string($res["result"]);
+utils::debugAdmin($res["result"]);die();
+$data = $xml->children('SOAP-ENV', true)->Body->children('ns1', true);
+$data = json_decode(json_encode($data),1);
+utils::debugAdmin($data["ProtocollazioneResponse"]["ProtocollazioneResult"]);
+die();
 ?>

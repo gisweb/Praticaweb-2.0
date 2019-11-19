@@ -69,6 +69,7 @@ class HProtocollo extends generalWSProtocollo{
         $res = $this->login();
         if ($res["success"]===1){
             $dst = $res["dst"];
+            $this->dst=$res["dst"];
         }
         else{
             return -1;
@@ -96,16 +97,18 @@ class HProtocollo extends generalWSProtocollo{
 			
 				$res = json_decode(json_encode($res->InserimentoResult),true);
 				//DEBUG DELL'INSERIMENTO DEL FILE
-				utils::debug(DEBUG_DIR."FILE_PROTOCOLLO.debug",$res,'w');				
+				//utils::debug(DEBUG_DIR."FILE_PROTOCOLLO.debug",$res,'w');				
                 if($res["lngDocID"]){
                     $allegato = $allegati[$i];
                     $allegato["id_documento"] = $res["lngDocID"];
                     $resAllegati[] = $allegato;
                 }
 				else{
+                    utils::debug(DEBUG_DIR."ERRORE_FILE_PROTOCOLLO.debug",$res,'w');
 					return Array("success"=>0,"message"=>sprintf("Errore Numero %s nell'inserimento del file %s - %s",$res["lngErrNumber"],$allegati[$i]["nome_documento"],$res["strErrString"]));
 				}
             }
+            utils::debug(DEBUG_DIR."FILE_PROTOCOLLO.debug",$resAllegati,'w');
             $allegato = array_shift($resAllegati);
             $this->data = array_merge($this->data,$allegato);
             for($i=0;$i<count($resAllegati);$i++){
@@ -132,7 +135,7 @@ class HProtocollo extends generalWSProtocollo{
         if($res["success"]==1){
             $xmlData=$res["result"];
 			utils::debug(DEBUG_DIR."XML_PROTOCOLLO.debug",$xmlData,'w');
-			
+			//return $xmlData;
 			$parm = array();
 			$parm[] = new SoapVar(SERVICE_USER, XSD_STRING, null, null, 'strUserName' );
 			$parm[] = new SoapVar($dst, XSD_STRING, null, null, 'strDST' );
@@ -143,15 +146,15 @@ class HProtocollo extends generalWSProtocollo{
 			$soapVarXml = new SoapVar($xmlData, XSD_ANYXML, null, null, 'ns1:strDocumentInfo' );
 			// MODO 1
 			try{
-				//$res = $clientDocs->Protocollazione(new SoapVar($parm,SOAP_ENC_OBJECT,null,null,'Protocollazione'));
-				$res = $clientDocs->Protocollazione(Array("strUserName"=>$soapVarUser,"strDST"=>$soapVarDst,"strDocumentInfo"=>$soapVarXml));
+				$res = $clientDocs->Protocollazione(new SoapVar($parm,SOAP_ENC_OBJECT,null,null,'Protocollazione'));
+				//$res = $clientDocs->Protocollazione(Array("strUserName"=>$soapVarUser,"strDST"=>$soapVarDst,"strDocumentInfo"=>$soapVarXml));
 				//$res = $clientDocs->__soapCall('Protocollazione',Array("strUserName"=>$soapVarUser,"strDST"=>$soapVarDst,"strDocumentInfo"=>$soapVarXml));
 				utils::debugAdmin($clientDocs->__getLastRequest());
 				//return;
 			}
 			catch (Exception $e){
 				utils::debugAdmin($clientDocs->__getLastRequest());
-				//utils::debugAdmin($e);
+				utils::debugAdmin($e);
 				return;
 			}
 			//MODO 2
