@@ -5,14 +5,14 @@ $idpratica=$_REQUEST["pratica"];
 $titolo=$_SESSION["TITOLO_$idpratica"];
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 $azione=$_REQUEST["azione"]; 
-if ($azione=="Aggiungi"){ 
+if ($azione=="Aggiungi" || $azione=="Salva"){ 
 	$idrow=$_POST["idriga"];
 	$active_form=$_REQUEST["active_form"];
 	if($_SESSION["ADD_NEW"]!==$_POST)
 		unset($_SESSION["ADD_NEW"]);//serve per non inserire piÃ¹ record con f5
 	if (isset($array_dati["errors"])) //sono al ritorno errore
 		$Errors=$array_dati["errors"];
-	elseif($azione=="Aggiungi")
+	elseif($azione=="Aggiungi"|| $azione=="Salva")
 			//include_once "./db/db.pe.vincoli.php";
 			include_once "./db/db.savedata.php";
 	$_SESSION["ADD_NEW"]=$_POST;				
