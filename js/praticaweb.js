@@ -330,6 +330,30 @@ function selectOneriIntervento(){
                 }
                 
             }
+            else if(opValue == 'inarray'){
+                var val;
+                
+                if ($(this).hasClass('check')){
+                    val = $('input[name="' + this.name + '"]:checked').val();
+                }
+                else{
+                    val = $('#1_'+id).val();
+                }
+                if(t=='date'){
+                    filter = "'"+val+"'::date = ANY(" + name + ")";
+                }
+                else if (t=='text'){
+                    filter = "'" + val + "'::varchar"+ " = ANY(" + name + ")";
+                    
+                }
+                else{
+                    filter = val + " = ANY(" + name + ")";
+                }
+                if (String(val).length==0 || String(val)=='undefined'){
+                    filter='';
+                }
+                
+            }
             else if(opValue == 'great'){
                 if(t=='date'){
                     filter=name+" > '"+$('#1_'+id).val()+"'::date";
