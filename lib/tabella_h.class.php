@@ -412,6 +412,47 @@ EOT;
 			$obj=json_encode($params);
 			$retval=($dati[$campo])?("<td$classe valign=\"middle\" width=\"$size[0]\"><a href=\"#\" id=\"$campo\" style=\"text-decoration:none;\" $h>$testo &nbsp;<span style=\"display:inline-block\" class=\"ui-icon $class\"></a></td>"):('<td>&nbsp;</td>');
 			break;
+        case "azioni":
+            $campo=$nome;
+            $pr = $this->array_dati[$row]["pratica"];
+            
+			$prms=explode('#',$w);
+			$size=array_shift($prms);
+			$class=array_shift($prms);
+			$azione=array_shift($prms);
+			for($i=0;$i<count($prms);$i++){
+				$tmp=explode(":",$prms[$i]);
+				$params[]=(count($tmp)==2)?("data-$tmp[0]=\"$tmp[1]\""):("data-$prms[$i]=\"".$dati[$prms[$i]]."\"");
+			}
+            switch($azione){
+                case "ws-pagopa":
+                    $codice = $this->array_dati[$row]["codice_richiesta"];
+                    $pubblicato = $this->array_dati[$row]["published"];
+                    if(!$pubblicato){
+                        $testo = "Pubblica il pagamento";
+                    
+                        $html = <<<EOT
+<a href="#" id="$campo" style="text-decoration:none;" data-plugins="$azione" data-pratica="$pr" data-codice-richiesta="$codice" data-action="pubblica-pagamento">$testo &nbsp;<span style="display:inline-block" class="ui-icon $class">                        
+EOT;
+                    }
+                    else{
+                        $testo = "Revoca il pagamento";
+                    
+                        $html = <<<EOT
+<a href="#" id="$campo" style="text-decoration:none;" data-plugins="$azione" data-pratica="$pr" data-codice-richiesta="$codice" data-action="revoca-pagamento">$testo &nbsp;<span style="display:inline-block" class="ui-icon $class">                        
+EOT;
+                    }
+                    break;
+                default:
+                    $html="Nessuna azione Trovata";
+                    break;
+            }
+            $retval = <<<EOT
+<td $classe valign="middle" width="$size">
+    $html
+</td>
+EOT;
+            break;                 
 		case "widget":
 			$id = $nome.="[".$this->array_dati[$row]["id"]."]";
 			$retval=<<<EOT
