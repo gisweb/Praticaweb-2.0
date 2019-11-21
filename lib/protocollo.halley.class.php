@@ -148,9 +148,9 @@ EOT;
 			utils::debug(DEBUG_DIR."XML_PROTOCOLLO.debug",$xmlData,'w');
 			//return $xmlData;
 			$parm = array();
-			$parm[] = new SoapVar(SERVICE_USER, XSD_STRING, null, null, 'strUserName' );
-			$parm[] = new SoapVar($dst, XSD_STRING, null, null, 'strDST' );
-			$parm[] = new SoapVar($xmlData, XSD_ANYXML, null, null, 'strDocumentInfo' );
+			$parm[] = new SoapVar(SERVICE_USER, XSD_STRING, null, null, 'ns1:strUserName' );
+			$parm[] = new SoapVar($dst, XSD_STRING, null, null, 'ns1:strDST' );
+			$parm[] = new SoapVar($xmlData, XSD_ANYXML, null, null, 'ns1:strDocumentInfo' );
 			
 			$soapVarUser = new SoapVar(SERVICE_USER, XSD_STRING, null, null, 'ns1:strUserName' );
 			$soapVarDst = new SoapVar($dst, XSD_STRING, null, null, 'ns1:strDST' );
