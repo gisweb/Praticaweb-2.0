@@ -117,6 +117,17 @@ class HProtocollo extends generalWSProtocollo{
                     $this->data["altri_documenti"].=$res["result"];
                 }
             }
+            if (count($resAllegati)){
+                $xmlAltriAllegati =<<<EOT
+        <Allegati>
+%s            
+        </Allegati>
+EOT;
+                $this->data["altri_documenti"] = sprintf($xmlAltriAllegati,$this->data["altri_documenti"]);
+            }
+            else{
+                $this->data["altri_documenti"] = "<Allegati/>";
+            }
         }
 
         for($i=0;$i<count($mittente);$i++){
