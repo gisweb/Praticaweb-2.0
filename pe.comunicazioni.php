@@ -36,6 +36,10 @@ if (($modo=="edit") or ($modo=="new") ){
 				<?php
                   	if($Errors){
 						$tabella->set_errors($Errors);
+                                                $_POST["destinatari"] = sprintf("{%s}",implode(',',$_POST["destinatari"]));
+                                             $_POST["allegati"] = sprintf("{%s}",implode(',',$_POST["allegati"]));
+                                             $_POST["allegati_1"] = sprintf("{%s}",implode(',',$_POST["allegati_1"]));
+
 						$tabella->set_dati($_POST);
 					}
 					else{
