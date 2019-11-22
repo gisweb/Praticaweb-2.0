@@ -165,15 +165,15 @@ EOT;
 			$soapVarXml = new SoapVar($xmlData, XSD_ANYXML, null, null, 'ns1:strDocumentInfo' );
 			// MODO 1
 			try{
-                require_once LIB."nusoap".DIRECTORY_SEPARATOR."nusoap.php";
-                $client = new soapclient(SERVICE_URL);
+                //require_once LIB."nusoap".DIRECTORY_SEPARATOR."nusoap.php";
+                //$client = new soapclient(SERVICE_URL);
 				//$res = $clientDocs->Protocollazione(new SoapVar($parm,SOAP_ENC_OBJECT,null,null,'Protocollazione'));
 				//$res = $clientDocs->Protocollazione(Array("strUserName"=>$soapVarUser,"strDST"=>$soapVarDst,"strDocumentInfo"=>$soapVarXml));
                 //$res = $clientDocs->Protocollazione(Array("strUserName"=>SERVICE_USER,"strDST"=>$dst,"strDocumentInfo"=>$xmlData));
-                $res = $client->Protocollazione(Array(SERVICE_USER,$dst,$xmlData));
-				//$res = $clientDocs->__soapCall('Protocollazione',Array("strUserName"=>$soapVarUser,"strDST"=>$soapVarDst,"strDocumentInfo"=>$soapVarXml));
-				//utils::debugAdmin($clientDocs->__getLastRequest());
-                //
+                //$res = $client->Protocollazione(Array("strUserName"=>SERVICE_USER,"strDST"=>$dst,"strDocumentInfo"=>$xmlData));
+				$res = $clientDocs->__soapCall('Protocollazione',Array("strUserName"=>$soapVarUser,"strDST"=>$soapVarDst,"strDocumentInfo"=>$soapVarXml));
+				utils::debugAdmin($clientDocs->__getLastRequest());
+                //$res 
                 //$client = new soapclient(SERVICE_URL);
                 //$response = $client->call('Protocollazione', Array(SERVICE_USER,$dst,$xmlData));
 				//return;
