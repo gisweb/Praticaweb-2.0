@@ -37,7 +37,7 @@ class Menu{
 	}
 
 	function get_list($idpratica){
-		if (isset($_SESSION["MENU_".$this->tipo."_$idpratica"])){
+		if (FALSE && isset($_SESSION["MENU_".$this->tipo."_$idpratica"])){
 			$menu_pratica=$_SESSION["MENU_".$this->tipo."_$idpratica"];
 		}
 		else{

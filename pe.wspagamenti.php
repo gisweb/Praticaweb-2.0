@@ -43,13 +43,13 @@ elseif (file_exists($includeFile)) require_once $includeFile;
 <body>
 <?php
     include "./inc/inc.window.php";
-	$tabellaRichiesti=new tabella_h("$tabpath/importi_dovuti","list");
+//    $tabellaRichiesti=new tabella_h("$tabpath/importi_dovuti","list");
     $tabellaPagoPA=new tabella_h("$tabpath/pagopa","list");
-    $tabellaVersati=new tabella_h("$tabpath/pagamenti","list");
+//    $tabellaVersati=new tabella_h("$tabpath/pagamenti","list");
 
-    $tabellaRichiesti->set_dati("pratica=$idpratica");
+//    $tabellaRichiesti->set_dati("pratica=$idpratica");
     $tabellaPagoPA->array_dati = $wsData;
-    $tabellaVersati->set_dati("pratica=$idpratica");
+//    $tabellaVersati->set_dati("pratica=$idpratica");
     
     $tabellaPagoPA->num_record = count($wsData);
     
@@ -61,14 +61,14 @@ elseif (file_exists($includeFile)) require_once $includeFile;
             <TD> 
 			<!-- tabella nuovo inserimento-->
 <?php
-        $tabellaRichiesti->set_titolo("Elenco degli importi Richiesti",'nuovo');
+/*        $tabellaRichiesti->set_titolo("Elenco degli importi Richiesti",'nuovo');
         $tabellaRichiesti->get_titolo('pe.importi_dovuti.php');
         if ($tabellaRichiesti->num_record) 
             $tabellaRichiesti->elenco();
         else
             print ("<p><b>Nessuna richiesta di pagamento effettuata</b></p>");
         print "<BR>";
-        
+*/        
         $tabellaPagoPA->set_titolo("Importi versati tramite PagoPA");
         $tabellaPagoPA->get_titolo();
         if ($tabellaPagoPA->num_record) 
@@ -76,7 +76,7 @@ elseif (file_exists($includeFile)) require_once $includeFile;
         else
             print ("<p><b>Nessuna pagamento effettuato tramite PagoPA</b></p>");
         print "<BR>";
-        
+/*        
         $tabellaVersati->set_titolo("Elenco dei Pagamenti",'nuovo');
         $tabellaVersati->get_titolo('pe.pagamenti.php');
         if ($tabellaVersati->num_record) 
@@ -84,6 +84,7 @@ elseif (file_exists($includeFile)) require_once $includeFile;
         else
             print ("<p><b>Nessuna pagamento effettuato</b></p>");
         print "<BR>";
+*/
 	//print_array($tabella);
 ?>
 <!-- fine tabella nuovo inserimento-->

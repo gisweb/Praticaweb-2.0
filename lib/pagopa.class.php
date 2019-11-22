@@ -26,7 +26,7 @@ class generalPagopa{
             $res1 = $stmt->fetchAll(PDO::FETCH_ASSOC);
             for($i=0;$i<count($res1);$i++){
                 $url = sprintf("%s/%s",$res1[$i]["url"],self::actionRead);
-                //$url = "https://www.istanze.spezianet.it/iol_sp/04028-2019-dehor/iol-GetElencoImportiPagamenti";
+//                $url = "https://sue.comune.rapallo.ge.it/iol_pw_test/00002-2019-cil/iol-GetElencoImportiPagamenti";
 
 //                echo "<p>$url</p>";
                 $headers = array(
