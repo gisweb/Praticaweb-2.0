@@ -62,11 +62,8 @@ class HProtocollo extends generalWSProtocollo{
         }
     }
     
-    function protocolla($mode='U',$oggetto,$mittente = Array(),$destinatari=Array(),$allegati=Array()){
-		
-		if($mode=='TEST') return Array("success"=>1,"message"=>"","protocollo"=>rand(22300,22600),"anno"=>'2019',"data"=>date('d/m/Y',time()));
-        
-		$xmlData = "";
+    function creaXMLRichiesta($mode='U',$oggetto,$mittente = Array(),$destinatari=Array(),$allegati=Array()){
+        $xmlData = "";
         $res = $this->login();
         if ($res["success"]===1){
             $dst = $res["dst"];
@@ -144,6 +141,15 @@ EOT;
             }
         }
         $res = $this->caricaXML("PROT-".$suffix,$this->data);
+        return $res
+    }
+    
+    function protocolla($mode='U',$oggetto,$mittente = Array(),$destinatari=Array(),$allegati=Array()){
+		
+		if($mode=='TEST') return Array("success"=>1,"message"=>"","protocollo"=>rand(22300,22600),"anno"=>'2019',"data"=>date('d/m/Y',time()));
+        
+		$res = $this->caricaXMLRichiesta($mode,$oggetto,$mittente$destinatari,$allegati);
+        
         if($res["success"]==1){
             $xmlData=$res["result"];
 			utils::debug(DEBUG_DIR."XML_PROTOCOLLO.debug",$xmlData,'w');
@@ -155,6 +161,18 @@ EOT;
             else{
                 return -1;
             }
+            
+            $clientDocs = new SoapClient(
+                SERVICE_URL, 
+                array(
+                    'trace' => true, 
+                    'exceptions' => true,
+                    'keep_alive' => true,
+                    'connection_timeout' => 30,
+                    'cache_wsdl' => WSDL_CACHE_NONE
+                )
+            );
+            
 			$parm = array();
 			$parm[] = new SoapVar(SERVICE_USER, XSD_STRING, null, null, 'ns1:strUserName' );
 			$parm[] = new SoapVar($dst, XSD_STRING, null, null, 'ns1:strDST' );
