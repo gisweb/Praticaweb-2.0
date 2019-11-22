@@ -148,7 +148,7 @@ EOT;
 		
 		if($mode=='TEST') return Array("success"=>1,"message"=>"","protocollo"=>rand(22300,22600),"anno"=>'2019',"data"=>date('d/m/Y',time()));
         
-		$res = $this->caricaXMLRichiesta($mode,$oggetto,$mittente$destinatari,$allegati);
+		$res = $this->creaXMLRichiesta($mode,$oggetto,$mittente$destinatari,$allegati);
         
         if($res["success"]==1){
             $xmlData=$res["result"];
