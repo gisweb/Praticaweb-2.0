@@ -19,7 +19,7 @@ function set_errors($err){
 /*MODIFICA LOCK STATI AGGIUNTO PARAMETRO frozen*/
 function get_controllo($label,$tipo,$w,$campo,$html5Attr,$frozen=0){
 //function get_controllo($label,$tipo,$w,$campo){
-//restituisce il controllo in funzione di tipo letto dal configfile e lo riempie con i dati il valore w può contenere più informazioni
+//restituisce il controllo in funzione di tipo letto dal configfile e lo riempie con i dati il valore w puï¿½ contenere piï¿½ informazioni
 	$retval=null; 
 	$class=null;
 	$help=null;
@@ -285,6 +285,9 @@ EOT;
             if ($val && $val!="{}"){
                 $vals = explode(",",str_replace("{","",str_replace("}","",$val)));
             }
+            elseif(is_array($val)){
+                $vals = $val;
+            }
             else{
                 $vals = Array();
             }
@@ -358,6 +361,9 @@ EOT;
             $val = $dati[$campo];
             if ($val && $val!="{}"){
                 $vals = explode(",",str_replace("{","",str_replace("}","",$val)));
+            }
+            elseif(is_array($val)){
+                $vals = $val;
             }
             else{
                 $vals = Array();
@@ -727,8 +733,8 @@ function get_data($campo){
 //function get_riga_edit($nriga){
 function get_riga_edit($nriga,$frozen_cols=Array()){
 	$ctr='';
-//prendo una riga che può essere fatta da uno,  due o più colonne
-// restituisce la riga in modalità edit con label controllo associato
+//prendo una riga che puï¿½ essere fatta da uno,  due o piï¿½ colonne
+// restituisce la riga in modalitï¿½ edit con label controllo associato
 	$riga=$this->tab_config[$nriga];
 	$lbl="";
 	for ($i=0;$i<count($riga);$i++){
@@ -752,7 +758,7 @@ function get_riga_edit($nriga,$frozen_cols=Array()){
 }
 
 function get_riga_view($nriga){
-// restituisce la riga in modalità view
+// restituisce la riga in modalitï¿½ view
 	$testo_riga='';
 	$riga=$this->tab_config[$nriga];
 	for ($i=0;$i<count($riga);$i++){
