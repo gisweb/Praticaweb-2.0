@@ -34,7 +34,13 @@ if (($modo=="edit") or ($modo=="new") ){
 			<td> 
 				<!-- contenuto-->
 				<?php
-                  $numrows=$tabella->set_dati("id=$id AND pratica=$idpratica");
+                  	if($Errors){
+						$tabella->set_errors($Errors);
+						$tabella->set_dati($_POST);
+					}
+					else{
+						$numrows=$tabella->set_dati("id=$id AND pratica=$idpratica");
+					}
 				  
                   print $tabella->edita();
 				?>	
