@@ -166,7 +166,7 @@ EOT;
 			// MODO 1
 			try{
                 require_once LIB."nusoap".DIRECTORY_SEPARATOR."nusoap.php";
-                $client = soapclient(SERVICE_URL);
+                $client = new soapclient(SERVICE_URL);
 				//$res = $clientDocs->Protocollazione(new SoapVar($parm,SOAP_ENC_OBJECT,null,null,'Protocollazione'));
 				//$res = $clientDocs->Protocollazione(Array("strUserName"=>$soapVarUser,"strDST"=>$soapVarDst,"strDocumentInfo"=>$soapVarXml));
                 //$res = $clientDocs->Protocollazione(Array("strUserName"=>SERVICE_USER,"strDST"=>$dst,"strDocumentInfo"=>$xmlData));
