@@ -4,7 +4,7 @@ require_once DATA_DIR.DIRECTORY_SEPARATOR."config.protocollo.php";
 require_once LOCAL_LIB."app.utils.class.php";
 require_once LIB."utils.class.php";
 require_once LIB."protocollo.class.php";
-require_once LIB."nusoap".DIRECTORY_SEPARATOR."nusoap.php";;
+
 
 class HProtocollo extends generalWSProtocollo{
     var $mittente = Array(
@@ -165,9 +165,12 @@ EOT;
 			$soapVarXml = new SoapVar($xmlData, XSD_ANYXML, null, null, 'ns1:strDocumentInfo' );
 			// MODO 1
 			try{
+                require_once LIB."nusoap".DIRECTORY_SEPARATOR."nusoap.php";
+                $client = soapclient(SERVICE_URL);
 				//$res = $clientDocs->Protocollazione(new SoapVar($parm,SOAP_ENC_OBJECT,null,null,'Protocollazione'));
 				//$res = $clientDocs->Protocollazione(Array("strUserName"=>$soapVarUser,"strDST"=>$soapVarDst,"strDocumentInfo"=>$soapVarXml));
-                $res = $clientDocs->Protocollazione(Array(SERVICE_USER,$dst,$xmlData));
+                //$res = $clientDocs->Protocollazione(Array("strUserName"=>SERVICE_USER,"strDST"=>$dst,"strDocumentInfo"=>$xmlData));
+                $res = $client->Protocollazione(Array(SERVICE_USER,$dst,$xmlData));
 				//$res = $clientDocs->__soapCall('Protocollazione',Array("strUserName"=>$soapVarUser,"strDST"=>$soapVarDst,"strDocumentInfo"=>$soapVarXml));
 				//utils::debugAdmin($clientDocs->__getLastRequest());
                 //
