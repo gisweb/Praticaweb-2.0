@@ -137,7 +137,7 @@ if ($res["success"]==1)
 			"id"=>$com["attachments"][$i]["id"],
 			"nome_documento"=>$com["attachments"][$i]["name"],
 			"descrizione_documento"=>"Documento Generico",
-			"tipo_documento"=>"LETTERA",
+			"tipo_documento"=>"Richiesta",
 			"file"=>$com["attachments"][$i]["file"]
 		);
 	}
