@@ -63,7 +63,89 @@ class HProtocollo extends generalWSProtocollo{
     }
     
     function creaXMLRichiesta($mode='U',$oggetto,$mittente = Array(),$destinatari=Array(),$allegati=Array()){
-        $xmlData = "";
+        
+        $res = $this->login();
+        if ($res["success"]===1){
+            $dst = $res["dst"];
+            $this->dst=$res["dst"];
+        }
+        else{
+            return -1;
+        }
+        $clientDocs = new SoapClient(
+            SERVICE_URL, 
+            array(
+                'trace' => true, 
+                'exceptions' => true,
+                'keep_alive' => true,
+                'connection_timeout' => 30,
+                'cache_wsdl' => WSDL_CACHE_NONE
+            )
+        );
+        if(count($allegati)>0){
+            for($i=0;$i<count($allegati);$i++){
+				$parm = array();
+				$parm[] = new SoapVar(SERVICE_USER, XSD_STRING, null, null, 'strUserName' );
+				$parm[] = new SoapVar($dst, XSD_STRING, null, null, 'strDST' );
+				$parm[] = new SoapVar($allegati[$i]["nome_documento"], XSD_STRING, null, null, 'strDocument' );
+				$parm[] = new SoapVar(base64_encode($allegati[$i]["file"]), XSD_BASE64BINARY, null, null, 'objDocument' );
+				$res = $clientDocs->Inserimento(new SoapVar($parm, SOAP_ENC_OBJECT,null,null,'Inserimento'));
+			
+				$res = json_decode(json_encode($res->InserimentoResult),true);
+				//DEBUG DELL'INSERIMENTO DEL FILE
+				//utils::debug(DEBUG_DIR."FILE_PROTOCOLLO.debug",$res,'w');				
+                if($res["lngDocID"]){
+                    $allegato = $allegati[$i];
+                    $allegato["id_documento"] = $res["lngDocID"];
+                    $resAllegati[] = $allegato;
+                }
+				else{
+                    utils::debug(DEBUG_DIR."ERRORE_FILE_PROTOCOLLO.debug",$res,'w');
+					return Array("success"=>0,"message"=>sprintf("Errore Numero %s nell'inserimento del file %s - %s",$res["lngErrNumber"],$allegati[$i]["nome_documento"],$res["strErrString"]));
+				}
+            }
+            utils::debug(DEBUG_DIR."FILE_PROTOCOLLO.debug",$resAllegati,'w');
+            $allegato = array_shift($resAllegati);
+            $this->data = array_merge($this->data,$allegato);
+            for($i=0;$i<count($resAllegati);$i++){
+                $res = $this->caricaXML("DOCUMENTO",$resAllegati[$i]);
+                if($res["success"]==1){
+                    $this->data["altri_documenti"].=$res["result"];
+                }
+            }
+            if (count($resAllegati)){
+                $xmlAltriAllegati =<<<EOT
+        <Allegati>
+%s            
+        </Allegati>
+EOT;
+                $this->data["altri_documenti"] = sprintf($xmlAltriAllegati,$this->data["altri_documenti"]);
+            }
+            else{
+                $this->data["altri_documenti"] = "<Allegati/>";
+            }
+        }
+
+        for($i=0;$i<count($mittente);$i++){
+            $res = $this->caricaXML("MITTENTE-".$suffix,$mittente[$i]);
+            if($res["success"]==1){
+                $this->data["mittente"].=$res["result"];
+            }
+        }
+        for($i=0;$i<count($destinatari);$i++){
+            $res = $this->caricaXML("DESTINATARIO-".$suffix,$destinatari[$i]);
+            if($res["success"]==1){
+                $this->data["destinatari"].=$res["result"];
+            }
+        }
+        $res = $this->caricaXML("PROT-".$suffix,$this->data);
+    }
+    
+    function protocolla($mode='U',$oggetto,$mittente = Array(),$destinatari=Array(),$allegati=Array()){
+		
+		if($mode=='TEST') return Array("success"=>1,"message"=>"","protocollo"=>rand(22300,22600),"anno"=>'2019',"data"=>date('d/m/Y',time()));
+        
+		$xmlData = "";
         $res = $this->login();
         if ($res["success"]===1){
             $dst = $res["dst"];
@@ -141,15 +223,6 @@ EOT;
             }
         }
         $res = $this->caricaXML("PROT-".$suffix,$this->data);
-        return $res
-    }
-    
-    function protocolla($mode='U',$oggetto,$mittente = Array(),$destinatari=Array(),$allegati=Array()){
-		
-		if($mode=='TEST') return Array("success"=>1,"message"=>"","protocollo"=>rand(22300,22600),"anno"=>'2019',"data"=>date('d/m/Y',time()));
-        
-		$res = $this->creaXMLRichiesta($mode,$oggetto,$mittente$destinatari,$allegati);
-        
         if($res["success"]==1){
             $xmlData=$res["result"];
 			utils::debug(DEBUG_DIR."XML_PROTOCOLLO.debug",$xmlData,'w');
@@ -161,18 +234,6 @@ EOT;
             else{
                 return -1;
             }
-            
-            $clientDocs = new SoapClient(
-                SERVICE_URL, 
-                array(
-                    'trace' => true, 
-                    'exceptions' => true,
-                    'keep_alive' => true,
-                    'connection_timeout' => 30,
-                    'cache_wsdl' => WSDL_CACHE_NONE
-                )
-            );
-            
 			$parm = array();
 			$parm[] = new SoapVar(SERVICE_USER, XSD_STRING, null, null, 'ns1:strUserName' );
 			$parm[] = new SoapVar($dst, XSD_STRING, null, null, 'ns1:strDST' );
@@ -186,11 +247,11 @@ EOT;
                 $param = new SoapVar($parm,SOAP_ENC_OBJECT,null,null,'Protocollazione');
                 //require_once LIB."nusoap".DIRECTORY_SEPARATOR."nusoap.php";
                 //$client = new soapclient(SERVICE_URL);
-				//$res = $clientDocs->Protocollazione(new SoapVar($parm,SOAP_ENC_OBJECT,null,null,'Protocollazione'));
+				$res = $clientDocs->Protocollazione(new SoapVar($parm,SOAP_ENC_OBJECT,null,null,'Protocollazione'));
 				//$res = $clientDocs->Protocollazione(Array("strUserName"=>$soapVarUser,"strDST"=>$soapVarDst,"strDocumentInfo"=>$soapVarXml));
                 //$res = $clientDocs->Protocollazione(Array("strUserName"=>SERVICE_USER,"strDST"=>$dst,"strDocumentInfo"=>$xmlData));
                 //$res = $client->Protocollazione(Array("strUserName"=>SERVICE_USER,"strDST"=>$dst,"strDocumentInfo"=>$xmlData));
-				$res = $clientDocs->__soapCall('Protocollazione',Array($param));
+				//$res = $clientDocs->__soapCall('Protocollazione',Array($param));
 				utils::debugAdmin($clientDocs->__getLastRequest());
                 //$res 
                 //$client = new soapclient(SERVICE_URL);
