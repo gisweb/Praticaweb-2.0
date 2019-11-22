@@ -146,7 +146,14 @@ EOT;
         if($res["success"]==1){
             $xmlData=$res["result"];
 			utils::debug(DEBUG_DIR."XML_PROTOCOLLO.debug",$xmlData,'w');
-			//return $xmlData;
+			$res = $this->login();
+            if ($res["success"]===1){
+                $dst = $res["dst"];
+                $this->dst=$res["dst"];
+            }
+            else{
+                return -1;
+            }
 			$parm = array();
 			$parm[] = new SoapVar(SERVICE_USER, XSD_STRING, null, null, 'ns1:strUserName' );
 			$parm[] = new SoapVar($dst, XSD_STRING, null, null, 'ns1:strDST' );
