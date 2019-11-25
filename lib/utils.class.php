@@ -244,6 +244,47 @@ class utils {
         fwrite($f,$result."\n-------------------------\n");
         fclose($f);
     }
+    
+    function curlJsonCall($service,$data,$headers){
+        $baseHeader = array(
+          'Content-Type'=>'text/json;charset="utf-8"',
+          'Accept-Encoding'=>'gzip,deflate',
+          'Cache-Control'=>'no-cache',
+          'Pragma'=>'no-cache',
+          'Content-length'=>strlen($soap_request),
+        );
+        //Integro gli header di base con quelli fornito
+        if($headers){
+            foreach($headers as $k=>$v){
+                $baseHeader[$k]=$v;
+            }
+        }
+        //Scrivo gli Headers nella forma corretta
+        foreach($baseHeader as $k=>$v) $header[]=sprintf("%s : %s",$k,$v);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $service );
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_TIMEOUT,        30);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true );
+		curl_setopt($ch, CURLOPT_HTTPHEADER,     $header);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_POST,           true );
+        curl_setopt($ch, CURLOPT_POSTFIELDS,     $soap_request);
+        
+
+        if(!$result = curl_exec($ch)) {
+            $err = 'Curl error: ' . curl_error($ch);
+            curl_close($ch);
+            return Array("success"=>0,"result"=>$err);
+        } 
+        else {
+            curl_close($ch);
+            return Array("success"=>1,"result"=>$result);
+        }
+            
+    }
+    
     static function postRequest($url,$fields){
 
         //array_walk_recursive($fields, 'urlencode');
