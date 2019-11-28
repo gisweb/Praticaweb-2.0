@@ -283,7 +283,7 @@ switch($action) {
             $id = $_REQUEST["id"];
             $form = $_REQUEST["form-stampa"];
             $rif = $_REQUEST["riferimento_record"];
-            if ($_REQUEST["pagopa_richiesta"]) $_REQUEST["PAGOPA_RICHIESTA"] = 1;
+            if ($_REQUEST["pagopa_richiesta"]) $_REQUEST["STAMPE_ORDINATIVO_PAGOPA"] = 1;
             $codice=$_REQUEST["codice_richiesta"];
             ob_start();
             $doc=new wordDoc($modello,$pratica);

@@ -15,6 +15,25 @@ if ($_POST["azione"]=="Salva"){
 		$pr->setOC();
 		$rate=(isset($_POST["rateizzato"]) && $_POST["rateizzato"])?(1):(-1);
 		$pr->setRateOC($rate);
+        if (defined('MODELLO_RATEIZZAZIONE_ONERI') && MODELLO_RATEIZZAZIONE_ONERI){
+            require_once LIB."stampe.word.class.php";
+            $modello = MODELLO_RATEIZZAZIONE_ONERI;
+            $form = "oneri.importi";
+            
+            ob_start();
+            $doc=new wordDoc($modello,$idpratica);
+            $a = $doc->createDoc();
+            ob_end_clean();
+            $data = Array(
+                "pratica"=>$idpratica,
+                "modello"=>$modello,
+                "form"=>$form,
+                'file_doc'=>$doc->docName,
+                'file_pdf'=>$doc->docName
+            );
+            $r = appUtils::addDocumentoStampa($data);
+
+        }
 		//if(!$_REQUEST['fideiussione']) $pr->setFidiOC();
 		//if (isset($_POST["fideiussione"])){
 		//	$menu->add_menu($idpratica,$menu_fidi);		

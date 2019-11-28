@@ -103,11 +103,21 @@ tr.dispari{
 			</TD>
 		  </TR>			  
 		</TABLE>
+
+<div id="page-dialog-message" title="Elaborazione">
+  <p>
+    Attenzione Elaborazione in corso.....
+  </p>
+</div>    
 <script>
-        $("[data-color]").each(function(){
-            var d = $(this).data();
-            $(this).closest("tr").toggleClass(d['tr-color']);
-        });
+    $("[data-color]").each(function(){
+        var d = $(this).data();
+        $(this).closest("tr").toggleClass(d['tr-color']);
+    });
+    $( "#page-dialog-message" ).dialog({
+      modal: true,
+      autoOpen: false
+    });
 </script>		
 </body>
 

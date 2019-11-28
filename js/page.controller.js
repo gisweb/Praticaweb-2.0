@@ -191,6 +191,7 @@ $(document).ready(function(){
         });
         $("[data-plugins='stampa-documento']").bind("click",function(){
             event.preventDefault();
+            $("#page-dialog-message").dialog( "open" );
             var d = $(this).data();
             if (!confirm('Sei sicuro di voler stampare il documento?')) return;
             $.ajax({
@@ -199,6 +200,7 @@ $(document).ready(function(){
                 type:'POST',
                 data:d,
                 success: function(data, textStatus, jqXHR){
+                    $("#page-dialog-message").dialog( "close" );
                     if (data["success"]==1){
                         window.location.reload(true);
                     }
@@ -210,7 +212,7 @@ $(document).ready(function(){
         });
          $("[data-plugins='ws-pagopa']").bind('click',function(event){
             event.preventDefault();
-            
+            $("#page-dialog-message").dialog( "open" );
             var d = $(this).data();
             if (d["action"] == "pubblica-pagamento"){
                 if (!confirm('Sei sicuro di voler pubblicare questo pagamento?')) return;
@@ -220,6 +222,7 @@ $(document).ready(function(){
                     type:'POST',
                     data:d,
                     success: function(data, textStatus, jqXHR){
+                        $("#page-dialog-message").dialog( "close" );
                         if (data["success"]==1){
                             window.location.reload(true);
                         }
