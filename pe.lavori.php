@@ -5,13 +5,11 @@ $tabpath="pe";
 $idpratica=$_REQUEST["pratica"];
 $modo=(isset($_REQUEST["mode"]))?($_REQUEST["mode"]):('view');
 appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]);
-
+$dbh = utils::getDb();
 //Imposto i permessi di default per il modulo
 $_SESSION["PERMESSI"]= min($_SESSION["PERMESSI_$idpratica"],$_SESSION["PERMESSI_A_$idpratica"]);
 
 ?>
-<html>
-<head>
 <title>Lavori- <?=$_SESSION["TITOLO_".$idpratica]?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -90,27 +88,41 @@ else
 			<TD> 
 			<!-- contenuto-->
 				<?php
-				$tabella=new Tabella_v("$tabpath/lavori");
+				$sql="SELECT A.id,pratica,format('Comunicazione di %s del %s',B.nome,to_char(A.data,'dd/mm/yyyy')) as titolo FROM pe.comunicazioni_lavori A INNER JOIN pe.e_comunicazioni B ON (A.tipo_comunicazione=B.id) WHERE pratica = ? order by data;";
 				
-				if($tabella->set_dati("pratica=$idpratica")){
-                                    $tabella->set_titolo("Scadenze lavori","modifica",array("tabella"=>"lavori","id"=>""));
+				$stmt = $dbh->prepare($sql);
+                                $stmt->execute(Array($idpratica));
+                                $res = $stmt->fetchAll();
+                                $tabella=new Tabella_v("$tabpath/lavori");
+                                for($i=0;$i<count($res);$i++){
+                                   $tabella->set_dati("id=".$res[$i]["id"]);
+                                    $tabella->set_titolo($res[$i]["titolo"],"modifica",array("tabella"=>"lavori","id"=>""));
                                     $tabella->get_titolo();
                                     $tabella->tabella();
-                                    echo("<div class='button_line'></div>");								
+                                    echo("<div class='button_line'></div>");	
+                                }
+                                $tabella->set_titolo("Inserisci dati relativi ai lavori","nuovo",array("tabella"=>"lavori"));
+                                print $tabella->get_titolo();
+                                if (!count($res))    print ("<p><b>Scadenze lavori non impostate</b></p>");
+                                echo("<div class='button_line'></div>");
+                                if(count($res)){
                                     $tabella_proroga=new tabella_v("$tabpath/proroga");
-                                    $tabella_proroga->set_titolo("Proroga","modifica",array("tabella"=>"proroga","id"=>""));
                                     $tabella_proroga->set_dati("pratica=$idpratica");
-                                    $tabella_proroga->elenco();
-                                    echo("<div class='button_line'></div>");
-                                    $tabella_proroga->set_titolo("Inserisci nuova proroga","nuovo",array("tabella"=>"proroga"));
+                                    if(count($tabella_proroga->array_dati)){
+                                        $tabella_proroga->set_titolo("Proroga","modifica",array("tabella"=>"proroga","id"=>""));
+                                    }
+                                    else{
+                                         $tabella_proroga->set_titolo("Inserisci i dati della proroga","nuovo",array("tabella"=>"proroga"));
+                                    }
+
                                     $tabella_proroga->get_titolo();
-				}				
-				else{
-                                    $tabella->set_titolo("Inserisci dati relativi alle scadenze lavori","nuovo",array("tabella"=>"lavori"));
-                                    print $tabella->get_titolo();
-                                    print ("<p><b>Scadenze lavori non impostate</b></p>");
-				}
-?>
+                                    $tabella_proroga->tabella();
+                                    echo("<div class='button_line'></div>");
+                                }
+                                
+                                
+                                
+?>				
 			<!-- fine contenuto-->
 			 </TD>
 	      </TR>

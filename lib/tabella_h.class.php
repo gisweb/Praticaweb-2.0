@@ -363,8 +363,79 @@ function get_cella($row,$col){
 			$obj=json_encode($params);
 			$retval=($dati[$campo])?("<td$classe valign=\"middle\" width=\"$size[0]\"><a href=\"#\" id=\"$campo\" style=\"text-decoration:none;\" $h>$testo &nbsp;<span style=\"display:inline-block\" class=\"ui-icon $class\"></a></td>"):('<td>&nbsp;</td>');
 			break;
-                case "utenti":
+        case "azioni":
+            $campo=$nome;
+            $pr = $this->array_dati[$row]["pratica"];
+            
+			$prms=explode('#',$w);
+			$size=array_shift($prms);
+			$class=array_shift($prms);
+			$azione=array_shift($prms);
+			for($i=0;$i<count($prms);$i++){
+				$tmp=explode(":",$prms[$i]);
+				$params[]=(count($tmp)==2)?("data-$tmp[0]=\"$tmp[1]\""):("data-$prms[$i]=\"".$dati[$prms[$i]]."\"");
+			}
+            switch($azione){
+                case "ws-pagopa":
+					$modello = (defined('MODELLO_DISTINTA_PAGOPA'))?(MODELLO_DISTINTA_PAGOPA):(151);
+					$first=0;
+                    if(!$this->valori_counter) $this->valori_counter=0;
+                    if(!$this->valori) $this->valori=Array();
+                    $codice = $this->array_dati[$row]["codice_richiesta"];
+		    if (!$this->valori || !in_array($codice,$this->valori)){
+						$this->valori[]=$codice;
+						$first=1;
+                        $this->valori_counter+=1;
+                    $this->valori_class[$codice] = (($this->valori_counter%2)==0)?("pari"):("dispari");
+					}
+                    $pubblicato = $this->array_dati[$row]["published"];
+					$stampato = $this->array_dati[$row]["printed"];
+					if ($first){
+						if(!$stampato){
+							$testo = "Stampa Distinta";
+							$html = <<<EOT
+<a href="#"  data-color="%s" name="$codice" id="$campo" style="text-decoration:none;" data-plugins="stampa-documento" data-pratica="$pr" data-form-stampa="oneri.importi_dovuti" data-modello="$modello" data-id="$codice" data-PAGOPA_RICHIESTA="1" data-codice_richiesta="$codice" data-riferimento_record="ragioneria.importi_dovuti.$codice" data-action="stampa-documento">$testo &nbsp;
+	<span style="display:inline-block" class="ui-icon ui-icon-print">
+</a>	
+EOT;
+                            $html=sprintf($html,$this->valori_class[$codice]);
+						}
+						elseif(!$pubblicato){
+							$testo = "Pubblica il pagamento";
+							$html = <<<EOT
+<a data-color="%s" href="#" name = "$codice" id="$campo" style="text-decoration:none;" data-plugins="$azione" data-pratica="$pr" data-codice-richiesta="$codice" data-action="pubblica-pagamento">$testo &nbsp;
+	<span style="display:inline-block" class="ui-icon $class">
+</a>	
+EOT;
+                            $html=sprintf($html,$this->valori_class[$codice]);
+						}
+						else{
+							$testo = "Revoca il pagamento";
+						
+							$html = <<<EOT
+<a data-color="$color" href="#" name="$codice" id="$campo" style="text-decoration:none;" data-plugins="$azione" data-pratica="$pr" data-codice-richiesta="$codice" data-action="revoca-pagamento">$testo &nbsp;<span style="display:inline-block" class="ui-icon $class">                        
+EOT;
+                                                $html=sprintf($html,$this->valori_class[$codice]);						}
+					}
+					else{
+						$html =<<<EOT
+<span data-color="%s" name="$codice"> ----- </span>
+EOT;
+                                                $html=sprintf($html,$this->valori_class[$codice]);
+					}
                     break;
+                default:
+                    $html="Nessuna azione Trovata";
+                    break;
+            }
+            $retval = <<<EOT
+<td $classe valign="middle" width="$size">
+    $html
+</td>
+EOT;
+            break;
+        case "utenti":
+            break;
 	}
 	return $retval;
 }	

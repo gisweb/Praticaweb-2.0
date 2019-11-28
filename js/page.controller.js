@@ -189,6 +189,68 @@ $(document).ready(function(){
         $("[data-plugins='link']").bind('click',function(event){
             
         });
+        $("[data-plugins='stampa-documento']").bind("click",function(){
+            event.preventDefault();
+            var d = $(this).data();
+            if (!confirm('Sei sicuro di voler stampare il documento?')) return;
+            $.ajax({
+                url:serverUrl,
+                dataType:'json',
+                type:'POST',
+                data:d,
+                success: function(data, textStatus, jqXHR){
+                    if (data["success"]==1){
+                        window.location.reload(true);
+                    }
+                    else{
+                        alert(data["message"]);
+                    }
+                }
+            });
+        });
+         $("[data-plugins='ws-pagopa']").bind('click',function(event){
+            event.preventDefault();
+            
+            var d = $(this).data();
+            if (d["action"] == "pubblica-pagamento"){
+                if (!confirm('Sei sicuro di voler pubblicare questo pagamento?')) return;
+                $.ajax({
+                    url:serverUrl,
+                    dataType:'json',
+                    type:'POST',
+                    data:d,
+                    success: function(data, textStatus, jqXHR){
+                        if (data["success"]==1){
+                            window.location.reload(true);
+                        }
+                        else{
+                            alert(data["message"]);
+                        }
+                    }
+                });
+            }
+            else if(d["action"] == "revoca-pagamento"){
+                if (!confirm('Sei sicuro di voler revocare questo pagamento?')) return;
+                $.ajax({
+                    url:serverUrl,
+                    dataType:'json',
+                    type:'POST',
+                    data:d,
+                    success: function(data, textStatus, jqXHR){
+                        if (data["success"]==1){
+                            window.location.reload(true);
+                        }
+                        else{
+                            alert(data["message"]);
+                        }
+                    }
+                });
+            }
+        });
+        $("[data-color]").each(function(){
+            var d = $(this).data();
+            $(this).closest("tr").toggleClass(d['color']);
+        });
  /*       $("[data-plugins='delete-notifica']").on('click',function(event){
             event.preventDefault();
             if (!confirm('Sei sicuro di voler eliminare questa notifica?')) return;

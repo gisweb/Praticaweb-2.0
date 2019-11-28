@@ -259,6 +259,11 @@ EOT;
                 else 
                     $result =  0;
                 break;
+            case "intero":
+                if (preg_match('/^\d+?$/', $val)) $result = 1;
+                else 
+                    $result =  0;
+                break;
             case "email":
                 if(filter_var($val, FILTER_VALIDATE_EMAIL)) $result = 1;
                 break;
@@ -266,6 +271,17 @@ EOT;
                 if(filter_var($val, FILTER_VALIDATE_URL)) $result = 1;
                 break;
             case "ip":
+                if(filter_var($val, FILTER_VALIDATE_IP)) $result = 1;
+            case "data":
+                $regexps= Array(
+                    '/(19[0-9][0-9]|20[0-9][0-9])[\/-](0[1-9]|1[0-2])[\/-](0[1-9]|1[0-9]|2[0-9]|3[01])/',
+                    '/(0[1-9]|1[0-9]|2[0-9]|3[01])[\/-](0[1-9]|1[0-2])[\/-](19[0-9][0-9]|20[0-9][0-9])/'
+                );
+                foreach($regexps as $regexp){
+                    if(preg_match($regexp,$val,$match)){
+                        $result=1;
+                    }
+                }
                 if(filter_var($val, FILTER_VALIDATE_IP)) $result = 1;
             default:
                 $result = 1;   

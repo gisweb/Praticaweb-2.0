@@ -46,4 +46,4 @@ if (($_REQUEST["azione"]=="Salva") || ($_REQUEST["azione"]=="Elimina") ){
     //file_put_contents($file, $_POST['myidpag']." ".$_POST['id_6'].$_POST['data_pagamento'].$_POST['codice_pagamento']);
 }
 
-$active_form="pe.pagamenti.php?pratica=$idpratica";
+$active_form="pe.wspagamenti.php?pratica=$idpratica";

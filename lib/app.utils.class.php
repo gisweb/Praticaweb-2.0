@@ -27,7 +27,11 @@ class generalAppUtils {
 		$sequence=$db->fetchColumn($sql,Array($sk,$tb));
 		return $db->fetchColumn("select currval('$sequence')");
 	}
-    
+    static function getPDODB(){
+        $dsn = sprintf('pgsql:dbname=%s;host=%s;port=%s',DB_NAME,DB_HOST,DB_PORT);
+        $conn = new PDO($dsn, DB_USER, DB_PWD);
+        return $conn;
+    }
     static function isNumeric($v){
         try{
             $value=self::toNumber($v);
@@ -422,6 +426,29 @@ class generalAppUtils {
             $stmt->execute(Array($id,$frm,$user));
         }
     }
+    static function addDocumentoStampa($data){
+        if(!array_key_exists("utente_doc",$data)) $data["utente_doc"]=$_SESSION['USER_NAME'];
+        if(!array_key_exists("utente_pdf",$data)) $data["utente_pdf"]=$_SESSION['USER_NAME'];
+        if(!array_key_exists("data_creazione_doc",$data)) $data["data_creazione_doc"]=date("d/m/Y");
+        if(!array_key_exists("data_creazione_pdf",$data)) $data["data_creazione_pdf"]=date("d/m/Y");
+        foreach($data as $k=>$v){
+            $keys[]=$k;
+            $values[]=$v;
+        }
+        utils::debug(DEBUG_DIR."STAMPA.debug",$data,'w');
+        $sql = sprintf("INSERT INTO stp.stampe(%s) VALUES(%s)",implode(",",$keys),implode(',',array_fill(0,count($keys),'?')));
+        $dbh = self::getPDODB();
+        $stmt = $dbh->prepare($sql);
+        if ($stmt->execute($values)){
+            $id = $dbh->lastInsertId();
+            return Array("success"=>1,"id"=>$id,"message"=>"","nome"=>"");
+        }
+        else{
+            $err=$stmt->errorInfo();
+            return Array("success"=>0,"id"=>0,"message"=>$err[2],"nome"=>"");
+        }
+        
+    }
 }
-
+    
 ?>

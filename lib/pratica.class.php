@@ -76,7 +76,7 @@ class generalPratica {
         $conn = utils::getDb();
         if ($this->pratica && is_numeric($this->pratica)){
             //INFORMAZIONI SULLA PRATICA
-            $sql="SELECT numero,tipo,resp_proc,resp_it,resp_ia,date_part('year',data_presentazione) as anno,data_presentazione,data_prot,B.nome as tipo_pratica,B.tipologia FROM pe.avvioproc A LEFT JOIN pe.e_tipopratica B ON(A.tipo=B.id)  WHERE A.pratica=?";
+            $sql="SELECT numero,tipo,resp_proc,resp_it,resp_ia,date_part('year',data_presentazione) as anno,data_presentazione,data_prot,B.nome as tipo_pratica,B.tipologia,online FROM pe.avvioproc A LEFT JOIN pe.e_tipopratica B ON(A.tipo=B.id)  WHERE A.pratica=?";
             $stmt = $conn->prepare($sql);
             if (!$stmt->execute(Array($this->pratica))){
                 return;

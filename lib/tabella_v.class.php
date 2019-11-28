@@ -336,41 +336,74 @@ EOT;
 			$retval="<b>$ch</b><input type=\"checkbox\"  name=\"$campo\"  id=\"$campo\" $selezionato $html5Attr $disabilitato>&nbsp;&nbsp;";
 			break;
 		case "_checkbox":
-                    $val = $dati[$campo];
-                    if ($val && $val!="{}"){
-                        $vals = explode(",",str_replace("{","",str_replace("}","",$val)));
-                    }
-                    else{
-                        $vals = Array();
-                    }
-                    $size=explode("x",$w);
-                    if (trim($size[2])=="pratica"){
-                        $filtro = sprintf("(pratica = -1 or pratica = %d)",$this->idpratica);
-                    }
-                    else{
-                        $filtro=$size[2];
-                    }
-                    $opzioni=$this->elenco_opzioni($size[1],Array($dati[$campo]),trim($filtro));
-                    $width = sprintf("%spx;",$size[0]);
-                    if (!$opzioni) $res[] ="<p><b>Nessun Elemento Trovati</b></p>";
-                    foreach($opzioni as $opt){
-                        $dataParams=Array();
-                        $value=$opt["value"];
-                        $label = $opt["label"];
-                        $params = json_decode($opt["params"]);
-                        foreach($params as $k=>$v) $dataParams[]=sprintf("data-%s='%s'",$k,$v);
-                        $params=implode(" ",$dataParams);
-                        $selezionato = (in_array($value,$vals))?("checked"):("");
-                        $fieldName = sprintf("%s[]",$campo);
-                        $objId = sprintf("%s[%s]",$campo,$value);
-
-                        $res[] = <<<EOT
-                                <input type="checkbox" class="textbox" name="$fieldName" id="$objId" value="$value" $html5Attr $params $selezionato $disabilitato />
-                                <label for="$objId" class="texbox">$label</label><br/>
+            $val = $dati[$campo];
+            if ($val && $val!="{}"){
+                $vals = explode(",",str_replace("{","",str_replace("}","",$val)));
+            }
+            else{
+                $vals = Array();
+            }
+            $size=explode("x",$w);
+            if (trim($size[2])=="pratica"){
+                $filtro = sprintf("(pratica = -1 or pratica = %d)",$this->idpratica);
+            }
+            else{
+                $filtro=$size[2];
+            }
+            $opzioni=$this->elenco_opzioni($size[1],Array($dati[$campo]),trim($filtro));
+            //$width = sprintf("%spx;",$size[0]);
+            $cols = $size[0];
+            $width = (int)100/$cols;
+            if (!$opzioni) $res[] ="<p><b>Nessun Elemento Trovati</b></p>";
+            $row=0;
+            $tr = Array();
+            for($el=0;$el<count($opzioni);$el++){
+                $col = $cont%$cols;
+                $html="";
+                if ($col==0 && $el>0) {
+                    $html=implode("\n",$tr);
+                    $tr = Array();
+                    $rows[] =<<<EOT
+        <tr>
+$html                            
+        </tr>
 EOT;
-                    }
-                    $retval = implode("\n",$res);
+                    $row++;
+                }
+                $opt = $opzioni[$el];
+                $dataParams=Array();
+                $value=$opt["value"];
+                $label = $opt["label"];
+                $params = json_decode($opt["params"]);
+                foreach($params as $k=>$v) $dataParams[]=sprintf("data-%s='%s'",$k,$v);
+                $params=implode(" ",$dataParams);
+                $selezionato = (in_array($value,$vals))?("checked"):("");
+                $fieldName = sprintf("%s[]",$campo);
+                $objId = sprintf("%s[%s]",$campo,$value);
 
+                $tr[] = <<<EOT
+            <td width="$width%">    
+                <input type="checkbox" class="textbox" name="$fieldName" id="$objId" value="$value" $html5Attr $params $selezionato $disabilitato />
+                <label for="$objId" class="texbox">$label</label>
+            </td>
+EOT;
+            
+                $cont++;
+            }
+            if (count($tr)){
+                $html=implode("\n",$tr);
+                $rows[] =<<<EOT
+        <tr>
+$html                            
+        </tr>
+EOT;
+            }
+            $html = implode("\n",$rows);
+            $retval =<<<EOT
+    <table class="stiletabella" cellpadding="3" cellspacing="1" width="95%">
+$html
+    </table>
+EOT;
             break;
 		case "radio":
 			(($dati[$campo]=="t") or ($dati[$campo]=="on") or ($dati[$campo]==1))?($selezionato="checked"):($selezionato="");

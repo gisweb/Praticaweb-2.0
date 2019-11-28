@@ -33,7 +33,7 @@ class wordDoc {
         var $fields;
 	var $query;
         var $table;
-	function __construct($modello,$pratica){
+	function __construct($modello,$pratica,$fileName=""){
 		$this->db=appUtils::getDb();
 		$db=$this->db;
 		$this->modello=$modello;
@@ -48,9 +48,9 @@ class wordDoc {
 		$info=pathinfo($this->modello);
 		$this->basename=$info["filename"];
 		$this->extension=$info["extension"];
-		$this->docName=utils::rand_str()."-".$this->modello;
+		$this->docName=(!$fileName)?(utils::rand_str()."-".$this->modello):(utils::rand_str()."-".$fileName);
 		$this->actions=$ris["action"];
-                $this->query=$this->setQuery();
+        $this->query=$this->setQuery();
 	}
         private function getType($form){
             $frms=explode(".",$form);

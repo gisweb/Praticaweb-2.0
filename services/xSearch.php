@@ -98,26 +98,53 @@ switch($action){
         }
         $listId=Array();
         $filter=implode(" $queryOP ",$q);
-	if ($filter) $filter = " WHERE pratica IN ".$filter;
+	if ($filter) $filter = " WHERE pratica IN (".$filter.")";
         $queryName="search-online";
         $order="ORDER BY data_ordinamento";
         $sql =<<<EOT
-select id,pratica,prot_integ::varchar as protocollo,data_integ as data_protocollo,'Integrazione'::varchar as tipo,2 as ordine from pe.integrazioni where online=1
-UNION ALL
-select id,pratica,protocollo_il::varchar as protocollo,data_prot_il as data_protocollo,'Inizio Lavori'::varchar as tipo,3 as ordine from pe.lavori where il_online=1
-UNION ALL
-select id,pratica,protocollo_fl::varchar as protocollo,data_prot_fl as data_protocollo,'Fine Lavori'::varchar as tipo,4 as ordine from pe.lavori where fl_online=1
-UNION ALL
-SELECT id,pratica,protocollo::varchar,data_prot as data_protocollo,'Istanza'::varchar as tipo,1 as ordine from pe.avvioproc WHERE online=1
+SELECT 
+	id,pratica,protocollo,data_protocollo,
+	case 
+		when tipo = 'istanza'	then 'Istanza' 
+		when tipo='integrazione' then 'Integrazione' 
+		when tipo = 'il' then 'Inizio Lavori' 
+		when tipo = 'fl' then 'Fine lavori' 
+		else '---' end 
+	as tipo,
+	case 
+		when tipo = 'istanza'	then 1 
+		when tipo='integrazione' then 2 
+		when tipo = 'il' then 3 
+		when tipo = 'fl' then 4 
+		else 5 end 
+	as ordine
+FROM pe.istanze	
 EOT;
 
 
-
-        $tmp=$db->fetchAll($sql);
+        $dbh = utils::getDb();
+        $stmt = $dbh->prepare($sql);
+        if(!$stmt->execute()){
+            $err = $stmt->errorInfo();
+            $result=Array("total"=>0,"rows"=>Array(),"filter"=>$filter,"sql"=>$sql,"elenco_id"=>Array(),"error"=>$err[2]);
+            header('Content-Type: application/json');
+            print json_encode($result);
+            return;
+        }
+        $tmp=$stmt->fetchAll(PDO::FETCH_ASSOC);
         $total=count($tmp);
         $sql=sprintf($query[$queryName],$filter,$order,$orderType,$rows,$offset);
         utils::debug(DEBUG_DIR."search-online.debug",$sql);
-        $res=$db->fetchAll($sql);
+        //$res=$db->fetchAll($sql);
+        $stmt = $dbh->prepare($sql);
+        if(!$stmt->execute()){
+            $err = $stmt->errorInfo();
+            $result=Array("total"=>0,"rows"=>Array(),"filter"=>$filter,"sql"=>$sql,"elenco_id"=>Array(),"error"=>$err[2]);
+            header('Content-Type: application/json');
+            print json_encode($result);
+            return;
+        }
+        $res=$stmt->fetchAll(PDO::FETCH_ASSOC);
         $result=Array("total"=>$total,"rows"=>$res,"filter"=>$filter,"sql"=>$sql,"elenco_id"=>Array());
 
         break;

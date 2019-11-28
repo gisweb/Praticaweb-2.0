@@ -1,7 +1,7 @@
                 <input type="hidden" datatable="pe.avvioproc" id="op_pe-avvioproc-online" class="search text" name="online" value="equal">
                 <input type="hidden" value="1" id="1_pe-avvioproc-online" name="online" class="text">
-<!--                <table id="table-filter">
-                   <tr id="tr-assegnata_istruttore">
+                <table id="table-filter">
+<!--                    <tr id="tr-assegnata_istruttore">
                         <td valign="middle">
                             <label for="assegnata_istruttore" class="title">Istruttore assegnato</label><br/>
                             <input type="hidden" datatable="pe.vista_assegnate" id="op_pe-vista_assegnate-assegnata_istruttore" class="search text check" name="assegnata_istruttore" value="equal">                           
@@ -25,7 +25,7 @@
                             <label for="3_pe-avvioproc-sportello" class="value">Tutti</label><br/>
                         </td>
                     </tr>
-
+-->
                     <tr id="tr-stato_istruttoria">
                         <td valign="middle">
                             <label for="stato_istruttoria" class="title">Stato Istruttoria</label><br/>
@@ -56,7 +56,7 @@
                                     <span class="color-box" style="background-color: #FFA500;"></span>
                                 </span>
                             </label><br/>
-                            <input type="radio" value="%" id="4_pe-stato_pratica-stato_istruttoria" name="stato_istruttoria"  data-plugins="dynamic-search">
+                            <input type="radio" value="%" id="4_pe-stato_pratica-stato_istruttoria" name="stato_istruttoria" data-plugins="dynamic-search" checked="true">
                             <label for="4_pe-stato_pratica-stato_istruttoria" class="value">Tutti</label><br/>
                         </td>
                     </tr>
@@ -92,9 +92,9 @@
                             <label for="13_pe-avvioproc-tipo" class="value">S.C.I.A. Vincolo Idrogeologico</label><br/>
                             <input type="radio" value="211000" id="14_pe-avvioproc-tipo" name="tipo"  data-plugins="dynamic-search">
                             <label for="14_pe-avvioproc-tipo" class="value">Autorizzazione Vincolo Idrogeologico</label><br/>
-                            <input type="radio" value="%" id="15_pe-avvioproc-tipo" name="tipo"  data-plugins="dynamic-search">
+                            <input type="radio" value="%" id="15_pe-avvioproc-tipo" name="tipo" checked data-plugins="dynamic-search">
                             <label for="15_pe-avvioproc-tipo" class="value">Tutti</label><br/>
                         </td>
                     </tr>
--->
+
                 </table>

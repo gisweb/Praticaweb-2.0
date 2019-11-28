@@ -3,8 +3,8 @@ include_once("login.php");
 $tabpath="pe";
 include_once "./lib/tabella_h.class.php";
 include_once "./lib/tabella_v.class.php";
-
-$includeFile = DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."include".DIRECTORY_SEPARATOR."init.pe.wspagamenti.php";
+$includeFile = APPS_DIR."include".DIRECTORY_SEPARATOR."init.pe.wspagamenti.php";
+$includeLocalFile = DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."include".DIRECTORY_SEPARATOR."init.pe.wspagamenti.php";
 $idpratica=$_REQUEST["pratica"];
 $modo="list";
 $titolo=$_SESSION["TITOLO_$idpratica"];
@@ -17,8 +17,12 @@ $wsData = Array();
 $tabpath="pe";
 $dbh = utils::getDb();
 
+$pratica = new pratica($idpratica);
+$online = $pratica->info["online"];
 
-if (file_exists($includeFile)) require_once $includeFile;
+if (file_exists($includeLocalFile)) require_once $includeLocalFile;
+elseif (file_exists($includeFile)) require_once $includeFile;
+
 
 
 
@@ -36,6 +40,14 @@ if (file_exists($includeFile)) require_once $includeFile;
     utils::loadCss();
 
 ?>
+<style>
+tr.pari{
+    background-color:#CEE3F6;
+}
+tr.dispari{
+    background-color:#ECF6CE;
+}
+</style>
 <script>
 
 </script>
@@ -43,13 +55,13 @@ if (file_exists($includeFile)) require_once $includeFile;
 <body>
 <?php
     include "./inc/inc.window.php";
-	$tabellaRichiesti=new tabella_h("$tabpath/importi_dovuti","list");
+    $tabellaRichiesti=new tabella_h("$tabpath/importi_dovuti","list");
     $tabellaPagoPA=new tabella_h("$tabpath/pagopa","list");
     $tabellaVersati=new tabella_h("$tabpath/pagamenti","list");
 
     $tabellaRichiesti->set_dati("pratica=$idpratica");
     $tabellaPagoPA->array_dati = $wsData;
-    $tabellaVersati->set_dati("pratica=$idpratica");
+    $tabellaVersati->set_dati("pratica=$idpratica and coalesce(modalita,0)<>4");
     
     $tabellaPagoPA->num_record = count($wsData);
     
@@ -61,6 +73,7 @@ if (file_exists($includeFile)) require_once $includeFile;
             <TD> 
 			<!-- tabella nuovo inserimento-->
 <?php
+    if($online==1 || !$online){
         $tabellaRichiesti->set_titolo("Elenco degli importi Richiesti",'nuovo');
         $tabellaRichiesti->get_titolo('pe.importi_dovuti.php');
         if ($tabellaRichiesti->num_record) 
@@ -68,7 +81,7 @@ if (file_exists($includeFile)) require_once $includeFile;
         else
             print ("<p><b>Nessuna richiesta di pagamento effettuata</b></p>");
         print "<BR>";
-        
+    }    
         $tabellaPagoPA->set_titolo("Importi versati tramite PagoPA");
         $tabellaPagoPA->get_titolo();
         if ($tabellaPagoPA->num_record) 
@@ -90,6 +103,11 @@ if (file_exists($includeFile)) require_once $includeFile;
 			</TD>
 		  </TR>			  
 		</TABLE>
-		
+<script>
+        $("[data-color]").each(function(){
+            var d = $(this).data();
+            $(this).closest("tr").toggleClass(d['tr-color']);
+        });
+</script>		
 </body>
 

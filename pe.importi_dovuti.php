@@ -47,9 +47,15 @@ if (($modo=="edit") or ($modo=="new")){
         unset($_SESSION["ADD_NEW"]);
         if ($modo=="edit"){
             $filtro="id=$id";
-            $titolo="";
+            $titolo="Modifica richiesta Pagamento";
+            $message =<<<EOT
+<p><b style="color:red;font-size:12px;">Attenzione il salvataggio/eliminazione di questo record modificher&agrave; il documento di stampa già creato per questa scadenza</b></p>
+EOT;
         }
         else{
+            $message =<<<EOT
+<p><b style="color:red;font-size:12px;">Attenzione il salvataggio di questo record creer&agrave; un nuovo documento di stampa per questa scadenza</b></p>
+EOT;
             $titolo="Inserisci una nuova richiesta di pagamento";
         }
 
@@ -61,6 +67,9 @@ if (($modo=="edit") or ($modo=="new")){
             <TR> <!-- intestazione-->
                 <TD colspan="2"><H2 class="blueBanner"><?=$titolo?></H2></TD>
             </TR> 
+            <TR>
+                <TD><?php echo $message;?></TD>
+            </TR>
             <TR>
                 <TD>
 						<!-- contenuto-->

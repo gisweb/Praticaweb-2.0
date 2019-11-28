@@ -1,6 +1,6 @@
 <?php
 include_once "../login.php";
-error_reporting(E_ERROR);
+error_reporting(E_ALL);
 $db=  appUtils::getDB();
 
 $result=Array();
@@ -217,6 +217,99 @@ switch($action) {
                     $result["success"]=0;
                 }
             }
+        case "save-data":
+            $conn = utils::getDB();
+            $table=$_POST["table"];
+            $field=$_POST["field"];
+            $id=$_POST["id"];
+            $value=$_POST["value"];
+            $user=$_SESSION["USER_ID"];
+                    $tms= time();
+            $sql = "UPDATE $table SET $field=?, uidupd=?, tmsupd=? WHERE id=?;";
+
+            $stmt = $conn->prepare($sql);
+
+            if($stmt->execute(Array($value,$user,$tms,$id))){
+                $result = Array("success"=>1,"message"=>"");
+            }
+            else{
+                $result = Array("success"=>-1,"message"=>$sql);
+            }
+
+    //		$result = Array("success"=>1,"message"=>$sql);		
+            break;
+        case "pubblica-pagamento":
+            $dbh = utils::getDb();
+            if ($_REQUEST["pratica"] && $_REQUEST["codiceRichiesta"]){
+                require_once LOCAL_LIB."pagopa.class.php";
+                $pratica = $_REQUEST["pratica"];
+                $cod = $_REQUEST["codiceRichiesta"];
+                $res = pagopa::setPagamenti($pratica, $cod);
+                if($res["success"]==1){
+                    $sql = "UPDATE ragioneria.importi_dovuti SET published=1 WHERE pratica=? AND codice_richiesta=?;";
+                    $stmt = $dbh->prepare($sql);
+                    if($stmt->execute(Array($pratica,$cod))){
+                        $result = Array("success"=>1,"message"=>"");
+                    }
+                }
+                else{
+                    $result = Array("success"=>0,"message"=>"Attenzione si sono verificati errori nella pubblicazione del pagamento");
+                }
+            }
+            break;
+        case "revoca-pagamento":
+            $dbh = utils::getDb();
+            if ($_REQUEST["pratica"] && $_REQUEST["codiceRichiesta"]){
+                require_once LOCAL_LIB."pagopa.class.php";
+                $pratica = $_REQUEST["pratica"];
+                $cod = $_REQUEST["codiceRichiesta"];
+                $res = pagopa::removePagamenti($pratica, $cod);
+                if($res["success"]==1){
+                    $sql = "UPDATE ragioneria.importi_dovuti SET published=0 WHERE pratica=? AND codice_richiesta=?;";
+                    $stmt = $dbh->prepare($sql);
+                    if($stmt->execute(Array($pratica,$cod))){
+                        $result = Array("success"=>1,"message"=>"");
+                    }
+                }
+                else{
+                    $result = Array("success"=>0,"message"=>"Attenzione si sono verificati errori durante la revoca pubblicazione del pagamento");
+                }
+            }
+            break;
+        case "stampa-documento":
+            require_once LIB."stampe.word.class.php";
+            $modello = $_REQUEST["modello"];
+            $pratica= $_REQUEST["pratica"];
+            $id = $_REQUEST["id"];
+            $form = $_REQUEST["form-stampa"];
+            $rif = $_REQUEST["riferimento_record"];
+            if ($_REQUEST["pagopa_richiesta"]) $_REQUEST["PAGOPA_RICHIESTA"] = 1;
+            $codice=$_REQUEST["codice_richiesta"];
+            ob_start();
+            $doc=new wordDoc($modello,$pratica);
+            $a = $doc->createDoc();
+            ob_end_clean();
+            $data = Array(
+                "pratica"=>$pratica,
+                "modello"=>$modello,
+                "form"=>$form,
+                'file_doc'=>$doc->docName,
+                'file_pdf'=>$doc->docName,
+                "riferimento_record"=>$rif
+            );
+            list($sc,$f)=explode(".",$form);
+            $schema="pe";
+            $r = appUtils::addDocumentoStampa($data);
+            if($r["success"]==0){
+                $result = Array("success"=>0,"message"=>"Attenzione si sono verificati errori nella creazione del documento");
+            }
+            else{
+                $sql = "UPDATE ragioneria.importi_dovuti SET printed=1 WHERE pratica=$pratica and codice_richiesta='$codice'";
+                $dbh = utils::getDb();
+                $dbh->exec($sql);
+                $result = Array("success"=>1,"message"=>"$sql");                
+            }
+            break;
 	default:
 		break;
 }

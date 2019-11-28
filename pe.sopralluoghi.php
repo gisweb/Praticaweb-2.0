@@ -108,6 +108,17 @@ window.open('http://'+host+'/praticaweb/carica_foto.php?pratica='+idpr+'&form=vi
 			
 			$tabella->set_titolo("Nuovo Sopralluogo","nuovo");
 			$tabella->get_titolo();
+            print "<div class=\"button_line\"></div>\n";
+            $tabellaStampe=new tabella_v('stp/documenti','list');
+            $nrecStampe=$tabellaStampe->set_dati("pratica=$idpratica and form='pe.sopralluoghi'");
+            $tabellaStampe->set_titolo("Documenti dei sopralluoghi","nuovo",Array("form"=>"pe.sopralluoghi"));
+	    $tabella->get_titolo("stp.documenti.php");
+            if ($tabellaStampe->num_record) 
+                $tabellaStampe->elenco();
+            else
+                print ("<p><b>Nessuna Documento</b></p>");
+            print "<BR>";
+
 	}?>
 
 </body>

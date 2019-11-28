@@ -112,6 +112,7 @@ EOT;
             $res[$i]["accettazione"] = $acc;
             $dd = json_decode($res[$i]["pathdocumento"],TRUE);
             $res[$i]["nomedocumento"] = $dd["nomedocumento"];
+            $res[$i]["object"] = $dd["object"];
             
         }
         
