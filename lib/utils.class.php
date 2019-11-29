@@ -147,14 +147,53 @@ class utils {
     static function debug($file,$data,$mode='a+'){
         $now=self::now();
         $f=fopen($file,$mode);
-	ob_start();
+        ob_start();
         echo "------- DEBUG DEL $now -------\n";
-	print_r($data);
-	$result=ob_get_contents();
-	ob_end_clean();
-	fwrite($f,$result."\n-------------------------\n");
-	fclose($f);
+        print_r($data);
+        $result=ob_get_contents();
+        ob_end_clean();
+        fwrite($f,$result."\n-------------------------\n");
+        fclose($f);
     }
+    
+    function curlJsonCall($service,$data,$headers){
+        $baseHeader = array(
+          'Content-Type'=>'multipart/form-data;charset="utf-8"',
+          'Accept-Encoding'=>'gzip,deflate',
+          'Cache-Control'=>'no-cache',
+          'Pragma'=>'no-cache',
+          'Content-length'=>strlen($data["data"]),
+        );
+        //Integro gli header di base con quelli fornito
+        if($headers){
+            foreach($headers as $k=>$v){
+                $baseHeader[$k]=$v;
+            }
+        }
+        //Scrivo gli Headers nella forma corretta
+        foreach($baseHeader as $k=>$v) $header[]=sprintf("%s : %s",$k,$v);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $service );
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_TIMEOUT,        30);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_HTTPHEADER,     $header);
+        curl_setopt($ch, CURLOPT_USERPWD, IOL_USER . ":" . IOL_PWD);  
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, TRUE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        curl_setopt($ch, CURLOPT_POST,           TRUE );
+        curl_setopt($ch, CURLOPT_POSTFIELDS,     $data);
+        if(!$result = curl_exec($ch)) {
+            $err = 'Curl error: ' . curl_error($ch);
+            curl_close($ch);
+            return Array("success"=>0,"result"=>$err);
+        } 
+        else {
+            curl_close($ch);
+            return Array("success"=>1,"result"=>$result);
+        }
+    }
+    
     static function postRequest($url,$fields){
 
         //array_walk_recursive($fields, 'urlencode');
@@ -208,14 +247,132 @@ class utils {
         return $utente;
     }
     
-    function debugAdmin($data){
+    static function recurse_copy($src,$dst) {
+        $dir = opendir($src);
+        @mkdir($dst);
+        while(false !== ( $file = readdir($dir)) ) {
+            if (( $file != '.' ) && ( $file != '..' )) {
+                if ( is_dir($src . '/' . $file) ) {
+                    self::recurse_copy($src . '/' . $file,$dst . '/' . $file);
+                }
+                else {
+                    copy($src . '/' . $file,$dst . '/' . $file);
+                }
+            }
+        }
+        closedir($dir);
+    }
+
+    static function filter_filename($filename, $beautify=true) {
+        // sanitize filename
+        $filename = preg_replace(
+            '~
+            [<>:"/\\|?*]|            # file system reserved https://en.wikipedia.org/wiki/Filename#Reserved_characters_and_words
+            [\x00-\x1F]|             # control characters http://msdn.microsoft.com/en-us/library/windows/desktop/aa365247%28v=vs.85%29.aspx
+            [\x7F\xA0\xAD]|          # non-printing characters DEL, NO-BREAK SPACE, SOFT HYPHEN
+            [#\[\]@!$&\'()+,;=]|     # URI reserved https://tools.ietf.org/html/rfc3986#section-2.2
+            [{}^\~`]                 # URL unsafe characters https://www.ietf.org/rfc/rfc1738.txt
+            ~x',
+            '-', $filename);
+        // avoids ".", ".." or ".hiddenFiles"
+        $filename = ltrim($filename, '.-');
+        // optional beautification
+        if ($beautify) $filename = self::beautify_filename($filename);
+        // maximise filename length to 255 bytes http://serverfault.com/a/9548/44086
+        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+        $filename = mb_strcut(pathinfo($filename, PATHINFO_FILENAME), 0, 255 - ($ext ? strlen($ext) + 1 : 0), mb_detect_encoding($filename)) . ($ext ? '.' . $ext : '');
+        return $filename;
+    }
+    
+    static function beautify_filename($filename) {
+        // reduce consecutive characters
+        $filename = preg_replace(array(
+            // "file   name.zip" becomes "file-name.zip"
+            '/ +/',
+            // "file___name.zip" becomes "file-name.zip"
+            '/_+/',
+            // "file---name.zip" becomes "file-name.zip"
+            '/-+/'
+        ), '-', $filename);
+        $filename = preg_replace(array(
+            // "file--.--.-.--name.zip" becomes "file.name.zip"
+            '/-*\.-*/',
+            // "file...name..zip" becomes "file.name.zip"
+            '/\.{2,}/'
+        ), '.', $filename);
+        // lowercase for windows/unix interoperability http://support.microsoft.com/kb/100625
+        $filename = mb_strtolower($filename, mb_detect_encoding($filename));
+        // ".file-name.-" becomes "file-name"
+        $filename = trim($filename, '.-');
+        return $filename;
+    }
+    
+    static function getStpData($type,$pr){
+            $dbh = self::getDb();
+            $result=Array("single"=>Array("data_odierna"=>"SELECT CURRENT_DATE as oggi;"),"multiple"=>Array(),"fromfile"=>Array());
+            $sql="SELECT table_name as name,array_to_string(array_agg('B.'||column_name::varchar),',') as field_list FROM information_schema.views INNER JOIN information_schema.columns USING(table_name,table_schema) WHERE table_schema='stp' AND table_name ILIKE 'single_%' AND column_name NOT IN ('pratica') GROUP BY table_name ORDER BY 1;";
+            $stmt = $dbh->prepare($sql);
+            if ($stmt->execute())
+                $ris=$stmt->fetchAll(PDO::FETCH_ASSOC);
+            for($i=0;$i<count($ris);$i++){
+                $view=$ris[$i]["name"];
+                $fieldList=$ris[$i]["field_list"];
+                $result["single"][$view]=sprintf("SELECT A.pratica,$fieldList FROM %s A LEFT JOIN stp.$view B USING(pratica) WHERE A.pratica=?;","pe.avvioproc");
+            }
+            $ris=Array();
+            $sql="SELECT table_name as name,array_to_string(array_agg('B.'||column_name::varchar),',') as field_list FROM information_schema.views INNER JOIN information_schema.columns USING(table_name,table_schema) WHERE table_schema='stp' AND table_name ILIKE 'multiple_%' AND column_name NOT IN ('pratica') GROUP BY table_name ORDER BY 1;";
+            $stmt = $dbh->prepare($sql);
+            if ($stmt->execute())
+                $ris=$stmt->fetchAll(PDO::FETCH_ASSOC);
+            for($i=0;$i<count($ris);$i++) {
+                $view = $ris[$i]["name"];
+                $fieldList = $ris[$i]["field_list"];
+                $result["multiple"][str_replace('multiple_', '', $view)] = sprintf("SELECT A.pratica,$fieldList FROM %s A LEFT JOIN stp.$view B USING(pratica) WHERE A.pratica=?;", "pe.avvioproc");
+            }
+            $ris=Array();
+            $sql="SELECT table_name as name,array_to_string(array_agg('B.'||column_name::varchar),',') as field_list FROM information_schema.views INNER JOIN information_schema.columns USING(table_name,table_schema) WHERE table_schema='stp' AND table_name ILIKE 'fromfile_multiple_%' AND column_name NOT IN ('pratica') GROUP BY table_name ORDER BY 1;";
+            $stmt = $dbh->prepare($sql);
+            if ($stmt->execute())
+                $ris=$stmt->fetch(PDO::FETCH_ASSOC);
+            for($i=0;$i<count($ris);$i++){
+                $view=$ris[$i]["name"];
+                $fieldList=$ris[$i]["field_list"];
+                $result["file_multi"][str_replace('fromfile_multiple_','',$view)]=sprintf("SELECT A.pratica,$fieldList FROM %s A LEFT JOIN stp.$view B USING(pratica) WHERE A.pratica=?;","pe.avvioproc");
+            }
+            $data= Array();
+            foreach($result["single"] as $sql){
+                $stmt = $dbh->prepare($sql);
+                if ($stmt->execute(Array($pr)))
+                    $ris=$stmt->fetch(PDO::FETCH_ASSOC);
+                else{
+                    //print_array($stmt->errorInfo());
+                }
+                $data=(!$ris)?($data):(array_merge($data,$ris));
+            }
+            foreach($result["multiple"] as $key=>$sql){
+                $stmt = $dbh->prepare($sql);
+                if ($stmt->execute(Array($pr)))
+                    $ris=$stmt->fetchAll(PDO::FETCH_ASSOC);
+                $data[$key]=$ris;
+            }
+            utils::debug(DEBUG_DIR."/DATA_STP.debug",$data);
+            return $data;
+    }
+    
+    static function subst($txt,$data){
+        foreach($data as $k=>$v){
+            if (!is_array($v)) $txt = str_replace("%($k)s",$v,$txt);
+        }
+        return $txt;
+    }
+    static function debugAdmin($data){
         if($_SESSION["USER_ID"]==1){
             echo "<pre>";
             print_r($data);
             echo "</pre>";
         }
     }
-    function printMessage($message){
+    static function printMessage($message){
         ob_start();
         utils::loadJS();
         utils::loadCss();
@@ -272,17 +429,19 @@ EOT;
                 break;
             case "ip":
                 if(filter_var($val, FILTER_VALIDATE_IP)) $result = 1;
+                break;
             case "data":
                 $regexps= Array(
                     '/(19[0-9][0-9]|20[0-9][0-9])[\/-](0[1-9]|1[0-2])[\/-](0[1-9]|1[0-9]|2[0-9]|3[01])/',
                     '/(0[1-9]|1[0-9]|2[0-9]|3[01])[\/-](0[1-9]|1[0-2])[\/-](19[0-9][0-9]|20[0-9][0-9])/'
                 );
+                $result = 0;
                 foreach($regexps as $regexp){
                     if(preg_match($regexp,$val,$match)){
                         $result=1;
                     }
                 }
-                if(filter_var($val, FILTER_VALIDATE_IP)) $result = 1;
+                break;
             default:
                 $result = 1;   
         }

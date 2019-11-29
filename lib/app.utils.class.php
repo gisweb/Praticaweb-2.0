@@ -1,6 +1,7 @@
 <?php
 use Doctrine\Common\ClassLoader;
 require_once APPS_DIR.'plugins/Doctrine/Common/ClassLoader.php';
+require_once LIB."utils.class.php";
 
 
 
@@ -90,6 +91,26 @@ class generalAppUtils {
         $id=$db->fetchColumn("SELECT id FROM pe.e_transizioni WHERE codice=?",Array($m),0);
         return $id;
     }
+    
+    static function getCodBelfiore($pratica){
+        if (defined('COD_BELFIORE') && COD_BELFIORE){
+            return COD_BELFIORE;   
+        }
+        elseif(in_array("cod_belfiore",$_REQUEST) && $_REQUEST["cod_belfiore"]){
+            return $_REQUEST["cod_belfiore"];
+        }
+        else{
+            $dbh = self::getPDODB();
+            $sql="SELECT cod_belfiore FROM pe.avvioproc WHERE pratica=?;";
+            $stmt=$dbh->prepare($sql);
+            $cod = '';
+            if($stmt->execute(Array($pratica))){
+                $cod = $stmt->fetchColumn();
+            }
+            return $cod;
+        }
+	}
+    
 /*--------------------------------------------------------------------------------------------*/  
     static function getPraticaRole($cfg,$pratica){
         $db=self::getDB();
@@ -418,6 +439,25 @@ class generalAppUtils {
             return $res;
         }
     }
+    
+    static function getNotifiche($userId){
+            $conn=utils::getDb();
+            //DETTAGLI DELLE SCADENZE
+            $lLimit=(defined('LOWER_LIMIT'))?(LOWER_LIMIT):(5);
+            $uLimit=(defined('UPPER_LIMIT'))?(UPPER_LIMIT):(3);
+            $sql="select A.id,A.pratica,B.numero,B.data_prot,testo as oggetto,ARRAY[soggetto_notificato] as interessati from pe.notifiche A inner join pe.avvioproc B using(pratica) where soggetto_notificato=$userId and visionato=0;";
+            
+            $stmt=$conn->prepare($sql);
+            if(!$stmt->execute()){
+                return Array("errore"=>1,"query"=>$sql);
+            }
+            else{
+                $res=$stmt->fetchAll(PDO::FETCH_ASSOC);
+                return Array("totali"=>count($res),"data"=>$res);
+            }
+    }
+
+    
     static function setVisitata($id,$frm,$user){
         if (defined('AUTO_PURGE_NOTIFICHE') && AUTO_PURGE_NOTIFICHE==1){
             $sql="INSERT INTO pe.pratiche_visitate(pratica,form,userid) VALUES(?,?,?)";
@@ -426,6 +466,154 @@ class generalAppUtils {
             $stmt->execute(Array($id,$frm,$user));
         }
     }
+    static function getInfoDocumento($id,$type=0){
+        $dbh = self::getPDODB();
+        if(!$type){
+            $sql = "SELECT file_doc, descrizione,pratica,''::varchar as tipo FROM stp.stampe WHERE id = ?";
+        }
+        else{
+            $sql = "SELECT nome_file as file_doc,note as descrizione,pratica,tipo_file as tipo FROM pe.file_allegati WHERE id = ?";
+        }
+        $stmt = $dbh->prepare($sql);
+        if($stmt->execute(Array($id))){
+            $res = $stmt->fetch();
+            
+            $fname = $res["file_doc"];
+            $desc = $res["descrizione"];
+            $pratica = $res["pratica"];
+            $tipo = $res["tipo"];
+            $pr = new pratica($pratica);
+            $fname = (!$type)?($pr->documenti.$fname):($pr->allegati.$fname);
+            
+            if (!file_exists($fname)){
+                
+                $result = Array("success"=>0,"message"=>"","file"=>"","mimetype"=>"","data"=>Array("descrizione"=>"","nomefile"=>""));
+                $result["message"] = "Il file $fname non presente sul server";
+                return $result;
+            }
+            //Leggo contenuto file
+            $f = fopen($fname,'r');
+            $text = fread($f,filesize($fname));
+            fclose($f);
+            //leggo contenuto su mime type file
+            if (!$tipo){
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                $mime = finfo_file($finfo, $fname);
+                finfo_close($finfo);
+            }
+            else{
+                $mime = $tipo;
+            }
+            
+            
+            $result = Array("success"=>1,"message"=>"","file"=> base64_encode($text),"mimetype"=>$mime,"data"=>Array("descrizione"=>$desc,"nomefile"=>$fname));
+
+        }
+        else{
+            $err = $stmt->errorInfo();
+            $result = Array("success"=>0,"message"=>$err[2],"file"=>"","mimetype"=>"","data"=>Array("descrizione"=>"","nomefile"=>""));
+
+        }
+        return $result;
+    }
+	static function getComunicazione($id=0){
+		$result = Array(
+			"success"=>0,
+			"message"=>"",
+			"comunicazione"=>Array(
+				"to"=>Array(),
+				"subject" => "",
+				"text"=>"",
+				"attachments"=>Array()
+			)
+		);
+		$dbh = self::getPDODB();
+		$sql = "SELECT * FROM pe.comunicazioni WHERE id = ?;";
+		$stmt = $dbh->prepare($sql);
+		if($stmt->execute(Array($id))){
+            $comunicazione = $stmt->fetch(PDO::FETCH_ASSOC);
+			$pratica=$comunicazione["pratica"];
+			$pr = new pratica($pratica);
+			//RECUPERO PEC DEI DESTINATARI
+			$sql = "SELECT B.id,B.nome,B.cognome,B.codfis,B.pec FROM pe.comunicazioni A LEFT JOIN pe.soggetti B USING(pratica) WHERE B.id::varchar = ANY(destinatari) AND A.id=? ";
+			$stmt = $dbh->prepare($sql);
+			if ($stmt->execute(Array($id))){
+				$tmp = $stmt->fetchAll(PDO::FETCH_ASSOC);
+				for($i=0;$i<count($tmp);$i++){
+					$destinatari[]=$tmp[$i]["pec"];
+				} 
+				$persone = $tmp;
+			}
+			else{
+				$destinatari = Array();
+			}
+			//RECUPERO Allegati da Inviare
+			$idAllegati = explode(',',str_replace('{','',str_replace('}','',$comunicazione['allegati'])));
+			$allegati = Array();
+			for($i=0;$i<count($idAllegati);$i++){
+				$a = self::getDocumento($idAllegati[$i],$pratica,1);
+				if ($a["success"]==1) $allegati[]=Array("file"=>$a["file"],"name"=>$a["name"],"id"=>$idAllegati[$i],"tipo"=>"allegato");
+			}
+			//RECUPERO Documenti da Inviare
+			$idStampe = explode(',',str_replace('{','',str_replace('}','',$comunicazione['allegati_1'])));
+			for($i=0;$i<count($idStampe);$i++){
+				$a = self::getDocumento($idStampe[$i],$pratica,0);
+				if ($a["success"]==1) $allegati[]=Array("file"=>$a["file"],"name"=>$a["name"],"id"=>$idStampe[$i],"tipo"=>"documento");
+			}
+			$result["comunicazione"]["persone"]= $persone;
+			$result["comunicazione"]["subject"]=$comunicazione["oggetto"];
+			$result["comunicazione"]["text"]=$comunicazione["testo"];
+			$result["comunicazione"]["to"]=$destinatari;
+			$result["comunicazione"]["attachments"]=$allegati;
+			$result["comunicazione"]["id_comunicazione"]= $comunicazione["id_comunicazione"];
+			$result["comunicazione"]["protocollo"]= $comunicazione["protocollo"];
+		}
+		else{
+			$err = $stmt->errorInfo();
+			$result["message"]=$err[2];
+			return $result;
+		}
+		$result["success"]=1;
+		return $result;
+	}
+	static function getDocumento($id,$pratica,$tipo){
+		$sql = ($tipo == 1) ? ("SELECT file_doc as nomefile FROM stp.stampe WHERE id=? and pratica=?") : ("SELECT nome_file as nomefile FROM pe.file_allegati WHERE id=? and pratica=?");
+		$dbh = self::getPDODB();
+		$stmt = $dbh->prepare($sql);
+		if(!$stmt->execute(Array($id,$pratica))){
+			$err= $stmt->errorInfo();
+			$result["success"] = -1;
+			$result["message"] = $err[0];
+		}
+		else{
+			$res = $stmt->fetch(PDO::FETCH_ASSOC);
+			$pr = new pratica($pratica);
+			$baseDir = ($tipo == 1)?($pr->documenti):($pr->allegati);
+			$filename = $res["nomefile"];
+			if ($filename){
+				$ffname = $baseDir.$filename;
+				if (file_exists($baseDir.$filename)){
+					$f = fopen($baseDir.$filename,'r');
+					$text = fread($f,filesize($baseDir.$filename));
+					fclose($f);
+					$result["success"] = 1;
+					$result["file"] = $text;
+					$result["name"] = $filename;
+				}
+				else{
+					$result["success"] = -3;
+					$result["message"] = "Il file selezionato non si trova nella posizione specificata.";
+				}
+				
+			}
+			else{
+				$result["success"] = -2;
+				$result["message"] = sprintf("Nessun documento trovato con id %s sulla pratica %s",$id,$pratica);
+			}
+		}
+		return $result;
+	}
+    
     static function addDocumentoStampa($data){
         if(!array_key_exists("utente_doc",$data)) $data["utente_doc"]=$_SESSION['USER_NAME'];
         if(!array_key_exists("utente_pdf",$data)) $data["utente_pdf"]=$_SESSION['USER_NAME'];
