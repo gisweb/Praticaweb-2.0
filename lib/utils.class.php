@@ -247,7 +247,8 @@ class utils {
     
     function curlJsonCall($service,$data,$headers){
         $baseHeader = array(
-          'Content-Type'=>'multipart/form-data;charset="utf-8"',
+          //'Content-Type'=>'multipart/form-data;charset="utf-8"',
+          "Content-Type: application/json",  
           'Accept-Encoding'=>'gzip,deflate',
           'Cache-Control'=>'no-cache',
           'Pragma'=>'no-cache',
@@ -513,6 +514,17 @@ class utils {
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         $jscss
+        <style>
+            div.page-message{
+                position:fixed;
+                top:50%;
+                text-align:center;
+                font-weight:bold;
+                padding-top:50px;
+                padding-bottom:50px;
+                width:100%;
+            }
+        </style> 
     </HEAD>
     <BODY>
         $message
@@ -545,6 +557,19 @@ EOT;
                 break;
             case "ip":
                 if(filter_var($val, FILTER_VALIDATE_IP)) $result = 1;
+                break;
+            case "data":
+                $regexps= Array(
+                    '/(19[0-9][0-9]|20[0-9][0-9])[\/-](0[1-9]|1[0-2])[\/-](0[1-9]|1[0-9]|2[0-9]|3[01])/',
+                    '/(0[1-9]|1[0-9]|2[0-9]|3[01])[\/-](0[1-9]|1[0-2])[\/-](19[0-9][0-9]|20[0-9][0-9])/'
+                );
+                $result = 0;
+                foreach($regexps as $regexp){
+                    if(preg_match($regexp,$val,$match)){
+                        $result=1;
+                    }
+                }
+                break;
             default:
                 $result = 1;   
         }
