@@ -123,10 +123,20 @@ EOT;
 			$destination=($this->array_dati[$row]["row_form"])?($this->array_dati[$row]["row_form"]):($prms['form']);
 			$retval="";
 			
-			if ($this->editable){
-				$retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
-				$retval.="<a href='javascript:linkToEdit(\"$destination\",$obj)'><img title=\"Modifica\" src=\"images/edit.png\" border=\"0\"></a>";
-				$retval.="</td>\n";
+            switch($this->tabelladb){
+                case "ragioneria.importi_dovuti":
+                    $editable=!$this->array_dati[$row]["published"];
+                    break;
+                default:
+                    $editable = $this->editable;
+            }
+            $size = $prms["size"];
+			if ($editable){
+				$retval=<<<EOT
+<td align="center" valign="middle"  class="printhide" style="width:$size">
+    <a href='javascript:linkToEdit("$destination",$obj)'><img title="Modifica" src="images/edit.png" border="0"></a>
+</td>
+EOT;
 			}
 			break;
 		case "btn_pwview":
@@ -378,7 +388,21 @@ EOT;
 		case "selectdb":		//Restituisce il campo descrittivo di un elenco 
 			$size=explode("x",$w);
 			$retval="<td$classe valign=\"middle\" width=\"$size[0]\">".$this->get_selectdb_value($valore,"id",$size[1],"opzione")."</td>";
-			break;	
+			break;
+		case "selectdb-editable":		//Restituisce il campo descrittivo di un elenco 
+			$pratica= $this->array_dati[$row]["pratica"];
+	        $id=$this->array_dati[$row]["id"];
+
+			$size=explode("x",$w);
+            $label = $this->get_selectdb_value($valore,"id",$size[1],"opzione");
+			$retval=<<<EOT
+<td $classe valign="middle" width="$size[0]" data-id="$id" data-pratica="$pratica" data-value="$valore" data-plugins="selectdb-editable" data-field="$nome" title="Modifica $fieldLabel" $html5Attr>
+$label
+<img title="Modifica" src="images/edit.png" border="0">
+</td>
+EOT;
+			//$retval="<td $classe valign=\"middle\" width=\"$size[0]\" $html5Attr >".$this->get_selectdb_value($valore,"id",$size[1],"opzione")."</td>";
+			break;        
 		case "folder":
 			$campo=$nome;
 			$prms=explode('#',$w);
@@ -405,6 +429,83 @@ EOT;
 	<td style="width:$w"><span id="$id" $html5Attr>$valore</span></td>
 EOT;
 			break;
+        case "azioni":
+            $campo=$nome;
+            $pr = $this->array_dati[$row]["pratica"];
+            
+			$prms=explode('#',$w);
+			$size=array_shift($prms);
+			$class=array_shift($prms);
+			$azione=array_shift($prms);
+			for($i=0;$i<count($prms);$i++){
+				$tmp=explode(":",$prms[$i]);
+				$params[]=(count($tmp)==2)?("data-$tmp[0]=\"$tmp[1]\""):("data-$prms[$i]=\"".$dati[$prms[$i]]."\"");
+			}
+            switch($azione){
+                case "ws-pagopa":
+					$modello = (defined('MODELLO_DISTINTA_PAGOPA'))?(MODELLO_DISTINTA_PAGOPA):(151);
+					$first=0;
+                    if(!$this->valori_counter) $this->valori_counter=0;
+                    if(!$this->valori) $this->valori=Array();
+                    $codice = $this->array_dati[$row]["codice_richiesta"];
+		    if (!$this->valori || !in_array($codice,$this->valori)){
+						$this->valori[]=$codice;
+						$first=1;
+                        $this->valori_counter+=1;
+                    $this->valori_class[$codice] = (($this->valori_counter%2)==0)?("pari"):("dispari");
+					}
+                    $pubblicato = $this->array_dati[$row]["published"];
+					$stampato = $this->array_dati[$row]["printed"];
+					if ($first){
+						if(!$stampato){
+							$testo = "Stampa Distinta";
+							$html = <<<EOT
+<a href="#" class="%s"  data-color="%s" name="$codice" id="$campo" style="text-decoration:none;" data-plugins="stampa_documento" data-pratica="$pr" data-form-stampa="oneri.importi_dovuti" data-modello="$modello" data-id="$codice" data-PAGOPA_RICHIESTA="1" data-codice_richiesta="$codice" data-riferimento_record="ragioneria.importi_dovuti.$codice" data-action="stampa-documento">$testo &nbsp;
+	<span style="display:inline-block" class="ui-icon ui-icon-print">
+</a>	
+EOT;
+                            $html=sprintf($html,$this->valori_class[$codice],$this->valori_class[$codice]);
+						}
+						elseif(!$pubblicato && $this->dati_aggiuntivi["online"]==1){
+							$testo = "Pubblica il pagamento";
+							$html = <<<EOT
+<a data-color="%s" href="#" name = "$codice" id="$campo" style="text-decoration:none;" data-plugins="$azione" data-pratica="$pr" data-codice-richiesta="$codice" data-action="pubblica-pagamento">$testo &nbsp;
+	<span style="display:inline-block" class="ui-icon $class">
+</a>	
+EOT;
+                            $html=sprintf($html,$this->valori_class[$codice]);
+						}
+                        elseif(!$pubblicato && !$this->dati_aggiuntivi["online"]){
+                            $html =<<<EOT
+<span data-color="%s" name="$codice"> Pratica Cartacea</span>
+EOT;
+                            $html=sprintf($html,$this->valori_class[$codice]);
+                        }
+						elseif ($pubblicato){
+							$testo = "Revoca il pagamento";
+						
+							$html = <<<EOT
+<a data-color="$color" href="#" name="$codice" id="$campo" style="text-decoration:none;" data-plugins="$azione" data-pratica="$pr" data-codice-richiesta="$codice" data-action="revoca-pagamento">$testo &nbsp;<span style="display:inline-block" class="ui-icon $class">                        
+EOT;
+                                                $html=sprintf($html,$this->valori_class[$codice]);						}
+					}
+					else{
+						$html =<<<EOT
+<span data-color="%s" name="$codice"> ----- </span>
+EOT;
+                        $html=sprintf($html,$this->valori_class[$codice]);
+					}
+                    break;
+                default:
+                    $html="Nessuna azione Trovata";
+                    break;
+            }
+            $retval = <<<EOT
+<td $classe valign="middle" width="$size">
+    $html
+</td>
+EOT;
+            break;                       
 	}
 	return $retval;
 }	
@@ -598,29 +699,29 @@ function zoomto_gc($tabella,$id){
                             
 			return $func;
 			break;
-                case "pe.unita_immobiliari":
-                    	$buff=50;
-                        $sql = "SELECT via,civico from pe.unita_immobiliari where id=$id;"; 
-                        if (!isset($this->db)) $this->connettidb();
-                        $result = $this->db->sql_query($sql);
-                        $indi=$this->db->sql_fetchrow();
-                        if ($indi){
-                                $via=addslashes($indi["via"]);
-                                $civico=$indi["civico"];
-                                //
-                                $sql="SELECT A.gid from civici.pe_civici A inner join civici.pe_vie B on(id=strada) where nome ilike '$via' and label='$civico';";
-                		$result = $this->db->sql_query($sql);
-                                $map=$this->db->sql_fetchrow();
-                                if ($map){      
-                                        $func="ApriMappa('".MAPSETID."','".TEMPLATE."','qt=".QTID_CIVICI."&objid=$map[gid]')";
-                                }else{
-                                        $func= "alert('$msgerr')";
-                                }
+        case "pe.unita_immobiliari":
+                $buff=50;
+                $sql = "SELECT via,civico from pe.unita_immobiliari where id=$id;"; 
+                if (!isset($this->db)) $this->connettidb();
+                $result = $this->db->sql_query($sql);
+                $indi=$this->db->sql_fetchrow();
+                if ($indi){
+                        $via=addslashes($indi["via"]);
+                        $civico=$indi["civico"];
+                        //
+                        $sql="SELECT A.gid from civici.pe_civici A inner join civici.pe_vie B on(id=strada) where nome ilike '$via' and label='$civico';";
+                $result = $this->db->sql_query($sql);
+                        $map=$this->db->sql_fetchrow();
+                        if ($map){      
+                                $func="ApriMappa('".MAPSETID."','".TEMPLATE."','qt=".QTID_CIVICI."&objid=$map[gid]')";
                         }else{
                                 $func= "alert('$msgerr')";
                         }
-                        return $func;
-                        break;
+                }else{
+                        $func= "alert('$msgerr')";
+                }
+                return $func;
+                break;
 
 		case "vigi.indirizzi":
 		case "pe.indirizzi":

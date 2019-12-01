@@ -36,12 +36,15 @@ class utils {
         $result=Array();
         return $result;
     }
+    
     static function uploadFiles($prms=Array()) {
         
     }
+    
     static function resizeImages($prms=Array()) {
         
     }
+    
     static function getDb($params=Array()){
         $dsn = sprintf('pgsql:dbname=%s;host=%s;port=%s',DB_NAME,DB_HOST,DB_PORT);
         $conn = new PDO($dsn, DB_USER, DB_PWD);
@@ -66,18 +69,17 @@ class utils {
     }
 
     static function loadJS($f=Array(),$default=1){
+        
+        $random = (defined('NO_CACHE') && NO_CACHE == 1)?(sprintf("?random=%s", rand(1000000, 9999999))):("");
         $dirName = (dirname($_SERVER['REQUEST_URI'])=="\\")?(""):(dirname($_SERVER['REQUEST_URI']));
-
-        $jsPath = APPS_DIR.DIRECTORY_SEPARATOR."js";
-        $jsLocalPath = DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."js";
         if($default){
             foreach(self::$js as $js){
                 $jsLocalURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/') .self::jsLocalURL,$js);
                 $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsURL,$js);
-                if (file_exists($jsLocalPath.DIRECTORY_SEPARATOR.$js.".js"))
-                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsLocalURL);
-                elseif (file_exists($jsPath.DIRECTORY_SEPARATOR.$js.".js"))
-                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsURL);
+                if (self::url_exists($jsLocalURL))
+                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s%s\"></script>",$jsLocalURL,$random);
+                elseif(self::url_exists($jsURL))
+                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s%s\"></script>",$jsURL,$random);
                 else
                     $tag="";
                 echo $tag;
@@ -88,52 +90,17 @@ class utils {
             foreach($f as $js){
                 $jsLocalURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsLocalURL,$js);
                 $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsURL,$js);
-                if (file_exists($jsLocalPath.DIRECTORY_SEPARATOR.$js.".js"))
-                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsLocalURL);
-                elseif (file_exists($jsPath.DIRECTORY_SEPARATOR.$js.".js"))
-                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsURL);
+                if (self::url_exists($jsLocalURL))
+                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s%s\"></script>",$jsLocalURL,$random);
+                elseif(self::url_exists($jsURL))
+                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s%s\"></script>",$jsURL,$random);
                 else
                     $tag="";
                 echo $tag;
             } 
         }
     }
-
-/*    static function loadJS($f=Array(),$default=1){
-        $dirName = (dirname($_SERVER['REQUEST_URI'])=="\\")?(""):(dirname($_SERVER['REQUEST_URI']));
-        if($default){
-            foreach(self::$js as $js){
-                $jsPath=sprintf("%s/%s.js",self::jsPath,$js);
-                $jsLocalPath=sprintf("%s/%s.js",self::jsLocalPath,$js);
-                $jsLocalURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/') .self::jsLocalURL,$js);
-                $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsURL,$js);
-                if (file_exists($jsLocalPath))
-                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsLocalURL);
-                elseif(file_exists($jsPath))
-                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsURL);
-                else
-                    $tag="";
-                echo $tag;
-            }
-        }
-        if (is_array($f) && count($f)){
-
-            foreach($f as $js){
-                $jsPath=sprintf("%s/%s.js",self::jsPath,$js);
-                $jsLocalPath=sprintf("%s/%s.js",self::jsLocalPath,$js);
-                $jsLocalURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsLocalURL,$js);
-                $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsURL,$js);
-                if (file_exists($jsLocalPath))
-                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsLocalURL);
-                elseif(file_exists($jsPath))
-                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsURL);
-                else
-                    $tag="";
-                echo $tag;
-            }
-        }
-    }
-*/    
+    
     static function loadCSS($f=Array(),$default=1){
         $dirName = (dirname($_SERVER['REQUEST_URI'])=="\\")?(""):(dirname($_SERVER['REQUEST_URI']));
         $cssPath=APPS_DIR.DIRECTORY_SEPARATOR."css";
@@ -166,40 +133,6 @@ class utils {
         }
     }
     
-/*    static function loadCSS($f=Array(),$default=1){
-        $dirName = (dirname($_SERVER['REQUEST_URI'])=="\\")?(""):(dirname($_SERVER['REQUEST_URI']));
-        if($default){
-            foreach(self::$css as $css){
-                $cssPath=sprintf("%s/%s.js",self::cssPath,$css);
-                $cssLocalPath=sprintf("%s/%s.js",self::cssLocalPath,$css);
-                $cssLocalURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::cssLocalURL,$css);
-                $cssURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::cssURL,$css);
-                if (file_exists($cssLocalPath))
-                    $tag=sprintf("\n\t\t<LINK media=\"screen\" href=\"%s\" type=\"text/css\" rel=\"stylesheet\"></link>",$cssLocalURL);
-                elseif(file_exists($cssPath))
-                    $tag=sprintf("\n\t\t<LINK media=\"screen\" href=\"%s\" type=\"text/css\" rel=\"stylesheet\"></link>",$cssURL);
-                else
-                    $tag="";
-                echo $tag;
-            }
-        }
-        if (is_array($f) && count($f)){
-            foreach($f as $css){
-                $cssPath=sprintf("%s/%s.js",self::cssPath,$css);
-                $cssLocalPath=sprintf("%s/%s.js",self::cssLocalPath,$css);
-                $cssLocalURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::cssLocalURL,$css);
-                $cssURL=sprintf("http://%s%s/%s.css",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::cssURL,$css);
-                if (file_exists($cssLocalPath))
-                    $tag=sprintf("\n\t\t<LINK media=\"screen\" href=\"%s\" type=\"text/css\" rel=\"stylesheet\"></link>",$cssLocalURL);
-                elseif(file_exists($cssPath))
-                    $tag=sprintf("\n\t\t<LINK media=\"screen\" href=\"%s\" type=\"text/css\" rel=\"stylesheet\"></link>",$cssURL);
-                else
-                    $tag="";
-                echo $tag;
-            }
-        }
-    }
-*/
     static function rand_str($length = 8, $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'){
         // Length of character list
         $chars_length = (strlen($chars) - 1);
@@ -220,9 +153,11 @@ class utils {
         // Return the string
         return $string;
     }
+    
     static function now(){
         return date('d/m/Y h:i:s', time());
     }
+    
     static function debug($file,$data,$mode='a+'){
         $now=self::now();
         $f=fopen($file,$mode);
@@ -234,6 +169,45 @@ class utils {
         fwrite($f,$result."\n-------------------------\n");
         fclose($f);
     }
+    
+    function curlJsonCall($service,$data,$headers){
+        $baseHeader = array(
+          'Content-Type'=>'multipart/form-data;charset="utf-8"',
+          'Accept-Encoding'=>'gzip,deflate',
+          'Cache-Control'=>'no-cache',
+          'Pragma'=>'no-cache',
+          'Content-length'=>strlen($data["data"]),
+        );
+        //Integro gli header di base con quelli fornito
+        if($headers){
+            foreach($headers as $k=>$v){
+                $baseHeader[$k]=$v;
+            }
+        }
+        //Scrivo gli Headers nella forma corretta
+        foreach($baseHeader as $k=>$v) $header[]=sprintf("%s : %s",$k,$v);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $service );
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_TIMEOUT,        30);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_HTTPHEADER,     $header);
+        curl_setopt($ch, CURLOPT_USERPWD, IOL_USER . ":" . IOL_PWD);  
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, TRUE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        curl_setopt($ch, CURLOPT_POST,           TRUE );
+        curl_setopt($ch, CURLOPT_POSTFIELDS,     $data);
+        if(!$result = curl_exec($ch)) {
+            $err = 'Curl error: ' . curl_error($ch);
+            curl_close($ch);
+            return Array("success"=>0,"result"=>$err);
+        } 
+        else {
+            curl_close($ch);
+            return Array("success"=>1,"result"=>$result);
+        }
+    }
+       
     static function postRequest($url,$fields){
 
         //array_walk_recursive($fields, 'urlencode');
@@ -265,6 +239,7 @@ class utils {
         }  
         return $result;
     }
+    
     static function getDbDataToJson($sql,$conn){
         if (!$conn){
             $conn=self::getDb();
@@ -274,6 +249,7 @@ class utils {
         $result=$sth->fetchAll(PDO::FETCH_ASSOC);
         return json_encode($result);
     }
+    
     static function getUser($userId){
         $conn=self::getDb();
         //DETTAGLI SULL'UTENTE
@@ -286,6 +262,7 @@ class utils {
         $utente=$stmt->fetchColumn(0);
         return $utente;
     }
+    
     static function recurse_copy($src,$dst) {
         $dir = opendir($src);
         @mkdir($dst);
@@ -322,6 +299,7 @@ class utils {
         $filename = mb_strcut(pathinfo($filename, PATHINFO_FILENAME), 0, 255 - ($ext ? strlen($ext) + 1 : 0), mb_detect_encoding($filename)) . ($ext ? '.' . $ext : '');
         return $filename;
     }
+    
     static function beautify_filename($filename) {
         // reduce consecutive characters
         $filename = preg_replace(array(
@@ -397,20 +375,22 @@ class utils {
             return $data;
     }
 
-    function subst($txt,$data){
+    static function subst($txt,$data){
         foreach($data as $k=>$v){
             if (!is_array($v)) $txt = str_replace("%($k)s",$v,$txt);
         }
         return $txt;
     }
-    function debugAdmin($data){
+    
+    static function debugAdmin($data){
         if($_SESSION["USER_ID"]==1){
             echo "<pre>";
             print_r($data);
             echo "</pre>";
         }
     }
-    function printMessage($message){
+    
+    static function printMessage($message){
         ob_start();
         utils::loadJS();
         utils::loadCss();
@@ -454,6 +434,11 @@ EOT;
                 else 
                     $result =  0;
                 break;
+            case "intero":
+                if (preg_match('/^\d+?$/', $val)) $result = 1;
+                else 
+                    $result =  0;
+                break;
             case "email":
                 if(filter_var($val, FILTER_VALIDATE_EMAIL)) $result = 1;
                 break;
@@ -462,17 +447,58 @@ EOT;
                 break;
             case "ip":
                 if(filter_var($val, FILTER_VALIDATE_IP)) $result = 1;
+                break;
+            case "data":
+                $regexps= Array(
+                    '/(19[0-9][0-9]|20[0-9][0-9])[\/-](0[1-9]|1[0-2])[\/-](0[1-9]|1[0-9]|2[0-9]|3[01])/',
+                    '/(0[1-9]|1[0-9]|2[0-9]|3[01])[\/-](0[1-9]|1[0-2])[\/-](19[0-9][0-9]|20[0-9][0-9])/'
+                );
+                $result = 0;
+                foreach($regexps as $regexp){
+                    if(preg_match($regexp,$val,$match)){
+                        $result=1;
+                    }
+                }
+                break;
             default:
                 $result = 1;   
         }
         return $result;
     }
+    
     static function is_zero($val){
         $res = preg_replace('|[\.,0]|',"",$val);
         if (strlen($res)==0) return 1;
         else
             return 0;
             
+    }
+    
+    static function json_error($err){
+        switch ($err) {
+            case JSON_ERROR_NONE:
+                return Array("success"=>1,"error"=>"");
+            break;
+            case JSON_ERROR_DEPTH:
+                return Array("success"=>0,"error"=>"Maximum stack depth exceeded");
+               
+            break;
+            case JSON_ERROR_STATE_MISMATCH:
+                return Array("success"=>0,"error"=>"Underflow or the modes mismatch");
+            break;
+            case JSON_ERROR_CTRL_CHAR:
+                return Array("success"=>0,"error"=>"Unexpected control character found");
+            break;
+            case JSON_ERROR_SYNTAX:
+                return Array("success"=>0,"error"=>"Syntax error, malformed JSON");
+            break;
+            case JSON_ERROR_UTF8:
+                return Array("success"=>0,"error"=>"Malformed UTF-8 characters, possibly incorrectly encoded");
+            break;
+            default:
+                return Array("success"=>0,"error"=>"Unknown error");
+            break;
+        }
     }
 }
 

@@ -22,6 +22,7 @@ class generalPratica {
     var $next;
     var $prev;
     var $db;
+    var $dbh;
     
     function __construct($id,$type=0){
 		
@@ -30,6 +31,7 @@ class generalPratica {
         if(!$db->db_connect_id)  die( "Impossibile connettersi al database ".DB_NAME);
         $this->db=$db;
         $this->db1=$this->setDB();
+        $this->dbh = utils::getDb();
         switch($type){
             case 1:
                 $this->initCdu();
@@ -626,7 +628,26 @@ INSERT INTO oneri.rate(pratica,rata,totale,uidins,tmsins) (SELECT $this->pratica
 		return $ris;
 	}
 	
-        
+    function getDocumenti(){
+        $sql = "SELECT id,file_doc FROM stp.stampe WHERE pratica = ?;";
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->execute(Array($this->pratica));
+        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        for($i=0;$i<count($res);$i++){
+            $result[$res[$i]["id"]] = $res[$i]["file_doc"];
+        }
+        return $result;
+    }
+	function getAllegati(){
+		$sql = "SELECT id,nome_file FROM pe.file_allegati WHERE pratica = ?;";
+		$stmt = $this->dbh->prepare($sql);
+		$stmt->execute(Array($this->pratica));
+		$res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		for($i=0;$i<count($res);$i++){
+			$result[$res[$i]["id"]] = $res[$i]["nome_file"];
+		}
+		return $result;
+	}        
 }
 
 

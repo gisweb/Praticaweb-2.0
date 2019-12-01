@@ -229,7 +229,11 @@ EOT;*/
 			break;	
 		case "textarea":
 			$size=explode("x",$w);
-			$retval="<textarea class=\"$class\" cols=\"$size[0]\" rows=\"$size[1]\" name=\"$campo\" id=\"$campo\" $title $html5Attr $disabilitato>$dato</textarea>$help";
+			$retval=<<<EOT
+<textarea class="$class" cols="$size[0]" rows="$size[1]" name="$campo" id="$campo" $title $html5Attr $disabilitato>"
+$dato
+</textarea>
+EOT;
 			break;
 		case "richtext":
 			$size=explode("x",$w);
@@ -366,16 +370,33 @@ EOT;
                 $vals = Array();
             }
             $size=explode("x",$w);
-            if ($size[2]=="pratica"){
+            if (trim($size[2])=="pratica"){
                 $filtro = sprintf("(pratica = -1 or pratica = %d)",$this->idpratica);
             }
             else{
                 $filtro=$size[2];
             }
-            $opzioni=$this->elenco_opzioni($size[1],Array($dati[$campo]),isset($size[2])?($filtro):(null));
-            $width = sprintf("%spx;",$size[0]);
-            if (!$opzioni) $res[] ="<p><b>Nessun Elemento Trovato</b></p>";
-            foreach($opzioni as $opt){
+            $opzioni=$this->elenco_opzioni($size[1],Array($dati[$campo]),trim($filtro));
+            //$width = sprintf("%spx;",$size[0]);
+            $cols = $size[0];
+            $width = (int)100/$cols;
+            if (!$opzioni) $res[] ="<p><b>Nessun Elemento Trovati</b></p>";
+            $row=0;
+            $tr = Array();
+            for($el=0;$el<count($opzioni);$el++){
+                $col = $cont%$cols;
+                $html="";
+                if ($col==0 && $el>0) {
+                    $html=implode("\n",$tr);
+                    $tr = Array();
+                    $rows[] =<<<EOT
+        <tr>
+$html                            
+        </tr>
+EOT;
+                    $row++;
+                }
+                $opt = $opzioni[$el];
                 $dataParams=Array();
                 $value=$opt["value"];
                 $label = $opt["label"];
@@ -386,13 +407,29 @@ EOT;
                 $fieldName = sprintf("%s[]",$campo);
                 $objId = sprintf("%s[%s]",$campo,$value);
 
-                $res[] = <<<EOT
-			<label for="$objId" class="texbox">$label</label>
-			<input type="checkbox" class="textbox" name="$fieldName" id="$objId" value="$value" $html5Attr $params $selezionato $disabilitato />
+                $tr[] = <<<EOT
+            <td width="$width%">    
+                <input type="checkbox" class="textbox" name="$fieldName" id="$objId" value="$value" $html5Attr $params $selezionato $disabilitato />
+                <label for="$objId" class="texbox">$label</label>
+            </td>
+EOT;
+            
+                $cont++;
+            }
+            if (count($tr)){
+                $html=implode("\n",$tr);
+                $rows[] =<<<EOT
+        <tr>
+$html                            
+        </tr>
 EOT;
             }
-            $retval = implode("\n",$res);
-
+            $html = implode("\n",$rows);
+            $retval =<<<EOT
+    <table class="stiletabella" cellpadding="3" cellspacing="1" width="95%">
+$html
+    </table>
+EOT;
             break;
 		case "radio":
 			(($dati[$campo]=="t") or ($dati[$campo]=="on") or ($dati[$campo]==1))?($selezionato="checked"):($selezionato="");

@@ -409,3 +409,21 @@ function verificaRuoloSoggetti(){
             $('#'+k).closest('tr').hide();
     });
 }
+function deleteNotifica(pratica,id){
+    if (!confirm('Sei sicuro di voler eliminare questa notifica?')) return;
+    var d = {};
+    d["pratica"] = pratica;
+    d["id"] = id;
+    d["action"] = "delete-notifica";
+    $.ajax({
+        url:serverUrl,
+        dataType:'json',
+        type:'POST',
+        data:d,
+        success: function(data, textStatus, jqXHR){
+            if (data["success"]==1){
+                $("tr[data-row-id='" + data["id"] + "']").hide();
+            }
+        }
+    });
+}
