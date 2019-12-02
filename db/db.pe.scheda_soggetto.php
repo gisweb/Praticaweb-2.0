@@ -31,15 +31,26 @@
 	}
 
 	elseif ($_POST["azione"]=="Elimina"){
-		$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
-		if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
+        $dbh = utils::getDb();
+		//$db = new sql_db(DB_HOST.":".DB_PORT,DB_USER,DB_PWD,DB_NAME, false);
+		//if(!$db->db_connect_id)  die( "Impossibile connettersi al database");
 		$sql="update pe.soggetti set $ruolo=0 where id=$id;
 				  delete from pe.soggetti where proprietario=0 and richiedente=0 and concessionario=0 
 				  and progettista=0 and direttore=0 and esecutore=0 and id=$id;";
-		if(!$db->sql_query ($sql)){
+		/*if(!$db->sql_query ($sql)){
 			echo "<p>Errore nella cancellazione del soggetto<br>$sql </p>";
-		}
-
+		}*/
+        if (!$dbh->exec($sql)){
+            $errors = $dbh->errorInfo();
+            $error = $errors[2];
+            $message = <<<EOT
+<p style="color:red;font-weight:bold;font-size:12px;">Errore nella cancellazione del soggetto<br>"
+$sql<br> 
+$error
+</p>
+EOT;
+            
+        }
 		$active_form="pe.elenco_soggetti.php?pratica=$idpratica";
 	}
 	$active_form="pe.elenco_soggetti.php?pratica=$idpratica";
