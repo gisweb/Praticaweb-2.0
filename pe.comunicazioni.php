@@ -96,7 +96,7 @@ if (($modo=="edit") or ($modo=="new") ){
 						$tabella->set_errors($Errors);
 						$tabella->set_dati($_POST);
 					}
-                    elseif($modo=="NEW"){
+                    elseif($modo=="new"){
                         $tabella->set_dati($_POST);
                     }
 					else{
