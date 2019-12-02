@@ -96,6 +96,9 @@ if (($modo=="edit") or ($modo=="new") ){
 						$tabella->set_errors($Errors);
 						$tabella->set_dati($_POST);
 					}
+                    elseif($modo=="NEW"){
+                        $tabella->set_dati($_POST);
+                    }
 					else{
 						$numrows=$tabella->set_dati("id=$id AND pratica=$idpratica");
 					}
