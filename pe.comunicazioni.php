@@ -102,8 +102,11 @@ if (($modo=="edit") or ($modo=="new") ){
 					else{
 						$numrows=$tabella->set_dati("id=$id AND pratica=$idpratica");
 					}
-                                         print "<p><b style='color:red;font-size:13px;'>Attenzione se non viene immesso il protocollo il sistema richieder&agrave; un protocollo in uscita per la comunicazione( Protocollazione di Test)</b></p>"; 
-                 			 print $tabella->edita();
+                    $mex = <<<EOT
+<div style="color:red;font-weight:bold;font-size:13px;">Attenzione se si invia la comunicazione e non viene immesso il protocollo il sistema richiederà automaticamene un protocollo in uscita per la comunicazione</div>
+EOT;
+                    print $mex; 
+                 	print $tabella->edita();
 				?>	
 				<input type="hidden" name="mode" value="<?php echo $modo;?>">
 				<INPUT type="hidden" name="pratica" value="<?php echo $idpratica;?>">
