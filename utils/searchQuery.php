@@ -232,4 +232,9 @@ LEFT JOIN admin.users R ON(A.resp_ia=R.userid)
 LEFT JOIN pe.elenco_opzione_ap Q ON (vincolo_paes=Q.id)
 %s %s %s LIMIT %s OFFSET %s     
 EOT;
+
+/*SE ESISTONO QUERY CUSTOM VENGONO ESEGUITE QUELLE*/
+
+$localFileName = DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."query".DIRECTORY_SEPARATOR.basename(__FILE__);
+if (file_exists($localFileName)) include_once $localFileName;
 ?>
