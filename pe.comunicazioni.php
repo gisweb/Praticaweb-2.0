@@ -123,6 +123,9 @@ $("[data-plugins='multi-select']").multiSelect({});
 }	
 else{
 	//-<<<<<<<<<<<<<<<<<<<<<< VISUALIZZA ITER >>>>>>>>>>>>>>>>>>>>>>>>>>>----------------------->	
+    $dataInit = Array();
+    $initDataFile = DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."formdata".DIRECTORY_SEPARATOR.basename(__FILE__);
+    if(file_exists($initDataFile)) include_once $initDataFile;
 		$tabella=new tabella_h("$tabpath/comunicazioni","list");
 		$titolo = "Comunicazioni Inviate/Ricevute";
 		$nrec=$tabella->set_dati("pratica = $idpratica");	?>			
@@ -131,7 +134,7 @@ else{
 			<TD> 
 			<!-- contenuto-->
 				<?php
-					$tabella->set_titolo($titolo,"nuovo");
+					$tabella->set_titolo($titolo,"nuovo",$initData);
 					$tabella->get_titolo();
 					if ($nrec)	
 						$tabella->elenco();
