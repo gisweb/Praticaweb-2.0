@@ -189,11 +189,11 @@ $(document).ready(function(){
         $("[data-plugins='link']").bind('click',function(event){
             
         });
-        $("[data-plugins='stampa-documento']").bind("click",function(){
+/*        $("[data-plugins='stampa_documento']").bind("click",function(){
             event.preventDefault();
-            $("#page-dialog-message").dialog( "open" );
             var d = $(this).data();
             if (!confirm('Sei sicuro di voler stampare il documento?')) return;
+            $("#page-dialog-message").dialog( "open" );
             $.ajax({
                 url:serverUrl,
                 dataType:'json',
@@ -210,6 +210,7 @@ $(document).ready(function(){
                 }
             });
         });
+*/
          $("[data-plugins='ws-pagopa']").bind('click',function(event){
             event.preventDefault();
             $("#page-dialog-message").dialog( "open" );
@@ -250,11 +251,11 @@ $(document).ready(function(){
                 });
             }
         });
-        $("[data-color]").each(function(){
+/*        $("[data-color]").each(function(){
             var d = $(this).data();
-            $(this).closest("tr").toggleClass(d['color']);
+            $(this).closest("tr").addClass(d['color']);
         });
- /*       $("[data-plugins='delete-notifica']").on('click',function(event){
+        $("[data-plugins='delete-notifica']").on('click',function(event){
             event.preventDefault();
             if (!confirm('Sei sicuro di voler eliminare questa notifica?')) return;
             var d = $(this).data();

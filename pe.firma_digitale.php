@@ -70,6 +70,7 @@ $formaction = "pe.firma_digitale.php";
     <H2 class='blueBanner'>$banner</H2>
     <FORM id="documenti" name="utenti" method="post" action="praticaweb.php">
             <!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN EDITING  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
+<p style="color:red;font-size:13px;font-weight:bold;">Attenzione nell'oggetto e nel testo della comunicazione non inserire le virgolette</p>
         <TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="75%">		
             <TR> 
                 <TD> 

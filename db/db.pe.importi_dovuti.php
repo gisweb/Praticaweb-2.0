@@ -214,7 +214,6 @@ if($_POST["azione"]=="Salva" && $_REQUEST["mode"]=="new"){
         //$sql = "DELETE FROM stp.stampe WHERE pratica=? AND riferimento_record=?";
         $riferimento = sprintf("ragioneria.importi_dovuti.%s",$raggruppamento);
         $sql = "DELETE FROM stp.stampe WHERE pratica=$pratica AND riferimento_record='$riferimento'";
-        echo "<p>$sql</p>";
         $stmt=$dbh->prepare($sql);
         //$stmt->execute(Array($pratica,$riferimento));
         $stmt->execute();
@@ -230,7 +229,6 @@ if($_POST["azione"]=="Salva" && $_REQUEST["mode"]=="new"){
             else{
                 $sql = "UPDATE ragioneria.importi_dovuti SET codice_richiesta = '$codTrans', printed=0 WHERE codice_richiesta = '$raggruppamento' and pratica=$pratica;";
             }
-            echo "<p>$sql</p>";
             if ($codTrans){
                 $stmt = $dbh->prepare($sql);
                 if(!$stmt->execute()){

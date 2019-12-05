@@ -62,15 +62,17 @@ class utils {
         return $exists;
     }
     static function loadJS($f=Array(),$default=1){
+        
+        $random = (defined('NO_CACHE') && NO_CACHE == 1)?(sprintf("?random=%s", rand(1000000, 9999999))):("");
         $dirName = (dirname($_SERVER['REQUEST_URI'])=="\\")?(""):(dirname($_SERVER['REQUEST_URI']));
         if($default){
             foreach(self::$js as $js){
                 $jsLocalURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/') .self::jsLocalURL,$js);
                 $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsURL,$js);
                 if (self::url_exists($jsLocalURL))
-                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsLocalURL);
+                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s%s\"></script>",$jsLocalURL,$random);
                 elseif(self::url_exists($jsURL))
-                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsURL);
+                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s%s\"></script>",$jsURL,$random);
                 else
                     $tag="";
                 echo $tag;
@@ -82,9 +84,9 @@ class utils {
                 $jsLocalURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsLocalURL,$js);
                 $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsURL,$js);
                 if (self::url_exists($jsLocalURL))
-                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsLocalURL);
+                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s%s\"></script>",$jsLocalURL,$random);
                 elseif(self::url_exists($jsURL))
-                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsURL);
+                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s%s\"></script>",$jsURL,$random);
                 else
                     $tag="";
                 echo $tag;

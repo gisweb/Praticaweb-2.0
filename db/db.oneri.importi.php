@@ -15,7 +15,7 @@ if ($_POST["azione"]=="Salva"){
 		$pr->setOC();
 		$rate=(isset($_POST["rateizzato"]) && $_POST["rateizzato"])?(1):(-1);
 		$pr->setRateOC($rate);
-        if (defined('MODELLO_RATEIZZAZIONE_ONERI') && MODELLO_RATEIZZAZIONE_ONERI){
+        if (defined('MODELLO_RATEIZZAZIONE_ONERI') && MODELLO_RATEIZZAZIONE_ONERI && $rate){
             require_once LIB."stampe.word.class.php";
             $modello = MODELLO_RATEIZZAZIONE_ONERI;
             $form = "oneri.importi";

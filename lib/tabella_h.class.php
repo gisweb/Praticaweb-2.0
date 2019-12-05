@@ -113,7 +113,15 @@ function get_cella($row,$col){
 			$destination=($this->array_dati[$row]["row_form"])?($this->array_dati[$row]["row_form"]):($prms['form']);
 			$retval="";
 			
-			if ($this->editable){
+            switch($this->tabelladb){
+                case "ragioneria.importi_dovuti":
+                    $editable=!$this->array_dati[$row]["published"];
+                    break;
+                default:
+                    $editable = $this->editable;
+            }
+            
+			if ($editable){
 				$retval.="<td align=\"center\" valign=\"middle\"  class=\"printhide\" style=\"width:$prms[size]\">";
 				$retval.="<a href='javascript:linkToEdit(\"$destination\",$obj)'><img title=\"Modifica\" src=\"images/edit.png\" border=\"0\"></a>";
 				$retval.="</td>\n";
@@ -394,13 +402,13 @@ function get_cella($row,$col){
 						if(!$stampato){
 							$testo = "Stampa Distinta";
 							$html = <<<EOT
-<a href="#"  data-color="%s" name="$codice" id="$campo" style="text-decoration:none;" data-plugins="stampa-documento" data-pratica="$pr" data-form-stampa="oneri.importi_dovuti" data-modello="$modello" data-id="$codice" data-PAGOPA_RICHIESTA="1" data-codice_richiesta="$codice" data-riferimento_record="ragioneria.importi_dovuti.$codice" data-action="stampa-documento">$testo &nbsp;
+<a href="#" class="%s"  data-color="%s" name="$codice" id="$campo" style="text-decoration:none;" data-plugins="stampa_documento" data-pratica="$pr" data-form-stampa="oneri.importi_dovuti" data-modello="$modello" data-id="$codice" data-PAGOPA_RICHIESTA="1" data-codice_richiesta="$codice" data-riferimento_record="ragioneria.importi_dovuti.$codice" data-action="stampa-documento">$testo &nbsp;
 	<span style="display:inline-block" class="ui-icon ui-icon-print">
 </a>	
 EOT;
-                            $html=sprintf($html,$this->valori_class[$codice]);
+                            $html=sprintf($html,$this->valori_class[$codice],$this->valori_class[$codice]);
 						}
-						elseif(!$pubblicato){
+						elseif(!$pubblicato && $this->dati_aggiuntivi["online"]==1){
 							$testo = "Pubblica il pagamento";
 							$html = <<<EOT
 <a data-color="%s" href="#" name = "$codice" id="$campo" style="text-decoration:none;" data-plugins="$azione" data-pratica="$pr" data-codice-richiesta="$codice" data-action="pubblica-pagamento">$testo &nbsp;
@@ -409,7 +417,13 @@ EOT;
 EOT;
                             $html=sprintf($html,$this->valori_class[$codice]);
 						}
-						else{
+                        elseif(!$pubblicato && !$this->dati_aggiuntivi["online"]){
+                            $html =<<<EOT
+<span data-color="%s" name="$codice"> Pratica Cartacea</span>
+EOT;
+                            $html=sprintf($html,$this->valori_class[$codice]);
+                        }
+						elseif ($pubblicato){
 							$testo = "Revoca il pagamento";
 						
 							$html = <<<EOT
@@ -421,7 +435,7 @@ EOT;
 						$html =<<<EOT
 <span data-color="%s" name="$codice"> ----- </span>
 EOT;
-                                                $html=sprintf($html,$this->valori_class[$codice]);
+                        $html=sprintf($html,$this->valori_class[$codice]);
 					}
                     break;
                 default:

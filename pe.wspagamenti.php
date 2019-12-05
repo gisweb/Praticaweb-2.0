@@ -23,7 +23,12 @@ $online = $pratica->info["online"];
 if (file_exists($includeLocalFile)) require_once $includeLocalFile;
 elseif (file_exists($includeFile)) require_once $includeFile;
 
+$message =<<<EOT
+<div style="color:red;font-weight:bold;font-size:13px;">E' possibile creare richieste di pagamento e stampare i relativi ordini di incasso per tutte le pratiche, ma è possibile pubblicare le richieste sul portale delle istanze online solo per quelle presentate online.<br> Per le pratiche cartacee dovranno essere fatte delle integrazioni con pagamento tramite lo stesso portale</div>
+EOT;
 
+//require_once LOCAL_LIB."message.class.php";
+//$message = message::getMessage("ISTRUZIONI_PAGOPA_VIEW");
 
 
 
@@ -31,7 +36,7 @@ elseif (file_exists($includeFile)) require_once $includeFile;
 ?>
 <html>
 <head>
-<title>Ubicazione - <?=$_SESSION[$idpratica]["TITOLO"]?></title>
+<title>Pagamenti  - <?=$_SESSION[$idpratica]["TITOLO"]?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
@@ -56,6 +61,7 @@ tr.dispari{
 <?php
     include "./inc/inc.window.php";
     $tabellaRichiesti=new tabella_h("$tabpath/importi_dovuti","list");
+    $tabellaRichiesti->dati_aggiuntivi = Array("online"=>$online);
     $tabellaPagoPA=new tabella_h("$tabpath/pagopa","list");
     $tabellaVersati=new tabella_h("$tabpath/pagamenti","list");
 
@@ -68,12 +74,13 @@ tr.dispari{
 ?>
 		<!-- <<<<<<<<<<<<<<<<<<<<<   MODALITA' FORM IN VISTA DATI  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>--->
     <H2 class="blueBanner">Pagina riassuntiva degli importi della pratica</H2>
+    <?php echo $message;?>
     <TABLE cellPadding=0  cellspacing=0 border=0 class="stiletabella" width="100%">
       <TR> 
             <TD> 
 			<!-- tabella nuovo inserimento-->
 <?php
-    if($online==1 || !$online){
+    if(($online==1 || !$online)){
         $tabellaRichiesti->set_titolo("Elenco degli importi Richiesti",'nuovo');
         $tabellaRichiesti->get_titolo('pe.importi_dovuti.php');
         if ($tabellaRichiesti->num_record) 
@@ -112,12 +119,34 @@ tr.dispari{
 <script>
     $("[data-color]").each(function(){
         var d = $(this).data();
-        $(this).closest("tr").toggleClass(d['tr-color']);
+        $(this).closest("tr").addClass(d['color']);
     });
     $( "#page-dialog-message" ).dialog({
       modal: true,
       autoOpen: false
     });
+$("[data-plugins='stampa_documento']").bind("click",function(){
+            event.preventDefault();
+            var d = $(this).data();
+            if (!confirm('Sei sicuro di voler stampare il documento?')) return;
+            $("#page-dialog-message").dialog( "open" );
+            $.ajax({
+                url:serverUrl,
+                dataType:'json',
+                type:'POST',
+                data:d,
+                success: function(data, textStatus, jqXHR){
+                    $("#page-dialog-message").dialog( "close" );
+                    if (data["success"]==1){
+                        window.location.reload(true);
+                    }
+                    else{
+                        alert(data["message"]);
+                    }
+                }
+            });
+        });
+
 </script>		
 </body>
 
