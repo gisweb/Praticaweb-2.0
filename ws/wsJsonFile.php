@@ -64,6 +64,7 @@ function trovaAllegati($pratica){
         $err = $errors[2];
         $result["messages"]=Array($err);
     }
+    return $result;
 }
 function trovaDocumenti($pratica){
     $tipo=1;
@@ -102,6 +103,7 @@ function trovaDocumenti($pratica){
         $err = $errors[2];
         $result["messages"]=Array($err);
     }
+    return $result;
 }
 $_SESSION["USER_ID"] = 1;
 require_once dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."login.php";
