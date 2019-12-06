@@ -109,7 +109,12 @@ $pratica = $_REQUEST["pratica"];
 
 $result = Array("success"=>0,"message"=>Array("Nessun id pratica passato"));
 if ($pratica){
-    $result = trovaDocumenti($pratica);
+    if(trovaPratica($pratica)){
+        $result = trovaDocumenti($pratica);
+    }
+    else{
+        $result["message"] = "Pratica $pratica non trovata";
+    }
 }
 header('Content-Type: application/json; charset=utf-8');
 print json_encode($result);
