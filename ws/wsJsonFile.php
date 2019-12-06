@@ -7,7 +7,7 @@
  */
 
 error_reporting(E_ERROR);
-
+session_start();
 function trovaPratica($pratica){
     $sql = "SELECT * FROM pe.avvioproc WHERE pratica=?";
     $dbh = utils::getDb();
@@ -39,7 +39,7 @@ function trovaAllegati($pratica){
             for($i=0;$i<count($res);$i++){
                 $doc = $res[$i];
                 $id = $doc["id"];
-                $infoDoc = appUtils::getDocumento($id,$pratia,$tipo);
+                $infoDoc = appUtils::getDocumento($id,$pratica,$tipo);
                 if ($infoDoc["success"]==1){
                     $result["$file"][] = Array(
                         "tipo"=>"allegato",
@@ -77,7 +77,7 @@ function trovaDocumenti($pratica){
             for($i=0;$i<count($res);$i++){
                 $doc = $res[$i];
                 $id = $doc["id"];
-                $infoDoc = appUtils::getDocumento($id,$pratia,$tipo);
+                $infoDoc = appUtils::getDocumento($id,$pratica,$tipo);
                 if ($infoDoc["success"]==1){
                     $result["$file"][] = Array(
                         "tipo"=>"documento",
