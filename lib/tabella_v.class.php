@@ -985,7 +985,6 @@ function elenco_select($tabella,$selezionato){
 
         }
 
-        utils::debug(DEBUG_DIR.'selectdb.debug',$sql);
         $result = $this->db->sql_query ($sql);
         if (!$result){
             return;

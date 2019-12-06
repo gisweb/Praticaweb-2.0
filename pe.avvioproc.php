@@ -32,8 +32,8 @@ appUtils::setVisitata($idpratica,basename(__FILE__, '.php'),$_SESSION["USER_ID"]
         selectdb['tipo'] = <?php print json_encode($tipopratica)?>;
     </script>
 <?php
-    utils::loadJS(Array('form/pe.avvioproc'));
-    utils::loadCss();
+    utils::loadJS(Array("select2.min","select2_locale_it",'form/pe.avvioproc'));
+    utils::loadCss(Array("select2"));
 $time_end = microtime(true);
 $time = $time_end - $time_start;
 /*if ($_SESSION["USER_ID"]==1){
