@@ -27,6 +27,12 @@ class generalAppUtils {
 		return $db->fetchColumn("select currval('$sequence')");
 	}
     
+    static function getPDODB(){
+        $dsn = sprintf('pgsql:dbname=%s;host=%s;port=%s',DB_NAME,DB_HOST,DB_PORT);
+        $conn = new PDO($dsn, DB_USER, DB_PWD);
+        return $conn;
+    }
+    
     static function isNumeric($v){
         try{
             $value=self::toNumber($v);
@@ -86,23 +92,23 @@ class generalAppUtils {
         return $id;
     }
 	
-   static function getCodBelfiore($pratica){
-	  if (defined('COD_BELFIORE') && COD_BELFIORE){
-		 return COD_BELFIORE;   
-	  }
-	  elseif(in_array("cod_belfiore",$_REQUEST) && $_REQUEST["cod_belfiore"]){
-		 return $_REQUEST["cod_belfiore"];
-	  }
-	  else{
-		 $db = utils::getDb();
-		 $sql="SELECT cod_belfiore FROM pe.avvioproc WHERE pratica=?;";
-		 $stmt=$db->prepare($sql);
-		 $cod = '';
-		 if($stmt->execute(Array($pratica))){
-			$cod = $stmt->fetchColumn();
-		 }
-		 return $cod;
-	  }
+    static function getCodBelfiore($pratica){
+        if (defined('COD_BELFIORE') && COD_BELFIORE){
+            return COD_BELFIORE;   
+        }
+        elseif(in_array("cod_belfiore",$_REQUEST) && $_REQUEST["cod_belfiore"]){
+            return $_REQUEST["cod_belfiore"];
+        }
+        else{
+            $dbh = self::getPDODB();
+            $sql="SELECT cod_belfiore FROM pe.avvioproc WHERE pratica=?;";
+            $stmt=$dbh->prepare($sql);
+            $cod = '';
+            if($stmt->execute(Array($pratica))){
+                $cod = $stmt->fetchColumn();
+            }
+            return $cod;
+        }
 	}
 /*--------------------------------------------------------------------------------------------*/  
     static function getPraticaRole($cfg,$pratica){
@@ -565,11 +571,7 @@ class generalAppUtils {
             return $res;
         }
     }
-    static function getPDODB(){
-        $dsn = sprintf('pgsql:dbname=%s;host=%s;port=%s',DB_NAME,DB_HOST,DB_PORT);
-        $conn = new PDO($dsn, DB_USER, DB_PWD);
-        return $conn;
-    }
+
     static function getInfoDocumento($id,$type=0){
         $dbh = self::getPDODB();
         if(!$type){
@@ -717,7 +719,76 @@ class generalAppUtils {
 		}
 		return $result;
 	}
+    
+    static function addDocumentoStampa($data){
+        if(!array_key_exists("utente_doc",$data)) $data["utente_doc"]=$_SESSION['USER_NAME'];
+        if(!array_key_exists("utente_pdf",$data)) $data["utente_pdf"]=$_SESSION['USER_NAME'];
+        if(!array_key_exists("data_creazione_doc",$data)) $data["data_creazione_doc"]=date("d/m/Y");
+        if(!array_key_exists("data_creazione_pdf",$data)) $data["data_creazione_pdf"]=date("d/m/Y");
+        foreach($data as $k=>$v){
+            $keys[]=$k;
+            $values[]=$v;
+        }
+        utils::debug(DEBUG_DIR."STAMPA.debug",$data,'w');
+        $sql = sprintf("INSERT INTO stp.stampe(%s) VALUES(%s)",implode(",",$keys),implode(',',array_fill(0,count($keys),'?')));
+        $dbh = self::getPDODB();
+        $stmt = $dbh->prepare($sql);
+        if ($stmt->execute($values)){
+            $id = $dbh->lastInsertId();
+            return Array("success"=>1,"id"=>$id,"message"=>"","nome"=>"");
+        }
+        else{
+            $err=$stmt->errorInfo();
+            return Array("success"=>0,"id"=>0,"message"=>$err[2],"nome"=>"");
+        }
+        
+    }
 	
+    function aggiornaRiferimentoRecordStampe($id,$pratica){
+        $sql = "SELECT id,pratica,riferimento_record as riferimento FROM stp.stampe WHERE id=? AND pratica=?";
+        $dbh = utils::getDb();
+        $stmt = $dbh->prepare($sql);
+        if ($stmt->execute(Array($id,$pratica))){
+            $res = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($res["riferimento"]){
+                list($schema,$table,$id) = explode(".",$res["riferimento"]);
+                $tabella = sprintf("%s.%s",$schema,$table);
+                switch ($tabella){
+                    case "ragioneria.importi_dovuti":
+                        $sql = "UPDATE $tabella SET printed = 0 WHERE codice_pagamento=?";
+                        $dbh = self::getPDODB();
+                        $stmt = $dbh->prepare($sql);
+                        if($stmt->execute(Array(id))){
+                            $rowAffected = $stmt->rowCount();
+                            return $rowAffected;
+                        }
+                        else{
+                            return -1;
+                        }
+                        break;
+                    default:
+                        return 0;
+                        break;
+                }
+            }
+        }
+        else{
+            utils::debug(DEBUG_DIR."RIFERIMENTO_RECORD.debug",$stmt->errorInfo());
+            return -1;
+        }
+    }
+    function eliminaDocumento($id,$pratica){
+        $sql = "DELETE FROM pe.stampe WHERE id=? AND pratica=?;";
+        $dbh = utils::getDb();
+        $stmt = $dbh->prepare($sql);
+        if ($stmt->execute(Array($id,$pratica))){
+            $rowAffected = $stmt->rowCount();
+            return $rowAffected;
+        }
+        else{
+            return -1;
+        }        
+    }
 }
 
 ?>
