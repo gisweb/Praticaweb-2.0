@@ -65,19 +65,17 @@ class utils {
         return $exists;
     }
 
-    static function loadJS($f=Array(),$default=1){
+    static function loadJS($f=Array(),$default=1){        
+        $random = (defined('NO_CACHE') && NO_CACHE == 1)?(sprintf("?random=%s", rand(1000000, 9999999))):("");
         $dirName = (dirname($_SERVER['REQUEST_URI'])=="\\")?(""):(dirname($_SERVER['REQUEST_URI']));
-
-        $jsPath = APPS_DIR.DIRECTORY_SEPARATOR."js";
-        $jsLocalPath = DATA_DIR."praticaweb".DIRECTORY_SEPARATOR."js";
         if($default){
             foreach(self::$js as $js){
                 $jsLocalURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/') .self::jsLocalURL,$js);
                 $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsURL,$js);
-                if (file_exists($jsLocalPath.DIRECTORY_SEPARATOR.$js.".js"))
-                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsLocalURL);
-                elseif (file_exists($jsPath.DIRECTORY_SEPARATOR.$js.".js"))
-                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsURL);
+                if (self::url_exists($jsLocalURL))
+                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s%s\"></script>",$jsLocalURL,$random);
+                elseif(self::url_exists($jsURL))
+                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s%s\"></script>",$jsURL,$random);
                 else
                     $tag="";
                 echo $tag;
@@ -88,10 +86,10 @@ class utils {
             foreach($f as $js){
                 $jsLocalURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsLocalURL,$js);
                 $jsURL=sprintf("http://%s%s/%s.js",$_SERVER["HTTP_HOST"],rtrim($dirName,'/').self::jsURL,$js);
-                if (file_exists($jsLocalPath.DIRECTORY_SEPARATOR.$js.".js"))
-                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsLocalURL);
-                elseif (file_exists($jsPath.DIRECTORY_SEPARATOR.$js.".js"))
-                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s\"></script>",$jsURL);
+                if (self::url_exists($jsLocalURL))
+                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s%s\"></script>",$jsLocalURL,$random);
+                elseif(self::url_exists($jsURL))
+                    $tag=sprintf("\n\t\t<SCRIPT language=\"javascript\" src=\"%s%s\"></script>",$jsURL,$random);
                 else
                     $tag="";
                 echo $tag;
@@ -144,6 +142,7 @@ class utils {
             } 
         }
     } 
+    
     static function loadCSS($f=Array(),$default=1){
         $dirName = (dirname($_SERVER['REQUEST_URI'])=="\\")?(""):(dirname($_SERVER['REQUEST_URI']));
         $cssPath=APPS_DIR.DIRECTORY_SEPARATOR."css";
