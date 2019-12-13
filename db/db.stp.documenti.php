@@ -15,6 +15,7 @@ if (in_array($azione, Array("salva","elimina"))){
     }
     elseif ($_FILES['file']['tmp_name']){
         $fName=($_REQUEST['file_doc'])?($_REQUEST['file_doc']):($_FILES['file']['name']);
+        $fName = utils::filter_filename($fName);
         $_POST['file_doc']=$fName;
         if(!pathinfo($fName,PATHINFO_EXTENSION)){
             $ext=pathinfo($_FILES['file']['name'],PATHINFO_EXTENSION);
@@ -32,7 +33,7 @@ if (in_array($azione, Array("salva","elimina"))){
 	    }
     }
 	elseif ($_REQUEST["file_doc"] && $_REQUEST["old_name"]){
-            $newName=$pr->documenti.$_REQUEST['file_doc'];
+            $newName=$pr->documenti.utils::filter_filename($_REQUEST['file_doc']);
             $oldName=$pr->documenti.$_REQUEST['old_name'];
             if (rename($oldName,$newName)){
                 require_once 'db.savedata.php';
