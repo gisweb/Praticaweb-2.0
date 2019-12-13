@@ -419,7 +419,8 @@ class utils {
             // "file___name.zip" becomes "file-name.zip"
             '/_+/',
             // "file---name.zip" becomes "file-name.zip"
-            '/-+/'
+            '/-+/',
+            '/\/+/',
         ), '-', $filename);
         $filename = preg_replace(array(
             // "file--.--.-.--name.zip" becomes "file.name.zip"
