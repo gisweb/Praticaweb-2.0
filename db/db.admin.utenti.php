@@ -38,7 +38,8 @@ elseif($azione=="Salva"){
 			else{
 				include "./db/db.gisclientuser.php";
 				$sql="INSERT INTO admin.users(userid,app,cognome,nominativo,username,pwd,enc_pwd,permessi,attivato,num_tel,info,gruppi,data_creazione,gisclient) VALUES($newUserId,'$app','$cognome','$nominativo','$username','$pwd','$enc_pwd',$livello_utente,$attivato,'$tel','$info','$gruppi',now(),$gc);";
-                $db->sql_query($sql);
+                                utils::debugAdmin($sql);
+		                $db->sql_query($sql);
 				$id=$newUserId;
 			}
 		}
@@ -46,6 +47,7 @@ elseif($azione=="Salva"){
 			$sql="INSERT INTO admin.users(app,cognome,nominativo,username,pwd,enc_pwd,permessi,attivato,num_tel,mail,info,gruppi,data_creazione,gisclient) VALUES('$app','$cognome','$nominativo','$username','$pwd','$enc_pwd',$livello_utente,$attivato,'$tel','$mail','$info','$gruppi',now(),$gc);";
 			if (!$errors){ 
 				$db->sql_query($sql);
+                                utils::debugAdmin($sql);
 				$db->sql_query("SELECT max(userid) as lastvalue FROM admin.users");
 				$id=$db->sql_fetchfield("lastvalue");
 			}

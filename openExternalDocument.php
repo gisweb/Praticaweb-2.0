@@ -70,15 +70,27 @@ EOT;
     preg_match("|href=\"cid:(.+)\"|",$response,$result);
     $cid = $result[1];
     $start = "Content-ID: <".$cid.">";
+    $posStart = strpos($response, $start);
+    $end = "--uuid:$uuid--";
+    $posEnd = strpos($response, $end);
+
+
+ 
     $regExp = sprintf("/Content-ID: <%s>([\s\S]*?)--uuid/",$cid);
+    //$regExp = sprintf("/Content-ID: <%s>(.+)--uuid/",$cid);
     preg_match($regExp, $response, $binary);
     if (!count($binary)){
+        $binary= Array("", substr($response,$posStart,$posEnd-$posStart));
+    }
+    if (!count($binary)){
+        $file = trim(substr($response,$posStart,$posEnd-$posStart));
         $message =<<<EOT
 <DIV class="ui-state-error ui-corner-all page-message">
     Si &egrave; verificato un errore nel recupero del documento $filename
 </DIV>
 EOT;
         utils::printMessage($message);
+        utils::debug(sprintf(DEBUG_DIR."ERRORE-PRISMA-%s.debug",$idObjFile),$response,'w');
         return;
     }
     else{
